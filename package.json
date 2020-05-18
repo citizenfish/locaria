@@ -5,11 +5,12 @@
 		"configure": "node scripts/configure.js",
 		"build:full": "webpack --config webpack.config.js",
 		"runLocalSite": "http-server site/",
-		"testApi": "grunt apiTest --url=http://localhost:3000"
+		"testApi": "grunt apiTest --url=http://localhost:3000",
+	  	"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"
 	},
 	"dependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
-		"@nautoguide/ourthings": "file:../ourthings/src/ourthings",
+		"@nautoguide/ourthings": "^0.3.6",
 		"aws-sdk": "^2.587.0",
 		"console-badge": "^1.1.0",
 		"grunt": "^1.0.4",
@@ -17,7 +18,7 @@
 		"grunt-http": "^2.3.2",
 		"grunt-shell": "^3.0.1",
 		"grunt-template": "^1.0.0",
-		"http-server": "^0.11.1",
+		"http-server": "^0.12.3",
 		"mapbox-gl": "^1.8.0",
 		"node-fetch": "^2.6.0",
 		"serverless": "^1.60.5",

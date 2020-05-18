@@ -4,9 +4,7 @@ LOCUS provides an api accessible over http/https. The api has endpoints for GET 
 
 All of these endpoints will be accessible from a single URL which you will configure when installing LOCUS. For this document we refer to this as https://URL/
 
-**STAGE** refers to the stage that was deployed to Amazon, usually "test" or "live".  Certain deployment mechanisms will remove this completely such that the url will become:-
-
-https://URL/<method>
+**STAGE** refers to the stage that was deployed to Amazon, usually "test" or "live"
 
 All endpoints return data/errors in JSON format
 

@@ -1,0 +1,31 @@
+service: scrape
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  memorySize: 512
+  timeout: 512
+  profile: ${file(../../../locus-custom.yml):${self:custom.stage}.profile}
+  region: ${file(../../../locus-custom.yml):${self:custom.stage}.region}
+  logRetentionInDays: 30
+  environment: ${file(../../../locus-env.yml):${self:custom.stage}}
+  vpc:
+    securityGroupIds:
+      - ${file(../../../locus-custom.yml):${self:custom.stage}.securityGroupIds}
+    subnetIds:
+      - ${file(../../../locus-custom.yml):${self:custom.stage}.subnet1}
+      - ${file(../../../locus-custom.yml):${self:custom.stage}.subnet2}
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+
+functions:
+  scrape:
+    handler: scrape.run
+    events:
+      - schedule: ${file(../../../locus-custom.yml):${self:custom.stage}.cron}
+
+
+plugins:
+  - serverless-offline
+  - serverless-offline-scheduler

@@ -1,0 +1,17 @@
+{
+ "name": "locus-scrape",
+ "version": "1.0.0",
+ "description": "Locus json scraper",
+ "dependencies": {
+  "pg": "*",
+  "node-fetch": "^2.6.0",
+  "cheerio": "^1.0.0-rc.3"
+ },
+ "devDependencies": {
+  "serverless-offline-scheduler": "^0.3.8",
+  "serverless-offline": "^5.12.0"
+ },
+ "scripts": {
+  "setupLocalCron": "sls schedule --stage localhost"
+ }
+}
