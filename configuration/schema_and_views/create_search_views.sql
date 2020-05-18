@@ -1,0 +1,1 @@
+SELECT locus_core.create_materialised_view();
