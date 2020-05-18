@@ -1,0 +1,29 @@
+{
+	"name": "locus",
+	"version": "1.0.0",
+	"scripts": {
+		"configure": "node scripts/configure.js",
+		"build:full": "webpack --config webpack.config.js",
+		"runLocalSite": "http-server site/",
+		"testApi": "grunt apiTest --url=http://localhost:3000"
+	},
+	"dependencies": {
+		"@nautoguide/grunt-pgsql": "^0.1.4",
+		"@nautoguide/ourthings": "file:../ourthings/src/ourthings",
+		"aws-sdk": "^2.587.0",
+		"console-badge": "^1.1.0",
+		"grunt": "^1.0.4",
+		"grunt-aws-s3": "^2.0.0",
+		"grunt-http": "^2.3.2",
+		"grunt-shell": "^3.0.1",
+		"grunt-template": "^1.0.0",
+		"http-server": "^0.11.1",
+		"mapbox-gl": "^1.8.0",
+		"node-fetch": "^2.6.0",
+		"serverless": "^1.60.5",
+		"serverless-offline": "^5.12.1",
+		"webpack": "^4.29.6",
+		"webpack-cli": "^3.2.3",
+		"yaml": "^1.7.2"
+	}
+}
