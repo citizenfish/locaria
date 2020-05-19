@@ -109,6 +109,7 @@ function deploySystemMain(stage) {
 				console.log('usql - Upgrade SQL');
 				console.log('web - Deploy Web interface');
 				console.log('scrape - Deploy scraper');
+				console.log('ws - Deploy websocket');
 				console.log('q - Exit deploy mode');
 			case 'all':
 				deploySystemMain(stage);
@@ -127,6 +128,9 @@ function deploySystemMain(stage) {
 				break;
 			case 'usql':
 				upgradeSQL(stage);
+				break;
+			case 'ws':
+				deployWS(stage);
 				break;
 			case 'q':
 				commandLoop();
@@ -162,6 +166,35 @@ function deployScrape(stage) {
 		}
 	});
 }
+
+function deployWS(stage) {
+	const options = {
+		cwd: "websocket/"
+	};
+	console.log('#npm install')
+	exec(`npm install`, options, (err, stdout, stderr) => {
+		if (err) {
+			console.log('npm install FAILED!');
+			console.log(stderr);
+			deploySystemMain(stage);
+
+		} else {
+			console.log(stdout);
+			const cmdLine = `sls create_domain --stage ${stage}`;
+			console.log(`#${cmdLine}`);
+			exec(cmdLine, options, (err, stdout, stderr) => {
+				console.log(stdout);
+				const cmdLine = `serverless deploy --stage ${stage}`;
+				console.log(`#${cmdLine}`);
+				exec(cmdLine, options, (err, stdout, stderr) => {
+					console.log(stdout);
+					deploySystemMain(stage);
+				});
+			});
+		}
+	});
+}
+
 function deployAPI(stage) {
 	const options={
 		cwd: "api/"
