@@ -1,0 +1,57 @@
+<script id="init" type="text/html">
+    <!-- Setup the app -->
+    @api.websocketInit({"url":"{{config.ws}}"},{"queueRun":"Instant"});
+    -api.websocketSend({"message":{"queue":"session","api":"session"}});
+
+    @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}},{"queueBindTarget":"#search"});
+
+    @templates.render({"targetId":"#resultsTarget","template":"#postcodeTemplate","mode":"append"},{"queuePrepare":"postcode"});
+    -api.websocketSend({"message":{"queue":"cats","api":"api","data":{"method":"list_categories_with_data"}}});
+
+
+    @templates.render({"targetId":"#resultsTarget","template":"#categoriesTemplate","mode":"append"},{"queuePrepare":"cats"});
+    -api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","location_distance":"1000","category":"{{!memory.cats.value.packet[0].category}}","location":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})" }}});
+
+    @templates.render({"targetId":"#resultsTarget","template":"#pointsTemplate","mode":"append"},{"queuePrepare":"points"});
+    -api.websocketSend({"message":{"queue":"find","api":"api","data":{"method":"pointsearch","location":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","location_distance":"1000","category":"*","search_text": "{{!queue.getElement('#find').value}}" }}});
+
+    @templates.render({"targetId":"#resultsTarget","template":"#findTemplate","mode":"append"},{"queuePrepare":"find"});
+
+</script>
+
+<script id="postcodeTemplate" type="text/html">
+    <h1>Got postcode</h1>
+    <ul>
+        {{#for memory.postcode.value.packet.features}}
+        <li>{{memory.postcode.value.packet.features[#loop0].properties.address}}{{#if #loop0===0}} <========== SELECTED{{/if}}</li>
+        {{/for}}
+    </ul>
+</script>
+
+<script id="categoriesTemplate" type="text/html">
+    <h1>Got categories</h1>
+    <ul>
+    {{#for memory.cats.value.packet}}
+        <li>{{memory.cats.value.packet[#loop0].category}} {{#if #loop0===0}} <========== SELECTED{{/if}}</li>
+    {{/for}}
+    </ul>
+</script>
+
+<script id="pointsTemplate" type="text/html">
+    <h1>Location points</h1>
+    <ul>
+        {{#for memory.points.value.packet.features}}
+        <li>{{memory.points.value.packet.features[#loop0].properties.title}}</li>
+        {{/for}}
+    </ul>
+</script>
+
+
+<script id="findTemplate" type="text/html">
+    <h1>Find points</h1>
+    <ul>
+        {{#for memory.find.value.packet.features}}
+        <li>{{memory.find.value.packet.features[#loop0].properties.title}} - {{memory.find.value.packet.features[#loop0].properties.category}} - {{memory.find.value.packet.features[#loop0].properties.description}}</li>
+        {{/for}}
+    </ul>
+</script>
