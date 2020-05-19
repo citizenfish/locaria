@@ -13,19 +13,17 @@ const { uuid } = require('uuidv4');
 
 const MAX_BYTES=50000;
 
-let client = null;
 
 module.exports.run = (event, context, callback) => {
+	let client = null;
 
 	let conn = process.env.postgres;
 	const suuid=uuid();
 
 	const connectionId=event.requestContext.connectionId;
 	const eventType=event.requestContext.eventType;
-	//console.log(event);
 	console.log(`EVENT: ${eventType}`);
 	console.log(`ID: ${connectionId}`);
-	//console.log(event);
 
 
 	context.callbackWaitsForEmptyEventLoop = false;
@@ -34,8 +32,7 @@ module.exports.run = (event, context, callback) => {
 		apiVersion: '2018-11-29',
 		endpoint: 'https://'+event.requestContext.domainName + '/' + event.requestContext.stage
 	});
-	console.log('CLIENT:');
-	//console.log(apiClient);
+
 	/**
 	 *  Connect to the database
 	 * @type {Database}
@@ -66,6 +63,8 @@ module.exports.run = (event, context, callback) => {
 			}
 			console.log(result);
 			callback(null, {statusCode: 200});
+			client.end();
+
 		});
 	}
 
@@ -77,9 +76,12 @@ module.exports.run = (event, context, callback) => {
 			if(err) {
 				console.log(err);
 				callback(null, {statusCode: 500 });
+				client.end();
+
 			} else {
 				console.log('Done Connect');
 				callback(null, {statusCode: 200 });
+				client.end();
 
 
 			}
@@ -171,6 +173,8 @@ module.exports.run = (event, context, callback) => {
 
 		function sendSuccess() {
 			callback(null, {statusCode: 200});
+			client.end();
+
 		}
 	}
 
