@@ -5,8 +5,12 @@
 
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}},{"queueBindTarget":"#search"});
 
-    @templates.render({"targetId":"#resultsTarget","template":"#postcodeTemplate","mode":"append"},{"queuePrepare":"postcode"});
+    @templates.render({"targetId":"#resultsTarget","template":"#postcodeTemplate"},{"queuePrepare":"postcode"});
     -api.websocketSend({"message":{"queue":"cats","api":"api","data":{"method":"list_categories_with_data"}}});
+    -openlayers.addMap({"target":"postcodeMap","projection":"EPSG:3857"},{"queueRun":"Instant"});
+    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"name":"postcode","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.postcode.value.packet"});
+    -openlayers.zoomToLayerExtent({"layer":"postcode"});
 
 
     @templates.render({"targetId":"#resultsTarget","template":"#categoriesTemplate","mode":"append"},{"queuePrepare":"cats"});
@@ -14,8 +18,17 @@
 
     @templates.render({"targetId":"#resultsTarget","template":"#pointsTemplate","mode":"append"},{"queuePrepare":"points"});
     -api.websocketSend({"message":{"queue":"find","api":"api","data":{"method":"pointsearch","location":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","location_distance":"1000","category":"*","search_text": "{{!queue.getElement('#find').value}}" }}});
+    -openlayers.addMap({"target":"pointsMap","projection":"EPSG:3857"},{"queueRun":"Instant"});
+    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.points.value.packet"});
+    -openlayers.zoomToLayerExtent({"layer":"points"});
 
     @templates.render({"targetId":"#resultsTarget","template":"#findTemplate","mode":"append"},{"queuePrepare":"find"});
+    -openlayers.addMap({"target":"findMap","projection":"EPSG:3857"},{"queueRun":"Instant"});
+    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"name":"find","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.find.value.packet"});
+    -openlayers.zoomToLayerExtent({"layer":"find"});
+
 
 </script>
 
@@ -26,6 +39,8 @@
         <li>{{memory.postcode.value.packet.features[#loop0].properties.address}}{{#if #loop0===0}} <========== SELECTED{{/if}}</li>
         {{/for}}
     </ul>
+    <div id="postcodeMap" style="width: 500px;height: 500px;"></div>
+
 </script>
 
 <script id="categoriesTemplate" type="text/html">
@@ -44,6 +59,7 @@
         <li>{{memory.points.value.packet.features[#loop0].properties.title}}</li>
         {{/for}}
     </ul>
+    <div id="pointsMap" style="width: 500px;height: 500px;"></div>
 </script>
 
 
@@ -54,4 +70,6 @@
         <li>{{memory.find.value.packet.features[#loop0].properties.title}} - {{memory.find.value.packet.features[#loop0].properties.category}} - {{memory.find.value.packet.features[#loop0].properties.description}}</li>
         {{/for}}
     </ul>
+    <div id="findMap" style="width: 500px;height: 500px;"></div>
+
 </script>

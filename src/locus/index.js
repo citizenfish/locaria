@@ -9,6 +9,10 @@ import W3Menu from '@nautoguide/ourthings/Queueable/W3Menu';
 
 import Locus from './locus';
 
+import {mainMapStyle} from '../../site/map-styles/main';
+window.styles={};
+window.styles.mainMapStyle=mainMapStyle;
+
 
 /*
  * Startup
