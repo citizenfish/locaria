@@ -101,7 +101,8 @@ header > div {
 @media only screen and (min-width: 795px) {
     header > div {
         width: 100%;
-        max-width: 1150px;
+        max-width: 1180px;
+        padding: 0 30px;
         height: 60px;
     }
 }
@@ -112,12 +113,13 @@ header > div {
     order: 2;
     background-image: url(../images/logo.png);
     background-repeat: no-repeat;
-    background-size: 70% auto;
+    background-size: auto 40px;
     background-position: center;
 }
 @media only screen and (min-width: 795px) {
     .logo {
         width: calc(100% - 120px);
+        min-width: 360px;
         border-left: none;
         background-size: contain;
         background-position: left center;
@@ -161,7 +163,6 @@ header > div {
     }
 }
 .search-site {
-    flex: none;
     position: absolute;
     top: 60px;
     border-top: 2px solid white;
@@ -172,6 +173,11 @@ header > div {
     background: none;
     pointer-events: none;
     z-index: 2;
+}
+@media only screen and (max-width: 795px) {
+    .search-site {
+        flex: none;
+    }
 }
 @media only screen and (min-width: 795px) {
     .search-site {
