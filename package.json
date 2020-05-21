@@ -5,11 +5,12 @@
 		"configure": "node scripts/configure.js",
 		"build:full": "webpack --config webpack.config.js",
 		"runLocalSite": "http-server site/",
-		"testApi": "grunt apiTest --url=http://localhost:3000"
+		"testApi": "grunt apiTest --url=http://localhost:3000",
+		"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"
 	},
 	"dependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
-		"@nautoguide/ourthings": "^0.3.6",
+		"@nautoguide/ourthings": "0.3.9",
 		"aws-sdk": "^2.587.0",
 		"console-badge": "^1.1.0",
 		"grunt": "^1.0.4",
@@ -24,6 +25,7 @@
 		"serverless-offline": "^5.12.1",
 		"webpack": "^4.29.6",
 		"webpack-cli": "^3.2.3",
-		"yaml": "^1.7.2"
+		"yaml": "^1.7.2",
+		"ol": "^6.2.1"
 	}
 }
