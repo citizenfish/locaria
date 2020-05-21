@@ -4,6 +4,8 @@
     -api.websocketSend({"message":{"queue":"session","api":"session"}});
 
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}},{"queueBindTarget":"#search"});
+    -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
+
 
     @templates.render({"targetId":"#resultsTarget","template":"#postcodeTemplate"},{"queuePrepare":"postcode"});
     -api.websocketSend({"message":{"queue":"cats","api":"api","data":{"method":"list_categories_with_data"}}});
