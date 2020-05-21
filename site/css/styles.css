@@ -1,0 +1,594 @@
+/*** setup ***/
+
+/*Soleil Bold*/
+/*font-weight: 700;*/
+
+/*Soleil Book*/
+/*font-weight: 500;*/
+
+/*Soleil Extrabold*/
+/*font-weight: 800;*/
+
+/*Soleil Light*/
+/*font-weight: 300;*/
+
+/*Soleil Regular*/
+/*font-weight: 400;*/
+
+/*Soleil Semibold*/
+/*font-weight: 600;*/
+
+/*Soleil Light Italic*/
+/*font-weight: 300;*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+time {
+    font-family: "soleil",sans-serif;
+}
+
+body {
+    font-weight: 300;
+}
+strong {
+    font-weight: 600;
+}
+
+/*** main layout ***/
+
+header {
+    height: 60px;
+    background-color: var(--mainBrandColour);
+    color: white;
+    position: relative;
+    z-index: 11;
+}
+.postcode-search {
+
+}
+.page-content {
+    color: var(--defaultText);
+    /*min-height: calc(100vh - 60px);*/
+    display: flex;
+    justify-content: center;
+}
+main {
+    width: 100%;
+    max-width: 1150px;
+}
+footer {
+    height: 60px;
+    background-color: var(--dark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 795px) {
+    header, footer {
+        height: 120px;
+    }
+    .on-home header, .on-home footer {
+        height: 180px;
+    }
+}
+
+/*** components ***/
+
+/* header */
+
+header {
+
+}
+@media only screen and (min-width: 795px) {
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.5);
+    }
+}
+header > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+@media only screen and (min-width: 795px) {
+    header > div {
+        width: 100%;
+        max-width: 1150px;
+        height: 60px;
+    }
+}
+.logo {
+    width: calc(100% - 180px);
+    height: 60px;
+    border-left: 2px solid white;
+    order: 2;
+    background-image: url(../images/logo.png);
+    background-repeat: no-repeat;
+    background-size: 70% auto;
+    background-position: center;
+}
+@media only screen and (min-width: 795px) {
+    .logo {
+        width: calc(100% - 120px);
+        border-left: none;
+        background-size: contain;
+        background-position: left center;
+    }
+}
+.button-back {
+    width: 60px;
+    height: 60px;
+    order: 1;
+    background-image: url(../images/back-button.svg);
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+@media only screen and (min-width: 795px) {
+    .button-back {
+        min-width: 60px;
+        margin-right: 60px;
+        border: 3px solid white;
+        background-color: var(--mainBrandColour);
+        box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
+    }
+}
+.search-site-open {
+    width: 60px;
+    border-left: 2px solid white;
+    order: 3;
+    background-image: url(../images/search-icon.svg);
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background-color ease 0.3s;
+    background-color: transparent;
+}
+.open-search .search-site-open {
+    background-color: var(--dark);
+}
+@media only screen and (min-width: 795px) {
+    .search-site-open {
+        display: none;
+    }
+}
+.search-site {
+    flex: none;
+    position: absolute;
+    top: 60px;
+    border-top: 2px solid white;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    overflow: hidden;
+    background: none;
+    pointer-events: none;
+    z-index: 2;
+}
+@media only screen and (min-width: 795px) {
+    .search-site {
+        position: relative;
+        top: auto;
+        border-top: none;
+        left: auto;
+        width: 100%;
+        max-width: 500px;
+        height: 60px;
+        overflow: visible;
+        order: 3;
+        margin-right: 60px;
+    }
+}
+.search-site > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: var(--dark);
+    display: flex;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
+    pointer-events: auto;
+}
+@media only screen and (max-width: 795px) {
+    .search-site > div {
+        transition: transform ease 0.3s;
+        transform: translateY(-105%);
+    }
+}
+@media only screen and (min-width: 795px) {
+    .search-site > div {
+        height: 100%;
+        background-color: transparent;
+        border: 3px solid white;
+        display: flex;
+        box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
+        transform: none;
+    }
+}
+@media only screen and (max-width: 795px) {
+    .open-search .search-site > div {
+        transform: translateY(0);
+    }
+}
+.search-site input {
+    width: calc(100% - 57px);
+    height: 100%;
+    border: 2px solid var(--dark);
+    border-right: none;
+    box-shadow: inset 1px 1px 5px 0 rgba(0,0,0,0.15);
+    padding: 10px 15px 15px;
+}
+@media only screen and (min-width: 795px) {
+    .search-site input {
+        width: calc(100% - 117px);
+        height: 100%;
+        border: none;
+        border-right: 3px solid white;
+        box-shadow: inset 1px 1px 5px 0 rgba(0,0,0,0.15);
+        padding: 10px 15px 15px;
+        background-color: transparent;
+    }
+}
+.search-site .button-search-site {
+    width: 59px;
+    height: 100%;
+    background-color: var(--dark);
+    color: white;
+}
+@media only screen and (min-width: 795px) {
+    .search-site .button-search-site {
+        width: 119px;
+        background-color: rgba(255,255,255,0.25);
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    }
+}
+.main-menu {
+    width: 60px;
+    height: 60px;
+    border-left: 2px solid white;
+    order: 4;
+    background-image: url(../images/menu-icon.svg);
+    background-size: 19px 19px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+@media only screen and (min-width: 795px) {
+    .main-menu {
+        min-width: 60px;
+        border: 3px solid white;
+        background-color: var(--mainBrandColour);
+        box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
+    }
+}
+
+/* postcode / hero */
+
+.postcode-search {
+    position: relative;
+    height: 400px;
+    max-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--mapCompliment);
+    background-image: url(../images/map-sample.png);
+    background-size: cover;
+    background-position: center center;
+    transition: max-height ease 0.3s;
+}
+
+@media only screen and (max-width: 795px) {
+    .on-home .postcode-search {
+        max-height: 180px;
+    }
+    .open-loc .postcode-search {
+        max-height: 160px;
+    }
+    .on-home.open-loc .postcode-search {
+        max-height: 180px; /* urgh */
+    }
+}
+@media only screen and (min-width: 795px) {
+    .postcode-search {
+        height: 200px;
+        max-height: none;
+        margin-bottom: 0;
+    }
+    .on-home .postcode-search {
+        height: 450px;
+        max-height: none;
+        margin-bottom: 200px;
+    }
+}
+.your-current-postcode {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+@media only screen and (min-width: 795px) {
+    .your-current-postcode {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(243, 242, 239, 0.5);
+        position: absolute;
+        top: 0;
+    }
+    .on-home .your-current-postcode {
+        height: 180px;
+        background-color: var(--mapCompliment);
+        position: absolute;
+        top: auto;
+        bottom: 0;
+        transform: translateY(100%);
+    }
+}
+.your-current-postcode label {
+    display: inline-block;
+}
+.open-loc .your-current-postcode label {
+    margin-bottom: 10px;
+}
+.your-current-postcode .postcode-field {
+    font-size: 1.75rem;
+    font-weight: 700;
+    display: inline-block;
+    max-width: 180px;
+    text-align: center;
+    pointer-events: none;
+    background: transparent;
+    border: none;
+}
+.open-loc .your-current-postcode .postcode-field {
+    margin: 0 0 7px 0;
+    border: 2px dashed black;
+    padding: 6px 5px 5px;
+    background: rgba(255, 255, 255, 0.5);
+    pointer-events: auto;
+}
+@media only screen and (min-width: 795px) {
+    .your-current-postcode .postcode-field {
+        padding: 5px 10px 7px;
+        font-weight: 500;
+    }
+}
+.your-current-postcode .change-postcode {
+    text-decoration: underline;
+    border: none;
+    background: none;
+    color: var(--actionBlue);
+}
+.your-current-postcode .change-postcode.edit-loc {
+    display: inline-block;
+}
+.your-current-postcode .change-postcode.set-loc {
+    position: relative;
+    padding-left: 15px;
+    display: none;
+}
+.open-loc .your-current-postcode .change-postcode.edit-loc {
+    display: none;
+}
+.open-loc .your-current-postcode .change-postcode.set-loc {
+    display: inline-block;
+}
+.your-current-postcode .change-postcode.set-loc::before {
+    content: "\2714";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+}
+
+/* main content */
+
+.content-holder {
+    display: flex;
+    flex-direction: column;
+}
+@media only screen and (min-width: 795px) {
+    .content-holder {
+        flex-direction: row;
+    }
+}
+.side-panel {
+    padding: 15px 15px 0;
+    position: relative;
+}
+@media only screen and (min-width: 795px) {
+    .side-panel {
+        max-width: 320px;
+        padding: 15px;
+    }
+}
+.on-home .side-panel {
+    display: none;
+}
+.side-panel h2 {
+    margin: 0 0 0 0;
+}
+.side-panel p {
+    margin: 0 0 15px 0;
+}
+@media only screen and (min-width: 795px) {
+    .side-panel h2 {
+        display: block;
+        text-align: center;
+        padding-bottom: 15px;
+        border-bottom: 3px solid var(--channelPlanning);
+        margin-bottom: 15px;
+    }
+}
+.side-panel .results-number {
+    margin: 0 0 0 0;
+    font-style: italic;
+}
+@media only screen and (min-width: 795px) {
+    .side-panel .results-number {
+        margin: 0 0 15px 0;
+    }
+}
+.side-panel .show-filters {
+    position: absolute;
+    right: 15px;
+    top: 54px;
+    color: var(--actionBlue);
+    padding: 0;
+    text-decoration: underline;
+}
+@media only screen and (max-width: 795px) {
+    .side-panel .search-filters {
+        padding: 15px 0;
+        display: none;
+    }
+    .open-filters .side-panel .search-filters {
+        display: block;
+    }
+}
+.side-panel .search-filters p,
+.side-panel .search-filters label,
+.side-panel .search-filters input {
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+.side-panel .search-filters input {
+    border: 2px solid var(--channelPlanning);
+    padding: 10px;
+    box-shadow: 1px 4px 7px 0 rgba(0,0,0,0.15);
+}
+.side-panel hr {
+    border: none;
+    border-bottom: 2px solid var(--channelPlanning);
+    margin: 15px 0 0;
+}
+
+.main-content {
+    padding: 0 15px 15px;
+    flex: 1 1 auto;
+}
+@media only screen and (min-width: 795px) {
+    .main-content {
+        padding: 15px;
+    }
+}
+.on-home .main-content {
+    padding: 30px 15px;
+    text-align: center;
+}
+.main-content h1 {
+    font-weight: 600;
+}
+.main-content p {
+    margin: 0 0 15px 0;
+}
+.channel img {
+    width: 100%;
+    width: 100%;
+    max-width: 280px;
+}
+.results-item-list {
+
+}
+.results-item-list li {
+    padding: 15px 0;
+    margin-bottom: 15px;
+    border-bottom: 2px dashed #707070;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.results-item-list li .distance-from {
+    padding: 0 15px;
+    text-align: center;
+}
+.results-item-list .distance-from .miles-no {
+    font-size: 4rem;
+    line-height: 1;
+    font-weight: 600;
+}
+.results-item-list .distance-from em {
+    font-style: normal;
+}
+.results-item-list li .item-detail {
+    width: 90%;
+}
+.results-item-list .item-detail h4 {
+    margin-bottom: 5px;
+}
+.results-item-list .item-detail address {
+    margin-bottom: 5px;
+}
+.results-item-list .item-detail a {
+    color: var(--actionBlue);
+    text-decoration: underline;
+}
+
+/* channels - home */
+
+.channel .explore-channel {
+    padding: 13px 45px 15px;
+    box-shadow: 1px 4px 7px 0 rgba(0,0,0,0.15);
+    color: white;
+    text-transform: uppercase;
+    margin: 15px 0 30px;
+    transition: background-color ease 0.3s;
+}
+.channel.channel-planning .explore-channel {
+    background-color: var(--channelPlanning);
+}
+.channel .explore-channel:hover {
+    background-color: var(--actionHover);
+}
+.channel p {
+    margin: 0 0 5px 0;
+}
+
+@media only screen and (min-width: 795px) {
+    .channels {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .channel {
+        margin: 0 15px;
+    }
+}
+
+/* footer */
+
+footer p {
+    margin: 0 0 0 0;
+}
+
+/*** elements ***/
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+@media only screen and (min-width: 795px) {
+    .no-lg-res {
+        display: none;
+    }
+}
+@media only screen and (max-width: 795px) {
+    .no-mb {
+        display: none;
+    }
+}
