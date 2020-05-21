@@ -31,6 +31,10 @@
     -openlayers.addLayer({"name":"find","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.find.value.packet"});
     -openlayers.zoomToLayerExtent({"layer":"find"});
 
+    @internals.nop({},{"queuePrepare":"session"});
+
+    @api.websocketInit({"url":"{{config.ws}}"},{"queuePrepare":"wsClose"});
+
 
 </script>
 
