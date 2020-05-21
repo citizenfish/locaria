@@ -8,9 +8,9 @@
     @templates.render({"targetId":"#resultsTarget","template":"#postcodeTemplate"},{"queuePrepare":"postcode"});
     -api.websocketSend({"message":{"queue":"cats","api":"api","data":{"method":"list_categories_with_data"}}});
     -openlayers.addMap({"target":"postcodeMap","projection":"EPSG:3857"},{"queueRun":"Instant"});
-    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"name":"wms","type":"wms","url":"https://mapping.surreyheath.gov.uk/WMS9/wms.exe","params":{"layers":"OSBaseColour"},"active":true});
     -openlayers.addLayer({"name":"postcode","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.postcode.value.packet"});
-    -openlayers.zoomToLayerExtent({"layer":"postcode"});
+    -openlayers.zoomToLayerExtent({"layer":"postcode","buffer":500});
 
 
     @templates.render({"targetId":"#resultsTarget","template":"#categoriesTemplate","mode":"append"},{"queuePrepare":"cats"});
@@ -18,8 +18,8 @@
 
     @templates.render({"targetId":"#resultsTarget","template":"#pointsTemplate","mode":"append"},{"queuePrepare":"points"});
     -api.websocketSend({"message":{"queue":"find","api":"api","data":{"method":"pointsearch","location":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","location_distance":"1000","category":"*","search_text": "{{!queue.getElement('#find').value}}" }}});
-    -openlayers.addMap({"target":"pointsMap","projection":"EPSG:3857"},{"queueRun":"Instant"});
-    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addMap({"target":"pointsMap","projection":"EPSG:27700"},{"queueRun":"Instant"});
+    -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
     -openlayers.addLayer({"name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.points.value.packet"});
     -openlayers.zoomToLayerExtent({"layer":"points"});
 
