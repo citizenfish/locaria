@@ -1,8 +1,169 @@
 <script id="init" type="text/html">
     <!-- Setup the app -->
-    @templates.render({"targetId":"#exampleTarget","template":"#helloWorld","mode":"append"},{"queueRun":"Instant"});
+    @templates.render({"targetId":"#header-target","template":"#header","mode":"append"},{"queueRun":"Instant"});
+    @templates.render({"targetId":"#location-target","template":"#postcode-search","mode":"append"},{"queueRun":"Instant"});
+    @templates.render({"targetId":"#content-target","template":"#home-content","mode":"append"},{"queueRun":"Instant"});
 </script>
 
-<script id="helloWorld" type="text/html">
-<p>hello world!</p>
+<script id="header" type="text/html">
+    <div>
+        <a class="logo" href="/" rel="home" @templates.render({"targetId":"#content-target","template":"#home-content"});>
+            -elements.addClass({"targetId":"body","class":"on-home"});
+            <span class="sr-only">Surrey Heath</span>
+        </a>
+
+        <button class="button-back" type="button">
+            <span class="sr-only">Back to previous screen</span>
+        </button>
+
+        <button id="open-search-mobile" type="button" class="search-site-open no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":".page-header","class":"open-search"});>
+            <span class="sr-only">Open search</span>
+        </button>
+        <form id="searchSite" class="search-site" aria-label="Search the site for information">
+            <div>
+                <input type="text" value="">
+                <button class="button-search-site">Find</button>
+            </div>
+        </form>
+
+        <nav class="main-menu" role="navigation">
+            <!-- accessible menu -->
+        </nav>
+    </div>
+</script>
+<script id="postcode-search" type="text/html">
+    <form class="your-current-postcode">
+        <label for="postcode">Your location is set to:</label>
+        <input id="postcode" class="postcode-field" value="GU15 3HD">
+
+        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
+            Change your location
+        </button>
+
+        <!-- should this be submit? -->
+        <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
+            Set this as your location
+        </button>
+
+    </form>
+</script>
+<script id="home-content" type="text/html">
+
+    <section class="side-panel">
+
+    </section>
+    <section class="main-content">
+        <h1>Welcome to Surrey Heath's community mapping tool</h1>
+        <p>A short explanatory message encouraging users to set their location and explore one (or all) of the 4 channels below: </p>
+        <section class="channels">
+            <div class="channel channel-planning">
+                <img src="images/channel-planning.jpg" title="" alt="">
+                <h2>Planning</h2>
+                <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
+                <p>To gain access to 'types / sub classifications' of Planning information.</p>
+
+                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @templates.render({"targetId":"#content-target","template":"#page-content"});>
+                    -elements.removeClass({"targetId":"body","class":"on-home"});
+                    Explore
+                </button>
+
+            </div>
+            <div class="channel channel-planning">
+                <img src="images/channel-planning.jpg" title="" alt="">
+                <h2>Planning</h2>
+                <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
+                <p>To gain access to 'types / sub classifications' of Planning information.</p>
+                <button class="explore-channel">Explore</button>
+            </div>
+            <div class="channel channel-planning">
+                <img src="images/channel-planning.jpg" title="" alt="">
+                <h2>Planning</h2>
+                <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
+                <p>To gain access to 'types / sub classifications' of Planning information.</p>
+                <button class="explore-channel">Explore</button>
+            </div>
+            <div class="channel channel-planning">
+                <img src="images/channel-planning.jpg" title="" alt="">
+                <h2>Planning</h2>
+                <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
+                <p>To gain access to 'types / sub classifications' of Planning information.</p>
+                <button class="explore-channel">Explore</button>
+            </div>
+        </section>
+    </section>
+
+</script>
+
+<script id="page-content" type="text/html">
+    <section class="side-panel">
+        <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
+        <h2>Planning</h2>
+        <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
+        <p class="results-number">Results for 0 - 80 miles</p>
+        <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+            Show/hide filters
+        </button>
+        <form class="search-filters">
+            <div>
+                <p><strong>Filter these results:</strong></p>
+                <label>By distance:</label>
+                <input type="text" value="">
+                <label>By keyword:</label>
+                <input type="text" value="">
+            </div>
+        </form>
+        <hr class="no-lg-res">
+    </section>
+    <section class="main-content">
+        <ul class="results-item-list">
+
+
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+
+
+        </ul>
+    </section>
 </script>
