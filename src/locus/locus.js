@@ -12,7 +12,14 @@ import AWS from 'aws-sdk';
  *
  */
 class Locus extends Queueable {
+	defaultPostcode(pid,json) {
+		let postcode='GU15 3HD';
+		if(memory.myPostcode&&memory.myPostcode.value)
+			postcode=memory.myPostcode.value;
+		this.queue.setMemory('myPostcode', postcode, "Permanent");
+		this.finished(pid, this.queue.DEFINE.FIN_OK);
 
+	}
 
 }
 
