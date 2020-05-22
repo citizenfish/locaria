@@ -2,11 +2,21 @@
     <!-- Setup the app -->
     @api.websocketInit({"url":"{{config.ws}}"},{"queueRun":"Instant"});
     -api.websocketSend({"message":{"queue":"session","api":"session"}});
+    -browser.initHistory({"checkURL":true});
     -locus.defaultPostcode();
-    -templates.render({"targetId":"#header-target","template":"#header","mode":"append"});
-    -templates.render({"targetId":"#location-target","template":"#postcode-search","mode":"append"});
-    -templates.render({"targetId":"#content-target","template":"#home-content","mode":"append"});
     -internals.ifqueue({"statement":"!memory.location","name":"getLocation"});
+    -templates.render({"targetId":"#header-target","template":"#header"});
+    -templates.render({"targetId":"#location-target","template":"#postcode-search"});
+    -browser.addHistory({"history":"Home","force":true});
+
+
+    @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
+    -elements.addClass({"targetId":"body","class":"on-home"});
+
+
+    @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
+    -api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","location_distance":"1000","category":"{{!memory.category.value}}","location":"{{!memory.location.value}}" }}});
+    -elements.removeClass({"targetId":"body","class":"on-home"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -82,9 +92,8 @@
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
 
-                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @templates.render({"targetId":"#content-target","template":"#page-content"});>
-                    -api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","location_distance":"1000","category":"Planning","location":"{{!memory.location.value}}" }}});
-                    -elements.removeClass({"targetId":"body","class":"on-home"});
+                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @internals.setMemory({"name":"category","value":"Planning","mode":"Session"});>
+                    -browser.addHistory({"history":"Cat"});
                     Explore
                 </button>
 
@@ -146,7 +155,7 @@
     {{#for memory.points.value.packet.features}}
     <li>
         <div class="distance-from">
-            <span class="miles-no">5</span>
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
             <em>miles</em>
         </div>
         <div class="item-detail">
