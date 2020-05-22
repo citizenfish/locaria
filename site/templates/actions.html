@@ -15,7 +15,7 @@
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
 
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.myKeywords.value}}","location_distance":"{{!^memory.myDistance.value*1609}}","category":"{{!memory.history.value}}","location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.myKeywords.value}}","location_distance":"{{!^memory.myDistance.value*1609}}","category":"{{!memory.history.value}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
