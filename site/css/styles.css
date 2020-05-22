@@ -69,7 +69,7 @@ footer {
     justify-content: center;
 }
 
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     header, footer {
         height: 120px;
     }
@@ -85,7 +85,7 @@ footer {
 header {
 
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     header {
         display: flex;
         align-items: center;
@@ -98,7 +98,7 @@ header > div {
     flex-direction: row;
     justify-content: space-between;
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     header > div {
         width: 100%;
         max-width: 1180px;
@@ -114,9 +114,9 @@ header > div {
     background-image: url(../images/logo.png);
     background-repeat: no-repeat;
     background-size: auto 40px;
-    background-position: center;
+    background-position: 15px center;
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .logo {
         width: calc(100% - 120px);
         min-width: 360px;
@@ -134,7 +134,7 @@ header > div {
     background-repeat: no-repeat;
     background-position: center;
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .button-back {
         min-width: 60px;
         margin-right: 60px;
@@ -157,7 +157,7 @@ header > div {
 .open-search .search-site-open {
     background-color: var(--dark);
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .search-site-open {
         display: none;
     }
@@ -166,20 +166,22 @@ header > div {
     position: absolute;
     top: 60px;
     border-top: 2px solid white;
-    left: 0;
+    /* left: 0; */
+    right: 0;
     width: 100%;
+    max-width: 450px;
     height: 70px;
     overflow: hidden;
     background: none;
     pointer-events: none;
     z-index: 2;
 }
-@media only screen and (max-width: 795px) {
+@media only screen and (max-width: 1000px) {
     .search-site {
         flex: none;
     }
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .search-site {
         position: relative;
         top: auto;
@@ -204,13 +206,13 @@ header > div {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
     pointer-events: auto;
 }
-@media only screen and (max-width: 795px) {
+@media only screen and (max-width: 1000px) {
     .search-site > div {
         transition: transform ease 0.3s;
         transform: translateY(-105%);
     }
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .search-site > div {
         height: 100%;
         background-color: transparent;
@@ -220,7 +222,7 @@ header > div {
         transform: none;
     }
 }
-@media only screen and (max-width: 795px) {
+@media only screen and (max-width: 1000px) {
     .open-search .search-site > div {
         transform: translateY(0);
     }
@@ -233,7 +235,7 @@ header > div {
     box-shadow: inset 1px 1px 5px 0 rgba(0,0,0,0.15);
     padding: 10px 15px 15px;
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .search-site input {
         width: calc(100% - 117px);
         height: 100%;
@@ -250,7 +252,7 @@ header > div {
     background-color: var(--dark);
     color: white;
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .search-site .button-search-site {
         width: 119px;
         background-color: rgba(255,255,255,0.25);
@@ -267,7 +269,7 @@ header > div {
     background-repeat: no-repeat;
     background-position: center;
 }
-@media only screen and (min-width: 795px) {
+@media only screen and (min-width: 1000px) {
     .main-menu {
         min-width: 60px;
         border: 3px solid white;
@@ -553,8 +555,35 @@ header > div {
 .channel.channel-planning .explore-channel {
     background-color: var(--channelPlanning);
 }
+.channel.channel-democracy .explore-channel {
+    background-color: var(--channelDemocracy);
+}
+.channel.channel-events .explore-channel {
+    background-color: var(--channelEvents);
+}
+.channel.channel-community .explore-channel {
+    background-color: var(--channelCommunity);
+}
 .channel .explore-channel:hover {
-    background-color: var(--actionHover);
+    background-color: var(--dark);
+}
+.channel h2 {
+    padding-bottom: 15px;
+    border-bottom: 2px solid;
+    margin: 0 auto 20px;
+    max-width: 200px;
+}
+.channel.channel-planning h2 {
+    border-color: var(--channelPlanning);
+}
+.channel.channel-democracy h2 {
+    border-color: var(--channelDemocracy);
+}
+.channel.channel-events h2 {
+    border-color: var(--channelEvents);
+}
+.channel.channel-community h2 {
+    border-color: var(--channelCommunity);
 }
 .channel p {
     margin: 0 0 5px 0;
