@@ -1,18 +1,44 @@
 <script id="init" type="text/html">
     <!-- Setup the app -->
-    @templates.render({"targetId":"#header-target","template":"#header","mode":"append"},{"queueRun":"Instant"});
-    @templates.render({"targetId":"#location-target","template":"#postcode-search","mode":"append"},{"queueRun":"Instant"});
-    @templates.render({"targetId":"#content-target","template":"#home-content","mode":"append"},{"queueRun":"Instant"});
+    @api.websocketInit({"url":"{{config.ws}}"},{"queueRun":"Instant"});
+    -api.websocketSend({"message":{"queue":"session","api":"session"}});
+    -locus.defaultValues();
+    -templates.render({"targetId":"#header-target","template":"#header"});
+    -templates.render({"targetId":"#location-target","template":"#postcode-search"});
+    -browser.initHistory({"checkURL":true,"default":"Home"});
+
+    @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
+    -elements.addClass({"targetId":"body","class":"on-home"});
+
+
+    @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
+    -internals.execute({"name":"reloadCat"});
+    -elements.removeClass({"targetId":"body","class":"on-home"});
+
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.myKeywords.value}}","location_distance":"{{!^memory.myDistance.value*1609}}","category":"{{!memory.history.value}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
+
+    <!-- turn postcode into location -->
+    @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
+
+    @internals.setMemory({"name":"location","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"postcode"});
+
+    <!-- Point search -->
+
+    @templates.render({"targetId":".results-item-list","template":"#page-content-results"},{"queuePrepare":"points"});
+
+    <!-- ws admin stuff -->
+    @internals.nop({},{"queuePrepare":"session"});
+
+    @api.websocketInit({"url":"{{config.ws}}"},{"queuePrepare":"wsClose"});
 </script>
 
 <script id="header" type="text/html">
     <div>
-        <a class="logo" href="/" rel="home" @templates.render({"targetId":"#content-target","template":"#home-content"});>
-            -elements.addClass({"targetId":"body","class":"on-home"});
+        <a class="logo" href="/" rel="home" @browser.addHistory({"history":"Home"});>
             <span class="sr-only">Surrey Heath</span>
         </a>
 
-        <button class="button-back" type="button">
+        <button class="button-back" type="button" @browser.backHistory();>
             <span class="sr-only">Back to previous screen</span>
         </button>
 
@@ -42,6 +68,9 @@
 
         <!-- should this be submit? -->
         <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
+                -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
+                -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
+                -internals.execute({"name":"reloadCat"});
             Set this as your location
         </button>
 
@@ -62,32 +91,31 @@
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
 
-                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @templates.render({"targetId":"#content-target","template":"#page-content"});>
-                    -elements.removeClass({"targetId":"body","class":"on-home"});
+                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @browser.addHistory({"history":"Cat/Planning"});>
                     Explore
                 </button>
 
             </div>
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
-                <h2>Planning</h2>
+                <h2>Democracy</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel">Explore</button>
+                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Democracy"});>Explore</button>
             </div>
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
-                <h2>Planning</h2>
+                <h2>Events</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel">Explore</button>
+                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Events"});>Explore</button>
             </div>
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
-                <h2>Planning</h2>
+                <h2>Community</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel">Explore</button>
+                <button class="explore-channel" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
             </div>
         </section>
     </section>
@@ -97,7 +125,7 @@
 <script id="page-content" type="text/html">
     <section class="side-panel">
         <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
-        <h2>Planning</h2>
+        <h2>{{memory.history.value}}</h2>
         <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
         <p class="results-number">Results for 0 - 80 miles</p>
         <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
@@ -107,9 +135,11 @@
             <div>
                 <p><strong>Filter these results:</strong></p>
                 <label>By distance:</label>
-                <input type="text" value="">
+                <input type="number" id="distance" value="{{memory.myDistance.value}}" @internals.setMemory({"name":"myDistance","value":"{{!^parseFloat(queue.getElement('#distance').value)}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
+                    -internals.execute({"name":"reloadCat"});
                 <label>By keyword:</label>
-                <input type="text" value="">
+                <input type="text" id="keywords" value="{{memory.myKeywords.value}}" @internals.setMemory({"name":"myKeywords","value":"{{!queue.getElement('#keywords').value}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
+                    -internals.execute({"name":"reloadCat"});
             </div>
         </form>
         <hr class="no-lg-res">
@@ -117,53 +147,40 @@
     <section class="main-content">
         <ul class="results-item-list">
 
-
-            <li>
-                <div class="distance-from">
-                    <span class="miles-no">5</span>
-                    <em>miles</em>
-                </div>
-                <div class="item-detail">
-                    <h4>Reference: 19/0377</h4>
-                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
-                    <a href="#">View details</a>
-                </div>
-            </li>
-            <li>
-                <div class="distance-from">
-                    <span class="miles-no">5</span>
-                    <em>miles</em>
-                </div>
-                <div class="item-detail">
-                    <h4>Reference: 19/0377</h4>
-                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
-                    <a href="#">View details</a>
-                </div>
-            </li>
-            <li>
-                <div class="distance-from">
-                    <span class="miles-no">5</span>
-                    <em>miles</em>
-                </div>
-                <div class="item-detail">
-                    <h4>Reference: 19/0377</h4>
-                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
-                    <a href="#">View details</a>
-                </div>
-            </li>
-            <li>
-                <div class="distance-from">
-                    <span class="miles-no">5</span>
-                    <em>miles</em>
-                </div>
-                <div class="item-detail">
-                    <h4>Reference: 19/0377</h4>
-                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
-                    <a href="#">View details</a>
-                </div>
-            </li>
-
-
         </ul>
     </section>
+</script>
+
+<script id="page-content-results" type="text/html">
+    {{#for memory.points.value.packet.features}}
+        {{#include '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category}}
+    {{/for}}
+</script>
+
+<script id="page-content-results-Planning" type="text/html">
+    <li>
+        <div class="distance-from">
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
+            <em>miles</em>
+        </div>
+        <div class="item-detail">
+            <h4>Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
+            <a href="#">View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Events" type="text/html">
+    <li>
+        <div class="distance-from">
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
+            <em>miles</em>
+        </div>
+        <div class="item-detail">
+            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <a href="#">View details</a>
+        </div>
+    </li>
 </script>
