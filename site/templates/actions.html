@@ -133,32 +133,75 @@
 </script>
 
 <script id="page-content" type="text/html">
-    <section class="side-panel">
-        <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
-        <h2>{{memory.history.value}}</h2>
-        <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-        <p class="results-number">Results for 0 - 80 miles</p>
-        <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
-            Show/hide filters
-        </button>
-        <form class="search-filters">
-            <div>
-                <p><strong>Filter these results:</strong></p>
-                <label>By distance:</label>
-                <input type="number" id="distance" value="{{memory.myDistance.value}}" @internals.setMemory({"name":"myDistance","value":"{{!^parseFloat(queue.getElement('#distance').value)}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
-                    -internals.execute({"name":"reloadCat"});
-                <label>By keyword:</label>
-                <input type="text" id="keywords" value="{{memory.myKeywords.value}}" @internals.setMemory({"name":"myKeywords","value":"{{!queue.getElement('#keywords').value}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
-                    -internals.execute({"name":"reloadCat"});
-            </div>
-        </form>
-        <hr class="no-lg-res">
-    </section>
+    {{#include '#page-content-'+memory.history.value}}
+
+
+</script>
+
+<script id="page-content-filter" type="text/html">
+    <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
+    <p class="results-number">Results for 0 - 80 miles</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+    <form class="search-filters">
+        <div>
+            <p><strong>Filter these results:</strong></p>
+            <label>By distance:</label>
+            <input type="number" id="distance" value="{{memory.myDistance.value}}" @internals.setMemory({"name":"myDistance","value":"{{!^parseFloat(queue.getElement('#distance').value)}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
+            -internals.execute({"name":"reloadCat"});
+            <label>By keyword:</label>
+            <input type="text" id="keywords" value="{{memory.myKeywords.value}}" @internals.setMemory({"name":"myKeywords","value":"{{!queue.getElement('#keywords').value}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
+            -internals.execute({"name":"reloadCat"});
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
+
+<script id="page-content-result-main" type="text/html">
     <section class="main-content">
         <ul class="results-item-list">
 
         </ul>
     </section>
+</script>
+
+<script id="page-content-Planning" type="text/html">
+    <section class="side-panel">
+        <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value}}</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+<script id="page-content-Democracy" type="text/html">
+    <section class="side-panel">
+        <img src="images/channel-democracy.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value}}</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+<script id="page-content-Community" type="text/html">
+    <section class="side-panel">
+        <img src="images/channel-community.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value}}</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+
+<script id="page-content-Events" type="text/html">
+    <section class="side-panel">
+        <img src="images/channel-events.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value}}</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
 </script>
 
 <script id="page-content-results" type="text/html">
@@ -182,6 +225,34 @@
 </script>
 
 <script id="page-content-results-Events" type="text/html">
+    <li>
+        <div class="distance-from">
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
+            <em>miles</em>
+        </div>
+        <div class="item-detail">
+            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <a href="#">View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Community" type="text/html">
+    <li>
+        <div class="distance-from">
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
+            <em>miles</em>
+        </div>
+        <div class="item-detail">
+            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <a href="#">View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Democracy" type="text/html">
     <li>
         <div class="distance-from">
             <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
