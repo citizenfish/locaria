@@ -2,14 +2,17 @@
 
 :root {
     /* Colours */
-    --defaultText: #0c0c0c;
-    --actionBlue: #4A94E9;
-    --actionHover: #f1614e;
-    --dark: #242424;
-    --mainBrandColour: #32AA39;
-    --mapCompliment: #F3F2EF;
+    --defaultText:              #0c0c0c;
+    --actionBlue:               #4A94E9;
+    --actionHover:              #f1614e;
+    --dark:                     #242424;
+    --mainBrandColour:          #32AA39;
+    --mapCompliment:            #F3F2EF;
 
-    --channelPlanning: #4A94E9;
+    --channelPlanning:          #4A94E9;
+    --channelDemocracy:         #928052;
+    --channelEvents:            #D84D00;
+    --channelCommunity:         #8DB23F;
 }
 
 /* reset */

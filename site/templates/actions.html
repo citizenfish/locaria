@@ -1,36 +1,8 @@
 <script id="init" type="text/html">
     <!-- Setup the app -->
-    @api.websocketInit({"url":"{{config.ws}}"},{"queueRun":"Instant"});
-    -api.websocketSend({"message":{"queue":"session","api":"session"}});
-    -browser.initHistory({"checkURL":true});
-    -locus.defaultPostcode();
-    -internals.ifqueue({"statement":"!memory.location","name":"getLocation"});
-    -templates.render({"targetId":"#header-target","template":"#header"});
-    -templates.render({"targetId":"#location-target","template":"#postcode-search"});
-    -browser.addHistory({"history":"Home","force":true});
-
-
-    @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
-    -elements.addClass({"targetId":"body","class":"on-home"});
-
-
-    @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
-    -api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","location_distance":"1000","category":"{{!memory.category.value}}","location":"{{!memory.location.value}}" }}});
-    -elements.removeClass({"targetId":"body","class":"on-home"});
-
-    <!-- turn postcode into location -->
-    @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
-
-    @internals.setMemory({"name":"location","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"postcode"});
-
-    <!-- Point search -->
-
-    @templates.render({"targetId":".results-item-list","template":"#page-content-results","mode":"append"},{"queuePrepare":"points"});
-
-    <!-- ws admin stuff -->
-    @internals.nop({},{"queuePrepare":"session"});
-
-    @api.websocketInit({"url":"{{config.ws}}"},{"queuePrepare":"wsClose"});
+    @templates.render({"targetId":"#header-target","template":"#header","mode":"append"},{"queueRun":"Instant"});
+    @templates.render({"targetId":"#location-target","template":"#postcode-search","mode":"append"},{"queueRun":"Instant"});
+    @templates.render({"targetId":"#content-target","template":"#home-content","mode":"append"},{"queueRun":"Instant"});
 </script>
 
 <script id="header" type="text/html">
@@ -62,7 +34,7 @@
 <script id="postcode-search" type="text/html">
     <form class="your-current-postcode">
         <label for="postcode">Your location is set to:</label>
-        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}">
+        <input id="postcode" class="postcode-field" value="GU15 3HD">
 
         <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
             Change your location
@@ -70,8 +42,6 @@
 
         <!-- should this be submit? -->
         <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
-                -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
-                -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
             Set this as your location
         </button>
 
@@ -92,8 +62,8 @@
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
 
-                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @internals.setMemory({"name":"category","value":"Planning","mode":"Session"});>
-                    -browser.addHistory({"history":"Cat"});
+                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @templates.render({"targetId":"#content-target","template":"#page-content"});>
+                    -elements.removeClass({"targetId":"body","class":"on-home"});
                     Explore
                 </button>
 
@@ -147,22 +117,53 @@
     <section class="main-content">
         <ul class="results-item-list">
 
+
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+            <li>
+                <div class="distance-from">
+                    <span class="miles-no">5</span>
+                    <em>miles</em>
+                </div>
+                <div class="item-detail">
+                    <h4>Reference: 19/0377</h4>
+                    <address>Unit 9 Trade City Frimley Lyon Way Frimley Camberley Surrey GU16 7AL</address>
+                    <a href="#">View details</a>
+                </div>
+            </li>
+
+
         </ul>
     </section>
-</script>
-
-<script id="page-content-results" type="text/html">
-    {{#for memory.points.value.packet.features}}
-    <li>
-        <div class="distance-from">
-            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
-            <em>miles</em>
-        </div>
-        <div class="item-detail">
-            <h4>Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
-            <a href="#">View details</a>
-        </div>
-    </li>
-    {{/for}}
 </script>
