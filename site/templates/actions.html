@@ -2,21 +2,20 @@
     <!-- Setup the app -->
     @api.websocketInit({"url":"{{config.ws}}"},{"queueRun":"Instant"});
     -api.websocketSend({"message":{"queue":"session","api":"session"}});
-    -browser.initHistory({"checkURL":true});
-    -locus.defaultPostcode();
-    -internals.ifqueue({"statement":"!memory.location","name":"getLocation"});
+    -locus.defaultValues();
     -templates.render({"targetId":"#header-target","template":"#header"});
     -templates.render({"targetId":"#location-target","template":"#postcode-search"});
-    -browser.addHistory({"history":"Home","force":true});
-
+    -browser.initHistory({"checkURL":true,"default":"Home"});
 
     @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
     -elements.addClass({"targetId":"body","class":"on-home"});
 
 
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
-    -api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","location_distance":"1000","category":"{{!memory.history.value}}","location":"{{!memory.location.value}}" }}});
+    -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
+
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.myKeywords.value}}","location_distance":"{{!^memory.myDistance.value*1609}}","category":"{{!memory.history.value}}","location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -25,7 +24,7 @@
 
     <!-- Point search -->
 
-    @templates.render({"targetId":".results-item-list","template":"#page-content-results","mode":"append"},{"queuePrepare":"points"});
+    @templates.render({"targetId":".results-item-list","template":"#page-content-results"},{"queuePrepare":"points"});
 
     <!-- ws admin stuff -->
     @internals.nop({},{"queuePrepare":"session"});
@@ -35,8 +34,7 @@
 
 <script id="header" type="text/html">
     <div>
-        <a class="logo" href="/" rel="home" @templates.render({"targetId":"#content-target","template":"#home-content"});>
-            -elements.addClass({"targetId":"body","class":"on-home"});
+        <a class="logo" href="/" rel="home" @browser.addHistory({"history":"Home"});>
             <span class="sr-only">Surrey Heath</span>
         </a>
 
@@ -72,6 +70,7 @@
         <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
                 -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
                 -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
+                -internals.execute({"name":"reloadCat"});
             Set this as your location
         </button>
 
@@ -136,9 +135,11 @@
             <div>
                 <p><strong>Filter these results:</strong></p>
                 <label>By distance:</label>
-                <input type="text" value="">
+                <input type="number" id="distance" value="{{memory.myDistance.value}}" @internals.setMemory({"name":"myDistance","value":"{{!^parseFloat(queue.getElement('#distance').value)}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
+                    -internals.execute({"name":"reloadCat"});
                 <label>By keyword:</label>
-                <input type="text" value="">
+                <input type="text" id="keywords" value="{{memory.myKeywords.value}}" @internals.setMemory({"name":"myKeywords","value":"{{!queue.getElement('#keywords').value}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
+                    -internals.execute({"name":"reloadCat"});
             </div>
         </form>
         <hr class="no-lg-res">
