@@ -15,7 +15,7 @@
 
 
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
-    -api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","location_distance":"1000","category":"{{!memory.category.value}}","location":"{{!memory.location.value}}" }}});
+    -api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","location_distance":"1000","category":"{{!memory.history.value}}","location":"{{!memory.location.value}}" }}});
     -elements.removeClass({"targetId":"body","class":"on-home"});
 
     <!-- turn postcode into location -->
@@ -40,7 +40,7 @@
             <span class="sr-only">Surrey Heath</span>
         </a>
 
-        <button class="button-back" type="button">
+        <button class="button-back" type="button" @browser.backHistory();>
             <span class="sr-only">Back to previous screen</span>
         </button>
 
@@ -92,32 +92,31 @@
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
 
-                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @internals.setMemory({"name":"category","value":"Planning","mode":"Session"});>
-                    -browser.addHistory({"history":"Cat"});
+                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @browser.addHistory({"history":"Cat/Planning"});>
                     Explore
                 </button>
 
             </div>
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
-                <h2>Planning</h2>
+                <h2>Democracy</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel">Explore</button>
+                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Democracy"});>Explore</button>
             </div>
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
-                <h2>Planning</h2>
+                <h2>Events</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel">Explore</button>
+                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Events"});>Explore</button>
             </div>
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
-                <h2>Planning</h2>
+                <h2>Community</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel">Explore</button>
+                <button class="explore-channel" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
             </div>
         </section>
     </section>
@@ -127,7 +126,7 @@
 <script id="page-content" type="text/html">
     <section class="side-panel">
         <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
-        <h2>Planning</h2>
+        <h2>{{memory.history.value}}</h2>
         <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
         <p class="results-number">Results for 0 - 80 miles</p>
         <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
@@ -153,6 +152,11 @@
 
 <script id="page-content-results" type="text/html">
     {{#for memory.points.value.packet.features}}
+        {{#include '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category}}
+    {{/for}}
+</script>
+
+<script id="page-content-results-Planning" type="text/html">
     <li>
         <div class="distance-from">
             <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
@@ -164,5 +168,18 @@
             <a href="#">View details</a>
         </div>
     </li>
-    {{/for}}
+</script>
+
+<script id="page-content-results-Events" type="text/html">
+    <li>
+        <div class="distance-from">
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
+            <em>miles</em>
+        </div>
+        <div class="item-detail">
+            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <a href="#">View details</a>
+        </div>
+    </li>
 </script>
