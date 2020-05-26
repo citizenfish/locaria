@@ -113,8 +113,13 @@ header > div {
     order: 2;
     background-image: url(../images/logo.png);
     background-repeat: no-repeat;
-    background-size: auto 40px;
+    background-size: 80% auto;
     background-position: 15px center;
+}
+@media only screen and (min-width: 400px) {
+    .logo {
+        background-size: auto 40px;
+    }
 }
 @media only screen and (min-width: 1000px) {
     .logo {
@@ -260,17 +265,89 @@ header > div {
     }
 }
 .main-menu {
-    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
     height: 60px;
     border-left: 2px solid white;
     order: 4;
+    position: relative;
+}
+@media only screen and (min-width: 1000px) {
+    .main-menu {
+        border: 3px solid white;
+        background-color: var(--mainBrandColour);
+        box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
+    }
+}
+.main-menu .menu-button-actual {
+    width: 100%;
+    height: 100%;
     background-image: url(../images/menu-icon.svg);
     background-size: 19px 19px;
     background-repeat: no-repeat;
     background-position: center;
+    background-color: rgba(0,0,0,0);
+}
+.main-menu.open-this-menu .menu-button-actual {
+    background-color: var(--dark);
+}
+.main-menu .clip-menu {
+    width: 100vw;
+    top: 60px;
+    position: absolute;
+    right: 0;
+    height: calc(100vh - 60px);
+    pointer-events: none;
+    overflow: hidden;
+}
+@media only screen and (min-width: 795px) {
+    .main-menu .clip-menu {
+        max-width: 300px;
+        height: 400px;
+    }
 }
 @media only screen and (min-width: 1000px) {
-    .main-menu {
+    .main-menu .clip-menu {
+        top: 75px;
+    }
+}
+.main-menu .clip-menu ul.menu-options {
+    pointer-events: auto;
+    width: 100%;
+    background-color: var(--mainBrandColour);
+    box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
+    border-top: 2px solid white;
+    transition: transform ease 0.5s;
+    transform: translateY(-110%);
+}
+@media only screen and (min-width: 1000px) {
+    .main-menu .clip-menu ul.menu-options {
+        border-top: 3px solid white;
+    }
+}
+.main-menu.open-this-menu .clip-menu ul.menu-options {
+    transform: translateY(0);
+}
+.main-menu .clip-menu ul.menu-options li {
+    padding: 15px;
+    text-align: center;
+    background-color: rgba(0,0,0,0.75);
+    transition: background-color ease 0.3s;
+    cursor: pointer;
+}
+@media only screen and (min-width: 795px) {
+    .main-menu .clip-menu ul.menu-options li {
+        text-align: left;
+    }
+}
+.main-menu .clip-menu ul.menu-options li:hover {
+    background-color: rgba(0,0,0,0.25);
+}
+.main-menu .clip-menu ul.menu-options li a {
+    color: white;
+}
+@media only screen and (min-width: 1000px) {
+    .main-menu .main-menu {
         min-width: 60px;
         border: 3px solid white;
         background-color: var(--mainBrandColour);
@@ -317,6 +394,41 @@ header > div {
         margin-bottom: 200px;
     }
 }
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .postcode-search {
+        height: 50vh;
+        max-height: none;
+        margin-bottom: 25vh;
+    }
+}
+
+@media only screen and (min-width: 795px) {
+    .on-home .postcode-search::before {
+        content: "";
+        width: 100%;
+        height: 450px;
+        position: absolute;
+        top: 0;
+        background-image: url(../images/marker.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 60px 180px;
+    }
+}
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .postcode-search::before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        background-image: url(../images/marker.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 45px 135px;
+    }
+}
+
 .your-current-postcode {
     display: flex;
     flex-direction: column;
@@ -333,12 +445,17 @@ header > div {
         top: 0;
     }
     .on-home .your-current-postcode {
-        height: 180px;
+        height: 200px;
         background-color: var(--mapCompliment);
         position: absolute;
         top: auto;
         bottom: 0;
         transform: translateY(100%);
+    }
+}
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .your-current-postcode {
+        height: 25vh;
     }
 }
 .your-current-postcode label {
@@ -351,7 +468,7 @@ header > div {
     font-size: 1.75rem;
     font-weight: 700;
     display: inline-block;
-    max-width: 180px;
+    max-width: 280px;
     text-align: center;
     pointer-events: none;
     background: transparent;
@@ -366,8 +483,9 @@ header > div {
 }
 @media only screen and (min-width: 795px) {
     .your-current-postcode .postcode-field {
-        padding: 5px 10px 7px;
-        font-weight: 500;
+        padding: 0 0;
+        font-weight: 800;
+        font-size: 2.75rem;
     }
 }
 .your-current-postcode .change-postcode {
@@ -572,6 +690,11 @@ header > div {
     border-bottom: 2px solid;
     margin: 0 auto 20px;
     max-width: 200px;
+}
+@media only screen and (min-width: 795px) {
+    .channel h2 {
+        border-bottom: 3px solid;
+    }
 }
 .channel.channel-planning h2 {
     border-color: var(--channelPlanning);

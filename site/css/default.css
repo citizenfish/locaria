@@ -377,9 +377,13 @@ h6 {
 
 }
 
-@media (min-width: 795px) {
-
+/* smaller screens drop text size */
+@media (max-width: 795px) {
+    html {
+        font-size: 14px;
+    }
 }
+
 @media (min-width: 1150px) {
     html {
         /*font-size: 16px;*/
