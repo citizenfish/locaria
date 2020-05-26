@@ -5,6 +5,7 @@
     -locus.defaultValues();
     -templates.render({"targetId":"#header-target","template":"#header"});
     -templates.render({"targetId":"#location-target","template":"#postcode-search"});
+    -w3menu.initMenu({"hover":false,"targetId":"#menubutton1"});
     -browser.initHistory({"checkURL":true,"default":"Home"});
     -openlayers.addMap({"target":"backMap","projection":"EPSG:27700"});
     -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
@@ -57,6 +58,16 @@
 
         <nav class="main-menu" role="navigation">
             <!-- accessible menu -->
+            <button id="menubutton1" aria-haspopup="true" aria-controls="menuTop" class="menu-button-actual">
+            </button>
+            <ul id="menuTop" class="menu-options" role="menu" aria-labelledby="menubutton1">
+                <li role="menuitem" @browser.addHistory({"history":"Home"});>Home</li>
+                <li role="menuitem" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
+                <li role="menuitem" @browser.addHistory({"history":"Cat/Democracy"});>Democracy</li>
+                <li role="menuitem" @browser.addHistory({"history":"Cat/Events"});>Events</li>
+                <li role="menuitem" @browser.addHistory({"history":"Cat/Community"});>Community</li>
+                <li role="menuitem"><a href="">Help</a></li>
+            </ul>
         </nav>
     </div>
 </script>
