@@ -225,7 +225,7 @@ function deployAPI(stage) {
 
 function deployWEB(stage) {
 	const options={
-		cwd: "api/"
+		cwd: "./"
 	};
 	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].distribution}`;
 	console.log(`#${cmdLine}`);
