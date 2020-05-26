@@ -317,6 +317,28 @@ header > div {
         margin-bottom: 200px;
     }
 }
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .postcode-search {
+        height: 50vh;
+        max-height: none;
+        margin-bottom: 25vh;
+    }
+}
+
+@media only screen and (min-width: 795px) {
+    .on-home .postcode-search::before {
+        content: "";
+        width: 100%;
+        height: 450px;
+        position: absolute;
+        top: 0;
+        background-image: url(../images/marker.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 60px 180px;
+    }
+}
+
 .your-current-postcode {
     display: flex;
     flex-direction: column;
@@ -333,12 +355,17 @@ header > div {
         top: 0;
     }
     .on-home .your-current-postcode {
-        height: 180px;
+        height: 200px;
         background-color: var(--mapCompliment);
         position: absolute;
         top: auto;
         bottom: 0;
         transform: translateY(100%);
+    }
+}
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .your-current-postcode {
+        height: 25vh;
     }
 }
 .your-current-postcode label {
@@ -351,7 +378,7 @@ header > div {
     font-size: 1.75rem;
     font-weight: 700;
     display: inline-block;
-    max-width: 180px;
+    max-width: 280px;
     text-align: center;
     pointer-events: none;
     background: transparent;
@@ -366,8 +393,9 @@ header > div {
 }
 @media only screen and (min-width: 795px) {
     .your-current-postcode .postcode-field {
-        padding: 5px 10px 7px;
-        font-weight: 500;
+        padding: 0 0;
+        font-weight: 800;
+        font-size: 2.75rem;
     }
 }
 .your-current-postcode .change-postcode {
@@ -572,6 +600,11 @@ header > div {
     border-bottom: 2px solid;
     margin: 0 auto 20px;
     max-width: 200px;
+}
+@media only screen and (min-width: 795px) {
+    .channel h2 {
+        border-bottom: 3px solid;
+    }
 }
 .channel.channel-planning h2 {
     border-color: var(--channelPlanning);
