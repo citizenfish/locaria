@@ -19,7 +19,7 @@
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
 
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.myKeywords.value}}","location_distance":"{{!^memory.myDistance.value*1609}}","category":"{{!memory.history.value}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history.value[2]? (memory.history.value[2]*1609):(100*1609)}}","category":"{{!memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -52,8 +52,8 @@
         </button>
         <form id="searchSite" class="search-site" aria-label="Search the site for information">
             <div>
-                <input type="text" value="">
-                <button class="button-search-site">Find</button>
+                <input id="find" type="text" value="">
+                <button class="button-search-site" @browser.addHistory({"history":"Cat/Find/{{!queue.getElement('#find').value}}","force":true});>Find</button>
             </div>
         </form>
 
@@ -114,8 +114,7 @@
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
 
-                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @internals.setMemory({"name":"myKeywords","value":"","mode":"Permanent"});>
-                        -browser.addHistory({"history":"Cat/Planning"});
+                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @browser.addHistory({"history":"Cat/Planning"});>
                     Explore
                 </button>
             </div>
@@ -124,24 +123,21 @@
                 <h2>Democracy</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel"  @internals.setMemory({"name":"myKeywords","value":"","mode":"Permanent"});>Explore</button>
-                    -browser.addHistory({"history":"Cat/Democracy"});
+                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Democracy"});>Explore</button>
             </div>
             <div class="channel channel-events">
                 <img src="images/channel-events.jpg" title="" alt="">
                 <h2>Events</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel"  @internals.setMemory({"name":"myKeywords","value":"","mode":"Permanent"});>Explore</button>
-                -browser.addHistory({"history":"Cat/Events"});
+                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Events"});>Explore</button>
             </div>
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="" alt="">
                 <h2>Community</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel" @internals.setMemory({"name":"myKeywords","value":"","mode":"Permanent"});>Explore</button>
-                -browser.addHistory({"history":"Cat/Community"});
+                <button class="explore-channel" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
             </div>
 
         </section>
@@ -150,7 +146,7 @@
 </script>
 
 <script id="page-content" type="text/html">
-    {{#include '#page-content-'+memory.history.value}}
+    {{#include '#page-content-'+memory.history.value[0]}}
 
 
 </script>
@@ -165,11 +161,9 @@
         <div>
             <p><strong>Filter these results:</strong></p>
             <label>By distance:</label>
-            <input type="number" id="distance" value="{{memory.myDistance.value}}" @internals.setMemory({"name":"myDistance","value":"{{!^parseFloat(queue.getElement('#distance').value)}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
-            -internals.execute({"name":"reloadCat"});
-            <label>By keyword:</label>
-            <input type="text" id="keywords" value="{{memory.myKeywords.value}}" @internals.setMemory({"name":"myKeywords","value":"{{!queue.getElement('#keywords').value}}","mode":"Permanent"},{"queueEvent":"change,keydown"});>
-            -internals.execute({"name":"reloadCat"});
+            <input type="number" id="distance" value="{{memory.history.value[2]?memory.history.value[2]:100}}" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#distance').value}}"},{"queueEvent":"change,keydown"});>
+             <label>By keyword:</label>
+            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#distance').value}}"},{"queueEvent":"change,keydown"});>
         </div>
     </form>
     <hr class="no-lg-res">
@@ -184,10 +178,19 @@
     </section>
 </script>
 
+<script id="page-content-Find" type="text/html">
+    <section class="side-panel">
+        <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
+        <h2>Find</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
 <script id="page-content-Planning" type="text/html">
     <section class="side-panel">
         <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
-        <h2>{{memory.history.value}}</h2>
+        <h2>{{memory.history.value[0]}}</h2>
         {{#include '#page-content-filter'}}
     </section>
     {{#include '#page-content-result-main'}}
@@ -196,7 +199,7 @@
 <script id="page-content-Democracy" type="text/html">
     <section class="side-panel">
         <img src="images/channel-democracy.jpg" title="" alt="" class="no-mb">
-        <h2>{{memory.history.value}}</h2>
+        <h2>{{memory.history.value[0]}}</h2>
         {{#include '#page-content-filter'}}
     </section>
     {{#include '#page-content-result-main'}}
@@ -205,7 +208,7 @@
 <script id="page-content-Community" type="text/html">
     <section class="side-panel">
         <img src="images/channel-community.jpg" title="" alt="" class="no-mb">
-        <h2>{{memory.history.value}}</h2>
+        <h2>{{memory.history.value[0]}}</h2>
         {{#include '#page-content-filter'}}
     </section>
     {{#include '#page-content-result-main'}}
@@ -215,15 +218,24 @@
 <script id="page-content-Events" type="text/html">
     <section class="side-panel">
         <img src="images/channel-events.jpg" title="" alt="" class="no-mb">
-        <h2>{{memory.history.value}}</h2>
+        <h2>{{memory.history.value[0]}}</h2>
         {{#include '#page-content-filter'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
 
 <script id="page-content-results" type="text/html">
+    {{#if memory.points.value.packet.features.length===0}}
+        <li>
+            No results
+        </li>
+    {{/if}}
     {{#for memory.points.value.packet.features}}
-        {{#include '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category}}
+        {{#if ['Planning','Events','Community','Democracy'].indexOf(memory.points.value.packet.features[#loop0].properties.category)!==-1}}
+            {{#include '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category}}
+        {{else}}
+            {{#include '#page-content-results-Generic'}}
+        {{/if}}
     {{/for}}
 </script>
 
@@ -278,6 +290,20 @@
         <div class="item-detail">
             <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <a href="#">View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Generic" type="text/html">
+    <li>
+        <div class="distance-from">
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
+            <em>miles</em>
+        </div>
+        <div class="item-detail">
+            <h4>Category:{{memory.points.value.packet.features[#loop0].properties.category}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
             <a href="#">View details</a>
         </div>
     </li>

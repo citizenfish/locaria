@@ -23,18 +23,6 @@ class Locus extends Queueable {
 			location=memory.myLocation.value;
 		this.queue.setMemory('myLocation', location, "Permanent");
 
-		// keywords
-		let keywords='';
-		if(memory.myKeywords&&memory.myKeywords.value)
-			keywords=memory.myKeywords.value;
-		this.queue.setMemory('myKeywords', keywords, "Permanent");
-
-		//Distance
-		let distance=1000;
-		if(memory.myDistance&&memory.myDistance.value)
-			distance=memory.myDistance.value;
-		this.queue.setMemory('myDistance', distance, "Permanent");
-
 		this.finished(pid, this.queue.DEFINE.FIN_OK);
 
 	}
