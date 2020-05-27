@@ -134,10 +134,8 @@ header > div {
     width: 60px;
     height: 60px;
     order: 1;
-    background-image: url(../images/back-button.svg);
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
+    position: relative;
+    overflow: hidden;
 }
 @media only screen and (min-width: 1000px) {
     .button-back {
@@ -148,6 +146,51 @@ header > div {
         box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
     }
 }
+.button-back::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url(../images/back-button.svg);
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform ease 0.3s;
+    transform: translateY(0);
+}
+@media only screen and (min-width: 1000px) {
+    .button-back:hover::before {
+        transform: translateY(110%);
+    }
+    .button-back::after {
+        content: "back";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        text-align: center;
+        line-height: 60px;
+        transition: transform ease 0.3s;
+        transform: translateY(-110%);
+        font-size: 14px;
+    }
+    .button-back::after {
+        line-height: 52px;
+    }
+    .button-back:hover::after {
+        transform: translateY(0);
+    }
+}
+.on-home .button-back {
+    pointer-events: none;
+}
+.on-home .button-back::before {
+    opacity: 0.3;
+}
+
 .search-site-open {
     width: 60px;
     border-left: 2px solid white;
@@ -282,14 +325,51 @@ header > div {
 .main-menu .menu-button-actual {
     width: 100%;
     height: 100%;
+    background-color: rgba(0,0,0,0);
+    position: relative;
+    overflow: hidden;
+}
+.main-menu.open-this-menu .menu-button-actual {
+    background-color: var(--dark);
+}
+
+.main-menu .menu-button-actual::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
     background-image: url(../images/menu-icon.svg);
     background-size: 19px 19px;
     background-repeat: no-repeat;
     background-position: center;
-    background-color: rgba(0,0,0,0);
+    transition: transform ease 0.3s;
+    transform: translateY(0);
 }
-.main-menu.open-this-menu .menu-button-actual {
-    background-color: var(--dark);
+@media only screen and (min-width: 1000px) {
+    .main-menu .menu-button-actual:hover::before {
+        transform: translateY(110%);
+    }
+    .main-menu .menu-button-actual::after {
+        content: "menu";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        text-align: center;
+        line-height: 60px;
+        transition: transform ease 0.3s;
+        transform: translateY(-110%);
+        font-size: 14px;
+    }
+    .main-menu .menu-button-actual::after {
+        line-height: 52px;
+    }
+    .main-menu .menu-button-actual:hover::after {
+        transform: translateY(0);
+    }
 }
 .main-menu .clip-menu {
     width: 100vw;
