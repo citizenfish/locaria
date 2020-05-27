@@ -444,10 +444,6 @@ header > div {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--mapCompliment);
-    background-image: url(../images/map-sample.png);
-    background-size: cover;
-    background-position: center center;
     transition: max-height ease 0.3s;
 }
 
@@ -670,13 +666,13 @@ header > div {
     margin-bottom: 15px;
 }
 .side-panel .search-filters input {
-    border: 2px solid var(--channelPlanning);
+    border: 2px solid var(--dark);
     padding: 10px;
     box-shadow: 1px 4px 7px 0 rgba(0,0,0,0.15);
 }
 .side-panel hr {
     border: none;
-    border-bottom: 2px solid var(--channelPlanning);
+    border-bottom: 2px solid var(--dark);
     margin: 15px 0 0;
 }
 @media only screen and (min-width: 795px) {
@@ -944,12 +940,6 @@ header > div {
     min-height: 400px;
     box-shadow: inset 3px 3px 15px 0 rgba(0,0,0,0.1);
     margin-bottom: 30px;
-
-    /* dev only - remove */
-    background-color: var(--mapCompliment);
-    background-image: url(../images/map-sample.png);
-    background-size: cover;
-    background-position: center center;
 }
 
 /* footer */
