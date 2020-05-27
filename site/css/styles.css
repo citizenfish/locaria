@@ -937,7 +937,7 @@ header > div {
 }
 .main-content.details .item-main-map {
     width: 100%;
-    min-height: 400px;
+    height: 400px;
     box-shadow: inset 3px 3px 15px 0 rgba(0,0,0,0.1);
     margin-bottom: 30px;
 }
