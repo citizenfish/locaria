@@ -184,10 +184,10 @@ header > div {
         transform: translateY(0);
     }
 }
-.on-home .button-back {
+.button-back.inactive {
     pointer-events: none;
 }
-.on-home .button-back::before {
+.button-back.inactive::before {
     opacity: 0.3;
 }
 
@@ -648,7 +648,7 @@ header > div {
 .side-panel .show-filters {
     position: absolute;
     right: 15px;
-    top: 54px;
+    top: 48px;
     color: var(--actionBlue);
     padding: 0;
     text-decoration: underline;
@@ -678,6 +678,29 @@ header > div {
     border: none;
     border-bottom: 2px solid var(--channelPlanning);
     margin: 15px 0 0;
+}
+@media only screen and (min-width: 795px) {
+    .side-panel .search-filters input,
+    .side-panel hr {
+        border-width: 3px;
+    }
+}
+
+.side-panel.channel-planning .search-filters input,
+.side-panel.channel-planning hr {
+    border-color: var(--channelPlanning);
+}
+.side-panel.channel-democracy .search-filters input,
+.side-panel.channel-democracy hr {
+    border-color: var(--channelDemocracy);
+}
+.side-panel.channel-events .search-filters input,
+.side-panel.channel-events hr {
+    border-color: var(--channelEvents);
+}
+.side-panel.channel-community .search-filters input,
+.side-panel.channel-community hr {
+    border-color: var(--channelCommunity);
 }
 
 .main-content {
@@ -773,19 +796,33 @@ header > div {
 }
 @media only screen and (min-width: 795px) {
     .channel h2 {
+        border-bottom-width: 3px;
+    }
+}
+.side-panel h2 {
+
+}
+@media only screen and (min-width: 795px) {
+    .side-panel h2 {
+        padding-bottom: 15px;
+        margin-bottom: 30px;
         border-bottom: 3px solid;
     }
 }
-.channel.channel-planning h2 {
+.channel.channel-planning h2,
+.side-panel.channel-planning h2 {
     border-color: var(--channelPlanning);
 }
-.channel.channel-democracy h2 {
+.channel.channel-democracy h2,
+.side-panel.channel-democracy h2 {
     border-color: var(--channelDemocracy);
 }
-.channel.channel-events h2 {
+.channel.channel-events h2,
+.side-panel.channel-events h2 {
     border-color: var(--channelEvents);
 }
-.channel.channel-community h2 {
+.channel.channel-community h2,
+.side-panel.channel-community h2 {
     border-color: var(--channelCommunity);
 }
 .channel p {
@@ -829,16 +866,16 @@ header > div {
         border-bottom-width: 3px;
     }
 }
-.items-channel-heading.items-planning {
+.channel-planning .items-channel-heading {
     border-bottom-color: var(--channelPlanning);
 }
-.items-channel-heading.items-democracy {
+.channel-democracy .items-channel-heading {
     border-bottom-color: var(--channelDemocracy);
 }
-.items-channel-heading.items-events {
+.channel-events .items-channel-heading {
     border-bottom-color: var(--channelEvents);
 }
-.items-channel-heading.items-community {
+.channel-community .items-channel-heading {
     border-bottom-color: var(--channelCommunity);
 }
 
