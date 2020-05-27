@@ -12,6 +12,7 @@
     -openlayers.addMap({"target":"backMap","projection":"EPSG:27700"});
     -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
     -openlayers.addLayer({"name":"points","type":"vector","style":"styles.mainMapStyle"});
+    -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
 
     @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
     -elements.addClass({"targetId":"body","class":"on-home"});
