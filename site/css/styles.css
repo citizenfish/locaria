@@ -435,12 +435,12 @@ header > div {
     text-align: center;
     justify-content: center;
     align-items: center;
+    background-color: rgba(243, 242, 239, 0.75);
 }
 @media only screen and (min-width: 795px) {
     .your-current-postcode {
         width: 100%;
         height: 100%;
-        background-color: rgba(243, 242, 239, 0.5);
         position: absolute;
         top: 0;
     }
@@ -533,6 +533,7 @@ header > div {
 }
 @media only screen and (min-width: 795px) {
     .side-panel {
+        width: 100%;
         max-width: 320px;
         padding: 15px;
     }
@@ -544,7 +545,7 @@ header > div {
     margin: 0 0 0 0;
 }
 .side-panel p {
-    margin: 0 0 15px 0;
+    /*margin: 0 0 15px 0;*/
 }
 @media only screen and (min-width: 795px) {
     .side-panel h2 {
@@ -616,10 +617,9 @@ header > div {
     font-weight: 600;
 }
 .main-content p {
-    margin: 0 0 15px 0;
+    /*margin: 0 0 15px 0;*/
 }
 .channel img {
-    width: 100%;
     width: 100%;
     max-width: 280px;
 }
@@ -722,6 +722,83 @@ header > div {
     .channel {
         margin: 0 15px;
     }
+}
+
+/* item full details */
+
+.side-panel.details {
+
+}
+@media only screen and (min-width: 795px) {
+    .side-panel.details {
+        padding: 25px 15px;
+    }
+}
+.side-panel.details address,
+.side-panel.details .distance-from-details,
+.side-panel.details time,
+.side-panel.details .item-type,
+.side-panel.details a,
+.side-panel.details .item-overview-title,
+.side-panel.details .item-overview-detail,
+.side-panel.details .item-ref
+{
+    display: block;
+    margin-bottom: 30px;
+}
+.side-panel.details .item-overview-title {
+    font-weight: 600;
+}
+.side-panel.details .item-overview-detail {
+    font-style: italic;
+}
+.side-panel.details address {
+    font-weight: 600;
+}
+.side-panel.details .distance-from-details {
+    font-weight: 600;
+}
+.side-panel.details time {
+    font-style: italic;
+}
+.side-panel.details .item-type {
+
+}
+.side-panel.details .item-ref {
+
+}
+.side-panel.details a {
+    text-decoration: underline;
+}
+
+.main-content.details h4 {
+
+}
+.main-content.details .item-main-info {
+    margin-bottom: 30px;
+}
+.main-content.details .item-main-info strong,
+.main-content.details .item-main-info b {
+    font-weight: 600;
+}
+.main-content.details .item-main-info em,
+.main-content.details .item-main-info i {
+    font-style: italic;
+}
+.main-content.details .item-main-info a {
+    text-decoration: underline;
+}
+.main-content.details .item-main-map {
+    width: 100%;
+    min-height: 400px;
+    box-shadow: inset 3px 3px 15px 0 rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+
+    /* dev only - remove */
+    background-color: var(--mapCompliment);
+    background-image: url(../images/map-sample.png);
+    background-size: cover;
+    background-position: center center;
 }
 
 /* footer */
