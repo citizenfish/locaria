@@ -25,6 +25,10 @@
     @api.websocketSend({"message":{"queue":"historyDetailsRender","api":"api","data":{"method":"get_item","fid":"{{!^memory.history.value[1]}}"}}},{"queuePrepare":"historyDetails"});
     @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
+    -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
+    -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
+    -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":2000});
 
     @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history.value[2]? (memory.history.value[2]*1609):(100*1609)}}","category":"{{!memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
 
@@ -348,7 +352,7 @@
             <p>Detailed information about the item</p>
         </div>
         <p><strong>Location:</strong></p>
-        <div class="item-main-map">
+        <div id="openlayersItemMap" class="item-main-map">
 
         </div>
     </section>
@@ -358,33 +362,34 @@
     <section class="side-panel details channel-planning">
         <h6 class="items-channel-heading">Planning</h6>
         <address>
-            Unit 9 Trade City Frimley Lyon Way
-            Frimley Camberley Surrey GU16 7AL
+            {{memory.historyDetailsRender.value.packet.features[0].properties.address}}
         </address>
         <p class="distance-from-details">
             5 miles from your location
         </p>
         <p class="item-type">
-            Type: Application
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.decsn}}
         </p>
         <p class="item-ref">
-            Ref: 19/0379
+            Ref: {{memory.historyDetailsRender.value.packet.features[0].properties.refval}}
         </p>
         <a href="/" title="Link to an external resource" target="_blank">
             View full application
         </a>
     </section>
     <section class="main-content details">
-        <h4>Reference: 19/0379</h4>
+        <h4>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.refval}}</h4>
         <p><strong>Overview:</strong></p>
         <div class="item-main-info">
-            <p>Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam lobortis iaculis magna, <em>ut sollicitudin neque suscipit ac</em>. Vivamus laoreet sem eleifend nibh convallis, a faucibus nibh interdum. Nunc efficitur placerat ligula non efficitur. <a href="">Donec ultrices dictum nisl</a>, sit amet consequat metus convallis euismod. Duis aliquam orci et felis maximus, ut ultricies purus suscipit. Sed ornare tellus in nulla placerat consectetur. Morbi varius nec risus ut dapibus. </p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.proposal}}</p>
         </div>
         <p><strong>Location:</strong></p>
-        <div class="item-main-map">
+        <div id="openlayersItemMap" class="item-main-map">
 
         </div>
     </section>
+
+
 </script>
 
 <script id="full-details-Democracy" type="text/html">
@@ -428,7 +433,7 @@
             <p>Detailed information about the item</p>
         </div>
         <p><strong>Location(s):</strong></p>
-        <div class="item-main-map">
+        <div id="openlayersItemMap" class="item-main-map">
 
         </div>
     </section>
@@ -461,7 +466,7 @@
             <p>You can book online at <a href="#">www.festival.chobham.org</a></p>
         </div>
         <p><strong>Location:</strong></p>
-        <div class="item-main-map">
+        <div id="openlayersItemMap" class="item-main-map">
 
         </div>
     </section>
@@ -490,7 +495,7 @@
             <p>Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam lobortis iaculis magna, <em>ut sollicitudin neque suscipit ac</em>. Vivamus laoreet sem eleifend nibh convallis, a faucibus nibh interdum. Nunc efficitur placerat ligula non efficitur. <a href="">Donec ultrices dictum nisl</a>, sit amet consequat metus convallis euismod. Duis aliquam orci et felis maximus, ut ultricies purus suscipit. Sed ornare tellus in nulla placerat consectetur. Morbi varius nec risus ut dapibus. </p>
         </div>
         <p><strong>Location:</strong></p>
-        <div class="item-main-map">
+        <div id="openlayersItemMap" class="item-main-map">
 
         </div>
     </section>

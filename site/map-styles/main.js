@@ -18,6 +18,13 @@ export function mainMapStyle(feature, resolution) {
 				}),
 				zIndex: 100
 			})
+		}),
+		new Style({
+			stroke: new Stroke({
+				color: [22, 22, 22, 1],
+				width: 1,
+				lineDash: [1, 10]
+			})
 		})
 	]
 }
