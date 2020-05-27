@@ -22,6 +22,10 @@
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
 
+    @api.websocketSend({"message":{"queue":"historyDetailsRender","api":"api","data":{"method":"get_item","fid":"{{!^memory.history.value[1]}}"}}},{"queuePrepare":"historyDetails"});
+    @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
+    -elements.removeClass({"targetId":"body","class":"on-home"});
+
     @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history.value[2]? (memory.history.value[2]*1609):(100*1609)}}","category":"{{!memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
 
     <!-- turn postcode into location -->
@@ -267,7 +271,7 @@
         <div class="item-detail">
             <h4>Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
-            <a href="#">View details</a>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
 </script>
@@ -281,7 +285,7 @@
         <div class="item-detail">
             <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
-            <a href="#">View details</a>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
 </script>
@@ -295,7 +299,7 @@
         <div class="item-detail">
             <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
-            <a href="#">View details</a>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
 </script>
@@ -309,7 +313,7 @@
         <div class="item-detail">
             <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
-            <a href="#">View details</a>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
 </script>
@@ -323,12 +327,12 @@
         <div class="item-detail">
             <h4>Category:{{memory.points.value.packet.features[#loop0].properties.category}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
-            <a href="#">View details</a>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
 </script>
 
-<script id="full-details-generic" type="text/html">
+<script id="full-details-Generic" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading">Generic</h6>
         <p class="item-overview-title">
@@ -351,7 +355,7 @@
     </section>
 </script>
 
-<script id="full-details-planning" type="text/html">
+<script id="full-details-Planning" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading items-planning">Planning</h6>
         <address>
@@ -384,7 +388,7 @@
     </section>
 </script>
 
-<script id="full-details-democracy" type="text/html">
+<script id="full-details-Democracy" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading items-democracy">Democracy</h6>
         <p class="item-overview-title">
@@ -431,7 +435,7 @@
     </section>
 </script>
 
-<script id="full-details-events" type="text/html">
+<script id="full-details-Events" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading items-events">Events</h6>
         <address>
@@ -464,7 +468,7 @@
     </section>
 </script>
 
-<script id="full-details-community" type="text/html">
+<script id="full-details-Community" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading items-community">Community</h6>
         <address>
