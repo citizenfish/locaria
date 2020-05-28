@@ -21,10 +21,13 @@
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
+    -elements.removeClass({"targetId":".button-back","class":"inactive"});
+
 
     @api.websocketSend({"message":{"queue":"historyDetailsRender","api":"api","data":{"method":"get_item","fid":"{{!^memory.history.value[1]}}"}}},{"queuePrepare":"historyDetails"});
     @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
+    -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
@@ -300,7 +303,7 @@
             <em>miles</em>
         </div>
         <div class="item-detail">
-            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
+            <h4>Cost: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
@@ -314,8 +317,8 @@
             <em>miles</em>
         </div>
         <div class="item-detail">
-            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <h4>Title: {{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.party}} {{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -328,7 +331,7 @@
             <em>miles</em>
         </div>
         <div class="item-detail">
-            <h4>Category:{{memory.points.value.packet.features[#loop0].properties.category}}</h4>
+            <h4>Category: {{memory.points.value.packet.features[#loop0].properties.category}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
@@ -417,7 +420,7 @@
             Your MP:
         </p>
         <p class="item-overview-detail">
-            Susan Chesterfield MP
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.title}}
         </p>
         <p class="item-overview-title">
             Your polling station(??):
@@ -443,27 +446,33 @@
     <section class="side-panel details channel-events">
         <h6 class="items-channel-heading">Events</h6>
         <address>
-            Chobham Village Hall, Station Road, Chobham GU24 8AZ
+            {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.venue}}
         </address>
         <p class="distance-from-details">
             5 miles from your location
         </p>
         <time>
-            Saturday, 28 September, 2019 - 19:00
+            From: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.start_date}}
+        </time>
+        <time>
+            To: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.end_date}}
         </time>
         <p class="item-type">
-            Type: Entertainment
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.category}}
+        </p>
+        <p class="item-cost">
+            Cost: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.cost}}
         </p>
         <a href="/" title="Link to an external resource" target="_blank">
             Read more about this
         </a>
     </section>
     <section class="main-content details">
-        <h4>Jazz at Chobham Festival</h4>
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.title}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
-            <p>Trumpeter and band leader Dave Stradwick has gathered some of the finest exponents of the New Orleans style playing today to create his Sussex Jazz Kings a line-up of talent on trumpet, trombone, clarinet, drums, string bass/sousaphone and banjo. The Jazzers are seasoned favourites at the Festival, blending serious musicianship with fun, humour and a packed dance floor. It should be a great party.</p>
-            <p>You can book online at <a href="#">www.festival.chobham.org</a></p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.event_details}}</p>
+            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.url}}</a></p>
         </div>
         <p><strong>Location:</strong></p>
         <div id="openlayersItemMap" class="item-main-map">

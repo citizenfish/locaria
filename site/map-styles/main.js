@@ -8,7 +8,7 @@ export function mainMapStyle(feature, resolution) {
 		return [
 			new Style({
 				image: new RegularShape({
-					radius: 10,
+					radius: 20,
 					points: 3,
 					angle: 0,
 					fill: new Fill({
