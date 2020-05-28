@@ -521,6 +521,8 @@ header > div {
     justify-content: center;
     align-items: center;
     background-color: rgba(243, 242, 239, 0.75);
+    width: 100%;
+    height: 100%;
 }
 @media only screen and (min-width: 795px) {
     .your-current-postcode {
