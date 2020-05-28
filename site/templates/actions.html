@@ -9,7 +9,7 @@
     -w3menu.initMenu({"hover":false,"targetId":"#menubutton1","class":"open-this-menu"});
 -->
     -browser.initHistory({"checkURL":true,"default":"Home"});
-    -openlayers.addMap({"target":"backMap","projection":"EPSG:27700"});
+    -openlayers.addMap({"target":"backMap","projection":"EPSG:27700","zoom":17});
     -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
     -openlayers.addLayer({"name":"points","type":"vector","style":"styles.mainMapStyle"});
     -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
