@@ -580,7 +580,7 @@ header > div {
     .your-current-postcode .postcode-field {
         padding: 0 0;
         font-weight: 800;
-        font-size: 2.75rem;
+        font-size: 3.5rem;
     }
 }
 .your-current-postcode .change-postcode {
@@ -712,9 +712,12 @@ header > div {
     text-transform: uppercase;
     margin: 15px 0 30px;
     transition: background-color ease 0.3s;
+    background-color: var(--dark);
     float: right;
 }
-
+.side-panel .search-filters .apply-filters:hover {
+    background-color: var(--actionHover);
+}
 .side-panel hr {
     border: none;
     border-bottom: 2px solid var(--dark);
