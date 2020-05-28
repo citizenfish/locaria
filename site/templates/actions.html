@@ -33,7 +33,7 @@
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history.value[2]? (memory.history.value[2]*1609):(100*1609)}}","category":"{{!memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -182,7 +182,7 @@
 
 <script id="page-content-filter" type="text/html">
     <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-    <p class="results-number">Results for 0 - 80 miles</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]}} miles</p>
     <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
     Show/hide filters
     </button>
@@ -191,15 +191,14 @@
             <p><strong>Filter these results:</strong></p>
             <label for="filter-distance">By distance:</label>
             <select id="filter-distance">
-                <option value="1mile">up to 1 mile from my location</option>
-                <option value="3mile">up to 3 miles from my location</option>
-                <option value="5mile">up to 5 miles from my location</option>
-                <option value="10mile">up to 10 miles from my location</option>
+                <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
+                <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
+                <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
+                <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>up to 10 miles from my location</option>
             </select>
-<!--            <input type="number" id="distance" value="{{memory.history.value[2]?memory.history.value[2]:100}}" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#distance').value}}"},{"queueEvent":"change,keydown"});>-->
             <label for="keywords">By keyword:</label>
-            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#distance').value}}"},{"queueEvent":"change,keydown"});>
-            <button type="button" class="apply-filters" aria-label="Apply filters to these search results">
+            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >
+            <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
                 Filter
             </button>
         </div>
