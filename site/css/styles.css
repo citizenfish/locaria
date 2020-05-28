@@ -489,6 +489,8 @@ header > div {
         background-position: center;
         background-repeat: no-repeat;
         background-size: 60px 180px;
+        z-index: 2;
+        pointer-events: none;
     }
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
@@ -504,8 +506,15 @@ header > div {
         background-size: 45px 135px;
     }
 }
-
+.map-background {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* pointer-events: none; */
+}
 .your-current-postcode {
+    position: relative;
     display: flex;
     flex-direction: column;
     text-align: center;
