@@ -10,7 +10,7 @@
 -->
     -browser.initHistory({"checkURL":true,"default":"Home"});
     -openlayers.addMap({"target":"backMap","projection":"EPSG:27700","zoom":17});
-    -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
+    -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
     -openlayers.addLayer({"name":"points","type":"vector","style":"styles.mainMapStyle"});
     -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
 
@@ -29,7 +29,7 @@
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
-    -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
