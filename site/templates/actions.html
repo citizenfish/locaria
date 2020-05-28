@@ -143,8 +143,7 @@
                 <h2>Planning</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-
-                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" aria-haspopup="true" aria-controls="searchSite" @browser.addHistory({"history":"Cat/Planning"});>
+                <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Planning"});>
                     Explore
                 </button>
             </div>
@@ -153,21 +152,21 @@
                 <h2>Democracy</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Democracy"});>Explore</button>
+                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Democracy"});>Explore</button>
             </div>
             <div class="channel channel-events">
                 <img src="images/channel-events.jpg" title="" alt="">
                 <h2>Events</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel"  @browser.addHistory({"history":"Cat/Events"});>Explore</button>
+                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>
             </div>
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="" alt="">
                 <h2>Community</h2>
                 <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
                 <p>To gain access to 'types / sub classifications' of Planning information.</p>
-                <button class="explore-channel" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
+                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
             </div>
 
         </section>
@@ -190,10 +189,19 @@
     <form class="search-filters">
         <div>
             <p><strong>Filter these results:</strong></p>
-            <label>By distance:</label>
-            <input type="number" id="distance" value="{{memory.history.value[2]?memory.history.value[2]:100}}" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#distance').value}}"},{"queueEvent":"change,keydown"});>
-             <label>By keyword:</label>
+            <label for="filter-distance">By distance:</label>
+            <select id="filter-distance">
+                <option value="1mile">up to 1 mile from my location</option>
+                <option value="3mile">up to 3 miles from my location</option>
+                <option value="5mile">up to 5 miles from my location</option>
+                <option value="10mile">up to 10 miles from my location</option>
+            </select>
+<!--            <input type="number" id="distance" value="{{memory.history.value[2]?memory.history.value[2]:100}}" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#distance').value}}"},{"queueEvent":"change,keydown"});>-->
+            <label for="keywords">By keyword:</label>
             <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#distance').value}}"},{"queueEvent":"change,keydown"});>
+            <button type="button" class="apply-filters" aria-label="Apply filters to these search results">
+                Filter
+            </button>
         </div>
     </form>
     <hr class="no-lg-res">
