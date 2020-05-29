@@ -858,8 +858,15 @@ header > div {
     max-width: 200px;
 }
 @media only screen and (min-width: 795px) {
+    .channel {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
     .channel h2 {
         border-bottom-width: 3px;
+        width: 80%;
     }
 }
 .side-panel h2 {
@@ -901,6 +908,7 @@ header > div {
     }
     .channel {
         margin: 0 15px;
+        min-width: calc(25% - 30px);
     }
 }
 
