@@ -163,7 +163,7 @@
 
 <script id="page-content-filter" type="text/html">
     <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-    <p class="results-number">Results for 0 - {{memory.history.value[2]}} miles</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
     <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
     Show/hide filters
     </button>
@@ -175,7 +175,7 @@
                 <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
                 <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
                 <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
-                <option value="10" {{#if memory.history.value[2]==="10"||}}selected{{/if}}>up to 10 miles from my location</option>
+                <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
             </select>
             <label for="keywords">By keyword:</label>
             <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >
