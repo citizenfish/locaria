@@ -4,7 +4,7 @@ import {MultiPoint} from 'ol/geom.js';
 
 export function mainMapStyle(feature, resolution) {
 	const geometry=feature.getGeometry();
-	if(geometry==='Point') {
+	if(geometry.getType()==='Point') {
 		return [
 			new Style({
 				image: new RegularShape({

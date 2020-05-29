@@ -163,7 +163,7 @@
 
 <script id="page-content-filter" type="text/html">
     <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-    <p class="results-number">Results for 0 - {{memory.history.value[2]}} miles</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
     <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
     Show/hide filters
     </button>
@@ -175,7 +175,7 @@
                 <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
                 <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
                 <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
-                <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>up to 10 miles from my location</option>
+                <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
             </select>
             <label for="keywords">By keyword:</label>
             <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >
@@ -291,8 +291,8 @@
             <em>miles</em>
         </div>
         <div class="item-detail">
-            <h4>Cost: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -305,8 +305,20 @@
             <em>miles</em>
         </div>
         <div class="item-detail">
-            <h4>Title: {{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.party}} {{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="councillor"}}
+                <h4>Title: {{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
+                <address>{{memory.points.value.packet.features[#loop0].properties.description.party}} {{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
+            {{/if}}
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Ward"}}
+                <h4>Ward: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            {{/if}}
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Polling Station"}}
+                <h4>Polling station: {{memory.points.value.packet.features[#loop0].properties.title}}</h4>
+            {{/if}}
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Borough Boundary"}}
+                <h4>Polling station: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            {{/if}}
+
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -451,7 +463,7 @@
         <p class="item-cost">
             Cost: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.cost}}
         </p>
-        <a href="/" title="Link to an external resource" target="_blank">
+        <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.url}}" title="Link to an external resource" target="_blank">
             Read more about this
         </a>
     </section>
@@ -472,24 +484,18 @@
 <script id="full-details-Community" type="text/html">
     <section class="side-panel details channel-community">
         <h6 class="items-channel-heading">Community</h6>
-        <address>
-            Watchetts Drive, Camberley, GU15 2PQ
-        </address>
         <p class="distance-from-details">
             5 miles from your location
         </p>
         <p class="item-type">
-            Type: Community Hall
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
-        <a href="/" title="Link to an external resource" target="_blank">
-            Read more about this
-        </a>
     </section>
     <section class="main-content details">
-        <h4>Kings International College for Business and the Arts</h4>
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
-            <p>Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam lobortis iaculis magna, <em>ut sollicitudin neque suscipit ac</em>. Vivamus laoreet sem eleifend nibh convallis, a faucibus nibh interdum. Nunc efficitur placerat ligula non efficitur. <a href="">Donec ultrices dictum nisl</a>, sit amet consequat metus convallis euismod. Duis aliquam orci et felis maximus, ut ultricies purus suscipit. Sed ornare tellus in nulla placerat consectetur. Morbi varius nec risus ut dapibus. </p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
         </div>
         <p><strong>Location:</strong></p>
         <div id="openlayersItemMap" class="item-main-map">
