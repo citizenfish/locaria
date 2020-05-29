@@ -37,9 +37,8 @@
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
 
     @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"postcode"});
-<!--
-    -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
--->
+    -internals.setMemory({"name":"myPostcode","value":"{{!memory.postcode.value.packet.features[0].properties.postcode}}","mode":"Permanent"});
+    -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
     -openlayers.flyTo({"coordinate":"{{!memory.myLocation.value}}"});
     -internals.execute({"name":"reloadCat"});
 
@@ -99,7 +98,9 @@
 
     <form class="your-current-postcode">
         <label for="postcode">Your location is set to:</label>
-        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}">
+        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":"body","class":"open-loc"},{"queueEvent":"keydown"});>
+        -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
+        -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
 
         <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
             Change your location
@@ -260,12 +261,16 @@
     {{/for}}
 </script>
 
+<script id="page-content-results-Distance" type="text/html">
+    <div class="distance-from">
+        <span class="miles-no">{{distanceFormatNumber(memory.points.value.packet.features[#loop0].properties.distance)}}</span>
+        <em>{{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}</em>
+    </div>
+</script>
+
 <script id="page-content-results-Planning" type="text/html">
     <li>
-        <div class="distance-from">
-            <span class="miles-no">{{distanceFormatNumber(memory.points.value.packet.features[#loop0].properties.distance)}}</span>
-            <em>{{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}</em>
-        </div>
+       {{#include '#page-content-results-Distance'}}
         <div class="item-detail">
             <h4>Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
@@ -276,10 +281,8 @@
 
 <script id="page-content-results-Events" type="text/html">
     <li>
-        <div class="distance-from">
-            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
-            <em>miles</em>
-        </div>
+        {{#include '#page-content-results-Distance'}}
+
         <div class="item-detail">
             <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
@@ -290,10 +293,8 @@
 
 <script id="page-content-results-Community" type="text/html">
     <li>
-        <div class="distance-from">
-            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
-            <em>miles</em>
-        </div>
+        {{#include '#page-content-results-Distance'}}
+
         <div class="item-detail">
             <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
@@ -304,23 +305,15 @@
 
 <script id="page-content-results-Democracy" type="text/html">
     <li>
-        <div class="distance-from">
-            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
-            <em>miles</em>
-        </div>
+        {{#include '#page-content-results-Distance'}}
+
         <div class="item-detail">
-            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="councillor"}}
-                <h4>Title: {{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
-                <address>{{memory.points.value.packet.features[#loop0].properties.description.party}} {{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Councillor"}}
+                <h4>Title: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+                <address>{{memory.points.value.packet.features[#loop0].properties.description.party}}</address>
             {{/if}}
-            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Ward"}}
-                <h4>Ward: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
-            {{/if}}
-            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Polling Station"}}
-                <h4>Polling station: {{memory.points.value.packet.features[#loop0].properties.title}}</h4>
-            {{/if}}
-            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Borough Boundary"}}
-                <h4>Polling station: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type!=="Councillor"}}
+                <h4>{{memory.points.value.packet.features[#loop0].properties.description.type}}: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
             {{/if}}
 
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
@@ -369,26 +362,24 @@
     <section class="side-panel details channel-planning">
         <h6 class="items-channel-heading">Planning</h6>
         <address>
-            {{memory.historyDetailsRender.value.packet.features[0].properties.address}}
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
         </address>
         <p class="distance-from-details">
             5 miles from your location
         </p>
         <p class="item-type">
-            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.decsn}}
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
         <p class="item-ref">
-            Ref: {{memory.historyDetailsRender.value.packet.features[0].properties.refval}}
+            Ref: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}
         </p>
-        <a href="/" title="Link to an external resource" target="_blank">
-            View full application
-        </a>
     </section>
     <section class="main-content details">
-        <h4>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.refval}}</h4>
+        <h4>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Overview:</strong></p>
         <div class="item-main-info">
-            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.proposal}}</p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
         </div>
         <p><strong>Location:</strong></p>
         <div id="openlayersItemMap" class="item-main-map">
@@ -403,41 +394,21 @@
     <section class="side-panel details channel-democracy">
         <h6 class="items-channel-heading">Democracy</h6>
         <p class="item-overview-title">
-            Your ward/parish:
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}:
         </p>
         <p class="item-overview-detail">
-            Chobham West
-        </p>
-        <p class="item-overview-title">
-            Your contact/councillor/rep:
-        </p>
-        <p class="item-overview-detail">
-            Montgomery Davies
-        </p>
-        <p class="item-overview-title">
-            Your council tax:
-        </p>
-        <p class="item-overview-detail">
-            Band A
-        </p>
-        <p class="item-overview-title">
-            Your MP:
-        </p>
-        <p class="item-overview-detail">
-            {{memory.historyDetailsRender.value.packet.features[0].properties.description.title}}
-        </p>
-        <p class="item-overview-title">
-            Your polling station(??):
-        </p>
-        <p class="item-overview-detail">
-            Cobham Community Centre
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
         </p>
     </section>
     <section class="main-content details">
         <h4>Item title</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
-            <p>Detailed information about the item</p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.title}}</p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.type==="Councillor"}}
+                <p>Party: {{memory.historyDetailsRender.value.packet.features[0].properties.description.party}}</p>
+                <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a>
+            {{/if}}
         </div>
         <p><strong>Location(s):</strong></p>
         <div id="openlayersItemMap" class="item-main-map">
@@ -450,33 +421,33 @@
     <section class="side-panel details channel-events">
         <h6 class="items-channel-heading">Events</h6>
         <address>
-            {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.venue}}
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.venue}}
         </address>
         <p class="distance-from-details">
             5 miles from your location
         </p>
         <time>
-            From: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.start_date}}
+            From: {{memory.historyDetailsRender.value.packet.features[0].properties.description.start_date}}
         </time>
         <time>
-            To: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.end_date}}
+            To: {{memory.historyDetailsRender.value.packet.features[0].properties.description.end_date}}
         </time>
         <p class="item-type">
-            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.category}}
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.category}}
         </p>
         <p class="item-cost">
-            Cost: {{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.cost}}
+            Cost: {{memory.historyDetailsRender.value.packet.features[0].properties.description.cost}}
         </p>
-        <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.url}}" title="Link to an external resource" target="_blank">
+        <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}" title="Link to an external resource" target="_blank">
             Read more about this
         </a>
     </section>
     <section class="main-content details">
-        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.title}}</h4>
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.title}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
-            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.event_details}}</p>
-            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.attributes.description.url}}</a></p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.event_details}}</p>
+            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>
         </div>
         <p><strong>Location:</strong></p>
         <div id="openlayersItemMap" class="item-main-map">
