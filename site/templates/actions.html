@@ -4,10 +4,8 @@
     -api.websocketSend({"message":{"queue":"session","api":"session"}});
     -locus.defaultValues();
     -templates.render({"targetId":"#header-target","template":"#header"});
+    -menu.initMenu({"targetId":"#menubutton1"});
     -templates.render({"targetId":"#location-target","template":"#postcode-search"});
-<!--
-    -w3menu.initMenu({"hover":false,"targetId":"#menubutton1","class":"open-this-menu"});
--->
     -browser.initHistory({"checkURL":true,"default":"Home"});
     -openlayers.addMap({"target":"backMap","projection":"EPSG:27700","zoom":17});
     -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
@@ -74,33 +72,16 @@
         <nav class="main-menu" role="navigation">
             <!-- accessible menu -->
             <!-- removed id="menubutton1" from button -->
-            <button id="menubutton1" aria-haspopup="true" aria-controls="menuTop" class="menu-button-actual" @elements.toggleClass({"targetId":".main-menu","class":"open-this-menu"});>
-                -elements.removeClass({"targetId":".page-header","class":"open-search"});
-                -elements.setAttribute({"targetId":"#menuTop","attribute":"aria-expanded","value":true});
+            <button id="menubutton1" aria-haspopup="true" aria-controls="menuTop" class="menu-button-actual">
                 <span class="sr-only">Open main menu</span>
             </button>
             <div class="clip-menu open-this-menu">
                 <ul id="menuTop" class="menu-options" role="menu" aria-labelledby="menubutton1">
                     <li role="menuitem" @browser.addHistory({"history":"Home"});>Home</li>
-                        -elements.removeClass({"targetId":".main-menu","class":"open-this-menu"});
-                        -elements.removeClass({"targetId":".page-header","class":"open-search"});
-                        -elements.setAttribute({"targetId":"#menuTop","attribute":"aria-expanded","value":false});
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
-                        -elements.removeClass({"targetId":".main-menu","class":"open-this-menu"});
-                        -elements.removeClass({"targetId":".page-header","class":"open-search"});
-                        -elements.setAttribute({"targetId":"#menuTop","attribute":"aria-expanded","value":false});
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Democracy"});>Democracy</li>
-                        -elements.removeClass({"targetId":".main-menu","class":"open-this-menu"});
-                        -elements.removeClass({"targetId":".page-header","class":"open-search"});
-                        -elements.setAttribute({"targetId":"#menuTop","attribute":"aria-expanded","value":false});
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Events"});>Events</li>
-                        -elements.removeClass({"targetId":".main-menu","class":"open-this-menu"});
-                        -elements.removeClass({"targetId":".page-header","class":"open-search"});
-                        -elements.setAttribute({"targetId":"#menuTop","attribute":"aria-expanded","value":false});
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Community"});>Community</li>
-                        -elements.removeClass({"targetId":".main-menu","class":"open-this-menu"});
-                        -elements.removeClass({"targetId":".page-header","class":"open-search"});
-                        -elements.setAttribute({"targetId":"#menuTop","attribute":"aria-expanded","value":false});
                     <li role="menuitem"><a href="">Help</a></li>
                 </ul>
             </div>

@@ -5,7 +5,7 @@ import Internals from '@nautoguide/ourthings/Queueable/Internals';
 import Openlayers from '@nautoguide/ourthings/Queueable/Openlayers';
 import Browser from '@nautoguide/ourthings/Queueable/Browser';
 import Api from '@nautoguide/ourthings/Queueable/Api';
-import W3Menu from '@nautoguide/ourthings/Queueable/W3Menu';
+import Menu from '@nautoguide/ourthings/Queueable/Menu';
 
 import Locus from './locus';
 
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		"internals": Internals,
 		"openlayers": Openlayers,
 		"browser": Browser,
-		"w3menu":W3Menu
+		"menu":Menu
 
 	});
 	window.queue=queue;
