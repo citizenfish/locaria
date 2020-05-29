@@ -31,16 +31,21 @@
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
 
-    @internals.setMemory({"name":"location","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"postcode"});
+    @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"postcode"});
+<!--
+    -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
+-->
+    -openlayers.flyTo({"coordinate":"{{!memory.myLocation.value}}"});
+    -internals.execute({"name":"reloadCat"});
 
     <!-- Point search -->
 
-    @templates.render({"targetId":".results-item-list","template":"#page-content-results"},{"queuePrepare":"points"});
+    @templates.render({"targetId":".results-item-list","template":"#page-content-results","quiet":true},{"queuePrepare":"points"});
 
     <!-- ws admin stuff -->
     @internals.nop({},{"queuePrepare":"session"});
@@ -104,7 +109,6 @@
         <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
                 -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
                 -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
-                -internals.execute({"name":"reloadCat"});
             Set this as your location
         </button>
     </form>
@@ -259,8 +263,8 @@
 <script id="page-content-results-Planning" type="text/html">
     <li>
         <div class="distance-from">
-            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
-            <em>miles</em>
+            <span class="miles-no">{{distanceFormatNumber(memory.points.value.packet.features[#loop0].properties.distance)}}</span>
+            <em>{{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}</em>
         </div>
         <div class="item-detail">
             <h4>Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>

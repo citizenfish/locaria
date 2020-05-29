@@ -32,3 +32,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	});
 	window.queue=queue;
 });
+
+/*
+ * HELPERS
+ */
+
+const metersPerMile=1609;
+const meterSwitch=0;
+
+window.distanceFormatNumber = function(distance) {
+	let miles=parseFloat(distance/metersPerMile).toFixed(1);
+	if(miles<=meterSwitch) {
+		return parseInt(distance);
+	}
+	return miles;
+}
+
+window.distanceFormat = function (distance) {
+	let miles=parseFloat(distance/metersPerMile).toFixed(1);
+	if(miles<=meterSwitch) {
+		return 'meters';
+	}
+	return 'miles';
+}
