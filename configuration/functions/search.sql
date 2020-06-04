@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION locus_core.search(search_parameters JSON) RETURNS JSON AS $$
 DECLARE
-    default_limit INTEGER DEFAULT 100;
+    default_limit INTEGER DEFAULT 1000;
     default_offset INTEGER DEFAULT 0;
 	json_filter JSONB DEFAULT NULL;
     results_var JSON;
@@ -67,17 +67,23 @@ BEGIN
     SELECT json_build_object('type','FeatureCollection',
                              'features', COALESCE(json_agg(
                                             json_build_object('type',        'Feature',
-                                                              'properties',  attributes || jsonb_build_object('rank', search_rank),
+                                                              'properties',  attributes || jsonb_build_object('rank', search_rank)
+                                                                                       ,
                                                               'geometry',    ST_ASGEOJSON(wkb_geometry)::JSON)
                                             ), json_build_array())
                             )
      INTO results_var
      FROM
             (
+
+            SELECT fid,search_rank,wkb_geometry,
+                   attributes || CASE WHEN distance >= 0 THEN jsonb_build_object('distance', distance) ELSE jsonb_build_object() END as attributes
+            FROM (
                 SELECT  distinct ON(fid) fid,
 			            ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query)  as search_rank,
 			            wkb_geometry,
-			            (attributes::JSONB - 'table') ||jsonb_build_object('category', category[1], 'fid', fid) as attributes
+			            (attributes::JSONB - 'table') || jsonb_build_object('category', category[1], 'fid', fid) as attributes,
+			            COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance
                 FROM locus_core.global_search_view
                 WHERE wkb_geometry IS NOT NULL
                 AND (COALESCE(search_parameters->>'category', '*') = '*' OR  ARRAY[regexp_split_to_array(search_parameters->>'category', ',')] && category::text[])
@@ -96,8 +102,10 @@ BEGIN
                 --for sub-categorisation
                 AND (json_filter IS NULL OR attributes->'description' @> json_filter)
                 OFFSET default_offset
-                LIMIT default_limit
 
+            ) INNER_SUB
+            ORDER by distance ASC, search_rank DESC
+            LIMIT default_limit
             ) SUB_QUERY;
 
     RETURN results_var;

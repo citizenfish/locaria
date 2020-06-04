@@ -1,0 +1,436 @@
+service: locus-api
+
+provider:
+  name: aws
+  profile: ${file(../../locus-custom.yml):${self:custom.stage}.profile}
+  runtime: nodejs10.x
+  environment: ${file(../../locus-env.yml):${self:custom.stage}}
+  region: ${file(../../locus-custom.yml):${self:custom.stage}.region}
+  memorySize: 512
+  timeout: 30
+  logRetentionInDays: 30
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - s3:*
+      Resource:
+        - arn:aws:s3:::*
+    - Effect: 'Allow'
+      Action:
+        - cloudfront:*
+      Resource:
+        - "*"
+  vpc:
+    securityGroupIds:
+      - ${file(../../locus-custom.yml):${self:custom.stage}.securityGroupIds}
+    subnetIds:
+      - ${file(../../locus-custom.yml):${self:custom.stage}.subnet1}
+      - ${file(../../locus-custom.yml):${self:custom.stage}.subnet2}
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+  cors:
+    origins:
+      - '*'
+    headers:
+      - Content-Type
+      - X-Amz-Date
+      - Authorization
+      - X-Api-Key
+      - X-Amz-Security-Token
+      - x-token
+    allowCredentials: false
+  customDomain:
+    basePath: ""
+    domainName: ${file(../../locus-custom.yml):${self:custom.stage}.domain}
+    stage: ${self:custom.stage}
+    createRoute53Record: ${file(../../locus-custom.yml):${self:custom.stage}.createRoute53Record}
+
+functions:
+  api:
+    handler: functions/api.run
+    events:
+      - http:
+          path: /search
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /bboxsearch
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /refsearch
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /pointsearch
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /datesearch
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /locate
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /version
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /list_categories
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /get_item
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /address_search
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /revgeocoder
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /report
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /version
+          method: GET
+          cors: ${self:custom.cors}
+      - http:
+          path: /list_categories
+          method: GET
+          cors: ${self:custom.cors}
+      - http:
+          path: /search
+          method: GET
+          cors: ${self:custom.cors}
+      - http:
+          path: /get_item/{fid}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                fid: true
+      - http:
+          path: /search/{category}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                category: true
+      - http:
+          path: /search/{category}/{search_text}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                search_text: true
+                category: true
+      - http:
+          path: /search/{category}/{search_text}/{limit}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                search_text: true
+                category: true
+                limit: true
+      - http:
+          path: /search/{category}/{search_text}/{limit}/{offset}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                search_text: true
+                category: true
+                limit: true
+                offset: true
+      - http:
+          path: /filtersearch/{category}/{filter}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                category: true
+                filter: true
+      - http:
+          path: /filtersearch/{category}/{filter}/{search_text}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                search_text: true
+                category: true
+                filter: true
+      - http:
+          path: /filtersearch/{category}/{filter}/{search_text}/{limit}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                search_text: true
+                category: true
+                limit: true
+                filter: true
+      - http:
+          path: /filtersearch/{category}/{filter}/{search_text}/{limit}/{offset}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                search_text: true
+                category: true
+                limit: true
+                offset: true
+                filter: true
+      - http:
+          path: /bboxsearch/{bbox}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                bbox: true
+      - http:
+          path: /bboxsearch/{bbox}/{category}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                bbox: true
+                category: true
+      - http:
+          path: /bboxsearch/{bbox}/{category}/{search_text}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                bbox: true
+                search_text: true
+                category: true
+      - http:
+          path: /bboxsearch/{bbox}/{category}/{search_text}/{limit}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                bbox: true
+                search_text: true
+                category: true
+                limit: true
+      - http:
+          path: /bboxsearch/{bbox}/{category}/{search_text}/{limit}/{offset}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                bbox: true
+                search_text: true
+                category: true
+                limit: true
+                offset: true
+      - http:
+          path: /pointsearch/{location}/{location_distance}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                location: true
+                location_distance: true
+      - http:
+          path: /pointsearch/{location}/{location_distance}/{category}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                location: true
+                location_distance: true
+                category: true
+      - http:
+          path: /pointsearch/{location}/{location_distance}/{category}/{search_text}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                location: true
+                location_distance: true
+                search_text: true
+                category: true
+      - http:
+          path: /pointsearch/{location}/{location_distance}/{category}/{search_text}/{limit}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                location: true
+                location_distance: true
+                search_text: true
+                category: true
+                limit: true
+      - http:
+          path: /pointsearch/{location}/{location_distance}/{category}/{search_text}/{limit}/{offset}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                location: true
+                location_distance: true
+                search_text: true
+                category: true
+                limit: true
+                offset: true
+      - http:
+          path: /datesearch/{start_date}/{end_date}/{category}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                category: true
+                start_date: true
+                end_date: true
+      - http:
+          path: /datesearch/{start_date}/{end_date}/{category}/{search_text}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                category: true
+                start_date: true
+                end_date: true
+                search_text: true
+      - http:
+          path: /datesearch/{start_date}/{end_date}/{category}/{search_text}/{location}/{location_distance}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                location: true
+                location_distance: true
+                category: true
+                start_date: true
+                end_date: true
+                search_text: true
+      - http:
+          path: /refsearch/{reference}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                reference: true
+      - http:
+          path: /refsearch/{reference}/{category}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                reference: true
+                category: true
+      - http:
+          path: /refsearch/{reference}/{category}/{limit}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                reference: true
+                category: true
+                limit: true
+      - http:
+          path: /refsearch/{reference}/{category}/{limit}/{offset}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                reference: true
+                category: true
+                limit: true
+                offset: true
+
+      - http:
+          path: /address_search/{address}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                address: true
+      - http:
+          path: /address_search/{address}/{limit}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                address: true
+                limit: true
+      - http:
+          path: /address_search/{address}/{limit}/{offset}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                address: true
+                limit: true
+                offset: true
+      - http:
+          path: /revgeocoder/{lon}/{lat}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                lon: true
+                lat : true
+      - http:
+          path: /report/{report_name}/{location}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                report_name: true
+                location : true
+      - http:
+          path: /report/{report_name}/{location}/{report_parameters}
+          method: GET
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                report_name: true
+                location: true
+                report_parameters: true
+plugins:
+  - serverless-offline
+  - serverless-domain-manager

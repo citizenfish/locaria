@@ -2,16 +2,16 @@
 --CAR PARKS
 
 CREATE OR REPLACE VIEW locus_core.car_parks AS 
-SELECT DISTINCT ON (shbc_carparks_locus.id_0) shbc_carparks_locus.id_0 AS id,
-	st_transform(shbc_carparks_locus.geom, 4326) AS wkb_geometry,
+SELECT DISTINCT ON (id_0) id_0 AS id,
+	st_transform(geom, 4326) AS wkb_geometry,
 	now() AS date_added,
 	ARRAY['Highways and Transport'::locus_core.search_category] AS category,
 	jsonb_build_object(
-	'title', shbc_carparks_locus.name, 
+	'title', name,
 	'description', jsonb_build_object(
-		'name', shbc_carparks_locus.name,  
+		'name', name,
 		'type', 'Car Park'), 
-	'table', shbc_carparks_locus.tableoid::regclass::text) AS attributes    
+	'table', 'id_0'||':'||shbc_carparks_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_carparks_locus;
 
 --WARD BOUNDARIES
@@ -23,11 +23,11 @@ SELECT distinct on (id)  id AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Democracy']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', shbc_ward_boundaries.name, 
+	'title', name,
 	'description', jsonb_build_object(
-		'name', shbc_ward_boundaries.ward_name, 
+		'name', ward_name,
 		'type', 'Ward'), 
-	'table', shbc_ward_boundaries.tableoid::regclass::text) AS attributes
+	'table', 'id'||':'||shbc_ward_boundaries.tableoid::regclass::text) AS attributes
 FROM locus.shbc_ward_boundaries;
 
 --PARISH BOUNDARIES
@@ -38,12 +38,12 @@ SELECT distinct on (id_1)  id_1 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Democracy']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', shbc_parish_boundaries_locus.name, 
+	'title', name,
 	'description', jsonb_build_object(
-		'name', shbc_parish_boundaries_locus.name,  
+		'name', name,
 		'type', 'Parish',  
 		'additional_information', ''), 
-	'table', shbc_parish_boundaries_locus.tableoid::regclass::text) AS attributes
+	'table', 'id_1'||':'||shbc_parish_boundaries_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_parish_boundaries_locus;
 
 --POLLING STATIONS
@@ -54,11 +54,12 @@ SELECT distinct on (id_1)  id_1 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Democracy']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'ref', polling_stations_2019_locus.poll_uprn,
-	'title', polling_stations_2019_locus.address, 
+	'ref', poll_uprn,
+	'title', split_part(address,',',1),
 	'description', jsonb_build_object(
-		'type', 'Polling Station'), 
-	'table', polling_stations_2019_locus.tableoid::regclass::text) AS attributes   
+		'type', 'Polling Station',
+		'name', address),
+	'table', 'id_1'||':'||polling_stations_2019_locus.tableoid::regclass::text) AS attributes
 FROM locus.polling_stations_2019_locus;
 
 --LISTED BUILDINGS
@@ -69,30 +70,30 @@ SELECT distinct on (id_0)  id_0 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Planning']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', listed_buildings_locus.name, 
+	'title', name,
 	'description', jsonb_build_object(
-		'name', listed_buildings_locus.name,  
-		'ref',  listed_buildings_locus.grade, 
+		'name', name,
+		'ref',  grade,
 		'type', 'Listed Building',  
-		'additional_information', listed_buildings_locus.location), 
-	'table', listed_buildings_locus.tableoid::regclass::text) AS attributes    
+		'additional_information', location),
+	'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
 FROM locus.listed_buildings_locus;
 
 --CONSERVATION AREAS
 
 CREATE OR REPLACE VIEW locus_core.conservation_areas AS
 SELECT distinct on (id)  id AS id,
-        st_transform(conservation_areas.geom, 4326) AS wkb_geometry,
+        st_transform(geom, 4326) AS wkb_geometry,
 	last_updated::TIMESTAMP AS date_added,
         ARRAY['Planning']::locus_core.search_category[] AS category,
         jsonb_build_object(
-		'title', conservation_areas.ca_name, 
+		'title', ca_name,
 		'description', jsonb_build_object(
-			'name', conservation_areas.ca_name,
-			'ref', conservation_areas.policy_number,
+			'name', ca_name,
+			'ref', policy_number,
 			'type', 'Conservation Area'
 			),
-	'table', conservation_areas.tableoid::regclass::text) AS attributes   
+	'table', 'id'||':'||conservation_areas.tableoid::regclass::text) AS attributes
 FROM locus.conservation_areas;
 
 --BOUNDARY
@@ -103,14 +104,14 @@ SELECT distinct on (id_1)  id_1 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Democracy']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', '', 
+	'title', 'Surrey Heath Borough Boundary',
 	'description', jsonb_build_object(
 		'name', 'Surrey Heath Borough Council',  
 		'ref', 'E07000214', 
 		'type', 'Borough Boundary',  
 		'url', 'https://www.surreyheath.gov.uk', 
 		'additional_information', ''), 
-	'table', shbc_boundary_locus.tableoid::regclass::text) AS attributes
+	'table', 'id_1'||':'||shbc_boundary_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_boundary_locus;
 
 --LIBRARIES
@@ -121,12 +122,12 @@ SELECT distinct on (id_1)  id_1 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Community']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', libraries_locus.name, 
+	'title', name,
 	'description', jsonb_build_object(
-		'name', libraries_locus.name,  
-		'type', 'library'
+		'name', name,
+		'type', 'Library'
 		), 
-	'table', libraries_locus.tableoid::regclass::text) AS attributes
+	'table', 'id_1'||':'||libraries_locus.tableoid::regclass::text) AS attributes
 FROM locus.libraries_locus;
 
 --COMMUNITY HALLS
@@ -137,13 +138,13 @@ SELECT distinct on (id_1)  id_1 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Community']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', community_halls_locus.venue, 
+	'title', venue,
 	'description', jsonb_build_object(
-		'name', community_halls_locus.venue,  
+		'name', venue,
 		'type', 'Community Hall',  
-		'url', community_halls_locus.url, 
-		'additional_information', community_halls_locus.address), 
-	'table', community_halls_locus.tableoid::regclass::text) AS attributes  			
+		'url', url,
+		'additional_information', address),
+	'table', 'id_1'||':'||community_halls_locus.tableoid::regclass::text) AS attributes
 FROM locus.community_halls_locus;
 
 --TOILETS
@@ -154,11 +155,11 @@ SELECT distinct on (id_1)  id_1 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Community']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', toilets_locus.location, 
+	'title', location,
 	'description', jsonb_build_object(
 		'type', 'Toilet',
-		'additional_information',toilets_locus.disabled_a), 
-	'table', toilets_locus.tableoid::regclass::text) AS attributes 	
+		'additional_information',disabled_a),
+	'table', 'id_1'||':'||toilets_locus.tableoid::regclass::text) AS attributes
 FROM locus.toilets_locus;
 
 
@@ -170,12 +171,12 @@ SELECT distinct on (id_1) id_1 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Community']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', play_areas_locus.name, 
+	'title', name,
 	'description', jsonb_build_object(
-		'name', play_areas_locus.name,  
+		'name', name,
 		'type', 'Play Area',  
-		'additional_information', 'Managed by' || play_areas_locus.managed_by::text), 
-	'table', play_areas_locus.tableoid::regclass::text) AS attributes
+		'additional_information', 'Managed by' || managed_by::text),
+	'table', 'id_1'||':'||play_areas_locus.tableoid::regclass::text) AS attributes
 FROM locus.play_areas_locus;
 
 --RECYCLING CENTRES
@@ -186,11 +187,12 @@ SELECT distinct on (id_0)  id_0 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Waste and Recycling']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', recycling_centres_shbc_locus.address, 
+	'title', split_part(address,',',1),
 	'description', jsonb_build_object(
+	    'name', address,
 		'type', 'Recycling Centre',
-		'additional_information', 'Managed by' || recycling_centres_shbc_locus.collects::text), 
-	'table', recycling_centres_shbc_locus.tableoid::regclass::text) AS attributes    
+		'additional_information', 'Managed by' || collects::text),
+	'table', 'id_0'||':'||recycling_centres_shbc_locus.tableoid::regclass::text) AS attributes
 FROM locus.recycling_centres_shbc_locus;
 
 --SCHOOLS
@@ -201,12 +203,13 @@ SELECT distinct on (id_0)  id_0 AS id,
         now() AS date_added,
         ARRAY['Education']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', shbc_all_open_schools_locus."EstablishmentName", 
+	'title', "EstablishmentName",
 	'description', jsonb_build_object(
-		'ref', shbc_all_open_schools_locus."URN",
+		'ref', "URN",
 		'type', 'School',
-		'additional_information',shbc_all_open_schools_locus."PhaseOfEducation (name)"), 
-	'table', shbc_all_open_schools_locus.tableoid::regclass::text) AS attributes 			
+		'name', "EstablishmentName",
+		'additional_information',"PhaseOfEducation (name)"),
+	'table', 'id_0'||':'||shbc_all_open_schools_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_all_open_schools_locus;
 
 --COUNCIL TAX BANDS
@@ -218,14 +221,14 @@ SELECT distinct on(id) id,
        ARRAY['Council Tax']::locus_core.search_category[] AS category,
        jsonb_build_object(
          ------ ***************************** NOTE WELL THE 0 append on UPRN to conform to LLPG may not be right **********************
-	      'ref', '0'::text || ctax_bands_current_locus.ctax_uprn::text,
-	      'title', ctax_bands_current_locus.address,
+	      'ref', '0'::text || ctax_uprn::text,
+	      'title', split_part(address,',',1),
 	      'description', jsonb_build_object(
-		        'name', ctax_bands_current_locus.address,  
-		        'ref', 'Council Tax Band '::text || ctax_bands_current_locus.ctax_adjusted_band::text, 
+		        'name', address,
+		        'ref', 'Council Tax Band '::text || ctax_adjusted_band::text,
 		        'type', 'Council Tax Band'
-        ), 
-	      'table', ctax_bands_current_locus.tableoid::regclass::text) AS attributes   	             
+        ),
+	      'table', 'id'||':'||ctax_bands_current_locus.tableoid::regclass::text) AS attributes
  FROM locus.ctax_bands_current_locus;
 
 --PLANNING APPLICATIONS
@@ -245,7 +248,7 @@ SELECT id::INTEGER ,
 		'type', 'Application',
 		'url', 'https://publicaccess.surreyheath.gov.uk/online-applications/applicationDetails.do?keyVal='||keyval||'&activeTab=summary',
 		'additional_information', proposal::text),
-	'table', locus.dc_apps_readonly.tableoid::regclass::text) AS attributes
+	'table', 'id'||':'||locus.dc_apps_readonly.tableoid::regclass::text) AS attributes
 FROM locus.dc_apps_readonly;
 
 --Councillors
@@ -256,32 +259,33 @@ SELECT COUN.id,
 	   now() as date_added,
 	   ARRAY['Democracy']::locus_core.search_category[] AS category,
 	   jsonb_build_object(
-		   'title', title, 
+		   'title', title,
 		   'description', jsonb_build_object(
-			   'title', title, 
-			   'party', party, 
+			   'name', title,
+			   'party', party,
 			   'ward', ward,
-			   'url', linkuri, 
-			   'type', 'councillor')) AS attributes
+			   'url', linkuri,
+			   'type', 'Councillor')
+			   ) AS attributes
 FROM locus.councillor_details_view COUN
 INNER JOIN locus.shbc_ward_boundaries WARD
 ON trim(ward) = ward_name;
 
 -- PROW
-			   
-CREATE OR REPLACE VIEW locus_core.prow AS 
-  SELECT DISTINCT ON (rights_of_way_readonly_locus.id) rights_of_way_readonly_locus.id,
-    st_transform(rights_of_way_readonly_locus.geom, 4326) AS wkb_geometry,
+
+CREATE OR REPLACE VIEW locus_core.prow AS
+  SELECT DISTINCT ON (id) id,
+    st_transform(geom, 4326) AS wkb_geometry,
     now() AS date_added,
     ARRAY['Rights of Way'::locus_core.search_category] AS category,
     jsonb_build_object(
-    	'title', rights_of_way_readonly_locus.prowno, 
+    	'title', prowno,
     	'description', jsonb_build_object(
-    		'name', rights_of_way_readonly_locus.prow_loc, 
-    		'type', 'PROW',
+    		'name', prow_loc,
+    		'type', 'Public Right Of Way',
     		'stat_text', stat_text,
-    		'additional_information', rights_of_way_readonly_locus.prowstat), 
-    		'table', rights_of_way_readonly_locus.tableoid::regclass::text) AS attributes
+    		'additional_information', prowstat),
+    		'table', 'id'||':'||rights_of_way_readonly_locus.tableoid::regclass::text) AS attributes
    FROM locus.rights_of_way_readonly_locus;			   
 
 --TPOs
@@ -296,10 +300,10 @@ CREATE OR REPLACE VIEW locus_core.tree_preservation_orders AS
         'description', jsonb_build_object(
             'name', address,
             'ref', refval,
-            'type', 'TPO',
+            'type', 'Tree Preservation Order',
             'additional_information', tptreecat
         ),
-    'table', tpo_polygons_locus.tableoid::regclass::text) AS attributes
+    'table', 'ogc_fid'||':'||tpo_polygons_locus.tableoid::regclass::text) AS attributes
     FROM locus.tpo_polygons_locus where tptreecat is not null and tptreecat != ' ' ;
 			   
 --LLPG SEARCH
@@ -343,7 +347,7 @@ WHERE llpg.lpi_status::text = 'Approved Preferred'::text AND llpg.postal_address
 
 CREATE INDEX llpg_jsonb_ts_vector
 ON locus_core.address_search_view
-USING GIN (jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb));
+USING GIN (jsonb_to_tsvector('Simple'::regconfig, attributes, '["string", "numeric"]'::jsonb));
 
 CREATE INDEX llpg_geometry_gist
 ON locus_core.address_search_view
