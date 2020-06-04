@@ -24,7 +24,8 @@ BEGIN
     INTO ret_var;
 
     IF ret_var IS NULL THEN
-        RAISE EXCEPTION 'No response from query: [%] ',query_var;
+        RAISE NOTICE 'No response from query: [%] ',query_var;
+        RETURN json_build_object();
     END IF;
 
     RETURN ret_var;
