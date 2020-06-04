@@ -14,8 +14,10 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					'configuration/functions/create_materialised_view.sql',
-					'configuration/schema_and_views/create_search_views.sql'
+					'configuration/schema_and_views/create_reports_table.sql',
+					'configuration/functions/report.sql',
+					'configuration/functions/locus_gateway.sql',
+					'tests/unit_tests/test_report.sql'
 
 				]
 			},

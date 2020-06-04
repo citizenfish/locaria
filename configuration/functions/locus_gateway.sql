@@ -51,6 +51,9 @@ BEGIN
          WHEN search_parameters->>'method' IN ('revgeocoder') THEN
             ret_var = reverse_geocoder(search_parameters);
 
+         WHEN search_parameters->>'method' IN ('report') THEN
+            ret_var = run_report(search_parameters);
+
          ELSE
             RETURN json_build_object('error', 'unsupported method');
     END CASE;

@@ -3,7 +3,7 @@ $$
 DECLARE
 	results_var JSON;
 	search_ts_query tsquery;
-	default_limit INTEGER DEFAULT 15;
+	default_limit INTEGER DEFAULT 100;
     default_offset INTEGER DEFAULT 0;
 BEGIN
 
@@ -41,7 +41,10 @@ BEGIN
             FROM   locus_core.address_search_view
             WHERE  jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb)
                    @@ search_ts_query
-            ORDER BY search_rank DESC
+            ORDER BY search_rank DESC,
+					 (attributes->>'pao_start_number')::NUMERIC,
+					 attributes->>'pao_start_suffix' ASC,
+					 attributes->>'pao_text'
             OFFSET default_offset
             LIMIT  default_limit
 		) SUB;
