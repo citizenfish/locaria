@@ -4,6 +4,7 @@ DECLARE
     query_var TEXT;
     ret_var JSON;
     logid_var BIGINT;
+    cu_var TEXT;
 BEGIN
 
     --This keeps us within our search schema when running code
@@ -18,10 +19,15 @@ BEGIN
         RAISE EXCEPTION 'Invalid or empty report name';
     END IF;
 
+    --Belt and braces we flip to a limited priv user prior to executing query then flip back
+    SELECT current_user INTO cu_var;
+    SET SESSION ROLE locus_report_user;
 
     EXECUTE query_var
     USING search_parameters
     INTO ret_var;
+
+    EXECUTE 'SET SESSION ROLE '||cu_var;
 
     IF ret_var IS NULL THEN
         RAISE NOTICE 'No response from query: [%] ',query_var;
