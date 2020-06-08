@@ -14,8 +14,9 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					'configuration/functions/create_materialised_view.sql',
-					'configuration/schema_and_views/create_search_views.sql'
+					'configuration/functions/report.sql',
+					'configuration/reports/democracy_location.sql',
+					'tests/unit_tests/test_democracy_location_report.sql'
 
 				]
 			},
