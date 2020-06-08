@@ -51,11 +51,18 @@
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
 
-    @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"postcode"});
+    @internals.ifqueue({"statement":"memory.postcode.value.packet.features.length>0","name":"locationGood","else":"locationBad"},{"queuePrepare":"postcode"});
+
+    @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"locationGood"});
     -internals.setMemory({"name":"myPostcode","value":"{{!memory.postcode.value.packet.features[0].properties.postcode}}","mode":"Permanent"});
+    -internals.setMemory({"name":"myPostcodeText","value":"{{!memory.postcode.value.packet.features[0].properties.title}}","mode":"Permanent"});
     -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
+    -elements.innerHTML({"targetId":".user-entered","html":"{{!memory.myPostcodeText.value}}"});
     -openlayers.flyTo({"coordinate":"{{!memory.myLocation.value}}"});
     -internals.execute({"name":"{{!memory.updateQueueToRun.value}}"});
+    -elements.removeClass({"targetId":"body","class":"open-loc"});
+
+    @elements.addClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
 
     <!-- Point search -->
 
@@ -109,19 +116,19 @@
     <form class="your-current-postcode">
         <label class="label-loc-is-set" for="postcode">showing information about:</label>
         <label class="label-loc-is-edit" for="postcode">change this location to:</label>
-        <span class="location-text">"<span class="user-entered">Surrey Heath Council Offices</span>"</span>
+        <span class="location-text">"<span class="user-entered">{{memory.myPostcodeText.value}}</span>"</span>
         <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}">
         <span class="error-msg">unknown location</span>
         <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":"body","class":"open-loc"});>
+            -elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
             Change your location
         </button>
         <div class="edit-loc-b-panel">
             <button type="button" class="change-postcode can-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.removeClass({"targetId":"body","class":"open-loc"});>
+                -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
                 Cancel
             </button>
-            <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":".your-current-postcode","class":"has-error"});>
-                    -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
-                    -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
+            <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});>
                 Save location
             </button>
         </div>

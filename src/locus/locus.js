@@ -18,6 +18,12 @@ class Locus extends Queueable {
 		if(memory.myPostcode&&memory.myPostcode.value)
 			postcode=memory.myPostcode.value;
 		this.queue.setMemory('myPostcode', postcode, "Permanent");
+
+		let postcodeText='Surrey Heath Council Offices';
+		if(memory.myPostcodeText&&memory.myPostcodeText.value)
+			postcodeText=memory.myPostcodeText.value;
+		this.queue.setMemory('myPostcodeText', postcodeText, "Permanent");
+
 		let location='SRID=4326;POINT(-0.743166424536075 51.3394703242612)';
 		if(memory.myLocation&&memory.myLocation.value)
 			location=memory.myLocation.value;
