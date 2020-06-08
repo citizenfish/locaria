@@ -22,6 +22,16 @@
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
 
 
+    @api.websocketSend({"message":{"queue":"historyReportRender","api":"api","data":{"method":"report","report_name":"{{!memory.history.value[0]}}","location":"{{!memory.myLocation.value}}"}}},{"queuePrepare":"historyReport"});
+    @templates.render({"targetId":"#content-target","template":"#report_display"},{"queuePrepare":"historyReportRender"});
+    -elements.removeClass({"targetId":"body","class":"on-home"});
+    -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
+    -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyReportRender.value.packet.geojson"});
+    -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
+
+
     @api.websocketSend({"message":{"queue":"historyDetailsRender","api":"api","data":{"method":"get_item","fid":"{{!^memory.history.value[1]}}"}}},{"queuePrepare":"historyDetails"});
     @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
@@ -83,7 +93,7 @@
                 <ul id="menuTop" class="menu-options" role="menu" aria-labelledby="menubutton1">
                     <li role="menuitem" @browser.addHistory({"history":"Home"});>Home</li>
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Democracy"});>Democracy</li>
+                    <li role="menuitem" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Events"});>Events</li>
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Community"});>Community</li>
                     <li role="menuitem"><a href="">Help</a></li>
@@ -138,7 +148,7 @@
                 <h2>Democracy</h2>
                 <p><strong>Councillor, Ward, Parish, MP</strong></p>
                 <p>To gain access to sub-types, such as who is the Councillor at location X.</p>
-                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Democracy"});>Explore</button>
+                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Report/democracy_location"});>Explore</button>
             </div>
             <div class="channel channel-events">
                 <img src="images/channel-events.jpg" title="" alt="">
@@ -162,8 +172,6 @@
 
 <script id="page-content" type="text/html">
     {{#include '#page-content-'+memory.history.value[0]}}
-
-
 </script>
 
 <script id="page-content-filter" type="text/html">
@@ -208,6 +216,31 @@
         {{#include '#page-content-filter'}}
     </section>
     {{#include '#page-content-result-main'}}
+</script>
+
+<script id="report_display" type="text/html">
+    <section class="side-panel details channel-democracy">
+        <h6 class="items-channel-heading">Items</h6>
+        {{#for memory.historyReportRender.value.packet.items}}
+            <p class="item-overview-title">
+                {{memory.historyReportRender.value.packet.items[#loop0].title}}
+            </p>
+            <p class="item-overview-detail">
+                {{memory.historyReportRender.value.packet.items[#loop0].value}}
+            </p>
+        {{/for}}
+    </section>
+    <section class="main-content details">
+        <h4>{{memory.historyReportRender.value.packet.title}}</h4>
+        <p><strong>Details:</strong></p>
+        <div class="item-main-info">
+            <p>{{memory.historyReportRender.value.packet.description}}</p>
+        </div>
+        <p><strong>Location(s):</strong></p>
+        <div id="openlayersItemMap" class="item-main-map">
+
+        </div>
+    </section>
 </script>
 
 <script id="page-content-Planning" type="text/html">
