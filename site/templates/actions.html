@@ -13,10 +13,12 @@
     -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
 
     @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
     -elements.addClass({"targetId":"body","class":"on-home"});
 
 
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"reloadCat","mode":"Session"});
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
@@ -24,6 +26,7 @@
 
     @api.websocketSend({"message":{"queue":"historyReportRender","api":"api","data":{"method":"report","report_name":"{{!memory.history.value[0]}}","location":"{{!memory.myLocation.value}}"}}},{"queuePrepare":"historyReport"});
     @templates.render({"targetId":"#content-target","template":"#report_display"},{"queuePrepare":"historyReportRender"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"historyReport","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
@@ -34,6 +37,7 @@
 
     @api.websocketSend({"message":{"queue":"historyDetailsRender","api":"api","data":{"method":"get_item","fid":"{{!^memory.history.value[1]}}"}}},{"queuePrepare":"historyDetails"});
     @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
@@ -50,7 +54,7 @@
     -internals.setMemory({"name":"myPostcode","value":"{{!memory.postcode.value.packet.features[0].properties.postcode}}","mode":"Permanent"});
     -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
     -openlayers.flyTo({"coordinate":"{{!memory.myLocation.value}}"});
-    -internals.execute({"name":"reloadCat"});
+    -internals.execute({"name":"{{!memory.updateQueueToRun.value}}"});
 
     <!-- Point search -->
 
@@ -397,9 +401,6 @@
         <address>
             {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
         </address>
-        <p class="distance-from-details">
-            5 miles from your location
-        </p>
         <p class="item-type">
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
@@ -456,9 +457,6 @@
         <address>
             {{memory.historyDetailsRender.value.packet.features[0].properties.description.venue}}
         </address>
-        <p class="distance-from-details">
-            5 miles from your location
-        </p>
         <time>
             From: {{memory.historyDetailsRender.value.packet.features[0].properties.description.start_date}}
         </time>
@@ -492,9 +490,6 @@
 <script id="full-details-Community" type="text/html">
     <section class="side-panel details channel-community">
         <h6 class="items-channel-heading">Community</h6>
-        <p class="distance-from-details">
-            5 miles from your location
-        </p>
         <p class="item-type">
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
