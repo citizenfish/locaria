@@ -4,6 +4,7 @@
     -api.websocketSend({"message":{"queue":"session","api":"session"}});
     -locus.defaultValues();
     -templates.render({"targetId":"#header-target","template":"#header"});
+    -templates.render({"targetId":"#subheading-target","template":"#subheading-text"});
     -menu.initMenu({"targetId":"#menubutton1"});
     -templates.render({"targetId":"#location-target","template":"#postcode-search"});
     -browser.initHistory({"checkURL":true,"default":"Home"});
@@ -67,29 +68,16 @@
 </script>
 
 <script id="header" type="text/html">
-    <div>
+    <div class="top-b">
         <a class="logo" href="/" rel="home" @browser.addHistory({"history":"Home"});>
-            <span class="sr-only">Surrey Heath</span>
+            <span class="sr-only">Surrey Heath Borough Council</span>
         </a>
 
         <button class="button-back inactive" type="button" @browser.backHistory();>
             <span class="sr-only">Back to previous screen</span>
         </button>
 
-        <button id="open-search-mobile" type="button" class="search-site-open" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":".page-header","class":"open-search"});>
-            -elements.removeClass({"targetId":".main-menu","class":"open-this-menu"});
-            <span class="sr-only">Open search</span>
-        </button>
-        <form id="searchSite" class="search-site" aria-label="Search the site for information">
-            <div>
-                <input id="find" type="text" value="">
-                <button class="button-search-site" @browser.addHistory({"history":"Cat/Find/{{!queue.getElement('#find').value}}","force":true});>Find</button>
-            </div>
-        </form>
-
         <nav class="main-menu" role="navigation">
-            <!-- accessible menu -->
-            <!-- removed id="menubutton1" from button -->
             <button id="menubutton1" aria-haspopup="true" aria-controls="menuTop" class="menu-button-actual">
                 <span class="sr-only">Open main menu</span>
             </button>
@@ -105,27 +93,39 @@
             </div>
         </nav>
     </div>
+
+</script>
+
+<script id="subheading-text" type="text/html">
+    <div class="title-text">
+        <h1>Learn more about your location</h1>
+        <p>Enter an address or postcode<br> to find information about that area</p>
+    </div>
 </script>
 
 <script id="postcode-search" type="text/html">
     <div id="backMap" class="map-background"></div>
 
     <form class="your-current-postcode">
-        <label for="postcode">Your location is set to:</label>
-        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":"body","class":"open-loc"},{"queueEvent":"keydown"});>
-        -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
-        -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
-
-        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
+        <label class="label-loc-is-set" for="postcode">showing information about:</label>
+        <label class="label-loc-is-edit" for="postcode">change this location to:</label>
+        <span class="location-text">"<span class="user-entered">Surrey Heath Council Offices</span>"</span>
+        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}">
+        <span class="error-msg">unknown location</span>
+        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":"body","class":"open-loc"});>
             Change your location
         </button>
+        <div class="edit-loc-b-panel">
+            <button type="button" class="change-postcode can-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.removeClass({"targetId":"body","class":"open-loc"});>
+                Cancel
+            </button>
+            <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":".your-current-postcode","class":"has-error"});>
+                    -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
+                    -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
+                Save location
+            </button>
+        </div>
 
-        <!-- should this be submit? -->
-        <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
-                -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
-                -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
-            Set this as your location
-        </button>
     </form>
 </script>
 
@@ -134,9 +134,8 @@
     <section class="side-panel">
 
     </section>
-    <section class="main-content">
-        <h1>Welcome to Surrey Heath's community mapping tool</h1>
-        <p>A short explanatory message encouraging users to set their location and explore one (or all) of the 4 channels below: </p>
+    <section class="main-panel">
+        <p>To help you find information relevant to the location you're interested in, we've created the following channels [HOLDING COPY - REPLACE]</p>
         <section class="channels">
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
@@ -206,7 +205,7 @@
 
 
 <script id="page-content-result-main" type="text/html">
-    <section class="main-content">
+    <section class="main-panel">
         <ul class="results-item-list">
 
         </ul>
@@ -382,7 +381,7 @@
             Item overview detail
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>Item title</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
@@ -408,7 +407,7 @@
             Ref: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Overview:</strong></p>
         <div class="item-main-info">
@@ -434,7 +433,7 @@
             {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>Item title</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
@@ -473,7 +472,7 @@
             Read more about this
         </a>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.title}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
@@ -494,7 +493,7 @@
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
