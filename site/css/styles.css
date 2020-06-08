@@ -590,6 +590,7 @@ li.has-error::after {
     border: 3px solid var(--dark);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.15);
     padding: 2px 0 7px;
+    pointer-events: auto;
 }
 .open-loc .your-current-postcode.has-error .postcode-field {
     border-color: var(--errorAlert);
