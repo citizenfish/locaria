@@ -230,7 +230,7 @@
 
 <script id="report_display" type="text/html">
     <section class="side-panel details channel-democracy">
-        <h6 class="items-channel-heading">Items</h6>
+        <h6 class="items-channel-heading">Democracy</h6>
         {{#for memory.historyReportRender.value.packet.items}}
             <p class="item-overview-title">
                 {{memory.historyReportRender.value.packet.items[#loop0].title}}
@@ -239,14 +239,21 @@
                 {{memory.historyReportRender.value.packet.items[#loop0].value}}
             </p>
         {{/for}}
+        <p class="item-overview-title">
+            Polling station
+        </p>
+        <p class="item-overview-detail">
+            Polling station address
+        </p>
     </section>
-    <section class="main-content details">
-        <h4>{{memory.historyReportRender.value.packet.title}}</h4>
-        <p><strong>Details:</strong></p>
+    <section class="main-panel details">
+<!--        <h4>{{memory.historyReportRender.value.packet.title}}</h4>-->
+        <h4>## REITERATION OF WARD NAME ##</h4>
+        <p><strong>About this ward</strong></p>
         <div class="item-main-info">
+            <p>SIMON: This could be taken from the wikipedia page for the ward</p>
             <p>{{memory.historyReportRender.value.packet.description}}</p>
         </div>
-        <p><strong>Location(s):</strong></p>
         <div id="openlayersItemMap" class="item-main-map">
 
         </div>
