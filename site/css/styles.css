@@ -1066,11 +1066,20 @@ li.has-error::after {
 .main-panel.details .item-main-map {
     width: 100%;
     height: 400px;
-    box-shadow: inset 3px 3px 15px 0 rgba(0,0,0,0.1);
     margin-bottom: 30px;
+    position: relative;
+}
+.main-panel.details .item-main-map::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 10px 0 rgba(0,0,0,0.1);
+    z-index: +1;
+    pointer-events: none;
 }
 
-/* footer */
+    /* footer */
 
 footer p {
     margin: 0 0 0 0;
@@ -1095,4 +1104,53 @@ footer p {
     .no-mb {
         display: none;
     }
+}
+
+/* OL overwrites */
+
+.item-main-map .ol-zoom {
+    top: 15px;
+    left: 15px;
+}
+.item-main-map .ol-control {
+    position: absolute;
+    background-color: #8a8a8a;
+    border-radius: 0;
+    padding: 3px;
+    box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 3px 0px;
+}
+.item-main-map .ol-control:hover {
+    background-color: #8a8a8a;
+}
+.item-main-map .ol-control button {
+    display: block;
+    color: var(--dark);
+    font-size: 24px;
+    font-weight: normal;
+    text-align: center;
+    height: 30px;
+    width: 30px;
+    line-height: 1;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    border-radius: 2px;
+    transition: background ease 0.3s;
+}
+.item-main-map .ol-control button:hover {
+    background-color: rgba(255,255,255,0.5);
+}
+.item-main-map .ol-control button:focus {
+    background-color: transparent;
+}
+.item-main-map .ol-zoom .ol-zoom-in {
+    border-radius: 0;
+}
+.item-main-map .ol-zoom .ol-zoom-out {
+    border-radius: 0;
 }
