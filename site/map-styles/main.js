@@ -1,4 +1,4 @@
-import {Circle, Text, RegularShape, Fill, Stroke, Style} from 'ol/style.js';
+import {Circle, Text, RegularShape, Fill, Stroke, Style,Icon} from 'ol/style.js';
 import {MultiPoint} from 'ol/geom.js';
 
 
@@ -7,17 +7,9 @@ export function mainMapStyle(feature, resolution) {
 	if(geometry.getType()==='Point') {
 		return [
 			new Style({
-				image: new RegularShape({
-					radius: 20,
-					points: 3,
-					angle: 0,
-					fill: new Fill({
-						color: [229, 172, 87, 1]
-					}),
-					stroke: new Stroke({
-						color: [22, 22, 22, 1],
-						width: 1
-					}),
+				image: new Icon({
+					src: 'images/marker-thing.svg',
+					size: [40,60],
 					zIndex: 100
 				})
 			})
@@ -37,4 +29,18 @@ export function mainMapStyle(feature, resolution) {
 		]
 	}
 
+}
+
+
+export function locationStyle(feature, resolution) {
+	const geometry=feature.getGeometry();
+		return [
+			new Style({
+				image: new Icon({
+					src: 'images/marker-home.svg',
+					size: [40,60],
+					zIndex: 100
+				})
+			})
+		]
 }

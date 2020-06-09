@@ -29,6 +29,11 @@ class Locus extends Queueable {
 			location=memory.myLocation.value;
 		this.queue.setMemory('myLocation', location, "Permanent");
 
+		let point=[-0.743166424536075,51.3394703242612];
+		if(memory.myPoint&&memory.myPoint.value)
+			point=memory.myPoint.value;
+		this.queue.setMemory('myPoint', point, "Permanent");
+
 		this.finished(pid, this.queue.DEFINE.FIN_OK);
 
 	}

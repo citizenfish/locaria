@@ -44,6 +44,19 @@
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
+    -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle",
+    "geojson":{
+        "type":"FeatureCollection",
+        "features":[
+            {"geometry":{
+                "type":"Point",
+                "coordinates":["{{!^memory.myPoint.value}}"]
+                },
+            "type":"Feature"
+            }
+        ]
+    }
+    });
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
     @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
@@ -54,6 +67,7 @@
     @internals.ifqueue({"statement":"memory.postcode.value.packet.features.length>0","name":"locationGood","else":"locationBad"},{"queuePrepare":"postcode"});
 
     @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"locationGood"});
+    -internals.setMemory({"name":"myPoint","value":["{{!^memory.postcode.value.packet.features[0].geometry.coordinates}}"],"mode":"Permanent"});
     -internals.setMemory({"name":"myPostcode","value":"{{!memory.postcode.value.packet.features[0].properties.postcode}}","mode":"Permanent"});
     -internals.setMemory({"name":"myPostcodeText","value":"{{!memory.postcode.value.packet.features[0].properties.title}}","mode":"Permanent"});
     -elements.innerHTML({"targetId":".user-entered","html":"{{!memory.myPostcodeText.value}}"});
@@ -206,8 +220,8 @@
                 <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
                 <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
             </select>
-            <label for="keywords">By keyword:</label>
-            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >
+          <!--  <label for="keywords">By keyword:</label>
+            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
             <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
                 Filter
             </button>
@@ -391,6 +405,22 @@
     </li>
 </script>
 
+
+
+<script id="full-details-Map" type="text/html">
+    <p><strong>Location:</strong></p>
+    <div id="openlayersItemMap" class="item-main-map">
+
+    </div>
+    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+        Reset
+    </button>
+    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+        Home
+    </button>
+
+</script>
+
 <script id="full-details-Generic" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading">Generic</h6>
@@ -407,10 +437,7 @@
         <div class="item-main-info">
             <p>Detailed information about the item</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
-
-        </div>
+        {{#include '#full-details-Map'}}
     </section>
 </script>
 
@@ -434,10 +461,8 @@
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 
 
@@ -463,10 +488,8 @@
                 <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a>
             {{/if}}
         </div>
-        <p><strong>Location(s):</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
@@ -499,10 +522,8 @@
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.event_details}}</p>
             <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
@@ -519,10 +540,8 @@
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
