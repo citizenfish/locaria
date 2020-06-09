@@ -40,8 +40,29 @@ strong {
 
 /*** main layout ***/
 
-header {
-    height: 60px;
+.head-section {
+    display: flex;
+    flex-direction: column;
+}
+@media only screen and (min-width: 1000px) {
+    /*.head-section {*/
+    /*    height: 300px;*/
+    /*}*/
+}
+.on-home .head-section {
+    /*height: 80vh;*/
+    /*min-height: 500px;*/
+    min-height: 80vh;
+    /*max-height: 700px;*/
+}
+@media only screen and (min-width: 1000px) {
+    .on-home .head-section {
+        height: 80vh;
+        min-height: 500px;
+    }
+}
+.page-header {
+    min-height: 60px;
     background-color: var(--mainBrandColour);
     color: white;
     position: relative;
@@ -50,18 +71,18 @@ header {
 .postcode-search {
 
 }
-.page-content {
+.document-content {
     color: var(--defaultText);
     /*min-height: calc(100vh - 60px);*/
     display: flex;
     justify-content: center;
 }
-main {
+.content-holder {
     width: 100%;
     max-width: 1150px;
 }
 @media only screen and (min-width: 1500px) {
-    .on-home main {
+    .on-home .content-holder {
         max-width: 80%;
     }
 }
@@ -75,64 +96,79 @@ footer {
 }
 
 @media only screen and (min-width: 1000px) {
-    header, footer {
-        height: 120px;
-    }
-    .on-home header, .on-home footer {
-        height: 180px;
+    .page-header, footer {
+        min-height: 120px;
     }
 }
 
 /*** components ***/
 
-/* header */
+/* main head container */
 
-header {
+li.has-error::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background: red;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    z-index: +1;
+}
 
+/* page header */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.25);
 }
 @media only screen and (min-width: 1000px) {
-    header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.5);
+    .page-header {
+
     }
 }
-header > div {
+.page-header .top-b {
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    border-bottom: 2px solid white;
 }
 @media only screen and (min-width: 1000px) {
-    header > div {
+    .page-header .top-b {
         width: 100%;
         max-width: 1180px;
         padding: 0 30px;
         height: 60px;
+        border-bottom: none;
     }
 }
 .logo {
-    width: calc(100% - 180px);
+    width: calc(100% - 120px);
     height: 60px;
     border-left: 2px solid white;
     order: 2;
     background-image: url(../images/logo.png);
     background-repeat: no-repeat;
-    background-size: 80% auto;
-    background-position: 15px center;
+    background-size: auto 30px;
+    background-position: center;
 }
-@media only screen and (min-width: 400px) {
-    .logo {
-        background-size: auto 40px;
-    }
-}
+/*@media only screen and (min-width: 400px) {*/
+/*    .logo {*/
+/*        background-size: auto 40px;*/
+/*    }*/
+/*}*/
 @media only screen and (min-width: 1000px) {
     .logo {
         width: calc(100% - 120px);
         min-width: 360px;
         border-left: none;
-        background-size: contain;
-        background-position: left center;
+        background-size: auto 54px;
+        background-position: center;
     }
 }
 .button-back {
@@ -145,7 +181,7 @@ header > div {
 @media only screen and (min-width: 1000px) {
     .button-back {
         min-width: 60px;
-        margin-right: 60px;
+        /*margin-right: 60px;*/
         border: 3px solid white;
         background-color: var(--mainBrandColour);
         box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
@@ -196,122 +232,6 @@ header > div {
     opacity: 0.3;
 }
 
-.search-site-open {
-    width: 60px;
-    border-left: 2px solid white;
-    order: 3;
-    background-image: url(../images/search-icon.svg);
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    transition: background-color ease 0.3s;
-    background-color: transparent;
-}
-.open-search .search-site-open {
-    background-color: var(--dark);
-}
-@media only screen and (min-width: 1000px) {
-    .search-site-open {
-        display: none;
-    }
-}
-.search-site {
-    position: absolute;
-    top: 60px;
-    border-top: 2px solid white;
-    /* left: 0; */
-    right: 0;
-    width: 100%;
-    max-width: 450px;
-    height: 70px;
-    overflow: hidden;
-    background: none;
-    pointer-events: none;
-    z-index: 2;
-}
-@media only screen and (max-width: 1000px) {
-    .search-site {
-        flex: none;
-    }
-}
-@media only screen and (min-width: 1000px) {
-    .search-site {
-        position: relative;
-        top: auto;
-        border-top: none;
-        left: auto;
-        width: 100%;
-        max-width: 500px;
-        height: 60px;
-        overflow: visible;
-        order: 3;
-        margin-right: 60px;
-    }
-}
-.search-site > div {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: var(--dark);
-    display: flex;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
-    pointer-events: auto;
-}
-@media only screen and (max-width: 1000px) {
-    .search-site > div {
-        transition: transform ease 0.3s;
-        transform: translateY(-105%);
-    }
-}
-@media only screen and (min-width: 1000px) {
-    .search-site > div {
-        height: 100%;
-        background-color: transparent;
-        border: 3px solid white;
-        display: flex;
-        box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
-        transform: none;
-    }
-}
-@media only screen and (max-width: 1000px) {
-    .open-search .search-site > div {
-        transform: translateY(0);
-    }
-}
-.search-site input {
-    width: calc(100% - 57px);
-    height: 100%;
-    border: 2px solid var(--dark);
-    border-right: none;
-    box-shadow: inset 1px 1px 5px 0 rgba(0,0,0,0.15);
-    padding: 10px 15px 15px;
-}
-@media only screen and (min-width: 1000px) {
-    .search-site input {
-        width: calc(100% - 117px);
-        height: 100%;
-        border: none;
-        border-right: 3px solid white;
-        box-shadow: inset 1px 1px 5px 0 rgba(0,0,0,0.15);
-        padding: 10px 15px 15px;
-        background-color: transparent;
-    }
-}
-.search-site .button-search-site {
-    width: 59px;
-    height: 100%;
-    background-color: var(--dark);
-    color: white;
-}
-@media only screen and (min-width: 1000px) {
-    .search-site .button-search-site {
-        width: 119px;
-        background-color: rgba(255,255,255,0.25);
-        text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-    }
-}
 .main-menu {
     min-width: 60px;
     max-width: 60px;
@@ -393,7 +313,7 @@ header > div {
 }
 @media only screen and (min-width: 1000px) {
     .main-menu .clip-menu {
-        top: 75px;
+        top: 87px;
     }
 }
 .main-menu .clip-menu ul.menu-options {
@@ -416,7 +336,7 @@ header > div {
 .main-menu .clip-menu ul.menu-options li {
     padding: 15px;
     text-align: center;
-    background-color: rgba(0,0,0,0.75);
+    background-color: rgba(0,0,0,0.25);
     transition: background-color ease 0.3s;
     cursor: pointer;
 }
@@ -426,7 +346,7 @@ header > div {
     }
 }
 .main-menu .clip-menu ul.menu-options li:hover {
-    background-color: rgba(0,0,0,0.25);
+    background-color: rgba(0,0,0,0);
 }
 .main-menu .clip-menu ul.menu-options li a {
     color: white;
@@ -440,127 +360,220 @@ header > div {
     }
 }
 
-/* postcode / hero */
+/* subheading (home only) */
 
-.postcode-search {
+.subheading {
+    display: none;
+}
+.on-home .subheading {
+    display: block;
+}
+.subheading {
     position: relative;
-    height: 400px;
-    max-height: 120px;
+    z-index: 2;
+    background-color: var(--subHeadingText);
+    color: white;
+    box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.5);
+    height: 120px;
+}
+@media only screen and (min-width: 1000px) {
+    .subheading {
+        height: 150px;
+    }
+}
+.subheading .title-text {
     display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
-    justify-content: center;
-    transition: max-height ease 0.3s;
+    height: 100%;
+    padding: 0 15px 10px;
 }
-
-@media only screen and (max-width: 795px) {
-    .on-home .postcode-search {
-        max-height: 180px;
-    }
-    .open-loc .postcode-search {
-        max-height: 160px;
-    }
-    .on-home.open-loc .postcode-search {
-        max-height: 180px; /* urgh */
-    }
+.subheading .title-text h1 {
+    font-size: 1.5rem;
 }
-@media only screen and (min-width: 795px) {
-    .postcode-search {
-        height: 200px;
-        max-height: none;
-        margin-bottom: 0;
+@media only screen and (min-width: 460px) {
+    .subheading .title-text br {
+        display: none;
     }
-    .on-home .postcode-search {
-        height: 450px;
-        max-height: none;
-        margin-bottom: 200px;
+    .subheading .title-text h1 {
+        font-size: 2rem;
     }
 }
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .postcode-search {
-        height: 50vh;
-        max-height: none;
-        margin-bottom: 25vh;
+@media only screen and (min-width: 600px) {
+    .subheading .title-text {
+        padding: 0 15px 15px;
+    }
+    .subheading .title-text h1 {
+        font-size: 2.5rem;
     }
 }
 
-@media only screen and (min-width: 795px) {
-    .on-home .postcode-search::before {
-        content: "";
-        width: 100%;
-        height: 450px;
-        position: absolute;
-        top: 0;
-        background-image: url(../images/marker.svg);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 60px 180px;
-        z-index: 2;
-        pointer-events: none;
-    }
+/*.subheading::before {*/
+/*    content: "";*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100%;*/
+/*    height: 30px;*/
+/*    background: linear-gradient(to bottom, black, transparent);*/
+/*}*/
+.subheading h1,
+.subheading p {
+    /*flex: 1;*/
+    margin: 0 0 0 0;
+    text-align: center;
 }
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .postcode-search::before {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        background-image: url(../images/marker.svg);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 45px 135px;
-    }
-}
+
+
+/* postcode / hero (map) */
+
 .map-background {
     position: absolute;
     display: block;
     width: 100%;
-    height: 100%;
     pointer-events: none;
+    flex: 1 1 50%;
+}
+.on-home .map-background {
+    position: relative;
+    min-height: 150px;
+}
+.on-home .map-background::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.05));
 }
 .map-background .ol-control {
     display: none !important;
+}
+
+.postcode-search {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+@media only screen and (max-width: 795px) {
+    /*.on-home .postcode-search {*/
+    /*    max-height: 180px;*/
+    /*}*/
+    /*.open-loc .postcode-search {*/
+    /*    max-height: 160px;*/
+    /*}*/
+    /*.on-home.open-loc .postcode-search {*/
+    /*    max-height: 180px; !* urgh *!*/
+    /*}*/
+}
+@media only screen and (min-width: 795px) {
+    /*.postcode-search {*/
+    /*    height: 200px;*/
+    /*    max-height: none;*/
+    /*    margin-bottom: 0;*/
+    /*}*/
+    /*.on-home .postcode-search {*/
+    /*    height: 450px;*/
+    /*    max-height: none;*/
+    /*    margin-bottom: 200px;*/
+    /*}*/
+}
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .postcode-search {
+        /*height: 50vh;*/
+        /*max-height: none;*/
+    }
+}
+
+
+.on-home .map-background::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background-image: url(../images/marker.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 60px 90px;
+    z-index: 2;
+    pointer-events: none;
+}
+@media only screen and (min-width: 795px) {
+    .on-home .map-background::before {
+        background-size: 75px 113px;
+    }
+}
+
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    /*.on-home .postcode-search::before {*/
+    /*    content: "";*/
+    /*    width: 100%;*/
+    /*    height: 100%;*/
+    /*    position: absolute;*/
+    /*    top: 0;*/
+    /*    background-image: url(../images/marker.svg);*/
+    /*    background-position: center;*/
+    /*    background-repeat: no-repeat;*/
+    /*    background-size: 45px 135px;*/
+    /*}*/
 }
 .your-current-postcode {
     position: relative;
     display: flex;
     flex-direction: column;
     text-align: center;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     background-color: rgba(243, 242, 239, 0.75);
     width: 100%;
-    height: 100%;
+    padding: 15px 0 20px;
+    flex: 1 1 50%;
+}
+.on-home .your-current-postcode {
+    height: auto;
 }
 @media only screen and (min-width: 795px) {
-    .your-current-postcode {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-    }
-    .on-home .your-current-postcode {
-        height: 200px;
-        background-color: var(--mapCompliment);
-        position: absolute;
-        top: auto;
-        bottom: 0;
-        transform: translateY(100%);
-    }
+    /*.your-current-postcode {*/
+    /*    width: 100%;*/
+    /*    height: 100%;*/
+    /*    position: absolute;*/
+    /*    top: 0;*/
+    /*}*/
+    /*.on-home .your-current-postcode {*/
+    /*    height: 200px;*/
+    /*    background-color: var(--mapCompliment);*/
+    /*    position: absolute;*/
+    /*    top: auto;*/
+    /*    bottom: 0;*/
+    /*    transform: translateY(100%);*/
+    /*}*/
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
     .on-home .your-current-postcode {
-        height: 25vh;
+        /*height: 25vh;*/
     }
 }
-.your-current-postcode label {
-    display: inline-block;
+.your-current-postcode label,
+.location-text {
+    /*line-height: 30px;*/
 }
-.open-loc .your-current-postcode label {
-    margin-bottom: 10px;
+.your-current-postcode label.label-loc-is-set { display: inline-block; }
+.your-current-postcode label.label-loc-is-edit { display: none; }
+.open-loc .your-current-postcode label.label-loc-is-set { display: none; }
+.open-loc .your-current-postcode label.label-loc-is-edit { display: inline-block; }
+
+.location-text {
+    font-weight: 500;
 }
 .your-current-postcode .postcode-field {
-    font-size: 1.75rem;
+    font-size: 3rem;
     font-weight: 700;
     display: inline-block;
     max-width: 280px;
@@ -568,48 +581,88 @@ header > div {
     pointer-events: none;
     background: transparent;
     border: none;
+    padding: 2px 0 5px;
+    height: 50px;
+    margin: 7px 0 10px;
 }
 .open-loc .your-current-postcode .postcode-field {
-    margin: 0 0 7px 0;
-    border: 2px dashed black;
-    padding: 6px 5px 5px;
-    background: rgba(255, 255, 255, 0.5);
+    background-color: white;
+    border: 3px solid var(--dark);
+    box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.15);
+    padding: 2px 0 7px;
     pointer-events: auto;
+}
+.open-loc .your-current-postcode.has-error .postcode-field {
+    border-color: var(--errorAlert);
 }
 @media only screen and (min-width: 795px) {
     .your-current-postcode .postcode-field {
-        padding: 0 0;
         font-weight: 800;
         font-size: 3.5rem;
+        height: 60px;
+        padding: 5px 0 10px;
+        margin: 10px 0;
+    }
+    .open-loc .your-current-postcode .postcode-field {
+        font-size: 3rem;
     }
 }
-.your-current-postcode .change-postcode {
-    text-decoration: underline;
-    border: none;
-    background: none;
-    color: var(--actionBlue);
-}
-.your-current-postcode .change-postcode.edit-loc {
+.your-current-postcode .error-msg {
+     font-weight: 500;
+     color: var(--errorAlert);
+     margin-bottom: 10px;
+     display: none;
+ }
+.open-loc .your-current-postcode.has-error .error-msg {
     display: inline-block;
 }
-.your-current-postcode .change-postcode.set-loc {
-    position: relative;
-    padding-left: 15px;
+.your-current-postcode .change-postcode {
+    padding: 9px 20px 10px;
+    box-shadow: 2px 2px 3px 0 rgba(0,0,0,0.15);
+    color: white;
+    text-transform: uppercase;
+    background-color: var(--actionBlue);
+    transition: background-color ease 0.3s;
+    font-size: 0.75rem;
+}
+.your-current-postcode .change-postcode:hover {
+    background-color: var(--dark);
+}
+.your-current-postcode .edit-loc-b-panel {
     display: none;
+}
+.open-loc .your-current-postcode .edit-loc-b-panel {
+    display: block;
+    width: 100%;
+}
+.your-current-postcode .edit-loc-b-panel .change-postcode {
+    width: 50%;
+    max-width: 140px;
+    margin: 0 5px;
+}
+.your-current-postcode .edit-loc-b-panel .change-postcode.can-loc {
+    background-color: var(--cancelButton);
+}
+.your-current-postcode .change-postcode.edit-loc {
+    /*display: inline-block;*/
+}
+.your-current-postcode.has-error .change-postcode.set-loc {
+    opacity: 0.4;
+    pointer-events: none;
 }
 .open-loc .your-current-postcode .change-postcode.edit-loc {
     display: none;
 }
-.open-loc .your-current-postcode .change-postcode.set-loc {
-    display: inline-block;
-}
-.your-current-postcode .change-postcode.set-loc::before {
-    content: "\2714";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-}
+/*.open-loc .your-current-postcode .change-postcode.set-loc {*/
+/*    display: inline-block;*/
+/*}*/
+/*.your-current-postcode .change-postcode.set-loc::before {*/
+/*    content: "\2714";*/
+/*    position: absolute;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    height: 100%;*/
+/*}*/
 
 /* main content */
 
@@ -766,23 +819,23 @@ header > div {
     background-color: var(--channelCommunity);
 }
 
-.main-content {
+.main-panel {
     padding: 0 15px 15px;
     flex: 1 1 auto;
 }
 @media only screen and (min-width: 795px) {
-    .main-content {
+    .main-panel {
         padding: 15px;
     }
 }
-.on-home .main-content {
+.on-home .main-panel {
     padding: 30px 15px;
     text-align: center;
 }
-.main-content h1 {
+.main-panel h1 {
     font-weight: 600;
 }
-.main-content p {
+.main-panel p {
     /*margin: 0 0 15px 0;*/
 }
 .channel img {
@@ -987,30 +1040,30 @@ header > div {
     text-decoration: underline;
 }
 @media only screen and (max-width: 795px) {
-    .main-content.details {
+    .main-panel.details {
         order: 1;
         padding-top: 30px;
         padding-bottom: 0;
     }
 }
-.main-content.details h4 {
+.main-panel.details h4 {
 
 }
-.main-content.details .item-main-info {
+.main-panel.details .item-main-info {
     margin-bottom: 30px;
 }
-.main-content.details .item-main-info strong,
-.main-content.details .item-main-info b {
+.main-panel.details .item-main-info strong,
+.main-panel.details .item-main-info b {
     font-weight: 600;
 }
-.main-content.details .item-main-info em,
-.main-content.details .item-main-info i {
+.main-panel.details .item-main-info em,
+.main-panel.details .item-main-info i {
     font-style: italic;
 }
-.main-content.details .item-main-info a {
+.main-panel.details .item-main-info a {
     text-decoration: underline;
 }
-.main-content.details .item-main-map {
+.main-panel.details .item-main-map {
     width: 100%;
     height: 400px;
     box-shadow: inset 3px 3px 15px 0 rgba(0,0,0,0.1);

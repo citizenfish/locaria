@@ -9,9 +9,10 @@ import Menu from '@nautoguide/ourthings/Queueable/Menu';
 
 import Locus from './locus';
 
-import {mainMapStyle} from '../../site/map-styles/main';
+import {mainMapStyle,locationStyle} from '../../site/map-styles/main';
 window.styles={};
 window.styles.mainMapStyle=mainMapStyle;
+window.styles.locationStyle=locationStyle;
 
 
 /*

@@ -4,6 +4,7 @@
     -api.websocketSend({"message":{"queue":"session","api":"session"}});
     -locus.defaultValues();
     -templates.render({"targetId":"#header-target","template":"#header"});
+    -templates.render({"targetId":"#subheading-target","template":"#subheading-text"});
     -menu.initMenu({"targetId":"#menubutton1"});
     -templates.render({"targetId":"#location-target","template":"#postcode-search"});
     -browser.initHistory({"checkURL":true,"default":"Home"});
@@ -13,22 +14,49 @@
     -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
 
     @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
     -elements.addClass({"targetId":"body","class":"on-home"});
 
 
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"reloadCat","mode":"Session"});
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
 
 
+    @api.websocketSend({"message":{"queue":"historyReportRender","api":"api","data":{"method":"report","report_name":"{{!memory.history.value[0]}}","location":"{{!memory.myLocation.value}}"}}},{"queuePrepare":"historyReport"});
+    @templates.render({"targetId":"#content-target","template":"#report_display"},{"queuePrepare":"historyReportRender"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"historyReport","mode":"Session"});
+    -elements.removeClass({"targetId":"body","class":"on-home"});
+    -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
+    -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyReportRender.value.packet.geojson"});
+    -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
+
+
     @api.websocketSend({"message":{"queue":"historyDetailsRender","api":"api","data":{"method":"get_item","fid":"{{!^memory.history.value[1]}}"}}},{"queuePrepare":"historyDetails"});
     @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
+    -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle",
+    "geojson":{
+        "type":"FeatureCollection",
+        "features":[
+            {"geometry":{
+                "type":"Point",
+                "coordinates":["{{!^memory.myPoint.value}}"]
+                },
+            "type":"Feature"
+            }
+        ]
+    }
+    });
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
     @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
@@ -36,11 +64,25 @@
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
 
-    @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"postcode"});
+    @internals.ifqueue({"statement":"memory.postcode.value.packet.features.length>0","name":"locationGood","else":"locationBad"},{"queuePrepare":"postcode"});
+
+    @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"locationGood"});
+    -internals.setMemory({"name":"myPoint","value":["{{!^memory.postcode.value.packet.features[0].geometry.coordinates}}"],"mode":"Permanent"});
     -internals.setMemory({"name":"myPostcode","value":"{{!memory.postcode.value.packet.features[0].properties.postcode}}","mode":"Permanent"});
+    -internals.setMemory({"name":"myPostcodeText","value":"{{!memory.postcode.value.packet.features[0].properties.title}}","mode":"Permanent"});
+    -elements.innerHTML({"targetId":".user-entered","html":"{{!memory.myPostcodeText.value}}"});
+    -locus.postcodeDisplay({"text":"{{!queue.getElement('#postcode').value}}"});
     -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
     -openlayers.flyTo({"coordinate":"{{!memory.myLocation.value}}"});
-    -internals.execute({"name":"reloadCat"});
+    -internals.execute({"name":"{{!memory.updateQueueToRun.value}}"});
+    -elements.removeClass({"targetId":"body","class":"open-loc"});
+
+    @elements.addClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
+
+    @elements.addClass({"targetId":".location-text","class":"hidden"},{"queuePrepare":"hideLocationHint"});
+    @elements.removeClass({"targetId":".location-text","class":"hidden"},{"queuePrepare":"showLocationHint"});
+
+
 
     <!-- Point search -->
 
@@ -53,29 +95,16 @@
 </script>
 
 <script id="header" type="text/html">
-    <div>
+    <div class="top-b">
         <a class="logo" href="/" rel="home" @browser.addHistory({"history":"Home"});>
-            <span class="sr-only">Surrey Heath</span>
+            <span class="sr-only">Surrey Heath Borough Council</span>
         </a>
 
         <button class="button-back inactive" type="button" @browser.backHistory();>
             <span class="sr-only">Back to previous screen</span>
         </button>
 
-        <button id="open-search-mobile" type="button" class="search-site-open" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":".page-header","class":"open-search"});>
-            -elements.removeClass({"targetId":".main-menu","class":"open-this-menu"});
-            <span class="sr-only">Open search</span>
-        </button>
-        <form id="searchSite" class="search-site" aria-label="Search the site for information">
-            <div>
-                <input id="find" type="text" value="">
-                <button class="button-search-site" @browser.addHistory({"history":"Cat/Find/{{!queue.getElement('#find').value}}","force":true});>Find</button>
-            </div>
-        </form>
-
         <nav class="main-menu" role="navigation">
-            <!-- accessible menu -->
-            <!-- removed id="menubutton1" from button -->
             <button id="menubutton1" aria-haspopup="true" aria-controls="menuTop" class="menu-button-actual">
                 <span class="sr-only">Open main menu</span>
             </button>
@@ -83,7 +112,7 @@
                 <ul id="menuTop" class="menu-options" role="menu" aria-labelledby="menubutton1">
                     <li role="menuitem" @browser.addHistory({"history":"Home"});>Home</li>
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Democracy"});>Democracy</li>
+                    <li role="menuitem" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Events"});>Events</li>
                     <li role="menuitem" @browser.addHistory({"history":"Cat/Community"});>Community</li>
                     <li role="menuitem"><a href="">Help</a></li>
@@ -91,27 +120,39 @@
             </div>
         </nav>
     </div>
+
+</script>
+
+<script id="subheading-text" type="text/html">
+    <div class="title-text">
+        <h1>Learn more about your location</h1>
+        <p>Enter an address or postcode<br> to find information about that area</p>
+    </div>
 </script>
 
 <script id="postcode-search" type="text/html">
     <div id="backMap" class="map-background"></div>
 
     <form class="your-current-postcode">
-        <label for="postcode">Your location is set to:</label>
-        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":"body","class":"open-loc"},{"queueEvent":"keydown"});>
-        -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
-        -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
-
-        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
+        <label class="label-loc-is-set" for="postcode">showing information about:</label>
+        <label class="label-loc-is-edit" for="postcode">change this location to:</label>
+        <span class="location-text">"<span class="user-entered">{{memory.myPostcodeText.value}}</span>"</span>
+        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queueEvent":"focus"});>
+        <span class="error-msg">unknown location</span>
+        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":"body","class":"open-loc"});>
+            -elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
             Change your location
         </button>
+        <div class="edit-loc-b-panel">
+            <button type="button" class="change-postcode can-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.removeClass({"targetId":"body","class":"open-loc"});>
+                -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
+                Cancel
+            </button>
+            <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});>
+                Save location
+            </button>
+        </div>
 
-        <!-- should this be submit? -->
-        <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-loc"});>
-                -internals.setMemory({"name":"myPostcode","value":"{{!queue.getElement('#postcode').value}}","mode":"Permanent"});
-                -api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});
-            Set this as your location
-        </button>
     </form>
 </script>
 
@@ -120,9 +161,8 @@
     <section class="side-panel">
 
     </section>
-    <section class="main-content">
-        <h1>Welcome to Surrey Heath's community mapping tool</h1>
-        <p>A short explanatory message encouraging users to set their location and explore one (or all) of the 4 channels below: </p>
+    <section class="main-panel">
+        <p>To help you find information relevant to the location you're interested in, we've created the following channels [HOLDING COPY - REPLACE]</p>
         <section class="channels">
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="" alt="">
@@ -138,7 +178,7 @@
                 <h2>Democracy</h2>
                 <p><strong>Councillor, Ward, Parish, MP</strong></p>
                 <p>To gain access to sub-types, such as who is the Councillor at location X.</p>
-                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Democracy"});>Explore</button>
+                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Report/democracy_location"});>Explore</button>
             </div>
             <div class="channel channel-events">
                 <img src="images/channel-events.jpg" title="" alt="">
@@ -162,8 +202,6 @@
 
 <script id="page-content" type="text/html">
     {{#include '#page-content-'+memory.history.value[0]}}
-
-
 </script>
 
 <script id="page-content-filter" type="text/html">
@@ -182,8 +220,8 @@
                 <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
                 <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
             </select>
-            <label for="keywords">By keyword:</label>
-            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >
+          <!--  <label for="keywords">By keyword:</label>
+            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
             <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
                 Filter
             </button>
@@ -194,7 +232,7 @@
 
 
 <script id="page-content-result-main" type="text/html">
-    <section class="main-content">
+    <section class="main-panel">
         <ul class="results-item-list">
 
         </ul>
@@ -208,6 +246,38 @@
         {{#include '#page-content-filter'}}
     </section>
     {{#include '#page-content-result-main'}}
+</script>
+
+<script id="report_display" type="text/html">
+    <section class="side-panel details channel-democracy">
+        <h6 class="items-channel-heading">Democracy</h6>
+        {{#for memory.historyReportRender.value.packet.items}}
+            <p class="item-overview-title">
+                {{memory.historyReportRender.value.packet.items[#loop0].title}}
+            </p>
+            <p class="item-overview-detail">
+                {{memory.historyReportRender.value.packet.items[#loop0].value}}
+            </p>
+        {{/for}}
+        <p class="item-overview-title">
+            Polling station
+        </p>
+        <p class="item-overview-detail">
+            Polling station address
+        </p>
+    </section>
+    <section class="main-panel details">
+<!--        <h4>{{memory.historyReportRender.value.packet.title}}</h4>-->
+        <h4>## REITERATION OF WARD NAME ##</h4>
+        <p><strong>About this ward</strong></p>
+        <div class="item-main-info">
+            <p>SIMON: This could be taken from the wikipedia page for the ward</p>
+            <p>{{memory.historyReportRender.value.packet.description}}</p>
+        </div>
+        <div id="openlayersItemMap" class="item-main-map">
+
+        </div>
+    </section>
 </script>
 
 <script id="page-content-Planning" type="text/html">
@@ -335,6 +405,22 @@
     </li>
 </script>
 
+
+
+<script id="full-details-Map" type="text/html">
+    <p><strong>Location:</strong></p>
+    <div id="openlayersItemMap" class="item-main-map">
+
+    </div>
+    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+        Reset
+    </button>
+    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+        Home
+    </button>
+
+</script>
+
 <script id="full-details-Generic" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading">Generic</h6>
@@ -345,16 +431,13 @@
             Item overview detail
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>Item title</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
             <p>Detailed information about the item</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
-
-        </div>
+        {{#include '#full-details-Map'}}
     </section>
 </script>
 
@@ -364,9 +447,6 @@
         <address>
             {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
         </address>
-        <p class="distance-from-details">
-            5 miles from your location
-        </p>
         <p class="item-type">
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
@@ -374,17 +454,15 @@
             Ref: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Overview:</strong></p>
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 
 
@@ -400,7 +478,7 @@
             {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>Item title</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
@@ -410,10 +488,8 @@
                 <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a>
             {{/if}}
         </div>
-        <p><strong>Location(s):</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
@@ -423,9 +499,6 @@
         <address>
             {{memory.historyDetailsRender.value.packet.features[0].properties.description.venue}}
         </address>
-        <p class="distance-from-details">
-            5 miles from your location
-        </p>
         <time>
             From: {{memory.historyDetailsRender.value.packet.features[0].properties.description.start_date}}
         </time>
@@ -442,40 +515,33 @@
             Read more about this
         </a>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.title}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.event_details}}</p>
             <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
 <script id="full-details-Community" type="text/html">
     <section class="side-panel details channel-community">
         <h6 class="items-channel-heading">Community</h6>
-        <p class="distance-from-details">
-            5 miles from your location
-        </p>
         <p class="item-type">
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
     </section>
-    <section class="main-content details">
+    <section class="main-panel details">
         <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
