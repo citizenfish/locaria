@@ -28,7 +28,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
             LIMIT 1
         ), MP AS (
             SELECT 'Michael Gove' AS mp
-            
+
         ), POLLING_STATION AS (
 
 			SELECT wkb_geometry as ps_geom,
