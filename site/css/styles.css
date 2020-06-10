@@ -693,7 +693,7 @@ li.has-error::after {
     margin: 0 0 0 0;
 }
 .side-panel p {
-    /*margin: 0 0 15px 0;*/
+    margin: 0 0 15px 0;
 }
 @media only screen and (min-width: 795px) {
     .side-panel h2 {
@@ -706,7 +706,7 @@ li.has-error::after {
 }
 .side-panel .results-number {
     margin: 0 0 0 0;
-    font-style: italic;
+    /*font-style: italic;*/
     font-weight: 600;
 }
 @media only screen and (min-width: 795px) {

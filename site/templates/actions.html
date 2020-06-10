@@ -210,6 +210,7 @@
     {{#include '#page-content-filter-Header'}}
     <form class="search-filters">
         <div>
+            {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
             {{#include '#page-content-filter-Button'}}
@@ -228,12 +229,13 @@
 </script>]
 
 <script id="page-content-filter-Distance" type="text/html">
+
     <label for="filter-distance">By distance:</label>
     <select id="filter-distance">
-        <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
-        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
-        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
-        <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
+        <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>Up to 1 mile from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 10 miles from my location</option>
     </select>
 </script>
 
@@ -246,10 +248,18 @@
     </button>
 </script>
 
+<script id="display-distance-units" type="text/html">
+    <select id="distance-unit">
+        <option value="miles">Show distance in miles</option>
+        <option value="kms">Show distance in kilometres</option>
+    </select>
+</script>
+
 <script id="page-content-filter-Planning" type="text/html">
     {{#include '#page-content-filter-Header'}}
     <form class="search-filters">
         <div>
+            {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
             <label class="ck-cont" for="planningTypeApplication">Application
