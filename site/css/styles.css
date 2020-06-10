@@ -733,13 +733,13 @@ li.has-error::after {
 }
 .side-panel .search-filters p,
 .side-panel .search-filters label,
-.side-panel .search-filters input,
+.side-panel .search-filters input[type=text],
 .side-panel .search-filters select {
     width: 100%;
     display: inline-block;
     margin-bottom: 15px;
 }
-.side-panel .search-filters input,
+.side-panel .search-filters input[type=text],
 .side-panel .search-filters select {
     border: 2px solid var(--dark);
     padding: 10px;
