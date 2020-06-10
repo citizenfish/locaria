@@ -249,10 +249,22 @@
         <div>
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
-            <label for="application">Application</label>
-            <input type="checkbox" value="Application" class="functionGetTypes" id="application">
-            <label for="listed">Listed Buildings</label>
-            <input type="checkbox" value="Listed Buildings" class="functionGetTypes" id="listed">
+            <label class="container" for="planningTypeApplication">Application
+                <input type="checkbox" value="Application" class="functionGetTypes" id="planningTypeApplication" checked>
+                <span class="checkmark"></span>
+            </label>
+            <label class="container" for="planningTypeConservation">Conservation area
+                <input type="checkbox" value="Conservation" class="functionGetTypes" id="planningTypeConservation" checked>
+                <span class="checkmark"></span>
+            </label>
+            <label class="container" for="planningTypeListed">Listed building
+                <input type="checkbox" value="Listed" class="functionGetTypes" id="planningTypeListed" checked>
+                <span class="checkmark"></span>
+            </label>
+            <label class="container" for="planningTypeTPO">TPO
+                <input type="checkbox" value="TPO" class="functionGetTypes" id="planningTypeTPO" checked>
+                <span class="checkmark"></span>
+            </label>
             {{#include '#page-content-filter-Button'}}
 
         </div>
