@@ -918,14 +918,17 @@ li.has-error::after {
 .results-item-list li .distance-from {
     padding: 0 15px;
     text-align: center;
+    min-width: 120px;
 }
 .results-item-list .distance-from .miles-no {
     font-size: 4rem;
     line-height: 1;
     font-weight: 600;
+    display: block;
 }
 .results-item-list .distance-from em {
     font-style: normal;
+    display: block;
 }
 .results-item-list li .item-detail {
     width: 90%;
@@ -933,7 +936,7 @@ li.has-error::after {
 .results-item-list .item-detail h4 {
     margin-bottom: 5px;
 }
-.results-item-list .item-detail address {
+.results-item-list .item-detail .result-class {
     margin-bottom: 5px;
 }
 .results-item-list .item-detail a {

@@ -396,8 +396,8 @@
     <li>
        {{#include '#page-content-results-Distance'}}
         <div class="item-detail">
-            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}} Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}} Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -408,8 +408,8 @@
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
-            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
+            <p class="result-class">Cost: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -421,7 +421,7 @@
 
         <div class="item-detail">
             <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -453,7 +453,7 @@
         </div>
         <div class="item-detail">
             <h4>Category: {{memory.points.value.packet.features[#loop0].properties.category}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.name}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
