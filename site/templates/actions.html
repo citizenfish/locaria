@@ -44,6 +44,19 @@
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
+    -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle",
+    "geojson":{
+        "type":"FeatureCollection",
+        "features":[
+            {"geometry":{
+                "type":"Point",
+                "coordinates":["{{!^memory.myPoint.value}}"]
+                },
+            "type":"Feature"
+            }
+        ]
+    }
+    });
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
     @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
@@ -54,15 +67,22 @@
     @internals.ifqueue({"statement":"memory.postcode.value.packet.features.length>0","name":"locationGood","else":"locationBad"},{"queuePrepare":"postcode"});
 
     @internals.setMemory({"name":"myLocation","value":"SRID=4326;POINT({{!memory.postcode.value.packet.features[0].geometry.coordinates[0]}} {{!memory.postcode.value.packet.features[0].geometry.coordinates[1]}})","mode":"Permanent"},{"queuePrepare":"locationGood"});
+    -internals.setMemory({"name":"myPoint","value":["{{!^memory.postcode.value.packet.features[0].geometry.coordinates}}"],"mode":"Permanent"});
     -internals.setMemory({"name":"myPostcode","value":"{{!memory.postcode.value.packet.features[0].properties.postcode}}","mode":"Permanent"});
     -internals.setMemory({"name":"myPostcodeText","value":"{{!memory.postcode.value.packet.features[0].properties.title}}","mode":"Permanent"});
-    -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
     -elements.innerHTML({"targetId":".user-entered","html":"{{!memory.myPostcodeText.value}}"});
+    -locus.postcodeDisplay({"text":"{{!queue.getElement('#postcode').value}}"});
+    -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
     -openlayers.flyTo({"coordinate":"{{!memory.myLocation.value}}"});
     -internals.execute({"name":"{{!memory.updateQueueToRun.value}}"});
     -elements.removeClass({"targetId":"body","class":"open-loc"});
 
     @elements.addClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
+
+    @elements.addClass({"targetId":".location-text","class":"hidden"},{"queuePrepare":"hideLocationHint"});
+    @elements.removeClass({"targetId":".location-text","class":"hidden"},{"queuePrepare":"showLocationHint"});
+
+
 
     <!-- Point search -->
 
@@ -117,7 +137,7 @@
         <label class="label-loc-is-set" for="postcode">showing information about:</label>
         <label class="label-loc-is-edit" for="postcode">change this location to:</label>
         <span class="location-text">"<span class="user-entered">{{memory.myPostcodeText.value}}</span>"</span>
-        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}">
+        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queueEvent":"focus"});>
         <span class="error-msg">unknown location</span>
         <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":"body","class":"open-loc"});>
             -elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
@@ -185,62 +205,60 @@
 </script>
 
 <script id="page-content-filter" type="text/html">
-    <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
-    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
-    Show/hide filters
-    </button>
+    {{#include '#page-content-filter-Header'}}
     <form class="search-filters">
         <div>
             <p><strong>Filter these results:</strong></p>
-            <label for="filter-distance">By distance:</label>
-            <select id="filter-distance">
-                <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
-                <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
-                <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
-                <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
-            </select>
-            <!--  removed this for now as it's only applicable to Events -->
-<!--            <label for="keywords">By keyword:</label>-->
-<!--            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
-            <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
-                Filter
-            </button>
+            {{#include '#page-content-filter-Distance'}}
+            {{#include '#page-content-filter-Button'}}
         </div>
     </form>
     <hr class="no-lg-res">
 </script>
 
-<script id="page-content-filter-planning" type="text/html">
+<script id="page-content-filter-Header" type="text/html">
     <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
     <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
     <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
     Show/hide filters
     </button>
+
+</script>]
+
+<script id="page-content-filter-Distance" type="text/html">
+    <label for="filter-distance">By distance:</label>
+    <select id="filter-distance">
+        <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
+    </select>
+</script>
+
+<script id="page-content-filter-Button" type="text/html">
+    <!--  <label for="keywords">By keyword:</label>
+      <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
+    <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
+    Filter
+    </button>
+</script>
+
+<script id="page-content-filter-Planning" type="text/html">
+    {{#include '#page-content-filter-Header'}}
     <form class="search-filters">
         <div>
             <p><strong>Filter these results:</strong></p>
-            <label for="filter-distance">By distance:</label>
-            <select id="filter-distance">
-                <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
-                <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
-                <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
-                <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
-            </select>
+            {{#include '#page-content-filter-Distance'}}
+            <label for="application">Application</label>
+            <input type="checkbox" value="Application" class="functionGetTypes" id="application">
+            <label for="listed">Listed Buildings</label>
+            <input type="checkbox" value="Listed Buildings" class="functionGetTypes" id="listed">
+            {{#include '#page-content-filter-Button'}}
 
-            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-application"> <label for="pln-application">Application</label></span>
-            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-conservation"> <label for="pln-conservation">Conservation area</label></span>
-            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-listed"> <label for="pln-listed">Listed building</label></span>
-            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-tpo"> <label for="pln-tpo">TPO</label></span>
-
-            <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
-                Filter
-            </button>
         </div>
     </form>
     <hr class="no-lg-res">
 </script>
-
 
 <script id="page-content-result-main" type="text/html">
     <section class="main-panel">
@@ -295,7 +313,7 @@
     <section class="side-panel channel-planning">
         <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
         <h2>{{memory.history.value[0]}}</h2>
-        {{#include '#page-content-filter-planning'}}
+        {{#include '#page-content-filter-Planning'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
@@ -353,7 +371,7 @@
     <li>
        {{#include '#page-content-results-Distance'}}
         <div class="item-detail">
-            <h4>Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
+            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}} Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
@@ -377,8 +395,8 @@
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
-            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -416,6 +434,22 @@
     </li>
 </script>
 
+
+
+<script id="full-details-Map" type="text/html">
+    <p><strong>Location:</strong></p>
+    <div id="openlayersItemMap" class="item-main-map">
+
+    </div>
+    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+        Reset
+    </button>
+    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+        Home
+    </button>
+
+</script>
+
 <script id="full-details-Generic" type="text/html">
     <section class="side-panel details">
         <h6 class="items-channel-heading">Generic</h6>
@@ -432,10 +466,7 @@
         <div class="item-main-info">
             <p>Detailed information about the item</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
-
-        </div>
+        {{#include '#full-details-Map'}}
     </section>
 </script>
 
@@ -458,11 +489,10 @@
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            <p>Link: <a target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url.substr(0,50)}}...</a></p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 
 
@@ -488,10 +518,8 @@
                 <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a>
             {{/if}}
         </div>
-        <p><strong>Location(s):</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
@@ -524,10 +552,8 @@
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.event_details}}</p>
             <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
@@ -544,10 +570,8 @@
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
         </div>
-        <p><strong>Location:</strong></p>
-        <div id="openlayersItemMap" class="item-main-map">
+        {{#include '#full-details-Map'}}
 
-        </div>
     </section>
 </script>
 
