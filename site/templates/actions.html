@@ -205,31 +205,60 @@
 </script>
 
 <script id="page-content-filter" type="text/html">
-    <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
-    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
-    Show/hide filters
-    </button>
+    {{#include '#page-content-filter-Header'}}
     <form class="search-filters">
         <div>
             <p><strong>Filter these results:</strong></p>
-            <label for="filter-distance">By distance:</label>
-            <select id="filter-distance">
-                <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
-                <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
-                <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
-                <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
-            </select>
-          <!--  <label for="keywords">By keyword:</label>
-            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
-            <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
-                Filter
-            </button>
+            {{#include '#page-content-filter-Distance'}}
+            {{#include '#page-content-filter-Button'}}
         </div>
     </form>
     <hr class="no-lg-res">
 </script>
 
+<script id="page-content-filter-Header" type="text/html">
+    <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+
+</script>]
+
+<script id="page-content-filter-Distance" type="text/html">
+    <label for="filter-distance">By distance:</label>
+    <select id="filter-distance">
+        <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
+    </select>
+</script>
+
+<script id="page-content-filter-Button" type="text/html">
+    <!--  <label for="keywords">By keyword:</label>
+      <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
+    <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
+    Filter
+    </button>
+</script>
+
+<script id="page-content-filter-Planning" type="text/html">
+    {{#include '#page-content-filter-Header'}}
+    <form class="search-filters">
+        <div>
+            <p><strong>Filter these results:</strong></p>
+            {{#include '#page-content-filter-Distance'}}
+            <label for="application">Application</label>
+            <input type="checkbox" value="Application" class="functionGetTypes" id="application">
+            <label for="listed">Listed Buildings</label>
+            <input type="checkbox" value="Listed Buildings" class="functionGetTypes" id="listed">
+            {{#include '#page-content-filter-Button'}}
+
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
 
 <script id="page-content-result-main" type="text/html">
     <section class="main-panel">
@@ -284,7 +313,7 @@
     <section class="side-panel channel-planning">
         <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
         <h2>{{memory.history.value[0]}}</h2>
-        {{#include '#page-content-filter'}}
+        {{#include '#page-content-filter-Planning'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
@@ -342,7 +371,7 @@
     <li>
        {{#include '#page-content-results-Distance'}}
         <div class="item-detail">
-            <h4>Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
+            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}} Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
             <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
@@ -366,8 +395,8 @@
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
-            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -460,6 +489,7 @@
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            <p>Link: <a target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url.substr(0,50)}}...</a></p>
         </div>
         {{#include '#full-details-Map'}}
 
