@@ -100,7 +100,7 @@ BEGIN
                 --date search
                 AND (start_date_var IS NULL OR date_added::DATE BETWEEN start_date_var AND end_date_var)
                 --for sub-categorisation
-                AND (json_filter IS NULL OR attributes->'description' @> json_filter)
+                AND (json_filter IS NULL OR attributes->'description' @> json_filter OR attributes#>>'{description,type}' = ANY (string_to_array(search_parameters#>>'{filter,type}', ',')) )
                 OFFSET default_offset
 
             ) INNER_SUB
