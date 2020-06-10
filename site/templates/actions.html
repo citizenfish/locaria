@@ -252,19 +252,19 @@
         <div>
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
-            <label class="container" for="planningTypeApplication">Application
+            <label class="ck-cont" for="planningTypeApplication">Application
                 <input type="checkbox" value="Application" class="functionGetTypes" id="planningTypeApplication" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Application/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
-            <label class="container" for="planningTypeConservation">Conservation area
+            <label class="ck-cont" for="planningTypeConservation">Conservation area
                 <input type="checkbox" value="Conservation" class="functionGetTypes" id="planningTypeConservation" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Conservation/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
-            <label class="container" for="planningTypeListed">Listed building
+            <label class="ck-cont" for="planningTypeListed">Listed building
                 <input type="checkbox" value="Listed Building" class="functionGetTypes" id="planningTypeListed" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Listed/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
-            <label class="container" for="planningTypeTPO">TPO
+            <label class="ck-cont" for="planningTypeTPO">TPO
                 <input type="checkbox" value="TPO" class="functionGetTypes" id="planningTypeTPO" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/TPO/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
