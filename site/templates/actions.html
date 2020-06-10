@@ -200,8 +200,39 @@
                 <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
                 <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
             </select>
-            <label for="keywords">By keyword:</label>
-            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >
+            <!--  removed this for now as it's only applicable to Events -->
+<!--            <label for="keywords">By keyword:</label>-->
+<!--            <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
+            <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
+                Filter
+            </button>
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
+<script id="page-content-filter-planning" type="text/html">
+    <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+    <form class="search-filters">
+        <div>
+            <p><strong>Filter these results:</strong></p>
+            <label for="filter-distance">By distance:</label>
+            <select id="filter-distance">
+                <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
+                <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
+                <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
+                <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
+            </select>
+
+            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-application"> <label for="pln-application">Application</label></span>
+            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-conservation"> <label for="pln-conservation">Conservation area</label></span>
+            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-listed"> <label for="pln-listed">Listed building</label></span>
+            <span class="custom-checkbox"><input type="checkbox" value="" id="pln-tpo"> <label for="pln-tpo">TPO</label></span>
+
             <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
                 Filter
             </button>
@@ -264,7 +295,7 @@
     <section class="side-panel channel-planning">
         <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
         <h2>{{memory.history.value[0]}}</h2>
-        {{#include '#page-content-filter'}}
+        {{#include '#page-content-filter-planning'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
