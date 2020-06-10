@@ -777,32 +777,94 @@ li.has-error::after {
     margin: 15px 0 0;
     clear: both;
 }
+
+/* checkboxes */
+
+.ck-cont {
+    display: block;
+    position: relative;
+    padding-left: 45px;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.ck-cont input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.ck-cont .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border: 2px solid var(--elementNeutral);
+    box-shadow: 1px 4px 7px 0 rgba(0,0,0,0.15);
+    transition: border ease 0.3s;
+}
+.ck-cont .checkmark:after {
+    content: "";
+    position: absolute;
+    transition: opacity ease 0.3s;
+    opacity: 0;
+}
+.ck-cont input:checked ~ .checkmark:after {
+    opacity: 1;
+}
+.ck-cont .checkmark:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/checky.svg);
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    background-position: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 @media only screen and (min-width: 795px) {
     .side-panel .search-filters input,
     .side-panel hr,
-    .side-panel .search-filters select {
+    .side-panel .search-filters select,
+    .ck-cont .checkmark {
         border-width: 3px;
     }
 }
 
 .side-panel.channel-planning .search-filters input,
 .side-panel.channel-planning .search-filters select,
-.side-panel.channel-planning hr {
+.side-panel.channel-planning hr,
+.side-panel.channel-planning .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelPlanning);
 }
 .side-panel.channel-democracy .search-filters input,
 .side-panel.channel-democracy .search-filters select,
-.side-panel.channel-democracy hr {
+.side-panel.channel-democracy hr,
+.side-panel.channel-democracy .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelDemocracy);
 }
 .side-panel.channel-events .search-filters input,
 .side-panel.channel-events .search-filters select,
-.side-panel.channel-events hr {
+.side-panel.channel-events hr,
+.side-panel.channel-events .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelEvents);
 }
 .side-panel.channel-community .search-filters input,
 .side-panel.channel-community .search-filters select,
-.side-panel.channel-community hr {
+.side-panel.channel-community hr,
+.side-panel.channel-community .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelCommunity);
 }
 
