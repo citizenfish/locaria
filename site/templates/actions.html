@@ -9,7 +9,7 @@
     -templates.render({"targetId":"#location-target","template":"#postcode-search"});
     -browser.initHistory({"checkURL":true,"default":"Home"});
     -openlayers.addMap({"target":"backMap","projection":"EPSG:3857","zoom":17,"maxZoom":17});
-    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://ng-geoserver.s3-eu-west-1.amazonaws.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
 <!--
     -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
 -->
@@ -38,7 +38,7 @@
 <!--
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
 -->
-    -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://ng-geoserver.s3-eu-west-1.amazonaws.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
     -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle","geojson":{"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":["{{!^memory.myPoint.value}}"]},"type":"Feature"}]}});
 
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyReportRender.value.packet.geojson"});
@@ -51,7 +51,7 @@
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
-    -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://ng-geoserver.s3-eu-west-1.amazonaws.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
 <!--
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
 -->
