@@ -143,7 +143,7 @@
         <span class="error-msg">unknown location</span>
         <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":"body","class":"open-loc"});>
             -elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
-            Change your location
+            Change location
         </button>
         <div class="edit-loc-b-panel">
             <button type="button" class="change-postcode can-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.removeClass({"targetId":"body","class":"open-loc"});>
@@ -464,16 +464,18 @@
 
 <script id="full-details-Map" type="text/html">
     <p><strong>Location:</strong></p>
-    <div id="openlayersItemMap" class="item-main-map">
+    <div class="map-with-controls">
+        <div id="openlayersItemMap" class="item-main-map">
+
+        </div>
+        <button class="details-map-button button-home-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+            Show set location
+        </button>
+        <button class="details-map-button button-reset-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+            Reset
+        </button>
 
     </div>
-    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
-        Reset
-    </button>
-    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
-        Home
-    </button>
-
 </script>
 
 <script id="full-details-Generic" type="text/html">
@@ -515,7 +517,7 @@
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
-            <p>Link: <a target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url.substr(0,50)}}...</a></p>
+            <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>
         </div>
         {{#include '#full-details-Map'}}
 
