@@ -118,7 +118,6 @@
                     <li role="menuitem"  tabindex="0" aria-label="Democracy" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
                     <li role="menuitem"  tabindex="0" aria-label="Events" @browser.addHistory({"history":"Cat/Events"});>Events</li>
                     <li role="menuitem"  tabindex="0" aria-label="Community" @browser.addHistory({"history":"Cat/Community"});>Community</li>
-                    <li role="menuitem"  tabindex="0" aria-label="Help"><a href="">Help</a></li>
                 </ul>
             </div>
         </nav>
@@ -332,15 +331,17 @@
             <p>SIMON: This could be taken from the wikipedia page for the ward</p>
             <p>{{memory.historyReportRender.value.packet.description}}</p>
         </div>
-        <div id="openlayersItemMap" class="item-main-map">
+        <div class="map-with-controls">
+            <div id="openlayersItemMap" class="item-main-map">
 
+            </div>
+            <button class="details-map-button button-home-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+                Current location
+            </button>
+            <button class="details-map-button button-reset-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+                Reset map
+        </button>
         </div>
-        <button class="details-map-button button-home-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
-            Current location
-        </button>
-        <button class="details-map-button button-reset-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
-            Reset map
-        </button>
     </section>
 </script>
 
