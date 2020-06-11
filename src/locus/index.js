@@ -39,20 +39,38 @@ document.addEventListener("DOMContentLoaded", function(event) {
  */
 
 const metersPerMile=1609;
+const metersPerKm=1000;
 const meterSwitch=0;
 
 window.distanceFormatNumber = function(distance) {
-	let miles=parseFloat(distance/metersPerMile).toFixed(1);
-	if(miles<=meterSwitch) {
-		return parseInt(distance);
+	if(memory.unit.value==='miles') {
+
+		let miles = parseFloat(distance / metersPerMile).toFixed(1);
+		if (miles <= meterSwitch) {
+			return parseInt(distance*1.094);
+		}
+		return miles;
+	} else {
+		let kms = parseFloat(distance / metersPerKm).toFixed(1);
+		if (kms <= meterSwitch) {
+			return parseInt(distance);
+		}
+		return kms;
 	}
-	return miles;
 }
 
 window.distanceFormat = function (distance) {
-	let miles=parseFloat(distance/metersPerMile).toFixed(1);
-	if(miles<=meterSwitch) {
-		return 'meters';
+	if(memory.unit.value==='miles') {
+		let miles = parseFloat(distance / metersPerMile).toFixed(1);
+		if (miles <= meterSwitch) {
+			return 'yards';
+		}
+		return 'miles';
+	} else {
+		let kms = parseFloat(distance / metersPerKm).toFixed(1);
+		if (kms <= meterSwitch) {
+			return 'meters';
+		}
+		return 'kms';
 	}
-	return 'miles';
 }
