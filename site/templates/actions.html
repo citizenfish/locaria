@@ -182,13 +182,22 @@
                 <p>To gain access to sub-types, such as who is the Councillor at location X.</p>
                 <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Report/democracy_location"});>Explore</button>
             </div>
-            <div class="channel channel-events">
-                <img src="images/channel-events.jpg" title="" alt="">
-                <h2>Events</h2>
-                <p><strong>Information on Events across the Borough and beyond</strong></p>
-                <p>To find information of events or 'Whats' on' near to them.</p>
-                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>
+<!--            <div class="channel channel-events">-->
+<!--                <img src="images/channel-events.jpg" title="" alt="">-->
+<!--                <h2>Events</h2>-->
+<!--                <p><strong>Information on Events across the Borough and beyond</strong></p>-->
+<!--                <p>To find information of events or 'Whats' on' near to them.</p>-->
+<!--                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>-->
+<!--            </div>-->
+
+            <div class="channel channel-reportit">
+                <img src="images/channel-reportit.jpg" title="" alt="">
+                <h2>Report it</h2>
+                <p><strong>Issues reported by the local community</strong></p>
+                <p>See the concerns raised by residents in this area</p>
+                <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reportit"});>Explore</button>
             </div>
+
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="" alt="">
                 <h2>Community</h2>
@@ -245,7 +254,7 @@
     <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @elements.getCheckBoxValues({"mode":"string","targetId":".functionGetTypes"});>
         -internals.setMemory({"name":"unit","value":"{{!queue.getElement('#distance-unit').value}}","mode":"Permanent"});
         -browser.addHistory({"history":"Cat/{{memory.history.value[0]}}//{{!queue.getElement('#filter-distance').value}}/{{!memory.checkboxes.value}}/{{!memory.unit.value}}"});
-    Filter
+        Apply
     </button>
 </script>
 
@@ -371,6 +380,15 @@
     {{#include '#page-content-result-main'}}
 </script>
 
+<script id="page-content-Reportit" type="text/html">
+    <section class="side-panel channel-reportit">
+        <img src="images/channel-reportit.jpg" title="" alt="" class="no-mb">
+        <h2>Report it</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
 <script id="page-content-results" type="text/html">
     {{#if memory.points.value.packet.features.length===0}}
         <li>
@@ -411,6 +429,18 @@
         <div class="item-detail">
             <h4>{{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
             <p class="result-class">Cost: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</p>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Reportit" type="text/html">
+    <li>
+        {{#include '#page-content-results-Distance'}}
+
+        <div class="item-detail">
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
