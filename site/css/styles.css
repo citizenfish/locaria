@@ -903,12 +903,27 @@ li.has-error::after {
     padding: 0 15px;
     text-align: center;
     min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.results-item-list li .distance-from.less {
+    position: relative;
+}
+.results-item-list li .distance-from.less::before {
+    content: "Less than";
+    position: relative;
+    text-align: center;
+    display: block;
 }
 .results-item-list .distance-from .miles-no {
     font-size: 4rem;
     line-height: 1;
     font-weight: 600;
     display: block;
+}
+.results-item-list li .distance-from.less .miles-no  {
+    font-size: 2rem;
 }
 .results-item-list .distance-from em {
     font-style: normal;
