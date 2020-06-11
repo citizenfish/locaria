@@ -47,14 +47,14 @@ window.distanceFormatNumber = function(distance) {
 
 		let miles = parseFloat(distance / metersPerMile).toFixed(1);
 		if (miles <= meterSwitch) {
-			return 'less than 0.1';
+			return 0.1;
 			//return parseInt(distance*1.094);
 		}
 		return miles;
 	} else {
 		let kms = parseFloat(distance / metersPerKm).toFixed(1);
 		if (kms <= meterSwitch) {
-			return 'less than 0.1';
+			return 0.1;
 			//return parseInt(distance);
 		}
 		return kms;
