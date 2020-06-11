@@ -902,6 +902,7 @@ li.has-error::after {
 .channel img {
     width: 100%;
     max-width: 280px;
+    cursor: pointer;
 }
 .results-item-list {
 
@@ -991,6 +992,7 @@ li.has-error::after {
     border-bottom: 2px solid;
     margin: 0 auto 20px;
     max-width: 200px;
+    transition: border-color ease 0.3s;
 }
 @media only screen and (min-width: 795px) {
     .channel {
@@ -1036,6 +1038,10 @@ li.has-error::after {
 }
 .channel p {
     margin: 0 0 5px 0;
+}
+
+.main-panel .channel img:hover + h2 {
+    border-color: var(--dark);
 }
 
 @media only screen and (min-width: 795px) {
