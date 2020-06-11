@@ -429,6 +429,8 @@ li.has-error::after {
     width: 100%;
     pointer-events: none;
     flex: 1 1 50%;
+    top: 0;
+    bottom: 0;
 }
 .on-home .map-background {
     position: relative;
