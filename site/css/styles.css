@@ -449,6 +449,9 @@ li.has-error::after {
 .map-background .ol-control {
     display: none !important;
 }
+.map-background canvas {
+    height: 100%;
+}
 
 .postcode-search {
     position: relative;
