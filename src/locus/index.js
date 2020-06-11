@@ -47,13 +47,15 @@ window.distanceFormatNumber = function(distance) {
 
 		let miles = parseFloat(distance / metersPerMile).toFixed(1);
 		if (miles <= meterSwitch) {
-			return parseInt(distance*1.094);
+			return 'less than 0.1';
+			//return parseInt(distance*1.094);
 		}
 		return miles;
 	} else {
 		let kms = parseFloat(distance / metersPerKm).toFixed(1);
 		if (kms <= meterSwitch) {
-			return parseInt(distance);
+			return 'less than 0.1';
+			//return parseInt(distance);
 		}
 		return kms;
 	}
@@ -63,14 +65,16 @@ window.distanceFormat = function (distance) {
 	if(memory.unit.value==='miles') {
 		let miles = parseFloat(distance / metersPerMile).toFixed(1);
 		if (miles <= meterSwitch) {
-			return 'yards';
+			return 'less';
 		}
-		return 'miles';
+		return 'more';
 	} else {
 		let kms = parseFloat(distance / metersPerKm).toFixed(1);
 		if (kms <= meterSwitch) {
-			return 'meters';
+			return 'less';
 		}
-		return 'kms';
+		return 'more';
 	}
 }
+
+

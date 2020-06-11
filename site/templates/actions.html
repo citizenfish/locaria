@@ -387,9 +387,9 @@
 </script>
 
 <script id="page-content-results-Distance" type="text/html">
-    <div class="distance-from">
+    <div class="distance-from {{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}">
         <span class="miles-no">{{distanceFormatNumber(memory.points.value.packet.features[#loop0].properties.distance)}}</span>
-        <em>{{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}</em>
+        <em>{{memory.unit.value}}</em>
     </div>
 </script>
 
