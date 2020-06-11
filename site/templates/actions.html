@@ -39,6 +39,7 @@
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
 -->
     -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-3a55442f:16a97e5813c:130/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle","geojson":{"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":["{{!^memory.myPoint.value}}"]},"type":"Feature"}]}});
 
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyReportRender.value.packet.geojson"});
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
@@ -110,14 +111,14 @@
             <button id="menubutton1" aria-haspopup="true" aria-controls="menuTop" class="menu-button-actual">
                 <span class="sr-only">Open main menu</span>
             </button>
-            <div class="clip-menu open-this-menu">
-                <ul id="menuTop" class="menu-options" role="menu" aria-labelledby="menubutton1">
-                    <li role="menuitem" @browser.addHistory({"history":"Home"});>Home</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Events"});>Events</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Community"});>Community</li>
-                    <li role="menuitem"><a href="">Help</a></li>
+            <div class="clip-menu open-this-menu" tabindex="-1">
+                <ul id="menuTop" tabindex="0" class="menu-options" role="menu" aria-labelledby="menubutton1">
+                    <li role="menuitem"  tabindex="0" aria-label="Home" @browser.addHistory({"history":"Home"});>Home</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Planning" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Democracy" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Events" @browser.addHistory({"history":"Cat/Events"});>Events</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Community" @browser.addHistory({"history":"Cat/Community"});>Community</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Help"><a href="">Help</a></li>
                 </ul>
             </div>
         </nav>
@@ -141,7 +142,7 @@
         <span class="location-text">"<span class="user-entered">{{memory.myPostcodeText.value}}</span>"</span>
         <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queueEvent":"focus"});>
         <span class="error-msg">unknown location</span>
-        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":"body","class":"open-loc"});>
+        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" @elements.addClass({"targetId":"body","class":"open-loc"});>
             -elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
             Change location
         </button>
@@ -322,8 +323,7 @@
         </p>
     </section>
     <section class="main-panel details">
-<!--        <h4>{{memory.historyReportRender.value.packet.title}}</h4>-->
-        <h4>## REITERATION OF WARD NAME ##</h4>
+        <h4>{{memory.historyReportRender.value.packet.subTitle}}</h4>
         <p><strong>About this ward</strong></p>
         <div class="item-main-info">
             <p>SIMON: This could be taken from the wikipedia page for the ward</p>
@@ -332,6 +332,12 @@
         <div id="openlayersItemMap" class="item-main-map">
 
         </div>
+        <button class="details-map-button button-home-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+            Current location
+        </button>
+        <button class="details-map-button button-reset-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+            Reset map
+        </button>
     </section>
 </script>
 
