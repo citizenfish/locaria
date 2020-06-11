@@ -221,7 +221,7 @@
 
 <script id="page-content-filter-Header" type="text/html">
     <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
     <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
     Show/hide filters
     </button>
@@ -243,15 +243,16 @@
     <!--  <label for="keywords">By keyword:</label>
       <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
     <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @elements.getCheckBoxValues({"mode":"string","targetId":".functionGetTypes"});>
-        -browser.addHistory({"history":"Cat/{{memory.history.value[0]}}//{{!queue.getElement('#filter-distance').value}}/{{!memory.checkboxes.value}}"});
+        -internals.setMemory({"name":"unit","value":"{{!queue.getElement('#distance-unit').value}}","mode":"Permanent"});
+        -browser.addHistory({"history":"Cat/{{memory.history.value[0]}}//{{!queue.getElement('#filter-distance').value}}/{{!memory.checkboxes.value}}/{{!memory.unit.value}}"});
     Filter
     </button>
 </script>
 
 <script id="display-distance-units" type="text/html">
     <select id="distance-unit">
-        <option value="miles">Show distance in miles</option>
-        <option value="kms">Show distance in kilometres</option>
+        <option value="miles" {{#if memory.unit.value==="miles"}}selected{{/if}}>Show distance in miles</option>
+        <option value="kms" {{#if memory.unit.value==="kms"}}selected{{/if}}>Show distance in kilometres</option>
     </select>
 </script>
 
@@ -386,9 +387,9 @@
 </script>
 
 <script id="page-content-results-Distance" type="text/html">
-    <div class="distance-from">
+    <div class="distance-from {{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}">
         <span class="miles-no">{{distanceFormatNumber(memory.points.value.packet.features[#loop0].properties.distance)}}</span>
-        <em>{{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}</em>
+        <em>{{memory.unit.value}}</em>
     </div>
 </script>
 
