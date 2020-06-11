@@ -1136,16 +1136,17 @@ li.has-error::after {
     padding: 5px;
     position: absolute;
     bottom: 15px;
-    width: 70px;
     font-size: 0.75rem;
     height: 30px;
     padding-bottom: 7px;
 }
 .main-panel.details .map-with-controls .details-map-button.button-home-map {
     right: 15px;
+    width: 120px;
 }
 .main-panel.details .map-with-controls .details-map-button.button-reset-map {
-    right: 100px;
+    right: 150px;
+    width: 90px;
 }
 .main-panel.details .item-main-map::before {
     content: "";
