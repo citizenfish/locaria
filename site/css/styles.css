@@ -851,6 +851,12 @@ li.has-error::after {
 .side-panel.channel-community .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelCommunity);
 }
+.side-panel.channel-reportit .search-filters input,
+.side-panel.channel-reportit .search-filters select,
+.side-panel.channel-reportit hr,
+.side-panel.channel-reportit .ck-cont input:checked ~ .checkmark {
+    border-color: var(--channelReportit);
+}
 
 .side-panel.channel-planning .search-filters .apply-filters {
     background-color: var(--channelPlanning);
@@ -863,6 +869,9 @@ li.has-error::after {
 }
 .side-panel.channel-community .search-filters .apply-filters {
     background-color: var(--channelCommunity);
+}
+.side-panel.channel-reportit .search-filters .apply-filters {
+    background-color: var(--channelReportit);
 }
 
 .main-panel {
@@ -965,6 +974,9 @@ li.has-error::after {
 .channel.channel-community .explore-channel {
     background-color: var(--channelCommunity);
 }
+.channel.channel-reportit .explore-channel {
+    background-color: var(--channelReportit);
+}
 .channel .explore-channel:hover {
     background-color: var(--dark);
 }
@@ -1011,6 +1023,10 @@ li.has-error::after {
 .channel.channel-community h2,
 .side-panel.channel-community h2 {
     border-color: var(--channelCommunity);
+}
+.channel.channel-reportit h2,
+.side-panel.channel-reportit h2 {
+    border-color: var(--channelReportit);
 }
 .channel p {
     margin: 0 0 5px 0;
@@ -1065,6 +1081,9 @@ li.has-error::after {
 }
 .channel-community .items-channel-heading {
     border-bottom-color: var(--channelCommunity);
+}
+.channel-reportit .items-channel-heading {
+    border-bottom-color: var(--channelReportit);
 }
 
 .side-panel.details address,
