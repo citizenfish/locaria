@@ -8,8 +8,11 @@
     -menu.initMenu({"targetId":"#menubutton1"});
     -templates.render({"targetId":"#location-target","template":"#postcode-search"});
     -browser.initHistory({"checkURL":true,"default":"Home"});
-    -openlayers.addMap({"target":"backMap","projection":"EPSG:27700","zoom":17});
+    -openlayers.addMap({"target":"backMap","projection":"EPSG:3857","zoom":17,"maxZoom":17});
+    -openlayers.addLayer({"name":"xyz","type":"xyz","url":"https://ng-geoserver.s3-eu-west-1.amazonaws.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+<!--
     -openlayers.addLayer({"name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
+-->
     -openlayers.addLayer({"name":"points","type":"vector","style":"styles.mainMapStyle"});
     -openlayers.centerOnCoordinate({"coordinate":"{{!memory.myLocation.value}}"});
 
@@ -23,6 +26,7 @@
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -openlayers.updateSize({});
 
 
     @api.websocketSend({"message":{"queue":"historyReportRender","api":"api","data":{"method":"report","report_name":"{{!memory.history.value[0]}}","location":"{{!memory.myLocation.value}}"}}},{"queuePrepare":"historyReport"});
@@ -30,36 +34,35 @@
     -internals.setMemory({"name":"updateQueueToRun","value":"historyReport","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
-    -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
+    -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
+<!--
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
+-->
+    -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://ng-geoserver.s3-eu-west-1.amazonaws.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+    -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle","geojson":{"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":["{{!^memory.myPoint.value}}"]},"type":"Feature"}]}});
+
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyReportRender.value.packet.geojson"});
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
 
     @api.websocketSend({"message":{"queue":"historyDetailsRender","api":"api","data":{"method":"get_item","fid":"{{!^memory.history.value[1]}}"}}},{"queuePrepare":"historyDetails"});
     @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
-    -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
+    -internals.setMemory({"name":"updateQueueToRun","value":"historyDetailsRender","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
-    -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:27700"});
+    -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
+    -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://ng-geoserver.s3-eu-west-1.amazonaws.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
+<!--
     -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
+-->
+    -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle","geojson":{"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":["{{!^memory.myPoint.value}}"]},"type":"Feature"}]}});
     -openlayers.addLayer({"map":"itemMap","name":"points","type":"vector","style":"styles.mainMapStyle","geojson":"*memory.historyDetailsRender.value.packet"});
-    -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle",
-    "geojson":{
-        "type":"FeatureCollection",
-        "features":[
-            {"geometry":{
-                "type":"Point",
-                "coordinates":["{{!^memory.myPoint.value}}"]
-                },
-            "type":"Feature"
-            }
-        ]
-    }
-    });
+
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCat"});
+    @internals.ifqueue({"statement":"memory.history&&memory.history.value[3]","name":"reloadCatFilters","else":"reloadCatNoFilters" },{"queuePrepare":"reloadCat"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","filter":{"type":"{{!memory.history&&memory.history.value[3]?decodeURI(memory.history.value[3]):''}}"},"search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatFilters"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatNoFilters"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -108,14 +111,13 @@
             <button id="menubutton1" aria-haspopup="true" aria-controls="menuTop" class="menu-button-actual">
                 <span class="sr-only">Open main menu</span>
             </button>
-            <div class="clip-menu open-this-menu">
-                <ul id="menuTop" class="menu-options" role="menu" aria-labelledby="menubutton1">
-                    <li role="menuitem" @browser.addHistory({"history":"Home"});>Home</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Events"});>Events</li>
-                    <li role="menuitem" @browser.addHistory({"history":"Cat/Community"});>Community</li>
-                    <li role="menuitem"><a href="">Help</a></li>
+            <div class="clip-menu open-this-menu" tabindex="-1">
+                <ul id="menuTop" tabindex="0" class="menu-options" role="menu" aria-labelledby="menubutton1">
+                    <li role="menuitem"  tabindex="0" aria-label="Home" @browser.addHistory({"history":"Home"});>Home</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Planning" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Democracy" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Events" @browser.addHistory({"history":"Cat/Events"});>Events</li>
+                    <li role="menuitem"  tabindex="0" aria-label="Community" @browser.addHistory({"history":"Cat/Community"});>Community</li>
                 </ul>
             </div>
         </nav>
@@ -139,9 +141,9 @@
         <span class="location-text">"<span class="user-entered">{{memory.myPostcodeText.value}}</span>"</span>
         <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queueEvent":"focus"});>
         <span class="error-msg">unknown location</span>
-        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.addClass({"targetId":"body","class":"open-loc"});>
+        <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" @elements.addClass({"targetId":"body","class":"open-loc"});>
             -elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
-            Change your location
+            Change location
         </button>
         <div class="edit-loc-b-panel">
             <button type="button" class="change-postcode can-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.removeClass({"targetId":"body","class":"open-loc"});>
@@ -180,13 +182,22 @@
                 <p>To gain access to sub-types, such as who is the Councillor at location X.</p>
                 <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Report/democracy_location"});>Explore</button>
             </div>
-            <div class="channel channel-events">
-                <img src="images/channel-events.jpg" title="" alt="">
-                <h2>Events</h2>
-                <p><strong>Information on Events across the Borough and beyond</strong></p>
-                <p>To find information of events or 'Whats' on' near to them.</p>
-                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>
+<!--            <div class="channel channel-events">-->
+<!--                <img src="images/channel-events.jpg" title="" alt="">-->
+<!--                <h2>Events</h2>-->
+<!--                <p><strong>Information on Events across the Borough and beyond</strong></p>-->
+<!--                <p>To find information of events or 'Whats' on' near to them.</p>-->
+<!--                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>-->
+<!--            </div>-->
+
+            <div class="channel channel-reportit">
+                <img src="images/channel-reportit.jpg" title="" alt="">
+                <h2>Report it</h2>
+                <p><strong>Issues reported by the local community</strong></p>
+                <p>See the concerns raised by residents in this area</p>
+                <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reportit"});>Explore</button>
             </div>
+
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="" alt="">
                 <h2>Community</h2>
@@ -208,6 +219,7 @@
     {{#include '#page-content-filter-Header'}}
     <form class="search-filters">
         <div>
+            {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
             {{#include '#page-content-filter-Button'}}
@@ -218,7 +230,7 @@
 
 <script id="page-content-filter-Header" type="text/html">
     <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
-    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} miles</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
     <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
     Show/hide filters
     </button>
@@ -226,33 +238,56 @@
 </script>]
 
 <script id="page-content-filter-Distance" type="text/html">
+
     <label for="filter-distance">By distance:</label>
     <select id="filter-distance">
-        <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>up to 1 mile from my location</option>
-        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>up to 3 miles from my location</option>
-        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>up to 5 miles from my location</option>
-        <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>up to 10 miles from my location</option>
+        <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>Up to 1 mile from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 10 miles from my location</option>
     </select>
 </script>
 
 <script id="page-content-filter-Button" type="text/html">
     <!--  <label for="keywords">By keyword:</label>
       <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
-    <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @browser.addHistory({"history":"Cat/{{memory.history.value[0]}}/{{!queue.getElement('#keywords').value}}/{{!queue.getElement('#filter-distance').value}}"});>
-    Filter
+    <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @elements.getCheckBoxValues({"mode":"string","targetId":".functionGetTypes"});>
+        -internals.setMemory({"name":"unit","value":"{{!queue.getElement('#distance-unit').value}}","mode":"Permanent"});
+        -browser.addHistory({"history":"Cat/{{memory.history.value[0]}}//{{!queue.getElement('#filter-distance').value}}/{{!memory.checkboxes.value}}/{{!memory.unit.value}}"});
+        Apply
     </button>
+</script>
+
+<script id="display-distance-units" type="text/html">
+    <select id="distance-unit">
+        <option value="miles" {{#if memory.unit.value==="miles"}}selected{{/if}}>Show distance in miles</option>
+        <option value="kms" {{#if memory.unit.value==="kms"}}selected{{/if}}>Show distance in kilometres</option>
+    </select>
 </script>
 
 <script id="page-content-filter-Planning" type="text/html">
     {{#include '#page-content-filter-Header'}}
     <form class="search-filters">
         <div>
+            {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
-            <label for="application">Application</label>
-            <input type="checkbox" value="Application" class="functionGetTypes" id="application">
-            <label for="listed">Listed Buildings</label>
-            <input type="checkbox" value="Listed Buildings" class="functionGetTypes" id="listed">
+            <label class="ck-cont" for="planningTypeApplication">Application
+                <input type="checkbox" value="Application" class="functionGetTypes" id="planningTypeApplication" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Application/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+            <label class="ck-cont" for="planningTypeConservation">Conservation area
+                <input type="checkbox" value="Conservation" class="functionGetTypes" id="planningTypeConservation" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Conservation/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+            <label class="ck-cont" for="planningTypeListed">Listed building
+                <input type="checkbox" value="Listed Building" class="functionGetTypes" id="planningTypeListed" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Listed/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+            <label class="ck-cont" for="planningTypeTPO">TPO
+                <input type="checkbox" value="TPO" class="functionGetTypes" id="planningTypeTPO" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/TPO/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
             {{#include '#page-content-filter-Button'}}
 
         </div>
@@ -288,23 +323,24 @@
                 {{memory.historyReportRender.value.packet.items[#loop0].value}}
             </p>
         {{/for}}
-        <p class="item-overview-title">
-            Polling station
-        </p>
-        <p class="item-overview-detail">
-            Polling station address
-        </p>
     </section>
     <section class="main-panel details">
-<!--        <h4>{{memory.historyReportRender.value.packet.title}}</h4>-->
-        <h4>## REITERATION OF WARD NAME ##</h4>
+        <h4>{{memory.historyReportRender.value.packet.subTitle}}</h4>
         <p><strong>About this ward</strong></p>
         <div class="item-main-info">
             <p>SIMON: This could be taken from the wikipedia page for the ward</p>
             <p>{{memory.historyReportRender.value.packet.description}}</p>
         </div>
-        <div id="openlayersItemMap" class="item-main-map">
+        <div class="map-with-controls">
+            <div id="openlayersItemMap" class="item-main-map">
 
+            </div>
+            <button class="details-map-button button-home-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+                Current location
+            </button>
+            <button class="details-map-button button-reset-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+                Reset map
+        </button>
         </div>
     </section>
 </script>
@@ -345,6 +381,15 @@
     {{#include '#page-content-result-main'}}
 </script>
 
+<script id="page-content-Reportit" type="text/html">
+    <section class="side-panel channel-reportit">
+        <img src="images/channel-reportit.jpg" title="" alt="" class="no-mb">
+        <h2>Report it</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
 <script id="page-content-results" type="text/html">
     {{#if memory.points.value.packet.features.length===0}}
         <li>
@@ -361,9 +406,9 @@
 </script>
 
 <script id="page-content-results-Distance" type="text/html">
-    <div class="distance-from">
+    <div class="distance-from {{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}">
         <span class="miles-no">{{distanceFormatNumber(memory.points.value.packet.features[#loop0].properties.distance)}}</span>
-        <em>{{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}</em>
+        <em>{{memory.unit.value}}</em>
     </div>
 </script>
 
@@ -371,8 +416,8 @@
     <li>
        {{#include '#page-content-results-Distance'}}
         <div class="item-detail">
-            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}} Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}} Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -383,8 +428,20 @@
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
-            <h4>Cost:{{memory.points.value.packet.features[#loop0].properties.description.cost}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.title}}</address>
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
+            <p class="result-class">Cost: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</p>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Reportit" type="text/html">
+    <li>
+        {{#include '#page-content-results-Distance'}}
+
+        <div class="item-detail">
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -396,7 +453,7 @@
 
         <div class="item-detail">
             <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.type}}</address>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -428,7 +485,7 @@
         </div>
         <div class="item-detail">
             <h4>Category: {{memory.points.value.packet.features[#loop0].properties.category}}</h4>
-            <address>{{memory.points.value.packet.features[#loop0].properties.description.name}}</address>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.name}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -438,16 +495,18 @@
 
 <script id="full-details-Map" type="text/html">
     <p><strong>Location:</strong></p>
-    <div id="openlayersItemMap" class="item-main-map">
+    <div class="map-with-controls">
+        <div id="openlayersItemMap" class="item-main-map">
+
+        </div>
+        <button class="details-map-button button-home-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+            Current location
+        </button>
+        <button class="details-map-button button-reset-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+            Reset map
+        </button>
 
     </div>
-    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
-        Reset
-    </button>
-    <button @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
-        Home
-    </button>
-
 </script>
 
 <script id="full-details-Generic" type="text/html">
@@ -489,7 +548,7 @@
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
-            <p>Link: <a target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url.substr(0,50)}}...</a></p>
+            <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>
         </div>
         {{#include '#full-details-Map'}}
 

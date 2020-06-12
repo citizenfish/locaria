@@ -87,12 +87,7 @@ strong {
     }
 }
 footer {
-    height: 60px;
-    background-color: var(--dark);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
 }
 
 @media only screen and (min-width: 1000px) {
@@ -434,6 +429,9 @@ li.has-error::after {
     width: 100%;
     pointer-events: none;
     flex: 1 1 50%;
+    top: 0;
+    bottom: 0;
+    height: 100%;
 }
 .on-home .map-background {
     position: relative;
@@ -450,6 +448,9 @@ li.has-error::after {
 }
 .map-background .ol-control {
     display: none !important;
+}
+.map-background canvas {
+    height: 100%;
 }
 
 .postcode-search {
@@ -539,21 +540,10 @@ li.has-error::after {
 .on-home .your-current-postcode {
     height: auto;
 }
-@media only screen and (min-width: 795px) {
-    /*.your-current-postcode {*/
-    /*    width: 100%;*/
-    /*    height: 100%;*/
-    /*    position: absolute;*/
-    /*    top: 0;*/
-    /*}*/
-    /*.on-home .your-current-postcode {*/
-    /*    height: 200px;*/
-    /*    background-color: var(--mapCompliment);*/
-    /*    position: absolute;*/
-    /*    top: auto;*/
-    /*    bottom: 0;*/
-    /*    transform: translateY(100%);*/
-    /*}*/
+@media only screen and (min-width: 1000px) {
+    .your-current-postcode {
+        padding: 25px 0 30px;
+    }
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
     .on-home .your-current-postcode {
@@ -693,7 +683,7 @@ li.has-error::after {
     margin: 0 0 0 0;
 }
 .side-panel p {
-    /*margin: 0 0 15px 0;*/
+    margin: 0 0 15px 0;
 }
 @media only screen and (min-width: 795px) {
     .side-panel h2 {
@@ -706,7 +696,7 @@ li.has-error::after {
 }
 .side-panel .results-number {
     margin: 0 0 0 0;
-    font-style: italic;
+    /*font-style: italic;*/
     font-weight: 600;
 }
 @media only screen and (min-width: 795px) {
@@ -733,13 +723,13 @@ li.has-error::after {
 }
 .side-panel .search-filters p,
 .side-panel .search-filters label,
-.side-panel .search-filters input,
+.side-panel .search-filters input[type=text],
 .side-panel .search-filters select {
     width: 100%;
     display: inline-block;
     margin-bottom: 15px;
 }
-.side-panel .search-filters input,
+.side-panel .search-filters input[type=text],
 .side-panel .search-filters select {
     border: 2px solid var(--dark);
     padding: 10px;
@@ -777,33 +767,101 @@ li.has-error::after {
     margin: 15px 0 0;
     clear: both;
 }
+
+/* checkboxes */
+
+.ck-cont {
+    display: block;
+    position: relative;
+    padding-left: 45px;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.ck-cont input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.ck-cont .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border: 2px solid var(--elementNeutral);
+    box-shadow: 1px 4px 7px 0 rgba(0,0,0,0.15);
+    transition: border ease 0.3s;
+}
+.ck-cont .checkmark:after {
+    content: "";
+    position: absolute;
+    transition: opacity ease 0.3s;
+    opacity: 0;
+}
+.ck-cont input:checked ~ .checkmark:after {
+    opacity: 1;
+}
+.ck-cont .checkmark:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/checky.svg);
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    background-position: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 @media only screen and (min-width: 795px) {
     .side-panel .search-filters input,
     .side-panel hr,
-    .side-panel .search-filters select {
+    .side-panel .search-filters select,
+    .ck-cont .checkmark {
         border-width: 3px;
     }
 }
 
 .side-panel.channel-planning .search-filters input,
 .side-panel.channel-planning .search-filters select,
-.side-panel.channel-planning hr {
+.side-panel.channel-planning hr,
+.side-panel.channel-planning .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelPlanning);
 }
 .side-panel.channel-democracy .search-filters input,
 .side-panel.channel-democracy .search-filters select,
-.side-panel.channel-democracy hr {
+.side-panel.channel-democracy hr,
+.side-panel.channel-democracy .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelDemocracy);
 }
 .side-panel.channel-events .search-filters input,
 .side-panel.channel-events .search-filters select,
-.side-panel.channel-events hr {
+.side-panel.channel-events hr,
+.side-panel.channel-events .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelEvents);
 }
 .side-panel.channel-community .search-filters input,
 .side-panel.channel-community .search-filters select,
-.side-panel.channel-community hr {
+.side-panel.channel-community hr,
+.side-panel.channel-community .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelCommunity);
+}
+.side-panel.channel-reportit .search-filters input,
+.side-panel.channel-reportit .search-filters select,
+.side-panel.channel-reportit hr,
+.side-panel.channel-reportit .ck-cont input:checked ~ .checkmark {
+    border-color: var(--channelReportit);
 }
 
 .side-panel.channel-planning .search-filters .apply-filters {
@@ -817,6 +875,9 @@ li.has-error::after {
 }
 .side-panel.channel-community .search-filters .apply-filters {
     background-color: var(--channelCommunity);
+}
+.side-panel.channel-reportit .search-filters .apply-filters {
+    background-color: var(--channelReportit);
 }
 
 .main-panel {
@@ -856,14 +917,32 @@ li.has-error::after {
 .results-item-list li .distance-from {
     padding: 0 15px;
     text-align: center;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.results-item-list li .distance-from.less {
+    position: relative;
+}
+.results-item-list li .distance-from.less::before {
+    content: "Less than";
+    position: relative;
+    text-align: center;
+    display: block;
 }
 .results-item-list .distance-from .miles-no {
     font-size: 4rem;
     line-height: 1;
     font-weight: 600;
+    display: block;
+}
+.results-item-list li .distance-from.less .miles-no  {
+    font-size: 2rem;
 }
 .results-item-list .distance-from em {
     font-style: normal;
+    display: block;
 }
 .results-item-list li .item-detail {
     width: 90%;
@@ -871,7 +950,7 @@ li.has-error::after {
 .results-item-list .item-detail h4 {
     margin-bottom: 5px;
 }
-.results-item-list .item-detail address {
+.results-item-list .item-detail .result-class {
     margin-bottom: 5px;
 }
 .results-item-list .item-detail a {
@@ -900,6 +979,9 @@ li.has-error::after {
 }
 .channel.channel-community .explore-channel {
     background-color: var(--channelCommunity);
+}
+.channel.channel-reportit .explore-channel {
+    background-color: var(--channelReportit);
 }
 .channel .explore-channel:hover {
     background-color: var(--dark);
@@ -947,6 +1029,10 @@ li.has-error::after {
 .channel.channel-community h2,
 .side-panel.channel-community h2 {
     border-color: var(--channelCommunity);
+}
+.channel.channel-reportit h2,
+.side-panel.channel-reportit h2 {
+    border-color: var(--channelReportit);
 }
 .channel p {
     margin: 0 0 5px 0;
@@ -1001,6 +1087,9 @@ li.has-error::after {
 }
 .channel-community .items-channel-heading {
     border-bottom-color: var(--channelCommunity);
+}
+.channel-reportit .items-channel-heading {
+    border-bottom-color: var(--channelReportit);
 }
 
 .side-panel.details address,
@@ -1063,17 +1152,129 @@ li.has-error::after {
 .main-panel.details .item-main-info a {
     text-decoration: underline;
 }
+.main-panel.details .item-main-info a.more-details-button {
+    padding: 9px 20px 10px;
+    box-shadow: 2px 2px 3px 0 rgba(0,0,0,0.15);
+    color: white;
+    text-transform: uppercase;
+    background-color: var(--actionBlue);
+    transition: background-color ease 0.3s;
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+.main-panel.details .map-with-controls {
+    position: relative;
+}
 .main-panel.details .item-main-map {
     width: 100%;
     height: 400px;
-    box-shadow: inset 3px 3px 15px 0 rgba(0,0,0,0.1);
-    margin-bottom: 30px;
+    position: relative;
+}
+.main-panel.details .map-with-controls .details-map-button {
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 3px 0;
+    padding: 5px;
+    position: absolute;
+    bottom: 15px;
+    font-size: 0.75rem;
+    height: 30px;
+    padding-bottom: 7px;
+}
+.main-panel.details .map-with-controls .details-map-button.button-home-map {
+    right: 15px;
+    width: 120px;
+}
+.main-panel.details .map-with-controls .details-map-button.button-reset-map {
+    right: 150px;
+    width: 90px;
+}
+.main-panel.details .item-main-map::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 10px 0 rgba(0,0,0,0.1);
+    z-index: +1;
+    pointer-events: none;
+}
+
+/* OL overwrites */
+
+.item-main-map .ol-zoom {
+    top: 15px;
+    left: 15px;
+}
+.item-main-map .ol-control {
+    position: absolute;
+    background-color: var(--dark);
+    border-radius: 0;
+    padding: 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 3px 0px;
+}
+.item-main-map .ol-control button {
+    display: block;
+    color: var(--dark);
+    font-size: 24px;
+    font-weight: normal;
+    text-align: center;
+    height: 30px;
+    width: 30px;
+    line-height: 1;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    border-radius: 0;
+    transition: background ease 0.3s;
+}
+.item-main-map .ol-control button:focus {
+    background-color: transparent;
+}
+.item-main-map .ol-zoom .ol-zoom-in {
+    border-radius: 0;
+}
+.item-main-map .ol-zoom .ol-zoom-out {
+    border-radius: 0;
 }
 
 /* footer */
 
+footer {
+    background-color: var(--dark);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+    font-size: 0.75rem;
+    margin-top: 30px;
+}
 footer p {
     margin: 0 0 0 0;
+}
+footer a {
+    color: white;
+    text-decoration: underline;
+}
+footer .logo-bw {
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+    background-image: url(../images/logo_white.png);
+    background-size: contain;
+    margin-bottom: 5px;
+}
+footer ul {
+    display: flex;
+    flex-direction: row;
+}
+footer ul li {
+    margin: 5px;
 }
 
 /*** elements ***/

@@ -5,15 +5,30 @@ import {MultiPoint} from 'ol/geom.js';
 export function mainMapStyle(feature, resolution) {
 	const geometry=feature.getGeometry();
 	if(geometry.getType()==='Point') {
-		return [
-			new Style({
-				image: new Icon({
-					src: 'images/marker-thing.svg',
-					size: [40,60],
-					zIndex: 100
-				})
-			})
-		]
+		let type=feature.get('type');
+		switch(type) {
+			case 'polling_station':
+				return [
+						new Style({
+							image: new Icon({
+								src: 'images/marker-polling.svg',
+								size: [40, 60],
+								zIndex: 100
+							})
+						})
+					];
+			default:
+				return [
+					new Style({
+						image: new Icon({
+							src: 'images/marker-thing.svg',
+							size: [40, 60],
+							zIndex: 100
+						})
+					})
+				];
+
+		}
 	} else {
 		return [
 			new Style({

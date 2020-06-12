@@ -34,6 +34,11 @@ class Locus extends Queueable {
 			point=memory.myPoint.value;
 		this.queue.setMemory('myPoint', point, "Permanent");
 
+		let unit='miles';
+		if(memory.unit&&memory.unit.value)
+			unit=memory.unit.value;
+		this.queue.setMemory('unit', unit, "Permanent");
+
 		this.finished(pid, this.queue.DEFINE.FIN_OK);
 
 	}

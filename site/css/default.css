@@ -11,11 +11,13 @@
     --subHeadingText:           #393939;
     --cancelButton:             #7F847C;
     --errorAlert:               #F62E2E;
+    --elementNeutral:           #c0bfbc;
 
     --channelPlanning:          #4A94E9;
     --channelDemocracy:         #928052;
     --channelEvents:            #D84D00;
     --channelCommunity:         #8DB23F;
+    --channelReportit:          #e47a02;
 }
 
 /* reset */
