@@ -16,6 +16,19 @@ export function mainMapStyle(feature, resolution) {
 								src: 'images/marker-polling.svg',
 								size: [40, 60],
 								zIndex: 100
+							}),
+							text: new Text({
+								text: 'Polling station',
+								font: 'bold 11px "Soleil"',
+								textBaseline: 'bottom',
+								offsetY: 50,
+								fill: new Fill({
+									color: '#000000'
+								}),
+								stroke: new Stroke({
+									color: '#FFFFFF',
+									width: 3.5
+								})
 							})
 						})
 					];
@@ -31,12 +44,12 @@ export function mainMapStyle(feature, resolution) {
 							text: type||'unknown',
 							font: 'bold 11px "Soleil"',
 							textBaseline: 'bottom',
-							offsetY: 45,
+							offsetY: 50,
 							fill: new Fill({
 								color: '#000000'
 							}),
 							stroke: new Stroke({
-								color: '#FFFF99',
+								color: '#FFFFFF',
 								width: 3.5
 							})
 						})
@@ -70,6 +83,19 @@ export function locationStyle(feature, resolution) {
 					src: 'images/marker-home.svg',
 					size: [40,60],
 					zIndex: 100
+				}),
+				text: new Text({
+					text: 'Your location',
+					font: 'bold 11px "Soleil"',
+					textBaseline: 'bottom',
+					offsetY: 50,
+					fill: new Fill({
+						color: '#000000'
+					}),
+					stroke: new Stroke({
+						color: '#FFFFFF',
+						width: 3.5
+					})
 				})
 			})
 		]
