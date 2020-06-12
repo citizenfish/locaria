@@ -461,35 +461,29 @@ li.has-error::after {
     justify-content: center;
     flex-direction: column;
 }
+.postcode-search::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.025));
+}
+.on-home .postcode-search::after {
+    display: none;
+}
 
 @media only screen and (max-width: 795px) {
-    /*.on-home .postcode-search {*/
-    /*    max-height: 180px;*/
-    /*}*/
-    /*.open-loc .postcode-search {*/
-    /*    max-height: 160px;*/
-    /*}*/
-    /*.on-home.open-loc .postcode-search {*/
-    /*    max-height: 180px; !* urgh *!*/
-    /*}*/
+
 }
 @media only screen and (min-width: 795px) {
-    /*.postcode-search {*/
-    /*    height: 200px;*/
-    /*    max-height: none;*/
-    /*    margin-bottom: 0;*/
-    /*}*/
-    /*.on-home .postcode-search {*/
-    /*    height: 450px;*/
-    /*    max-height: none;*/
-    /*    margin-bottom: 200px;*/
-    /*}*/
+    .postcode-search::after {
+        height: 20px;
+    }
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .postcode-search {
-        /*height: 50vh;*/
-        /*max-height: none;*/
-    }
+
 }
 
 
@@ -530,7 +524,8 @@ li.has-error::after {
     display: flex;
     flex-direction: column;
     text-align: center;
-    justify-content: space-evenly;
+    /*justify-content: space-evenly;*/
+    justify-content: center;
     align-items: center;
     background-color: rgba(243, 242, 239, 0.75);
     width: 100%;
@@ -883,10 +878,12 @@ li.has-error::after {
 .main-panel {
     padding: 0 15px 15px;
     flex: 1 1 auto;
+    margin-bottom: 30px;
 }
 @media only screen and (min-width: 795px) {
     .main-panel {
         padding: 15px;
+        margin-bottom: 0;
     }
 }
 .on-home .main-panel {
