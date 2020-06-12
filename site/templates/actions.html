@@ -189,15 +189,13 @@
 <!--                <p>To find information of events or 'Whats' on' near to them.</p>-->
 <!--                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>-->
 <!--            </div>-->
-
-            <div class="channel channel-reportit">
-                <img src="images/channel-reportit.jpg" title="An image illustrating the 'Report it' channel of information" alt="An image of a traffic cones" @browser.addHistory({"history":"Cat/Reportit"});>
-                <h2>Report it</h2>
+            <div class="channel channel-reported">
+                <img src="images/channel-reported.jpg" title="An image illustrating the 'Reported' channel of information" alt="An image of a traffic cones" @browser.addHistory({"history":"Cat/Reported"});>
+                <h2>Reported</h2>
                 <p><strong>Issues reported by the local community</strong></p>
                 <p>See the concerns raised by residents in this area</p>
                 <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reported"});>Explore</button>
             </div>
-
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="An image illustrating the 'Community' channel of information" alt="An image of a children's slide" @browser.addHistory({"history":"Cat/Community"});>
                 <h2>Community</h2>
@@ -205,7 +203,6 @@
                 <p>To get information on community facilities and local service</p>
                 <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
             </div>
-
         </section>
     </section>
 
@@ -382,9 +379,9 @@
 </script>
 
 <script id="page-content-Reported" type="text/html">
-    <section class="side-panel channel-reportit">
-        <img src="images/channel-reportit.jpg" title="" alt="" class="no-mb">
-        <h2>Report it</h2>
+    <section class="side-panel channel-reported">
+        <img src="images/channel-reported.jpg" title="" alt="" class="no-mb">
+        <h2>Reported</h2>
         {{#include '#page-content-filter'}}
     </section>
     {{#include '#page-content-result-main'}}

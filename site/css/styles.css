@@ -857,11 +857,11 @@ li.has-error::after {
 .side-panel.channel-community .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelCommunity);
 }
-.side-panel.channel-reportit .search-filters input,
-.side-panel.channel-reportit .search-filters select,
-.side-panel.channel-reportit hr,
-.side-panel.channel-reportit .ck-cont input:checked ~ .checkmark {
-    border-color: var(--channelReportit);
+.side-panel.channel-reported .search-filters input,
+.side-panel.channel-reported .search-filters select,
+.side-panel.channel-reported hr,
+.side-panel.channel-reported .ck-cont input:checked ~ .checkmark {
+    border-color: var(--channelReported);
 }
 
 .side-panel.channel-planning .search-filters .apply-filters {
@@ -876,8 +876,8 @@ li.has-error::after {
 .side-panel.channel-community .search-filters .apply-filters {
     background-color: var(--channelCommunity);
 }
-.side-panel.channel-reportit .search-filters .apply-filters {
-    background-color: var(--channelReportit);
+.side-panel.channel-reported .search-filters .apply-filters {
+    background-color: var(--channelReported);
 }
 
 .main-panel {
@@ -981,8 +981,8 @@ li.has-error::after {
 .channel.channel-community .explore-channel {
     background-color: var(--channelCommunity);
 }
-.channel.channel-reportit .explore-channel {
-    background-color: var(--channelReportit);
+.channel.channel-reported .explore-channel {
+    background-color: var(--channelReported);
 }
 .channel .explore-channel:hover {
     background-color: var(--dark);
@@ -1032,9 +1032,9 @@ li.has-error::after {
 .side-panel.channel-community h2 {
     border-color: var(--channelCommunity);
 }
-.channel.channel-reportit h2,
-.side-panel.channel-reportit h2 {
-    border-color: var(--channelReportit);
+.channel.channel-reported h2,
+.side-panel.channel-reported h2 {
+    border-color: var(--channelReported);
 }
 .channel p {
     margin: 0 0 5px 0;
@@ -1094,8 +1094,8 @@ li.has-error::after {
 .channel-community .items-channel-heading {
     border-bottom-color: var(--channelCommunity);
 }
-.channel-reportit .items-channel-heading {
-    border-bottom-color: var(--channelReportit);
+.channel-reported .items-channel-heading {
+    border-bottom-color: var(--channelReported);
 }
 
 .side-panel.details address,
