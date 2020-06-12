@@ -6,6 +6,8 @@ export function mainMapStyle(feature, resolution) {
 	const geometry=feature.getGeometry();
 	if(geometry.getType()==='Point') {
 		let type=feature.get('type');
+		if(!type)
+			type=feature.get('description').type;
 		switch(type) {
 			case 'polling_station':
 				return [
@@ -24,6 +26,19 @@ export function mainMapStyle(feature, resolution) {
 							src: 'images/marker-thing.svg',
 							size: [40, 60],
 							zIndex: 100
+						}),
+						text: new Text({
+							text: type||'unknown',
+							font: 'bold 11px "Soleil"',
+							textBaseline: 'bottom',
+							offsetY: 45,
+							fill: new Fill({
+								color: '#000000'
+							}),
+							stroke: new Stroke({
+								color: '#FFFF99',
+								width: 3.5
+							})
 						})
 					})
 				];
