@@ -61,8 +61,8 @@
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
     @internals.ifqueue({"statement":"memory.history&&memory.history.value[3]","name":"reloadCatFilters","else":"reloadCatNoFilters" },{"queuePrepare":"reloadCat"});
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","filter":{"type":"{{!memory.history&&memory.history.value[3]?decodeURI(memory.history.value[3]):''}}"},"search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatFilters"});
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':memory.history.value[0]}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatNoFilters"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","filter":{"type":"{{!memory.history&&memory.history.value[3]?decodeURI(memory.history.value[3]):''}}"},"search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatFilters"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatNoFilters"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -195,7 +195,7 @@
                 <h2>Report it</h2>
                 <p><strong>Issues reported by the local community</strong></p>
                 <p>See the concerns raised by residents in this area</p>
-                <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reportit"});>Explore</button>
+                <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reported"});>Explore</button>
             </div>
 
             <div class="channel channel-community">
@@ -212,7 +212,7 @@
 </script>
 
 <script id="page-content" type="text/html">
-    {{#include '#page-content-'+memory.history.value[0]}}
+    {{#include '#page-content-'+decodeURI(memory.history.value[0]).replace(/ /,'')}}
 </script>
 
 <script id="page-content-filter" type="text/html">
@@ -381,7 +381,7 @@
     {{#include '#page-content-result-main'}}
 </script>
 
-<script id="page-content-Reportit" type="text/html">
+<script id="page-content-Reported" type="text/html">
     <section class="side-panel channel-reportit">
         <img src="images/channel-reportit.jpg" title="" alt="" class="no-mb">
         <h2>Report it</h2>
@@ -397,7 +397,7 @@
         </li>
     {{/if}}
     {{#for memory.points.value.packet.features}}
-        {{#if ['Planning','Events','Community','Democracy'].indexOf(memory.points.value.packet.features[#loop0].properties.category)!==-1}}
+        {{#if ['Planning','Events','Community','Democracy','Reported'].indexOf(memory.points.value.packet.features[#loop0].properties.category)!==-1}}
             {{#include '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category}}
         {{else}}
             {{#include '#page-content-results-Generic'}}
@@ -435,13 +435,13 @@
     </li>
 </script>
 
-<script id="page-content-results-Reportit" type="text/html">
+<script id="page-content-results-Reported" type="text/html">
     <li>
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
-            <h4>{{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
-            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</p>
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.location}}</h4>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -553,8 +553,28 @@
         {{#include '#full-details-Map'}}
 
     </section>
+</script>
 
+<script id="full-details-Reported" type="text/html">
+    <section class="side-panel details channel-planning">
+        <h6 class="items-channel-heading">Planning</h6>
+        <address>
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.location}}
+        </address>
+        <p class="item-type">
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
+        </p>
+    </section>
+    <section class="main-panel details">
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.location}}</h4>
+        <p><strong>Overview:</strong></p>
+        <div class="item-main-info">
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}</p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.details}}</p>
+        </div>
+        {{#include '#full-details-Map'}}
 
+    </section>
 </script>
 
 <script id="full-details-Democracy" type="text/html">
