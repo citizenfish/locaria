@@ -861,7 +861,6 @@ li.has-error::after {
 .main-panel {
     padding: 0 15px 15px;
     flex: 1 1 auto;
-    margin-bottom: 30px;
 }
 @media only screen and (min-width: 795px) {
     .main-panel {
@@ -1239,7 +1238,6 @@ footer {
     justify-content: center;
     padding: 30px 15px;
     font-size: 0.75rem;
-    margin-top: 30px;
 }
 footer p {
     margin: 0 0 0 0;
@@ -1271,6 +1269,15 @@ footer ul {
 footer ul li {
     margin: 5px;
     white-space: nowrap;
+    text-align: center;
+}
+@media only screen and (max-width: 550px) {
+    footer ul {
+        margin-bottom: 15px;
+    }
+    footer ul li {
+        flex: 1 1 25%;
+    }
 }
 
 /*** elements ***/
