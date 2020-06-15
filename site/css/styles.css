@@ -1,26 +1,5 @@
 /*** setup ***/
 
-/*Soleil Bold*/
-/*font-weight: 700;*/
-
-/*Soleil Book*/
-/*font-weight: 500;*/
-
-/*Soleil Extrabold*/
-/*font-weight: 800;*/
-
-/*Soleil Light*/
-/*font-weight: 300;*/
-
-/*Soleil Regular*/
-/*font-weight: 400;*/
-
-/*Soleil Semibold*/
-/*font-weight: 600;*/
-
-/*Soleil Light Italic*/
-/*font-weight: 300;*/
-
 h1,
 h2,
 h3,
@@ -40,20 +19,25 @@ strong {
 
 /*** main layout ***/
 
+.contain {
+    height: 100%;
+}
+
 .head-section {
     display: flex;
     flex-direction: column;
 }
-@media only screen and (min-width: 1000px) {
-    /*.head-section {*/
-    /*    height: 300px;*/
-    /*}*/
-}
 .on-home .head-section {
-    /*height: 80vh;*/
-    /*min-height: 500px;*/
-    min-height: 80vh;
-    /*max-height: 700px;*/
+    /*min-height: 90vh;*/
+    height: 90vh;
+}
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .head-section {
+        height: auto;
+    }
+    .on-home .map-background {
+        height: 150px;
+    }
 }
 @media only screen and (min-width: 1000px) {
     .on-home .head-section {
@@ -69,7 +53,7 @@ strong {
     z-index: 11;
 }
 .postcode-search {
-
+    flex: 1;
 }
 .document-content {
     color: var(--defaultText);
@@ -369,11 +353,11 @@ li.has-error::after {
     background-color: var(--subHeadingText);
     color: white;
     box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.5);
-    height: 120px;
+    min-height: 120px;
 }
 @media only screen and (min-width: 1000px) {
     .subheading {
-        height: 150px;
+        min-height: 150px;
     }
 }
 .subheading .title-text {
@@ -382,10 +366,11 @@ li.has-error::after {
     justify-content: space-evenly;
     align-items: center;
     height: 100%;
-    padding: 0 15px 10px;
+    padding: 30px 15px 35px;
 }
 .subheading .title-text h1 {
     font-size: 1.5rem;
+    margin-bottom: 10px;
 }
 @media only screen and (min-width: 460px) {
     .subheading .title-text br {
@@ -397,7 +382,7 @@ li.has-error::after {
 }
 @media only screen and (min-width: 600px) {
     .subheading .title-text {
-        padding: 0 15px 15px;
+        padding: 30px 15px 45px;
     }
     .subheading .title-text h1 {
         font-size: 2.5rem;
@@ -428,14 +413,14 @@ li.has-error::after {
     display: block;
     width: 100%;
     pointer-events: none;
-    flex: 1 1 50%;
     top: 0;
     bottom: 0;
     height: 100%;
 }
 .on-home .map-background {
     position: relative;
-    min-height: 150px;
+    min-height: 150px; /* force height in mob/landscape */
+    flex: 1;
 }
 .on-home .map-background::after {
     content: "";
@@ -457,39 +442,33 @@ li.has-error::after {
     position: relative;
     height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;*/
+    /*justify-content: center;*/
     flex-direction: column;
+}
+.postcode-search::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.025));
+}
+.on-home .postcode-search::after {
+    display: none;
 }
 
 @media only screen and (max-width: 795px) {
-    /*.on-home .postcode-search {*/
-    /*    max-height: 180px;*/
-    /*}*/
-    /*.open-loc .postcode-search {*/
-    /*    max-height: 160px;*/
-    /*}*/
-    /*.on-home.open-loc .postcode-search {*/
-    /*    max-height: 180px; !* urgh *!*/
-    /*}*/
+
 }
 @media only screen and (min-width: 795px) {
-    /*.postcode-search {*/
-    /*    height: 200px;*/
-    /*    max-height: none;*/
-    /*    margin-bottom: 0;*/
-    /*}*/
-    /*.on-home .postcode-search {*/
-    /*    height: 450px;*/
-    /*    max-height: none;*/
-    /*    margin-bottom: 200px;*/
-    /*}*/
+    .postcode-search::after {
+        height: 20px;
+    }
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .postcode-search {
-        /*height: 50vh;*/
-        /*max-height: none;*/
-    }
+
 }
 
 
@@ -530,12 +509,11 @@ li.has-error::after {
     display: flex;
     flex-direction: column;
     text-align: center;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
     background-color: rgba(243, 242, 239, 0.75);
     width: 100%;
     padding: 15px 0 20px;
-    flex: 1 1 50%;
 }
 .on-home .your-current-postcode {
     height: auto;
@@ -857,11 +835,11 @@ li.has-error::after {
 .side-panel.channel-community .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelCommunity);
 }
-.side-panel.channel-reportit .search-filters input,
-.side-panel.channel-reportit .search-filters select,
-.side-panel.channel-reportit hr,
-.side-panel.channel-reportit .ck-cont input:checked ~ .checkmark {
-    border-color: var(--channelReportit);
+.side-panel.channel-reported .search-filters input,
+.side-panel.channel-reported .search-filters select,
+.side-panel.channel-reported hr,
+.side-panel.channel-reported .ck-cont input:checked ~ .checkmark {
+    border-color: var(--channelReported);
 }
 
 .side-panel.channel-planning .search-filters .apply-filters {
@@ -876,17 +854,19 @@ li.has-error::after {
 .side-panel.channel-community .search-filters .apply-filters {
     background-color: var(--channelCommunity);
 }
-.side-panel.channel-reportit .search-filters .apply-filters {
-    background-color: var(--channelReportit);
+.side-panel.channel-reported .search-filters .apply-filters {
+    background-color: var(--channelReported);
 }
 
 .main-panel {
     padding: 0 15px 15px;
     flex: 1 1 auto;
+    margin-bottom: 30px;
 }
 @media only screen and (min-width: 795px) {
     .main-panel {
         padding: 15px;
+        margin-bottom: 0;
     }
 }
 .on-home .main-panel {
@@ -909,10 +889,11 @@ li.has-error::after {
 }
 .results-item-list li {
     padding: 15px 0;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
     border-bottom: 2px dashed #707070;
     display: flex;
     flex-direction: row;
+    align-items: center;
     width: 100%;
 }
 .results-item-list li .distance-from {
@@ -981,8 +962,8 @@ li.has-error::after {
 .channel.channel-community .explore-channel {
     background-color: var(--channelCommunity);
 }
-.channel.channel-reportit .explore-channel {
-    background-color: var(--channelReportit);
+.channel.channel-reported .explore-channel {
+    background-color: var(--channelReported);
 }
 .channel .explore-channel:hover {
     background-color: var(--dark);
@@ -1032,9 +1013,9 @@ li.has-error::after {
 .side-panel.channel-community h2 {
     border-color: var(--channelCommunity);
 }
-.channel.channel-reportit h2,
-.side-panel.channel-reportit h2 {
-    border-color: var(--channelReportit);
+.channel.channel-reported h2,
+.side-panel.channel-reported h2 {
+    border-color: var(--channelReported);
 }
 .channel p {
     margin: 0 0 5px 0;
@@ -1094,8 +1075,8 @@ li.has-error::after {
 .channel-community .items-channel-heading {
     border-bottom-color: var(--channelCommunity);
 }
-.channel-reportit .items-channel-heading {
-    border-bottom-color: var(--channelReportit);
+.channel-reported .items-channel-heading {
+    border-bottom-color: var(--channelReported);
 }
 
 .side-panel.details address,
@@ -1256,16 +1237,22 @@ footer {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px 0;
+    padding: 30px 15px;
     font-size: 0.75rem;
     margin-top: 30px;
 }
 footer p {
     margin: 0 0 0 0;
+    text-align: center;
 }
 footer a {
     color: white;
     text-decoration: underline;
+}
+@media only screen and (min-width: 550px) {
+    footer br {
+        display: none;
+    }
 }
 footer .logo-bw {
     width: 80px;
@@ -1278,9 +1265,12 @@ footer .logo-bw {
 footer ul {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
 }
 footer ul li {
     margin: 5px;
+    white-space: nowrap;
 }
 
 /*** elements ***/

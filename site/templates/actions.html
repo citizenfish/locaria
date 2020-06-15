@@ -189,15 +189,13 @@
 <!--                <p>To find information of events or 'Whats' on' near to them.</p>-->
 <!--                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>-->
 <!--            </div>-->
-
-            <div class="channel channel-reportit">
-                <img src="images/channel-reportit.jpg" title="An image illustrating the 'Report it' channel of information" alt="An image of a traffic cones" @browser.addHistory({"history":"Cat/Reportit"});>
-                <h2>Report it</h2>
+            <div class="channel channel-reported">
+                <img src="images/channel-reported.jpg" title="An image illustrating the 'Reported' channel of information" alt="An image of a traffic cones" @browser.addHistory({"history":"Cat/Reported"});>
+                <h2>Reported</h2>
                 <p><strong>Issues reported by the local community</strong></p>
                 <p>See the concerns raised by residents in this area</p>
                 <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reported"});>Explore</button>
             </div>
-
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="An image illustrating the 'Community' channel of information" alt="An image of a children's slide" @browser.addHistory({"history":"Cat/Community"});>
                 <h2>Community</h2>
@@ -205,7 +203,6 @@
                 <p>To get information on community facilities and local service</p>
                 <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
             </div>
-
         </section>
     </section>
 
@@ -222,6 +219,19 @@
             {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
+            {{#include '#page-content-filter-Button'}}
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
+<script id="page-content-filter-Reported" type="text/html">
+    {{#include '#page-content-filter-Header'}}
+    <form class="search-filters">
+        <div>
+            {{#include '#display-distance-units'}}
+            <p><strong>Filter these results:</strong></p>
+            {{#include '#page-content-filter-Distance-Reported'}}
             {{#include '#page-content-filter-Button'}}
         </div>
     </form>
@@ -245,6 +255,17 @@
         <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
         <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
         <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 10 miles from my location</option>
+    </select>
+</script>
+
+<script id="page-content-filter-Distance-Reported" type="text/html">
+
+    <label for="filter-distance">By distance:</label>
+    <select id="filter-distance">
+        <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 mile from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 miles from my location</option>
     </select>
 </script>
 
@@ -382,10 +403,10 @@
 </script>
 
 <script id="page-content-Reported" type="text/html">
-    <section class="side-panel channel-reportit">
-        <img src="images/channel-reportit.jpg" title="" alt="" class="no-mb">
-        <h2>Report it</h2>
-        {{#include '#page-content-filter'}}
+    <section class="side-panel channel-reported">
+        <img src="images/channel-reported.jpg" title="" alt="" class="no-mb">
+        <h2>Reported</h2>
+        {{#include '#page-content-filter-Reported'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
@@ -440,9 +461,9 @@
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
-            <h4>{{memory.points.value.packet.features[#loop0].properties.description.location}}</h4>
-            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</p>
-            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</h4>
+            <p class="result-class">{{memory.points.value.packet.features[#loop0].properties.description.location}}</p>
+<!--            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>-->
         </div>
     </li>
 </script>
@@ -556,8 +577,8 @@
 </script>
 
 <script id="full-details-Reported" type="text/html">
-    <section class="side-panel details channel-planning">
-        <h6 class="items-channel-heading">Planning</h6>
+    <section class="side-panel details channel-reported">
+        <h6 class="items-channel-heading">Reported</h6>
         <address>
             {{memory.historyDetailsRender.value.packet.features[0].properties.description.location}}
         </address>
