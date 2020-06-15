@@ -31,6 +31,14 @@ strong {
     /*min-height: 90vh;*/
     height: 90vh;
 }
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .head-section {
+        height: auto;
+    }
+    .on-home .map-background {
+        height: 150px;
+    }
+}
 @media only screen and (min-width: 1000px) {
     .on-home .head-section {
         height: 80vh;
