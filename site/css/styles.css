@@ -1,26 +1,5 @@
 /*** setup ***/
 
-/*Soleil Bold*/
-/*font-weight: 700;*/
-
-/*Soleil Book*/
-/*font-weight: 500;*/
-
-/*Soleil Extrabold*/
-/*font-weight: 800;*/
-
-/*Soleil Light*/
-/*font-weight: 300;*/
-
-/*Soleil Regular*/
-/*font-weight: 400;*/
-
-/*Soleil Semibold*/
-/*font-weight: 600;*/
-
-/*Soleil Light Italic*/
-/*font-weight: 300;*/
-
 h1,
 h2,
 h3,
@@ -40,20 +19,17 @@ strong {
 
 /*** main layout ***/
 
+.contain {
+    height: 100%;
+}
+
 .head-section {
     display: flex;
     flex-direction: column;
 }
-@media only screen and (min-width: 1000px) {
-    /*.head-section {*/
-    /*    height: 300px;*/
-    /*}*/
-}
 .on-home .head-section {
-    /*height: 80vh;*/
-    /*min-height: 500px;*/
-    min-height: 80vh;
-    /*max-height: 700px;*/
+    /*min-height: 90vh;*/
+    height: 90vh;
 }
 @media only screen and (min-width: 1000px) {
     .on-home .head-section {
@@ -69,7 +45,7 @@ strong {
     z-index: 11;
 }
 .postcode-search {
-
+    flex: 1;
 }
 .document-content {
     color: var(--defaultText);
@@ -369,11 +345,11 @@ li.has-error::after {
     background-color: var(--subHeadingText);
     color: white;
     box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.5);
-    height: 120px;
+    min-height: 120px;
 }
 @media only screen and (min-width: 1000px) {
     .subheading {
-        height: 150px;
+        min-height: 150px;
     }
 }
 .subheading .title-text {
@@ -382,10 +358,11 @@ li.has-error::after {
     justify-content: space-evenly;
     align-items: center;
     height: 100%;
-    padding: 0 15px 10px;
+    padding: 30px 15px 35px;
 }
 .subheading .title-text h1 {
     font-size: 1.5rem;
+    margin-bottom: 10px;
 }
 @media only screen and (min-width: 460px) {
     .subheading .title-text br {
@@ -397,7 +374,7 @@ li.has-error::after {
 }
 @media only screen and (min-width: 600px) {
     .subheading .title-text {
-        padding: 0 15px 15px;
+        padding: 30px 15px 45px;
     }
     .subheading .title-text h1 {
         font-size: 2.5rem;
@@ -428,14 +405,14 @@ li.has-error::after {
     display: block;
     width: 100%;
     pointer-events: none;
-    flex: 1 1 50%;
     top: 0;
     bottom: 0;
     height: 100%;
 }
 .on-home .map-background {
     position: relative;
-    min-height: 150px;
+    min-height: 150px; /* force height in mob/landscape */
+    flex: 1;
 }
 .on-home .map-background::after {
     content: "";
@@ -457,8 +434,8 @@ li.has-error::after {
     position: relative;
     height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;*/
+    /*justify-content: center;*/
     flex-direction: column;
 }
 .postcode-search::after {
@@ -524,13 +501,11 @@ li.has-error::after {
     display: flex;
     flex-direction: column;
     text-align: center;
-    /*justify-content: space-evenly;*/
     justify-content: center;
     align-items: center;
     background-color: rgba(243, 242, 239, 0.75);
     width: 100%;
     padding: 15px 0 20px;
-    flex: 1 1 50%;
 }
 .on-home .your-current-postcode {
     height: auto;
@@ -906,10 +881,11 @@ li.has-error::after {
 }
 .results-item-list li {
     padding: 15px 0;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
     border-bottom: 2px dashed #707070;
     display: flex;
     flex-direction: row;
+    align-items: center;
     width: 100%;
 }
 .results-item-list li .distance-from {
@@ -1253,16 +1229,22 @@ footer {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px 0;
+    padding: 30px 15px;
     font-size: 0.75rem;
     margin-top: 30px;
 }
 footer p {
     margin: 0 0 0 0;
+    text-align: center;
 }
 footer a {
     color: white;
     text-decoration: underline;
+}
+@media only screen and (min-width: 550px) {
+    footer br {
+        display: none;
+    }
 }
 footer .logo-bw {
     width: 80px;
@@ -1275,9 +1257,12 @@ footer .logo-bw {
 footer ul {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
 }
 footer ul li {
     margin: 5px;
+    white-space: nowrap;
 }
 
 /*** elements ***/

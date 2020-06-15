@@ -225,6 +225,19 @@
     <hr class="no-lg-res">
 </script>
 
+<script id="page-content-filter-Reported" type="text/html">
+    {{#include '#page-content-filter-Header'}}
+    <form class="search-filters">
+        <div>
+            {{#include '#display-distance-units'}}
+            <p><strong>Filter these results:</strong></p>
+            {{#include '#page-content-filter-Distance-Reported'}}
+            {{#include '#page-content-filter-Button'}}
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
 <script id="page-content-filter-Header" type="text/html">
     <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
     <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
@@ -242,6 +255,17 @@
         <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
         <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
         <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 10 miles from my location</option>
+    </select>
+</script>
+
+<script id="page-content-filter-Distance-Reported" type="text/html">
+
+    <label for="filter-distance">By distance:</label>
+    <select id="filter-distance">
+        <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 mile from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 miles from my location</option>
     </select>
 </script>
 
@@ -382,7 +406,7 @@
     <section class="side-panel channel-reported">
         <img src="images/channel-reported.jpg" title="" alt="" class="no-mb">
         <h2>Reported</h2>
-        {{#include '#page-content-filter'}}
+        {{#include '#page-content-filter-Reported'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
@@ -437,9 +461,9 @@
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
-            <h4>{{memory.points.value.packet.features[#loop0].properties.description.location}}</h4>
-            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</p>
-            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</h4>
+            <p class="result-class">{{memory.points.value.packet.features[#loop0].properties.description.location}}</p>
+<!--            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>-->
         </div>
     </li>
 </script>
