@@ -3,16 +3,21 @@
 :root {
     /* Colours */
     --defaultText:              #0c0c0c;
-    --actionBlue:               #4A94E9;
+    --actionBlue:               #328FFD;
     --actionHover:              #f1614e;
-    --dark:                     #242424;
+    --dark:                     #393939;
     --mainBrandColour:          #32AA39;
     --mapCompliment:            #F3F2EF;
+    --subHeadingText:           #393939;
+    --cancelButton:             #7F847C;
+    --errorAlert:               #F62E2E;
+    --elementNeutral:           #c0bfbc;
 
     --channelPlanning:          #4A94E9;
     --channelDemocracy:         #928052;
     --channelEvents:            #D84D00;
     --channelCommunity:         #8DB23F;
+    --channelReported:          #e47a02;
 }
 
 /* reset */

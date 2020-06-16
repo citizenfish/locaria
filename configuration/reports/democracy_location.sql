@@ -28,27 +28,40 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
             LIMIT 1
         ), MP AS (
             SELECT 'Michael Gove' AS mp
-        )
+
+        ), POLLING_STATION AS (
+
+			SELECT wkb_geometry as ps_geom,
+				   attributes#>>'{description,name}' AS ps_name
+				   FROM locus_core.global_search_view, COUNCILLOR_WARDS
+			WHERE ST_CONTAINS(ward_geom, wkb_geometry)
+			AND attributes#>>'{description,type}' = 'Polling Station'
+		)
 
         SELECT json_build_object('title', 'Democratic Information',
                                  'description', 'Simon needs to provide us with some copy',
+                                 'subTitle', ward,
                                  'items', json_build_array(
-                                     json_build_object('title', 'Your Ward', 'value', ward),
+                                     json_build_object('title', 'Your Ward', 'value', ward ),
                                      json_build_object('title', 'Your Councillor(s)', 'value', councillors),
                                      json_build_object('title', 'Your Council Tax Band', 'value', band),
-                                     json_build_object('title', 'Your MP', 'value', mp)
+                                     json_build_object('title', 'Your MP', 'value', mp),
+									 json_build_object('title', 'Your Polling Station', 'value',ps_name)
                                  ),
                                 'geojson', json_build_object('type', 'FeatureCollection',
                                                             'features', json_build_array(
                                                                 json_build_object('type', 'Feature',
                                                                                  'geometry', ST_ASGEOJSON(ward_geom)::JSON,
-                                                                                 'properties', json_build_object('name', ward)),
+                                                                                 'properties', json_build_object('name', ward, 'type', 'ward')),
                                                                 json_build_object('type', 'Feature',
                                                                                  'geometry', ST_ASGEOJSON(band_geom)::JSON,
-                                                                                 'properties', json_build_object('name', band))
+                                                                                 'properties', json_build_object('name', band,'type', 'council_tax_band')),
+                                                                json_build_object('type', 'Feature',
+                                                                                 'geometry', ST_ASGEOJSON(ps_geom)::JSON,
+                                                                                 'properties', json_build_object('name', ps_name, 'type', 'polling_station'))
                                                             ))
 
-                                ) FROM COUNCILLOR_WARDS,COUNCIL_TAX_BAND,MP
+                                ) FROM COUNCILLOR_WARDS,COUNCIL_TAX_BAND,MP,POLLING_STATION
 
 
     $SQL$);

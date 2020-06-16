@@ -1,26 +1,5 @@
 /*** setup ***/
 
-/*Soleil Bold*/
-/*font-weight: 700;*/
-
-/*Soleil Book*/
-/*font-weight: 500;*/
-
-/*Soleil Extrabold*/
-/*font-weight: 800;*/
-
-/*Soleil Light*/
-/*font-weight: 300;*/
-
-/*Soleil Regular*/
-/*font-weight: 400;*/
-
-/*Soleil Semibold*/
-/*font-weight: 600;*/
-
-/*Soleil Light Italic*/
-/*font-weight: 300;*/
-
 h1,
 h2,
 h3,
@@ -40,99 +19,135 @@ strong {
 
 /*** main layout ***/
 
-header {
-    height: 60px;
+.contain {
+    height: 100%;
+}
+
+.head-section {
+    display: flex;
+    flex-direction: column;
+}
+.on-home .head-section {
+    /*min-height: 90vh;*/
+    height: 90vh;
+}
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    .on-home .head-section {
+        height: auto;
+    }
+    .on-home .map-background {
+        height: 150px;
+    }
+}
+@media only screen and (min-width: 1000px) {
+    .on-home .head-section {
+        height: 80vh;
+        min-height: 500px;
+    }
+}
+.page-header {
+    min-height: 60px;
     background-color: var(--mainBrandColour);
     color: white;
     position: relative;
     z-index: 11;
 }
 .postcode-search {
-
+    flex: 1;
 }
-.page-content {
+.document-content {
     color: var(--defaultText);
     /*min-height: calc(100vh - 60px);*/
     display: flex;
     justify-content: center;
 }
-main {
+.content-holder {
     width: 100%;
     max-width: 1150px;
 }
 @media only screen and (min-width: 1500px) {
-    .on-home main {
+    .on-home .content-holder {
         max-width: 80%;
     }
 }
 footer {
-    height: 60px;
-    background-color: var(--dark);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
 }
 
 @media only screen and (min-width: 1000px) {
-    header, footer {
-        height: 120px;
-    }
-    .on-home header, .on-home footer {
-        height: 180px;
+    .page-header, footer {
+        min-height: 120px;
     }
 }
 
 /*** components ***/
 
-/* header */
+/* main head container */
 
-header {
+li.has-error::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background: red;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    z-index: +1;
+}
 
+/* page header */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.25);
 }
 @media only screen and (min-width: 1000px) {
-    header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.5);
+    .page-header {
+
     }
 }
-header > div {
+.page-header .top-b {
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    border-bottom: 2px solid white;
 }
 @media only screen and (min-width: 1000px) {
-    header > div {
+    .page-header .top-b {
         width: 100%;
         max-width: 1180px;
         padding: 0 30px;
         height: 60px;
+        border-bottom: none;
     }
 }
 .logo {
-    width: calc(100% - 180px);
+    width: calc(100% - 120px);
     height: 60px;
     border-left: 2px solid white;
     order: 2;
     background-image: url(../images/logo.png);
     background-repeat: no-repeat;
-    background-size: 80% auto;
-    background-position: 15px center;
+    background-size: auto 30px;
+    background-position: center;
 }
-@media only screen and (min-width: 400px) {
-    .logo {
-        background-size: auto 40px;
-    }
-}
+/*@media only screen and (min-width: 400px) {*/
+/*    .logo {*/
+/*        background-size: auto 40px;*/
+/*    }*/
+/*}*/
 @media only screen and (min-width: 1000px) {
     .logo {
         width: calc(100% - 120px);
         min-width: 360px;
         border-left: none;
-        background-size: contain;
-        background-position: left center;
+        background-size: auto 54px;
+        background-position: center;
     }
 }
 .button-back {
@@ -145,7 +160,7 @@ header > div {
 @media only screen and (min-width: 1000px) {
     .button-back {
         min-width: 60px;
-        margin-right: 60px;
+        /*margin-right: 60px;*/
         border: 3px solid white;
         background-color: var(--mainBrandColour);
         box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
@@ -196,122 +211,6 @@ header > div {
     opacity: 0.3;
 }
 
-.search-site-open {
-    width: 60px;
-    border-left: 2px solid white;
-    order: 3;
-    background-image: url(../images/search-icon.svg);
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    transition: background-color ease 0.3s;
-    background-color: transparent;
-}
-.open-search .search-site-open {
-    background-color: var(--dark);
-}
-@media only screen and (min-width: 1000px) {
-    .search-site-open {
-        display: none;
-    }
-}
-.search-site {
-    position: absolute;
-    top: 60px;
-    border-top: 2px solid white;
-    /* left: 0; */
-    right: 0;
-    width: 100%;
-    max-width: 450px;
-    height: 70px;
-    overflow: hidden;
-    background: none;
-    pointer-events: none;
-    z-index: 2;
-}
-@media only screen and (max-width: 1000px) {
-    .search-site {
-        flex: none;
-    }
-}
-@media only screen and (min-width: 1000px) {
-    .search-site {
-        position: relative;
-        top: auto;
-        border-top: none;
-        left: auto;
-        width: 100%;
-        max-width: 500px;
-        height: 60px;
-        overflow: visible;
-        order: 3;
-        margin-right: 60px;
-    }
-}
-.search-site > div {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: var(--dark);
-    display: flex;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
-    pointer-events: auto;
-}
-@media only screen and (max-width: 1000px) {
-    .search-site > div {
-        transition: transform ease 0.3s;
-        transform: translateY(-105%);
-    }
-}
-@media only screen and (min-width: 1000px) {
-    .search-site > div {
-        height: 100%;
-        background-color: transparent;
-        border: 3px solid white;
-        display: flex;
-        box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
-        transform: none;
-    }
-}
-@media only screen and (max-width: 1000px) {
-    .open-search .search-site > div {
-        transform: translateY(0);
-    }
-}
-.search-site input {
-    width: calc(100% - 57px);
-    height: 100%;
-    border: 2px solid var(--dark);
-    border-right: none;
-    box-shadow: inset 1px 1px 5px 0 rgba(0,0,0,0.15);
-    padding: 10px 15px 15px;
-}
-@media only screen and (min-width: 1000px) {
-    .search-site input {
-        width: calc(100% - 117px);
-        height: 100%;
-        border: none;
-        border-right: 3px solid white;
-        box-shadow: inset 1px 1px 5px 0 rgba(0,0,0,0.15);
-        padding: 10px 15px 15px;
-        background-color: transparent;
-    }
-}
-.search-site .button-search-site {
-    width: 59px;
-    height: 100%;
-    background-color: var(--dark);
-    color: white;
-}
-@media only screen and (min-width: 1000px) {
-    .search-site .button-search-site {
-        width: 119px;
-        background-color: rgba(255,255,255,0.25);
-        text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-    }
-}
 .main-menu {
     min-width: 60px;
     max-width: 60px;
@@ -393,7 +292,7 @@ header > div {
 }
 @media only screen and (min-width: 1000px) {
     .main-menu .clip-menu {
-        top: 75px;
+        top: 87px;
     }
 }
 .main-menu .clip-menu ul.menu-options {
@@ -416,7 +315,7 @@ header > div {
 .main-menu .clip-menu ul.menu-options li {
     padding: 15px;
     text-align: center;
-    background-color: rgba(0,0,0,0.75);
+    background-color: rgba(0,0,0,0.25);
     transition: background-color ease 0.3s;
     cursor: pointer;
 }
@@ -426,7 +325,7 @@ header > div {
     }
 }
 .main-menu .clip-menu ul.menu-options li:hover {
-    background-color: rgba(0,0,0,0.25);
+    background-color: rgba(0,0,0,0);
 }
 .main-menu .clip-menu ul.menu-options li a {
     color: white;
@@ -440,86 +339,170 @@ header > div {
     }
 }
 
-/* postcode / hero */
+/* subheading (home only) */
 
-.postcode-search {
+.subheading {
+    display: none;
+}
+.on-home .subheading {
+    display: block;
+}
+.subheading {
     position: relative;
-    height: 400px;
-    max-height: 120px;
+    z-index: 2;
+    background-color: var(--subHeadingText);
+    color: white;
+    box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.5);
+    min-height: 120px;
+}
+@media only screen and (min-width: 1000px) {
+    .subheading {
+        min-height: 150px;
+    }
+}
+.subheading .title-text {
     display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
-    justify-content: center;
-    transition: max-height ease 0.3s;
+    height: 100%;
+    padding: 30px 15px 35px;
 }
-
-@media only screen and (max-width: 795px) {
-    .on-home .postcode-search {
-        max-height: 180px;
-    }
-    .open-loc .postcode-search {
-        max-height: 160px;
-    }
-    .on-home.open-loc .postcode-search {
-        max-height: 180px; /* urgh */
-    }
+.subheading .title-text h1 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
 }
-@media only screen and (min-width: 795px) {
-    .postcode-search {
-        height: 200px;
-        max-height: none;
-        margin-bottom: 0;
+@media only screen and (min-width: 460px) {
+    .subheading .title-text br {
+        display: none;
     }
-    .on-home .postcode-search {
-        height: 450px;
-        max-height: none;
-        margin-bottom: 200px;
+    .subheading .title-text h1 {
+        font-size: 2rem;
     }
 }
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .postcode-search {
-        height: 50vh;
-        max-height: none;
-        margin-bottom: 25vh;
+@media only screen and (min-width: 600px) {
+    .subheading .title-text {
+        padding: 30px 15px 45px;
+    }
+    .subheading .title-text h1 {
+        font-size: 2.5rem;
     }
 }
 
-@media only screen and (min-width: 795px) {
-    .on-home .postcode-search::before {
-        content: "";
-        width: 100%;
-        height: 450px;
-        position: absolute;
-        top: 0;
-        background-image: url(../images/marker.svg);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 60px 180px;
-        z-index: 2;
-        pointer-events: none;
-    }
+/*.subheading::before {*/
+/*    content: "";*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100%;*/
+/*    height: 30px;*/
+/*    background: linear-gradient(to bottom, black, transparent);*/
+/*}*/
+.subheading h1,
+.subheading p {
+    /*flex: 1;*/
+    margin: 0 0 0 0;
+    text-align: center;
 }
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .postcode-search::before {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        background-image: url(../images/marker.svg);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 45px 135px;
-    }
-}
+
+
+/* postcode / hero (map) */
+
 .map-background {
     position: absolute;
     display: block;
     width: 100%;
-    height: 100%;
     pointer-events: none;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+}
+.on-home .map-background {
+    position: relative;
+    min-height: 150px; /* force height in mob/landscape */
+    flex: 1;
+}
+.on-home .map-background::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.05));
 }
 .map-background .ol-control {
     display: none !important;
+}
+.map-background canvas {
+    height: 100%;
+}
+
+.postcode-search {
+    position: relative;
+    height: 100%;
+    display: flex;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    flex-direction: column;
+}
+.postcode-search::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.025));
+}
+.on-home .postcode-search::after {
+    display: none;
+}
+
+@media only screen and (max-width: 795px) {
+
+}
+@media only screen and (min-width: 795px) {
+    .postcode-search::after {
+        height: 20px;
+    }
+}
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+
+}
+
+
+.on-home .map-background::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background-image: url(../images/marker.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 60px 90px;
+    z-index: 2;
+    pointer-events: none;
+}
+@media only screen and (min-width: 795px) {
+    .on-home .map-background::before {
+        background-size: 75px 113px;
+    }
+}
+
+@media only screen and (orientation: landscape) and (max-height: 795px) {
+    /*.on-home .postcode-search::before {*/
+    /*    content: "";*/
+    /*    width: 100%;*/
+    /*    height: 100%;*/
+    /*    position: absolute;*/
+    /*    top: 0;*/
+    /*    background-image: url(../images/marker.svg);*/
+    /*    background-position: center;*/
+    /*    background-repeat: no-repeat;*/
+    /*    background-size: 45px 135px;*/
+    /*}*/
 }
 .your-current-postcode {
     position: relative;
@@ -530,37 +513,35 @@ header > div {
     align-items: center;
     background-color: rgba(243, 242, 239, 0.75);
     width: 100%;
-    height: 100%;
+    padding: 15px 0 20px;
 }
-@media only screen and (min-width: 795px) {
+.on-home .your-current-postcode {
+    height: auto;
+}
+@media only screen and (min-width: 1000px) {
     .your-current-postcode {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-    }
-    .on-home .your-current-postcode {
-        height: 200px;
-        background-color: var(--mapCompliment);
-        position: absolute;
-        top: auto;
-        bottom: 0;
-        transform: translateY(100%);
+        padding: 25px 0 30px;
     }
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
     .on-home .your-current-postcode {
-        height: 25vh;
+        /*height: 25vh;*/
     }
 }
-.your-current-postcode label {
-    display: inline-block;
+.your-current-postcode label,
+.location-text {
+    /*line-height: 30px;*/
 }
-.open-loc .your-current-postcode label {
-    margin-bottom: 10px;
+.your-current-postcode label.label-loc-is-set { display: inline-block; }
+.your-current-postcode label.label-loc-is-edit { display: none; }
+.open-loc .your-current-postcode label.label-loc-is-set { display: none; }
+.open-loc .your-current-postcode label.label-loc-is-edit { display: inline-block; }
+
+.location-text {
+    font-weight: 500;
 }
 .your-current-postcode .postcode-field {
-    font-size: 1.75rem;
+    font-size: 3rem;
     font-weight: 700;
     display: inline-block;
     max-width: 280px;
@@ -568,48 +549,88 @@ header > div {
     pointer-events: none;
     background: transparent;
     border: none;
+    padding: 2px 0 5px;
+    height: 50px;
+    margin: 7px 0 10px;
 }
 .open-loc .your-current-postcode .postcode-field {
-    margin: 0 0 7px 0;
-    border: 2px dashed black;
-    padding: 6px 5px 5px;
-    background: rgba(255, 255, 255, 0.5);
+    background-color: white;
+    border: 3px solid var(--dark);
+    box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.15);
+    padding: 2px 0 7px;
     pointer-events: auto;
+}
+.open-loc .your-current-postcode.has-error .postcode-field {
+    border-color: var(--errorAlert);
 }
 @media only screen and (min-width: 795px) {
     .your-current-postcode .postcode-field {
-        padding: 0 0;
         font-weight: 800;
         font-size: 3.5rem;
+        height: 60px;
+        padding: 5px 0 10px;
+        margin: 10px 0;
+    }
+    .open-loc .your-current-postcode .postcode-field {
+        font-size: 3rem;
     }
 }
-.your-current-postcode .change-postcode {
-    text-decoration: underline;
-    border: none;
-    background: none;
-    color: var(--actionBlue);
-}
-.your-current-postcode .change-postcode.edit-loc {
+.your-current-postcode .error-msg {
+     font-weight: 500;
+     color: var(--errorAlert);
+     margin-bottom: 10px;
+     display: none;
+ }
+.open-loc .your-current-postcode.has-error .error-msg {
     display: inline-block;
 }
-.your-current-postcode .change-postcode.set-loc {
-    position: relative;
-    padding-left: 15px;
+.your-current-postcode .change-postcode {
+    padding: 9px 20px 10px;
+    box-shadow: 2px 2px 3px 0 rgba(0,0,0,0.15);
+    color: white;
+    text-transform: uppercase;
+    background-color: var(--actionBlue);
+    transition: background-color ease 0.3s;
+    font-size: 0.75rem;
+}
+.your-current-postcode .change-postcode:hover {
+    background-color: var(--dark);
+}
+.your-current-postcode .edit-loc-b-panel {
     display: none;
+}
+.open-loc .your-current-postcode .edit-loc-b-panel {
+    display: block;
+    width: 100%;
+}
+.your-current-postcode .edit-loc-b-panel .change-postcode {
+    width: 50%;
+    max-width: 140px;
+    margin: 0 5px;
+}
+.your-current-postcode .edit-loc-b-panel .change-postcode.can-loc {
+    background-color: var(--cancelButton);
+}
+.your-current-postcode .change-postcode.edit-loc {
+    /*display: inline-block;*/
+}
+.your-current-postcode.has-error .change-postcode.set-loc {
+    opacity: 0.4;
+    pointer-events: none;
 }
 .open-loc .your-current-postcode .change-postcode.edit-loc {
     display: none;
 }
-.open-loc .your-current-postcode .change-postcode.set-loc {
-    display: inline-block;
-}
-.your-current-postcode .change-postcode.set-loc::before {
-    content: "\2714";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-}
+/*.open-loc .your-current-postcode .change-postcode.set-loc {*/
+/*    display: inline-block;*/
+/*}*/
+/*.your-current-postcode .change-postcode.set-loc::before {*/
+/*    content: "\2714";*/
+/*    position: absolute;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    height: 100%;*/
+/*}*/
 
 /* main content */
 
@@ -640,7 +661,7 @@ header > div {
     margin: 0 0 0 0;
 }
 .side-panel p {
-    /*margin: 0 0 15px 0;*/
+    margin: 0 0 15px 0;
 }
 @media only screen and (min-width: 795px) {
     .side-panel h2 {
@@ -653,7 +674,7 @@ header > div {
 }
 .side-panel .results-number {
     margin: 0 0 0 0;
-    font-style: italic;
+    /*font-style: italic;*/
     font-weight: 600;
 }
 @media only screen and (min-width: 795px) {
@@ -680,13 +701,13 @@ header > div {
 }
 .side-panel .search-filters p,
 .side-panel .search-filters label,
-.side-panel .search-filters input,
+.side-panel .search-filters input[type=text],
 .side-panel .search-filters select {
     width: 100%;
     display: inline-block;
     margin-bottom: 15px;
 }
-.side-panel .search-filters input,
+.side-panel .search-filters input[type=text],
 .side-panel .search-filters select {
     border: 2px solid var(--dark);
     padding: 10px;
@@ -724,33 +745,101 @@ header > div {
     margin: 15px 0 0;
     clear: both;
 }
+
+/* checkboxes */
+
+.ck-cont {
+    display: block;
+    position: relative;
+    padding-left: 45px;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.ck-cont input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.ck-cont .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border: 2px solid var(--elementNeutral);
+    box-shadow: 1px 4px 7px 0 rgba(0,0,0,0.15);
+    transition: border ease 0.3s;
+}
+.ck-cont .checkmark:after {
+    content: "";
+    position: absolute;
+    transition: opacity ease 0.3s;
+    opacity: 0;
+}
+.ck-cont input:checked ~ .checkmark:after {
+    opacity: 1;
+}
+.ck-cont .checkmark:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/checky.svg);
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    background-position: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 @media only screen and (min-width: 795px) {
     .side-panel .search-filters input,
     .side-panel hr,
-    .side-panel .search-filters select {
+    .side-panel .search-filters select,
+    .ck-cont .checkmark {
         border-width: 3px;
     }
 }
 
 .side-panel.channel-planning .search-filters input,
 .side-panel.channel-planning .search-filters select,
-.side-panel.channel-planning hr {
+.side-panel.channel-planning hr,
+.side-panel.channel-planning .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelPlanning);
 }
 .side-panel.channel-democracy .search-filters input,
 .side-panel.channel-democracy .search-filters select,
-.side-panel.channel-democracy hr {
+.side-panel.channel-democracy hr,
+.side-panel.channel-democracy .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelDemocracy);
 }
 .side-panel.channel-events .search-filters input,
 .side-panel.channel-events .search-filters select,
-.side-panel.channel-events hr {
+.side-panel.channel-events hr,
+.side-panel.channel-events .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelEvents);
 }
 .side-panel.channel-community .search-filters input,
 .side-panel.channel-community .search-filters select,
-.side-panel.channel-community hr {
+.side-panel.channel-community hr,
+.side-panel.channel-community .ck-cont input:checked ~ .checkmark {
     border-color: var(--channelCommunity);
+}
+.side-panel.channel-reported .search-filters input,
+.side-panel.channel-reported .search-filters select,
+.side-panel.channel-reported hr,
+.side-panel.channel-reported .ck-cont input:checked ~ .checkmark {
+    border-color: var(--channelReported);
 }
 
 .side-panel.channel-planning .search-filters .apply-filters {
@@ -765,52 +854,76 @@ header > div {
 .side-panel.channel-community .search-filters .apply-filters {
     background-color: var(--channelCommunity);
 }
+.side-panel.channel-reported .search-filters .apply-filters {
+    background-color: var(--channelReported);
+}
 
-.main-content {
+.main-panel {
     padding: 0 15px 15px;
     flex: 1 1 auto;
 }
 @media only screen and (min-width: 795px) {
-    .main-content {
+    .main-panel {
         padding: 15px;
+        margin-bottom: 0;
     }
 }
-.on-home .main-content {
+.on-home .main-panel {
     padding: 30px 15px;
     text-align: center;
 }
-.main-content h1 {
+.main-panel h1 {
     font-weight: 600;
 }
-.main-content p {
+.main-panel p {
     /*margin: 0 0 15px 0;*/
 }
 .channel img {
     width: 100%;
     max-width: 280px;
+    cursor: pointer;
 }
 .results-item-list {
 
 }
 .results-item-list li {
     padding: 15px 0;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
     border-bottom: 2px dashed #707070;
     display: flex;
     flex-direction: row;
+    align-items: center;
     width: 100%;
 }
 .results-item-list li .distance-from {
     padding: 0 15px;
     text-align: center;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.results-item-list li .distance-from.less {
+    position: relative;
+}
+.results-item-list li .distance-from.less::before {
+    content: "Less than";
+    position: relative;
+    text-align: center;
+    display: block;
 }
 .results-item-list .distance-from .miles-no {
     font-size: 4rem;
     line-height: 1;
     font-weight: 600;
+    display: block;
+}
+.results-item-list li .distance-from.less .miles-no  {
+    font-size: 2rem;
 }
 .results-item-list .distance-from em {
     font-style: normal;
+    display: block;
 }
 .results-item-list li .item-detail {
     width: 90%;
@@ -818,7 +931,7 @@ header > div {
 .results-item-list .item-detail h4 {
     margin-bottom: 5px;
 }
-.results-item-list .item-detail address {
+.results-item-list .item-detail .result-class {
     margin-bottom: 5px;
 }
 .results-item-list .item-detail a {
@@ -848,6 +961,9 @@ header > div {
 .channel.channel-community .explore-channel {
     background-color: var(--channelCommunity);
 }
+.channel.channel-reported .explore-channel {
+    background-color: var(--channelReported);
+}
 .channel .explore-channel:hover {
     background-color: var(--dark);
 }
@@ -856,6 +972,7 @@ header > div {
     border-bottom: 2px solid;
     margin: 0 auto 20px;
     max-width: 200px;
+    transition: border-color ease 0.3s;
 }
 @media only screen and (min-width: 795px) {
     .channel {
@@ -895,8 +1012,16 @@ header > div {
 .side-panel.channel-community h2 {
     border-color: var(--channelCommunity);
 }
+.channel.channel-reported h2,
+.side-panel.channel-reported h2 {
+    border-color: var(--channelReported);
+}
 .channel p {
     margin: 0 0 5px 0;
+}
+
+.main-panel .channel img:hover + h2 {
+    border-color: var(--dark);
 }
 
 @media only screen and (min-width: 795px) {
@@ -949,6 +1074,9 @@ header > div {
 .channel-community .items-channel-heading {
     border-bottom-color: var(--channelCommunity);
 }
+.channel-reported .items-channel-heading {
+    border-bottom-color: var(--channelReported);
+}
 
 .side-panel.details address,
 .side-panel.details .distance-from-details,
@@ -987,40 +1115,169 @@ header > div {
     text-decoration: underline;
 }
 @media only screen and (max-width: 795px) {
-    .main-content.details {
+    .main-panel.details {
         order: 1;
         padding-top: 30px;
         padding-bottom: 0;
     }
 }
-.main-content.details h4 {
+.main-panel.details h4 {
 
 }
-.main-content.details .item-main-info {
+.main-panel.details .item-main-info {
     margin-bottom: 30px;
 }
-.main-content.details .item-main-info strong,
-.main-content.details .item-main-info b {
+.main-panel.details .item-main-info strong,
+.main-panel.details .item-main-info b {
     font-weight: 600;
 }
-.main-content.details .item-main-info em,
-.main-content.details .item-main-info i {
+.main-panel.details .item-main-info em,
+.main-panel.details .item-main-info i {
     font-style: italic;
 }
-.main-content.details .item-main-info a {
+.main-panel.details .item-main-info a {
     text-decoration: underline;
 }
-.main-content.details .item-main-map {
+.main-panel.details .item-main-info a.more-details-button {
+    padding: 9px 20px 10px;
+    box-shadow: 2px 2px 3px 0 rgba(0,0,0,0.15);
+    color: white;
+    text-transform: uppercase;
+    background-color: var(--actionBlue);
+    transition: background-color ease 0.3s;
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+.main-panel.details .map-with-controls {
+    position: relative;
+}
+.main-panel.details .item-main-map {
     width: 100%;
     height: 400px;
-    box-shadow: inset 3px 3px 15px 0 rgba(0,0,0,0.1);
-    margin-bottom: 30px;
+    position: relative;
+}
+.main-panel.details .map-with-controls .details-map-button {
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 3px 0;
+    padding: 5px;
+    position: absolute;
+    bottom: 15px;
+    font-size: 0.75rem;
+    height: 30px;
+    padding-bottom: 7px;
+}
+.main-panel.details .map-with-controls .details-map-button.button-home-map {
+    right: 15px;
+    width: 120px;
+}
+.main-panel.details .map-with-controls .details-map-button.button-reset-map {
+    right: 150px;
+    width: 90px;
+}
+.main-panel.details .item-main-map::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 10px 0 rgba(0,0,0,0.1);
+    z-index: +1;
+    pointer-events: none;
+}
+
+/* OL overwrites */
+
+.item-main-map .ol-zoom {
+    top: 15px;
+    left: 15px;
+}
+.item-main-map .ol-control {
+    position: absolute;
+    background-color: var(--dark);
+    border-radius: 0;
+    padding: 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 3px 0px;
+}
+.item-main-map .ol-control button {
+    display: block;
+    color: var(--dark);
+    font-size: 24px;
+    font-weight: normal;
+    text-align: center;
+    height: 30px;
+    width: 30px;
+    line-height: 1;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    border-radius: 0;
+    transition: background ease 0.3s;
+}
+.item-main-map .ol-control button:focus {
+    background-color: transparent;
+}
+.item-main-map .ol-zoom .ol-zoom-in {
+    border-radius: 0;
+}
+.item-main-map .ol-zoom .ol-zoom-out {
+    border-radius: 0;
 }
 
 /* footer */
 
+footer {
+    background-color: var(--dark);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    font-size: 0.75rem;
+}
 footer p {
     margin: 0 0 0 0;
+    text-align: center;
+}
+footer a {
+    color: white;
+    text-decoration: underline;
+}
+@media only screen and (min-width: 550px) {
+    footer br {
+        display: none;
+    }
+}
+footer .logo-bw {
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+    background-image: url(../images/logo_white.png);
+    background-size: contain;
+    margin-bottom: 5px;
+}
+footer ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+footer ul li {
+    margin: 5px;
+    white-space: nowrap;
+    text-align: center;
+}
+@media only screen and (max-width: 550px) {
+    footer ul {
+        margin-bottom: 15px;
+    }
+    footer ul li {
+        flex: 1 1 25%;
+    }
 }
 
 /*** elements ***/

@@ -305,7 +305,17 @@ CREATE OR REPLACE VIEW locus_core.tree_preservation_orders AS
         ),
     'table', 'ogc_fid'||':'||tpo_polygons_locus.tableoid::regclass::text) AS attributes
     FROM locus.tpo_polygons_locus where tptreecat is not null and tptreecat != ' ' ;
-			   
+
+--REPORT IT
+
+CREATE OR REPLACE VIEW locus_core.report_it AS
+ SELECT DISTINCT ON (id) id,
+    st_transform(geom, 4326) AS wkb_geometry,
+    date::timestamp without time zone AS date_added,
+    ARRAY['Reported'::locus_core.search_category] AS category,
+    jsonb_build_object('title', type, 'description', jsonb_build_object('type', type, 'details', 'The Council has been made aware of something happening here', 'location', location), 'table', ('id'::text || ':'::text) || report_it.tableoid::regclass::text) AS attributes
+   FROM locus.report_it;
+
 --LLPG SEARCH
 			   
 			   
