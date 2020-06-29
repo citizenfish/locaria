@@ -14,9 +14,8 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					'configuration/functions/report.sql',
-					'configuration/reports/democracy_location.sql',
-					'tests/unit_tests/test_democracy_location_report.sql'
+					'configuration/reports/category_types.sql',
+					'tests/unit_tests/test_category_type_report.sql'
 
 				]
 			},
