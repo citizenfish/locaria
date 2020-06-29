@@ -247,6 +247,7 @@ SELECT id::INTEGER ,
 		'keyval', keyval,
 		'type', 'Application',
 		'url', 'https://publicaccess.surreyheath.gov.uk/online-applications/applicationDetails.do?keyVal='||keyval||'&activeTab=summary',
+		'completed', CASE WHEN dateaprecv > now() - INTERVAL '30 days' THEN false ELSE true END,
 		'additional_information', proposal::text),
 	'table', 'id'||':'||locus.dc_apps_readonly.tableoid::regclass::text) AS attributes
 FROM locus.dc_apps_readonly;
