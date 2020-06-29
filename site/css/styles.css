@@ -985,6 +985,9 @@ li.has-error::after {
         border-bottom-width: 3px;
         width: 80%;
     }
+    .channels .channel p {
+        min-height: 100px;
+    }
 }
 .side-panel h2 {
 

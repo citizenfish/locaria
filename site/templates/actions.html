@@ -164,13 +164,12 @@
 
     </section>
     <section class="main-panel">
-        <p>To help you find information relevant to the location you're interested in, we've created the following channels [HOLDING COPY - REPLACE]</p>
+        <p>Click on one of the below headings to find out more about your selected location.</p>
         <section class="channels">
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="An image illustrating the 'Planning' channel of information" alt="An image of a house" @browser.addHistory({"history":"Cat/Planning"});>
                 <h2>Planning</h2>
-                <p><strong>Conservation Areas / TPO / Planning Applications</strong></p>
-                <p>To gain access to 'types / sub classifications' of Planning information.</p>
+                <p>Search nearby planning applications, conservation areas, Tree Preservation Orders and listed buildings.</p>
                 <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Planning"});>
                     Explore
                 </button>
@@ -178,8 +177,7 @@
             <div class="channel channel-democracy">
                 <img src="images/channel-democracy.jpg" title="An image illustrating the 'Democracy' channel of information" alt="An image of a ballot box" @browser.addHistory({"history":"Report/democracy_location"});>
                 <h2>Democracy</h2>
-                <p><strong>Councillor, Ward, Parish, MP</strong></p>
-                <p>To gain access to sub-types, such as who is the Councillor at location X.</p>
+                <p>Find information about wards, parishes, councillors, MPs, polling stations and council tax in your selected location.</p>
                 <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Report/democracy_location"});>Explore</button>
             </div>
 <!--            <div class="channel channel-events">-->
@@ -192,15 +190,13 @@
             <div class="channel channel-reported">
                 <img src="images/channel-reported.jpg" title="An image illustrating the 'Reported' channel of information" alt="An image of a traffic cones" @browser.addHistory({"history":"Cat/Reported"});>
                 <h2>Reported</h2>
-                <p><strong>Issues reported by the local community</strong></p>
-                <p>See the concerns raised by residents in this area</p>
+                <p>Search what issues have been reported by residents nearby.</p>
                 <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reported"});>Explore</button>
             </div>
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="An image illustrating the 'Community' channel of information" alt="An image of a children's slide" @browser.addHistory({"history":"Cat/Community"});>
                 <h2>Community</h2>
-                <p><strong>Community information on a designated location</strong></p>
-                <p>To get information on community facilities and local service</p>
+                <p>Find community halls, toilets, playgrounds nearest to your selected location.</p>
                 <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Community"});>Explore</button>
             </div>
         </section>
@@ -226,12 +222,25 @@
 </script>
 
 <script id="page-content-filter-Reported" type="text/html">
-    {{#include '#page-content-filter-Header'}}
+    {{#include '#page-content-filter-Header-Reported'}}
     <form class="search-filters">
         <div>
             {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance-Reported'}}
+            {{#include '#page-content-filter-Button'}}
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
+<script id="page-content-filter-Community" type="text/html">
+    {{#include '#page-content-filter-Header-Community'}}
+    <form class="search-filters">
+        <div>
+            {{#include '#display-distance-units'}}
+            <p><strong>Filter these results:</strong></p>
+            {{#include '#page-content-filter-Distance'}}
             {{#include '#page-content-filter-Button'}}
         </div>
     </form>
@@ -244,8 +253,31 @@
     <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
     Show/hide filters
     </button>
+</script>
 
-</script>]
+<script id="page-content-filter-Header-Planning" type="text/html">
+    <p class="no-mb">Search nearby planning applications, conservation areas, Tree Preservation Orders and listed buildings.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+</script>
+
+<script id="page-content-filter-Header-Reported" type="text/html">
+    <p class="no-mb">Search what issues have been reported by residents nearby.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+</script>
+
+<script id="page-content-filter-Header-Community" type="text/html">
+    <p class="no-mb">Find the nearest parks, community halls, toilets, playgrounds to your selected location.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+</script>
 
 <script id="page-content-filter-Distance" type="text/html">
 
@@ -287,7 +319,7 @@
 </script>
 
 <script id="page-content-filter-Planning" type="text/html">
-    {{#include '#page-content-filter-Header'}}
+    {{#include '#page-content-filter-Header-Planning'}}
     <form class="search-filters">
         <div>
             {{#include '#display-distance-units'}}
@@ -305,7 +337,7 @@
                 <input type="checkbox" value="Listed Building" class="functionGetTypes" id="planningTypeListed" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Listed/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
-            <label class="ck-cont" for="planningTypeTPO">TPO
+            <label class="ck-cont" for="planningTypeTPO">Tree Preservation Orders
                 <input type="checkbox" value="TPO" class="functionGetTypes" id="planningTypeTPO" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/TPO/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
@@ -388,7 +420,7 @@
     <section class="side-panel channel-community">
         <img src="images/channel-community.jpg" title="" alt="" class="no-mb">
         <h2>{{memory.history.value[0]}}</h2>
-        {{#include '#page-content-filter'}}
+        {{#include '#page-content-filter-Community'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
