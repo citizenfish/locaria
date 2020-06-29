@@ -513,7 +513,7 @@ li.has-error::after {
     align-items: center;
     background-color: rgba(243, 242, 239, 0.75);
     width: 100%;
-    padding: 15px 0 20px;
+    padding: 15px 15px 20px;
 }
 .on-home .your-current-postcode {
     height: auto;
@@ -985,6 +985,9 @@ li.has-error::after {
         border-bottom-width: 3px;
         width: 80%;
     }
+    .channels .channel p {
+        min-height: 100px;
+    }
 }
 .side-panel h2 {
 
@@ -1045,6 +1048,9 @@ li.has-error::after {
         padding-top: 0;
         padding-bottom: 0;
     }
+    .side-panel.details.channel-democracy {
+        order: 1;
+    }
 }
 @media only screen and (min-width: 795px) {
     .side-panel.details {
@@ -1056,6 +1062,14 @@ li.has-error::after {
     padding-bottom: 15px;
     border-bottom: 2px solid var(--dark);
     margin-bottom: 30px;
+}
+@media only screen and (max-width: 795px) {
+    .items-channel-heading {
+        margin-top: 30px;
+    }
+    .side-panel.details.channel-democracy .items-channel-heading {
+        margin-top: 15px;
+    }
 }
 @media only screen and (min-width: 795px) {
     .items-channel-heading {
@@ -1119,6 +1133,11 @@ li.has-error::after {
         order: 1;
         padding-top: 30px;
         padding-bottom: 0;
+    }
+    .main-panel.details.item-democracy {
+        order: 2;
+        padding-top: 0;
+        padding-bottom: 30px;
     }
 }
 .main-panel.details h4 {
