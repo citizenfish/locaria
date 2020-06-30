@@ -15,7 +15,8 @@ module.exports = function (grunt) {
 				tables: [
 
 					'configuration/functions/search.sql',
-					'tests/unit_tests/test_search_filter.sql'
+					//'tests/unit_tests/test_search_filter.sql',
+					'tests/unit_tests/test_search.sql'
 
 				]
 			},
