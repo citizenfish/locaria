@@ -708,6 +708,7 @@
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>{{/if}}
         </div>
         {{#include '#full-details-Map'}}
 
