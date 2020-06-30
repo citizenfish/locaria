@@ -340,7 +340,7 @@
                 <span class="checkmark"></span>
             </label>
             <label class="ck-cont" for="planningTypeTPO">Tree Preservation Orders
-                <input type="checkbox" value="TPO" class="functionGetTypes" id="planningTypeTPO" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/TPO/)}}checked{{/if}}>
+                <input type="checkbox" value="Tree Preservation Order" class="functionGetTypes" id="planningTypeTPO" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Tree Preservation Order/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
             {{#include '#page-content-filter-Button'}}
@@ -608,7 +608,7 @@
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
             <p>{{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed===true}}[Completed]{{/if}}</p>
-            <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>{{/if}}
         </div>
         {{#include '#full-details-Map'}}
 
