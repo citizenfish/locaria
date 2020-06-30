@@ -12,7 +12,7 @@ SELECT 'json_sources',
 
                                         INSERT INTO locus_core.events(nid,attributes, wkb_geometry, category)
                                         SELECT (($1::JSONB)#>>'{event,nid}')::BIGINT,
-                                               (($1::JSONB)->'event') || jsonb_build_object('description', ($1::JSONB)->'event')::JSONB),
+                                               (($1::JSONB)->'event') || jsonb_build_object('description', (($1::JSONB)->'event')::JSONB),
                                                locus_core.opennames_postcode_geocoder(($1::JSONB)#>>'{event,venue}'),
                                                ARRAY['Events']::locus_core.search_category[]
                                         ON CONFLICT (nid) DO UPDATE
