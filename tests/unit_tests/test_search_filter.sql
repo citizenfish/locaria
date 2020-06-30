@@ -7,10 +7,14 @@ BEGIN
     SELECT locus_core.locus_gateway(
         json_build_object('method', 'search',
                           'category', 'Planning',
-                          'filter', json_build_object('type', 'Conservation Area'))
+                          'filter', json_build_object('type', 'Application,Conservation,Listed Building,TPO', 'completed', true))
 
     ) INTO ret_var;
 
+
+    IF (ret_var->>'error') IS NOT NULL THEN
+        RAISE NOTICE 'LOG MESSAGE %', (SELECT log_message FROM locus_core.logs WHERE id = (ret_var->>'system_log_id')::BIGINT);
+    END IF;
 
     RAISE NOTICE 'RESULT %', ret_var;
 END;
