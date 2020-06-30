@@ -243,6 +243,22 @@
             {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
+            <label class="ck-cont" for="communityTypePlayArea">Play Area
+                <input type="checkbox" value="Play Area" class="functionGetTypes" id="communityTypePlayArea" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Play/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+
+            <label class="ck-cont" for="communityTypeCommunityHall">Community Hall
+                <input type="checkbox" value="Community Hall" class="functionGetTypes" id="communityTypeCommunityHall" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Community/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+
+
+            <label class="ck-cont" for="communityTypeToilet">Toilet
+                <input type="checkbox" value="Toilet" class="functionGetTypes" id="communityTypeToilet" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Toilet/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+
             {{#include '#page-content-filter-Button'}}
         </div>
     </form>
@@ -368,6 +384,7 @@
 </script>
 
 <script id="report_display" type="text/html">
+    {{#if memory.historyReportRender.value.packet.items}}
     <section class="side-panel details channel-democracy">
         <h6 class="items-channel-heading">Democracy</h6>
         {{#for memory.historyReportRender.value.packet.items}}
@@ -398,6 +415,15 @@
         </button>
         </div>
     </section>
+    {{else}}
+    <section class="side-panel details channel-democracy">
+        <h6 class="items-channel-heading">Democracy</h6>
+    </section>
+    <section class="main-panel details item-democracy">
+        <h4 class="items-channel-heading">Area outside council boundary</h4>
+        <p>Your location is set to an area outside the council boundary so we are able to give you a report, please change your location to try again</p>
+    </section>
+    {{/if}}
 </script>
 
 <script id="page-content-Planning" type="text/html">
