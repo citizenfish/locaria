@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION locus_core.search(search_parameters JSON) RETURNS JSO
 DECLARE
     default_limit INTEGER DEFAULT 1000;
     default_offset INTEGER DEFAULT 0;
-	json_filter JSONB DEFAULT NULL;
+	json_filter JSONB DEFAULT json_build_object();
     results_var JSON;
     search_ts_query tsquery;
     bbox_var GEOMETRY DEFAULT NULL;
@@ -110,7 +110,6 @@ BEGIN
                         )
                 )
                 OFFSET default_offset
-
             ) INNER_SUB
             ORDER by distance ASC, search_rank DESC
             LIMIT default_limit
