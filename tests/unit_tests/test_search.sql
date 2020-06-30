@@ -5,8 +5,7 @@ DECLARE
 BEGIN
 
     SELECT locus_core.locus_gateway(
-        json_build_object('method', 'search',
-                          'search_text', 'Waitrose', 'category', 'Waste and Recycling')
+        json_build_object('method', 'search', 'category', 'Community')
 
     ) INTO ret_var;
 
