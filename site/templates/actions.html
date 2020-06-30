@@ -150,12 +150,14 @@
                 -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
                 Cancel
             </button>
-            <button type="button" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});>
+            <button type="button" id="functionSaveButtonFocus" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});>
                 Save location
             </button>
         </div>
 
     </form>
+    @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}},{"queueEvent":"keydown","queueBindTarget":"#postcode"});
+    -elements.focus({"targetId":"#functionSaveButtonFocus"});
 </script>
 
 <script id="home-content" type="text/html">
@@ -470,7 +472,11 @@
        {{#include '#page-content-results-Distance'}}
         <div class="item-detail">
             <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
-            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}} Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}</p>
+            <p class="result-class">
+                Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}
+                Reference:{{memory.points.value.packet.features[#loop0].properties.description.ref}}
+                {{#if memory.points.value.packet.features[#loop0].properties.description.completed==true}}[Completed]{{/if}}
+            </p>
             <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
         </div>
     </li>
@@ -601,6 +607,7 @@
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            <p>{{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed===true}}[Completed]{{/if}}</p>
             <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>
         </div>
         {{#include '#full-details-Map'}}
