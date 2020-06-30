@@ -40,7 +40,7 @@ BEGIN
     END IF;
 
 	IF COALESCE(search_parameters->>'filter', '') != '' THEN
-		json_filter = (search_parameters->>'filter')::JSONB;
+		json_filter = COALESCE((search_parameters->'filter')::JSONB, jsonb_build_object());
 	END IF;
 
     --Requires BBOX as 'xmax ymax, xmin ymin'
@@ -100,7 +100,15 @@ BEGIN
                 --date search
                 AND (start_date_var IS NULL OR date_added::DATE BETWEEN start_date_var AND end_date_var)
                 --for sub-categorisation
-                AND (json_filter IS NULL OR attributes->'description' @> json_filter OR attributes#>>'{description,type}' = ANY (string_to_array(search_parameters#>>'{filter,type}', ',')) )
+                AND (
+                        --first use any filters not related to type, if empty it will match all
+                        attributes->'description' @> json_filter - 'type'
+                        --then apply the type filter
+                        AND (
+                            (json_filter->'type') IS NULL OR
+                            attributes#>>'{description,type}' = ANY (string_to_array(json_filter->>'type', ','))
+                        )
+                )
                 OFFSET default_offset
 
             ) INNER_SUB
