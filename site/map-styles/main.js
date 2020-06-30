@@ -14,7 +14,7 @@ export function mainMapStyle(feature, resolution) {
 						new Style({
 							image: new Icon({
 								src: 'images/marker-polling.svg',
-								size: [40, 60],
+								size: [40, 70],
 								zIndex: 100
 							}),
 							text: new Text({
@@ -37,7 +37,7 @@ export function mainMapStyle(feature, resolution) {
 					new Style({
 						image: new Icon({
 							src: 'images/marker-thing.svg',
-							size: [40, 60],
+							size: [40, 70],
 							zIndex: 100
 						}),
 						text: new Text({
@@ -81,7 +81,7 @@ export function locationStyle(feature, resolution) {
 			new Style({
 				image: new Icon({
 					src: 'images/marker-home.svg',
-					size: [40,60],
+					size: [40,70],
 					zIndex: 100
 				}),
 				text: new Text({
