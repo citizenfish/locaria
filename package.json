@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
-		"@nautoguide/ourthings": "^0.4.5",
+		"@nautoguide/ourthings": "^0.4.6",
 		"aws-sdk": "^2.587.0",
 		"console-badge": "^1.1.0",
 		"grunt": "^1.0.4",

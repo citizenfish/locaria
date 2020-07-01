@@ -404,6 +404,9 @@
         <div class="item-main-info">
             <p>SIMON: This could be taken from the wikipedia page for the ward</p>
             <p>{{memory.historyReportRender.value.packet.description}}</p>
+            {{#for memory.historyReportRender.value.packet.additionalLinks}}
+                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].link}}">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
+            {{/for}}
         </div>
         <div class="map-with-controls">
             <div id="openlayersItemMap" class="item-main-map">
