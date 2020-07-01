@@ -10,10 +10,10 @@
 	},
 	"dependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
-		"@nautoguide/ourthings": "^0.4.5",
+		"@nautoguide/ourthings": "^0.4.6",
 		"aws-sdk": "^2.587.0",
 		"console-badge": "^1.1.0",
-		"grunt": "^1.0.4",
+		"grunt": "^1.1.0",
 		"grunt-aws-s3": "^2.0.0",
 		"grunt-http": "^2.3.2",
 		"grunt-shell": "^3.0.1",
@@ -21,11 +21,11 @@
 		"http-server": "^0.12.3",
 		"mapbox-gl": "^1.8.0",
 		"node-fetch": "^2.6.0",
+		"ol": "^6.2.1",
 		"serverless": "^1.60.5",
 		"serverless-offline": "^5.12.1",
 		"webpack": "^4.29.6",
 		"webpack-cli": "^3.2.3",
-		"yaml": "^1.7.2",
-		"ol": "^6.2.1"
+		"yaml": "^1.10.0"
 	}
 }

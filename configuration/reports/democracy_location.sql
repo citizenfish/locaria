@@ -13,6 +13,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
             SELECT distinct on(attributes#>>'{description,ward}')
                    wkb_geometry as ward_geom,
                    attributes#>>'{description,ward}' as ward,
+                   attributes#>>'{description,url}' as url,
                    string_agg(attributes->>'title',', ') over () as councillors
             FROM locus_core.global_search_view,point_geometry
             WHERE ST_CONTAINS(wkb_geometry, location_geometry)
@@ -33,6 +34,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
         SELECT json_build_object('title', 'Democratic Information',
                                  'description', 'Simon needs to provide us with some copy',
                                  'subTitle', ward,
+                                 'additionalLinks', json_build_array(json_build_object('title', 'More information', 'link', url)),
                                  'items', json_build_array(
                                      json_build_object('title', 'Your Ward', 'value', ward ),
                                      json_build_object('title', 'Your Councillor(s)', 'value', councillors),
