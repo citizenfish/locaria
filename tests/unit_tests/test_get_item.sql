@@ -12,7 +12,7 @@ BEGIN
 
     SELECT locus_core.locus_gateway(
         json_build_object('method', 'get_item',
-                          'fid',    ((ret_var->'features')->0)#>>'{properties,fid}'
+                          'fid',    2038 --((ret_var->'features')->0)#>>'{properties,fid}'
                           )
     ) INTO ret_var;
 
