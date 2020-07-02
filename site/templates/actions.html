@@ -61,8 +61,8 @@
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
     @internals.ifqueue({"statement":"memory.history&&memory.history.value[3]","name":"reloadCatFilters","else":"reloadCatNoFilters" },{"queuePrepare":"reloadCat"});
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","filter":{"type":"{{!memory.history&&memory.history.value[3]?decodeURI(memory.history.value[3]):''}}"},"search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatFilters"});
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(10*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatNoFilters"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","filter":{"type":"{{!memory.history&&memory.history.value[3]?decodeURI(memory.history.value[3]):''}}"},"search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(1*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatFilters"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(1*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatNoFilters"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -303,10 +303,10 @@
 
     <label for="filter-distance">By distance:</label>
     <select id="filter-distance">
-        <option value="1" {{#if memory.history.value[2]==="1"}}selected{{/if}}>Up to 1 mile from my location</option>
+        <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 mile from my location</option>
         <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
         <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
-        <option value="10" {{#if memory.history.value[2]==="10"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 10 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 miles from my location</option>
     </select>
 </script>
 
@@ -350,7 +350,7 @@
                 <span class="checkmark"></span>
             </label>
             <label class="ck-cont" for="planningTypeConservation">Conservation area
-                <input type="checkbox" value="Conservation" class="functionGetTypes" id="planningTypeConservation" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Conservation/)}}checked{{/if}}>
+                <input type="checkbox" value="Conservation Area" class="functionGetTypes" id="planningTypeConservation" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Conservation/)}}checked{{/if}}>
                 <span class="checkmark"></span>
             </label>
             <label class="ck-cont" for="planningTypeListed">Listed building
@@ -629,15 +629,17 @@
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
         <p class="item-ref">
-            Ref: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}
+            Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}
         </p>
     </section>
     <section class="main-panel details">
-        <h4>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Overview:</strong></p>
         <div class="item-main-info">
-            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
-            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            <p>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
+                <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            {{/if}}
             <p>{{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed===true}}[Completed]{{/if}}</p>
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>{{/if}}
         </div>
