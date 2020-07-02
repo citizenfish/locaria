@@ -42,6 +42,14 @@ const metersPerMile=1609;
 const metersPerKm=1000;
 const meterSwitch=0;
 
+window.distanceActual= function(distance) {
+	if(memory.unit.value==='miles') {
+		return distance * 1609;
+	} else {
+		return distance *1000;
+	}
+}
+
 window.distanceFormatNumber = function(distance) {
 	if(memory.unit.value==='miles') {
 
