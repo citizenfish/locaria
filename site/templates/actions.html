@@ -402,10 +402,9 @@
         <h4>{{memory.historyReportRender.value.packet.subTitle}}</h4>
         <p><strong>About this ward</strong></p>
         <div class="item-main-info">
-            <p>SIMON: This could be taken from the wikipedia page for the ward</p>
             <p>{{memory.historyReportRender.value.packet.description}}</p>
             {{#for memory.historyReportRender.value.packet.additionalLinks}}
-                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].link}}">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
+                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].link}}" target="_blank">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
             {{/for}}
         </div>
         <div class="map-with-controls">
@@ -622,14 +621,8 @@
 <script id="full-details-Planning" type="text/html">
     <section class="side-panel details channel-planning">
         <h6 class="items-channel-heading">Planning</h6>
-        <address>
-            {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
-        </address>
         <p class="item-type">
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
-        </p>
-        <p class="item-ref">
-            Ref: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}
         </p>
     </section>
     <section class="main-panel details">

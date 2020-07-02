@@ -12,6 +12,7 @@ time {
 
 body {
     font-weight: 300;
+    height: 100%;
 }
 strong {
     font-weight: 600;
@@ -60,6 +61,11 @@ strong {
     /*min-height: calc(100vh - 60px);*/
     display: flex;
     justify-content: center;
+}
+@media only screen and (min-width: 1000px) {
+    .document-content {
+        min-height: calc(100% - 531px);
+    }
 }
 .content-holder {
     width: 100%;
