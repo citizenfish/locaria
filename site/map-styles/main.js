@@ -3,11 +3,12 @@ import {MultiPoint} from 'ol/geom.js';
 
 
 export function mainMapStyle(feature, resolution) {
+	let type=feature.get('type');
+	if(!type)
+		type=feature.get('description').type;
+
 	const geometry=feature.getGeometry();
 	if(geometry.getType()==='Point') {
-		let type=feature.get('type');
-		if(!type)
-			type=feature.get('description').type;
 		switch(type) {
 			case 'polling_station':
 				return [
@@ -33,6 +34,7 @@ export function mainMapStyle(feature, resolution) {
 						})
 					];
 			default:
+
 				return [
 					new Style({
 						image: new Icon({
@@ -58,6 +60,9 @@ export function mainMapStyle(feature, resolution) {
 
 		}
 	} else {
+		let fill=[255, 0, 0, 0.3];
+		if(type==='Tree Preservation Order')
+			fill=[0, 255, 0, 0.3];
 		return [
 			new Style({
 				stroke: new Stroke({
@@ -65,7 +70,7 @@ export function mainMapStyle(feature, resolution) {
 					width: 1
 				}),
 				fill: new Fill({
-					color: [255, 0, 0, 0.3],
+					color: fill,
 					width: 1
 				})
 			})
