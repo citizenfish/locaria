@@ -937,12 +937,15 @@ li.has-error::after {
 .results-item-list .item-detail h4 {
     margin-bottom: 5px;
 }
-.results-item-list .item-detail .result-class {
-    margin-bottom: 5px;
-}
+/*.results-item-list .item-detail .result-class {*/
+/*    margin-bottom: 5px;*/
+/*}*/
 .results-item-list .item-detail a {
     color: var(--actionBlue);
     text-decoration: underline;
+}
+.results-item-list .item-detail p {
+    margin: 0 0 5px 0;
 }
 
 /* channels - home */
@@ -1172,6 +1175,44 @@ li.has-error::after {
     transition: background-color ease 0.3s;
     font-size: 0.75rem;
     text-decoration: none;
+}
+.submitted-date {
+    position: relative;
+    padding: 9px 15px 11px 42px;
+    box-shadow: rgba(0, 0, 0, 0.1) 2px 2px 3px 0;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.24);
+    border-radius: 5px;
+    background: linear-gradient(white, #f7f7f7);
+}
+.submitted-date::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url(../images/submitted-date.svg);
+    background-size: 26px 26px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.results-item-list .item-detail .submitted-date {
+    font-size: 0.75rem;
+    padding: 6px 12px 8px 38px;
+    margin: 5px 0 5px 0;
+}
+.results-item-list .item-detail .submitted-date::before {
+    content: "";
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url(../images/submitted-date.svg);
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 .main-panel.details .map-with-controls {
     position: relative;
