@@ -61,8 +61,8 @@
     -openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});
 
     @internals.ifqueue({"statement":"memory.history&&memory.history.value[3]","name":"reloadCatFilters","else":"reloadCatNoFilters" },{"queuePrepare":"reloadCat"});
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","filter":{"type":"{{!memory.history&&memory.history.value[3]?decodeURI(memory.history.value[3]):''}}"},"search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(1*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatFilters"});
-    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? (memory.history.value[2]*1609):(1*1609)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatNoFilters"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","filter":{"type":"{{!memory.history&&memory.history.value[3]?decodeURI(memory.history.value[3]):''}}"},"search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? distanceActual(memory.history.value[2]):distanceActual(1)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatFilters"});
+    @api.websocketSend({"message":{"queue":"points","api":"api","data":{"method":"pointsearch","search_text":"{{!memory.history&&memory.history.value[1]?memory.history.value[1]:''}}","location_distance":"{{!^memory.history&&memory.history.value[2]? distanceActual(memory.history.value[2]):distanceActual(1)}}","category":"{{!!memory.history||memory.history.value[0]==='Find'? '*':decodeURI(memory.history.value[0])}}","limit":100,"location":"{{!memory.myLocation.value}}" }}},{"queuePrepare":"reloadCatNoFilters"});
 
     <!-- turn postcode into location -->
     @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!memory.myPostcode.value}}"}}},{"queuePrepare":"getLocation"});
@@ -85,7 +85,10 @@
     @elements.addClass({"targetId":".location-text","class":"hidden"},{"queuePrepare":"hideLocationHint"});
     @elements.removeClass({"targetId":".location-text","class":"hidden"},{"queuePrepare":"showLocationHint"});
 
-
+    <!-- Form updater -->
+    @elements.getCheckBoxValues({"mode":"string","targetId":".functionGetTypes"},{"queuePrepare":"updateSearch"});>
+    -internals.setMemory({"name":"unit","value":"{{!queue.getElement('#distance-unit').value}}","mode":"Permanent"});
+    -browser.addHistory({"history":"Cat/{{!memory.history.value[0]}}//{{!queue.getElement('#filter-distance').value}}/{{!memory.checkboxes.value}}/{{!memory.unit.value}}"});
 
     <!-- Point search -->
 
@@ -231,7 +234,7 @@
         <div>
             {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
-            {{#include '#page-content-filter-Distance-Reported'}}
+            {{#include '#page-content-filter-Distance'}}
             {{#include '#page-content-filter-Button'}}
         </div>
     </form>
@@ -300,7 +303,14 @@
 </script>
 
 <script id="page-content-filter-Distance" type="text/html">
+    {{#if memory.unit.value==='miles'}}
+        {{#include '#page-content-filter-Distance-miles'}}
+    {{else}}
+        {{#include '#page-content-filter-Distance-kms'}}
+    {{/if}}
+</script>
 
+<script id="page-content-filter-Distance-miles" type="text/html">
     <label for="filter-distance">By distance:</label>
     <select id="filter-distance">
         <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 mile from my location</option>
@@ -309,30 +319,27 @@
         <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 miles from my location</option>
     </select>
 </script>
-
-<script id="page-content-filter-Distance-Reported" type="text/html">
-
+<script id="page-content-filter-Distance-kms" type="text/html">
     <label for="filter-distance">By distance:</label>
     <select id="filter-distance">
-        <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 mile from my location</option>
-        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
-        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
-        <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 miles from my location</option>
+        <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 km from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 kms from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 kms from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 kms from my location</option>
     </select>
 </script>
+
 
 <script id="page-content-filter-Button" type="text/html">
     <!--  <label for="keywords">By keyword:</label>
       <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
-    <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @elements.getCheckBoxValues({"mode":"string","targetId":".functionGetTypes"});>
-        -internals.setMemory({"name":"unit","value":"{{!queue.getElement('#distance-unit').value}}","mode":"Permanent"});
-        -browser.addHistory({"history":"Cat/{{memory.history.value[0]}}//{{!queue.getElement('#filter-distance').value}}/{{!memory.checkboxes.value}}/{{!memory.unit.value}}"});
+    <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @internals.execute({"name":"updateSearch"});>
         Apply
     </button>
 </script>
 
 <script id="display-distance-units" type="text/html">
-    <select id="distance-unit">
+    <select id="distance-unit" @internals.execute({"name":"updateSearch"},{"queueEvent":"change"});>
         <option value="miles" {{#if memory.unit.value==="miles"}}selected{{/if}}>Show distance in miles</option>
         <option value="kms" {{#if memory.unit.value==="kms"}}selected{{/if}}>Show distance in kilometres</option>
     </select>
