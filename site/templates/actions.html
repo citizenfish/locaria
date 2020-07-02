@@ -116,7 +116,9 @@
                     <li role="menuitem"  tabindex="0" aria-label="Home" @browser.addHistory({"history":"Home"});>Home</li>
                     <li role="menuitem"  tabindex="0" aria-label="Planning" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
                     <li role="menuitem"  tabindex="0" aria-label="Democracy" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
+<!--
                     <li role="menuitem"  tabindex="0" aria-label="Events" @browser.addHistory({"history":"Cat/Events"});>Events</li>
+-->
                     <li role="menuitem"  tabindex="0" aria-label="Community" @browser.addHistory({"history":"Cat/Community"});>Community</li>
                 </ul>
             </div>
@@ -189,12 +191,12 @@
 <!--                <p>To find information of events or 'Whats' on' near to them.</p>-->
 <!--                <button class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Events"});>Explore</button>-->
 <!--            </div>-->
-            <div class="channel channel-reported">
+  <!--          <div class="channel channel-reported">
                 <img src="images/channel-reported.jpg" title="An image illustrating the 'Reported' channel of information" alt="An image of a traffic cones" @browser.addHistory({"history":"Cat/Reported"});>
                 <h2>Reported</h2>
                 <p>Search what issues have been reported by residents nearby.</p>
                 <button class="explore-channel" aria-label="Explore Local issues reported by the community near the set location" @browser.addHistory({"history":"Cat/Reported"});>Explore</button>
-            </div>
+            </div>-->
             <div class="channel channel-community">
                 <img src="images/channel-community.jpg" title="An image illustrating the 'Community' channel of information" alt="An image of a children's slide" @browser.addHistory({"history":"Cat/Community"});>
                 <h2>Community</h2>
@@ -243,6 +245,22 @@
             {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
+            <label class="ck-cont" for="communityTypePlayArea">Play Area
+                <input type="checkbox" value="Play Area" class="functionGetTypes" id="communityTypePlayArea" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Play/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+
+            <label class="ck-cont" for="communityTypeCommunityHall">Community Hall
+                <input type="checkbox" value="Community Hall" class="functionGetTypes" id="communityTypeCommunityHall" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Community/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+
+
+            <label class="ck-cont" for="communityTypeToilet">Toilet
+                <input type="checkbox" value="Toilet" class="functionGetTypes" id="communityTypeToilet" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Toilet/)}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+
             {{#include '#page-content-filter-Button'}}
         </div>
     </form>
@@ -368,6 +386,7 @@
 </script>
 
 <script id="report_display" type="text/html">
+    {{#if memory.historyReportRender.value.packet.items}}
     <section class="side-panel details channel-democracy">
         <h6 class="items-channel-heading">Democracy</h6>
         {{#for memory.historyReportRender.value.packet.items}}
@@ -385,6 +404,9 @@
         <div class="item-main-info">
             <p>SIMON: This could be taken from the wikipedia page for the ward</p>
             <p>{{memory.historyReportRender.value.packet.description}}</p>
+            {{#for memory.historyReportRender.value.packet.additionalLinks}}
+                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].link}}">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
+            {{/for}}
         </div>
         <div class="map-with-controls">
             <div id="openlayersItemMap" class="item-main-map">
@@ -398,6 +420,15 @@
         </button>
         </div>
     </section>
+    {{else}}
+    <section class="side-panel details channel-democracy">
+        <h6 class="items-channel-heading">Democracy</h6>
+    </section>
+    <section class="main-panel details item-democracy">
+        <h4 class="items-channel-heading">Area outside council boundary</h4>
+        <p>Your location is set to an area outside the council boundary so we are able to give you a report, please change your location to try again</p>
+    </section>
+    {{/if}}
 </script>
 
 <script id="page-content-Planning" type="text/html">
