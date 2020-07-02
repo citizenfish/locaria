@@ -70,14 +70,15 @@ SELECT distinct on (id_0)  id_0 AS id,
         last_updated::TIMESTAMP AS date_added,
         ARRAY['Planning']::locus_core.search_category[] AS category,
         jsonb_build_object(
-	'title', name,
+	'title', name || ' ' ||location,
 	'description', jsonb_build_object(
 		'name', name,
 		'ref',  grade,
 		'type', 'Listed Building',  
 		'additional_information', location),
 	'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
-FROM locus.listed_buildings_locus;
+FROM locus.listed_buildings_locus
+WHERE listed_buildings_locus.list_type = 'statutory';
 
 --CONSERVATION AREAS
 
@@ -158,6 +159,7 @@ SELECT distinct on (id_1)  id_1 AS id,
 	'title', location,
 	'description', jsonb_build_object(
 		'type', 'Toilet',
+		'name', location,
 		'additional_information',disabled_a),
 	'table', 'id_1'||':'||toilets_locus.tableoid::regclass::text) AS attributes
 FROM locus.toilets_locus;
