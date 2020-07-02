@@ -236,7 +236,7 @@ SELECT distinct on(id) id,
 CREATE OR REPLACE VIEW locus_core.planning_applications AS
 SELECT id::INTEGER ,
        ST_TRANSFORM(ST_GEOMFROMEWKT('SRID=27700;POINT('||map_x||' '||map_y||')'),4326) AS wkb_geometry,
-       dateaprecv AS date_added,
+       dateapval AS date_added,
        ARRAY['Planning']::locus_core.search_category[] AS category,
        jsonb_build_object(
 	'ref', uprn,
@@ -247,7 +247,7 @@ SELECT id::INTEGER ,
 		'keyval', keyval,
 		'type', 'Application',
 		'url', 'https://publicaccess.surreyheath.gov.uk/online-applications/applicationDetails.do?keyVal='||keyval||'&activeTab=summary',
-		'completed', CASE WHEN dateaprecv > now() - INTERVAL '30 days' THEN false ELSE true END,
+		'completed', CASE WHEN dateapval > now() - INTERVAL '30 days' THEN false ELSE true END,
 		'additional_information', proposal::text),
 	'table', 'id'||':'||locus.dc_apps_readonly.tableoid::regclass::text) AS attributes
 FROM locus.dc_apps_readonly;
