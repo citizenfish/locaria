@@ -80,6 +80,7 @@ SELECT 'json_sources',
                                  $SQL$,
                           'json_key', '',
                            'last_run', now() - INTERVAL '1 day'),
+
         'locus.councillor_details_view',
         jsonb_build_object(
                 'type','text/html',
