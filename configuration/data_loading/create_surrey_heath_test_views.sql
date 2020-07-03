@@ -312,7 +312,7 @@ CREATE OR REPLACE VIEW locus_core.tree_preservation_orders AS
             'ref', refval,
             'type', 'Tree Preservation Order',
             'address', address,
-            'additional_information', CASE WHEN tptreecat = 'G' THEN 'Goup'
+            'additional_information', 'Category: ' ||CASE WHEN tptreecat = 'G' THEN 'Group'
                                            WHEN tptreecat = 'A' THEN 'Area'
                                            WHEN tptreecat = 'W' THEN 'Woodland'
                                            WHEN tptreecat = 'T' THEN 'Tree'
