@@ -19,6 +19,7 @@
     @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
     -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
     -elements.addClass({"targetId":"body","class":"on-home"});
+    -browser.setTitle({"title":"Surrey Heath Borough Council: Home"});
 
 
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
@@ -27,6 +28,8 @@
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.updateSize({});
+    -browser.setTitle({"title":"Surrey Heath Borough Council: {{!memory.history.value[0]}}"});
+
 
 
     @api.websocketSend({"message":{"queue":"historyReportRender","api":"api","data":{"method":"report","report_name":"{{!memory.history.value[0]}}","location":"{{!memory.myLocation.value}}"}}},{"queuePrepare":"historyReport"});
@@ -35,9 +38,11 @@
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
-<!--
-    -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
--->
+    -browser.setTitle({"title":"Surrey Heath Borough Council: Democracy"});
+
+    <!--
+        -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
+    -->
     -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
     -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle","geojson":{"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":["{{!^memory.myPoint.value}}"]},"type":"Feature"}]}});
 
@@ -50,6 +55,7 @@
     -internals.setMemory({"name":"updateQueueToRun","value":"historyDetailsRender","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -browser.setTitle({"title":"Surrey Heath Borough Council: {{!memory.history.value[0]}} - {{!memory.history.value[1]}}"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
     -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
 <!--
