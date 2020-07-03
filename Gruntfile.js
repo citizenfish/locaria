@@ -14,8 +14,7 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					'configuration/functions/search.sql',
-					'tests/unit_tests/test_search_filter.sql'
+					'configuration/reports/democracy_location.sql'
 
 				]
 			},

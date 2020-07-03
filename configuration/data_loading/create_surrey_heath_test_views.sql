@@ -10,7 +10,8 @@ SELECT DISTINCT ON (id_0) id_0 AS id,
 	'title', name,
 	'description', jsonb_build_object(
 		'name', name,
-		'type', 'Car Park'), 
+		'type', 'Car Park',
+		'additional_information', name),
 	'table', 'id_0'||':'||shbc_carparks_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_carparks_locus;
 
@@ -58,7 +59,9 @@ SELECT distinct on (id_1)  id_1 AS id,
 	'title', split_part(address,',',1),
 	'description', jsonb_build_object(
 		'type', 'Polling Station',
-		'name', address),
+		'name', split_part(address, ',', 1),
+		'address', address,
+		'url', streetview),
 	'table', 'id_1'||':'||polling_stations_2019_locus.tableoid::regclass::text) AS attributes
 FROM locus.polling_stations_2019_locus;
 
@@ -74,7 +77,9 @@ SELECT distinct on (id_0)  id_0 AS id,
 	'description', jsonb_build_object(
 		'name', name,
 		'ref',  grade,
-		'type', 'Listed Building',  
+		'type', 'Listed Building',
+		'address', location,
+		'url',  url
 		'additional_information', location),
 	'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
 FROM locus.listed_buildings_locus
@@ -143,8 +148,9 @@ SELECT distinct on (id_1)  id_1 AS id,
 	'description', jsonb_build_object(
 		'name', venue,
 		'type', 'Community Hall',  
-		'url', url,
-		'additional_information', address),
+		'url', google_url,
+		'address', address,
+		'phone', phone),
 	'table', 'id_1'||':'||community_halls_locus.tableoid::regclass::text) AS attributes
 FROM locus.community_halls_locus;
 
@@ -160,7 +166,7 @@ SELECT distinct on (id_1)  id_1 AS id,
 	'description', jsonb_build_object(
 		'type', 'Toilet',
 		'name', location,
-		'additional_information',disabled_a),
+		'additional_information',CASE WHEN disabled_a = 'Y' THEN 'Disabled Access' ELSE 'No Disabled Access' END),
 	'table', 'id_1'||':'||toilets_locus.tableoid::regclass::text) AS attributes
 FROM locus.toilets_locus;
 
@@ -248,6 +254,7 @@ SELECT id::INTEGER ,
 		'ref',  refval::text,
 		'keyval', keyval,
 		'type', 'Application',
+		'address', address,
 		'url', 'https://publicaccess.surreyheath.gov.uk/online-applications/applicationDetails.do?keyVal='||keyval||'&activeTab=summary',
 		'completed', CASE WHEN dateapval > now() - INTERVAL '30 days' THEN false ELSE true END,
 		'additional_information', proposal::text),
@@ -295,7 +302,7 @@ CREATE OR REPLACE VIEW locus_core.prow AS
 
 CREATE OR REPLACE VIEW locus_core.tree_preservation_orders AS
     SELECT DISTINCT ON (ogc_fid) ogc_fid AS id,
-    st_transform(wkb_geometry, 4326) AS wkb_geometry,
+    st_transform(CASE WHEN ST_AREA(ST_TRANSFORM(wkb_geometry, 4326)::GEOGRAPHY) < 500 THEN ST_CENTROID(wkb_geometry) ELSE wkb_geometry END, 4326) AS wkb_geometry,
     now() AS date_added,
     ARRAY['Planning'::locus_core.search_category] AS category,
     jsonb_build_object(
@@ -304,7 +311,12 @@ CREATE OR REPLACE VIEW locus_core.tree_preservation_orders AS
             'name', address,
             'ref', refval,
             'type', 'Tree Preservation Order',
-            'additional_information', tptreecat
+            'address', address,
+            'additional_information', CASE WHEN tptreecat = 'G' THEN 'Goup'
+                                           WHEN tptreecat = 'A' THEN 'Area'
+                                           WHEN tptreecat = 'W' THEN 'Woodland'
+                                           WHEN tptreecat = 'T' THEN 'Tree'
+                                           ELSE 'Unclassified' END
         ),
     'table', 'ogc_fid'||':'||tpo_polygons_locus.tableoid::regclass::text) AS attributes
     FROM locus.tpo_polygons_locus where tptreecat is not null and tptreecat != ' ' ;
