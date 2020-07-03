@@ -52,18 +52,13 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
                                      json_build_object('title', 'Your Ward', 'value', ward ),
                                      json_build_object('title', 'Your Councillor(s)', 'value', councillors),
 
-                                     json_build_object('title', 'Your MP', 'value', mp),
-									 json_build_object('title', 'Your Polling Station', 'value',ps_name)
+                                     json_build_object('title', 'Your MP', 'value', mp)
                                  ),
                                 'geojson', json_build_object('type', 'FeatureCollection',
                                                             'features', json_build_array(
                                                                 json_build_object('type', 'Feature',
                                                                                  'geometry', ST_ASGEOJSON(ward_geom)::JSON,
-                                                                                 'properties', json_build_object('name', ward, 'type', 'ward')),
-
-                                                                json_build_object('type', 'Feature',
-                                                                                 'geometry', ST_ASGEOJSON(ps_geom)::JSON,
-                                                                                 'properties', json_build_object('name', ps_name, 'type', 'polling_station'))
+                                                                                 'properties', json_build_object('name', ward, 'type', 'ward'))
                                                             ))
 
                                 ) FROM COUNCILLOR_WARDS,MP,POLLING_STATION
