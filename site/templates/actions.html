@@ -638,8 +638,11 @@
         <p><strong>Overview:</strong></p>
         <div class="item-main-info">
             <p>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.address}}
+                <p>Address: {{memory.historyDetailsRender.value.packet.features[0].properties.description.address}}</p>
+            {{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
-                <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
             {{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed===true}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>{{/if}}
