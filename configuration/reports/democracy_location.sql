@@ -32,7 +32,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
 			AND attributes#>>'{description,type}' = 'Polling Station'
 
 		), NEAREST_WARD AS (
-			SELECT distinct on(attributes#>>'{description,ward}')
+			SELECT
                    wkb_geometry as ward_geom,
                    attributes#>>'{description,ward}' as ward,
                    attributes#>>'{description,url}' as url,
@@ -40,7 +40,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
             FROM locus_core.global_search_view,point_geometry
             WHERE (SELECT 1 FROM COUNCILLOR_WARDS LIMIT 1) IS NULL
             AND attributes->'description' @> jsonb_build_object('type', 'Councillor')
-			ORDER BY attributes#>>'{description,ward}',wkb_geometry <-> location_geometry
+			ORDER BY wkb_geometry <-> location_geometry
 			LIMIT 1
 		)
         --If in area
