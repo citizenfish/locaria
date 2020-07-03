@@ -19,10 +19,6 @@
     @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
     -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
     -elements.addClass({"targetId":"body","class":"on-home"});
-    -api.websocketSend({"message":{"queue":"checkDemocracy","api":"api","data":{"method":"report","report_name":"democracy_location","location":"{{!memory.myLocation.value}}"}}});
-
-    @internals.ifqueue({"statement":"!memory.checkDemocracy.value.packet.geojson","name":"blockDemocracy"},{"queuePrepare":"checkDemocracy"});
-    @elements.addClass({"targetId":"body","class":"blockDemocracy"},{"queuePrepare":"blockDemocracy"});
 
 
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
