@@ -33,6 +33,29 @@ export function mainMapStyle(feature, resolution) {
 							})
 						})
 					];
+			case 'Tree Preservation Order':
+				return [
+					new Style({
+						image: new Icon({
+							src: 'images/marker-tpo.svg',
+							size: [40, 70],
+							zIndex: 100
+						}),
+						text: new Text({
+							text: 'Tree Preservation Order',
+							font: 'bold 11px "Soleil"',
+							textBaseline: 'bottom',
+							offsetY: 50,
+							fill: new Fill({
+								color: '#000000'
+							}),
+							stroke: new Stroke({
+								color: '#FFFFFF',
+								width: 3.5
+							})
+						})
+					})
+				];
 			default:
 
 				return [
