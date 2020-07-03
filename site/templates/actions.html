@@ -19,6 +19,7 @@
     @templates.render({"targetId":"#content-target","template":"#home-content"},{"queuePrepare":"historyHome"});
     -internals.setMemory({"name":"updateQueueToRun","value":"nothingToUpdate","mode":"Session"});
     -elements.addClass({"targetId":"body","class":"on-home"});
+    -browser.setTitle({"title":"Surrey Heath Borough Council: Home"});
 
 
     @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
@@ -27,6 +28,8 @@
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.updateSize({});
+    -browser.setTitle({"title":"Surrey Heath Borough Council: {{!memory.history.value[0]}}"});
+
 
 
     @api.websocketSend({"message":{"queue":"historyReportRender","api":"api","data":{"method":"report","report_name":"{{!memory.history.value[0]}}","location":"{{!memory.myLocation.value}}"}}},{"queuePrepare":"historyReport"});
@@ -35,9 +38,11 @@
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
-<!--
-    -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
--->
+    -browser.setTitle({"title":"Surrey Heath Borough Council: Democracy"});
+
+    <!--
+        -openlayers.addLayer({"map":"itemMap","name":"wms","type":"wms","url":"https://t3.ads.astuntechnology.com/surreyheath/ospremium/service","params":{"layers":"ospremium"},"serverType":"geoserver","hidpi":true,"active":true});
+    -->
     -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
     -openlayers.addLayer({"map":"itemMap","name":"location","type":"vector","style":"styles.locationStyle","geojson":{"type":"FeatureCollection","features":[{"geometry":{"type":"Point","coordinates":["{{!^memory.myPoint.value}}"]},"type":"Feature"}]}});
 
@@ -50,6 +55,7 @@
     -internals.setMemory({"name":"updateQueueToRun","value":"historyDetailsRender","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
     -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -browser.setTitle({"title":"Surrey Heath Borough Council: {{!memory.history.value[0]}} - {{!memory.history.value[1]}}"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
     -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
 <!--
@@ -638,11 +644,16 @@
         <p><strong>Overview:</strong></p>
         <div class="item-main-info">
             <p>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.address}}
+                <p>Address: {{memory.historyDetailsRender.value.packet.features[0].properties.description.address}}</p>
+            {{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
-                <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
             {{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed===true}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
-            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>{{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
+                <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'View full application'}}</a></p>
+            {{/if}}
         </div>
         {{#include '#full-details-Map'}}
 
@@ -688,7 +699,7 @@
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.title}}</p>
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.type==="Councillor"}}
                 <p>Party: {{memory.historyDetailsRender.value.packet.features[0].properties.description.party}}</p>
-                <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a>
+                <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External Link'}}</a>
             {{/if}}
         </div>
         {{#include '#full-details-Map'}}
@@ -715,7 +726,7 @@
             Cost: {{memory.historyDetailsRender.value.packet.features[0].properties.description.cost}}
         </p>
         <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}" title="Link to an external resource" target="_blank">
-            Read more about this
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}
         </a>
     </section>
     <section class="main-panel details">
@@ -723,7 +734,7 @@
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.event_details}}</p>
-            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>
+            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}</a></p>
         </div>
         {{#include '#full-details-Map'}}
 
@@ -741,8 +752,19 @@
         <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
-            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
-            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>{{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
+                <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.address}}
+                <p>Address: {{memory.historyDetailsRender.value.packet.features[0].properties.description.address}}</a></p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}
+                <p>Phone: <a href="phone://{{memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}</a></p>
+            {{/if}}
+
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
+                <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}</a></p>
+            {{/if}}
         </div>
         {{#include '#full-details-Map'}}
 
