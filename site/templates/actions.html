@@ -645,7 +645,9 @@
             <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
             {{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed===true}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
-            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">View full application</a></p>{{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
+                <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'View full application'}}</a></p>
+            {{/if}}
         </div>
         {{#include '#full-details-Map'}}
 
@@ -691,7 +693,7 @@
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.title}}</p>
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.type==="Councillor"}}
                 <p>Party: {{memory.historyDetailsRender.value.packet.features[0].properties.description.party}}</p>
-                <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a>
+                <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External Link'}}</a>
             {{/if}}
         </div>
         {{#include '#full-details-Map'}}
@@ -718,7 +720,7 @@
             Cost: {{memory.historyDetailsRender.value.packet.features[0].properties.description.cost}}
         </p>
         <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}" title="Link to an external resource" target="_blank">
-            Read more about this
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}
         </a>
     </section>
     <section class="main-panel details">
@@ -726,7 +728,7 @@
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
             <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.event_details}}</p>
-            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>
+            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}</a></p>
         </div>
         {{#include '#full-details-Map'}}
 
@@ -744,8 +746,19 @@
         <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
         <p><strong>Details:</strong></p>
         <div class="item-main-info">
-            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
-            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}<p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}</a></p>{{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
+                <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.address}}
+                <p>Address: {{memory.historyDetailsRender.value.packet.features[0].properties.description.address}}</a></p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}
+                <p>Phone: <a href="phone://{{memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}</a></p>
+            {{/if}}
+
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
+                <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}</a></p>
+            {{/if}}
         </div>
         {{#include '#full-details-Map'}}
 
