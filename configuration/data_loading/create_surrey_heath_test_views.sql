@@ -61,6 +61,7 @@ SELECT distinct on (id_1)  id_1 AS id,
 		'type', 'Polling Station',
 		'name', split_part(address, ',', 1),
 		'address', address,
+		'url_description', 'Google Streetview',
 		'url', streetview),
 	'table', 'id_1'||':'||polling_stations_2019_locus.tableoid::regclass::text) AS attributes
 FROM locus.polling_stations_2019_locus;
@@ -79,7 +80,8 @@ SELECT distinct on (id_0)  id_0 AS id,
 		'ref',  grade,
 		'type', 'Listed Building',
 		'address', location,
-		'url',  url
+		'url',  url,
+		'url_description', 'Building Image',
 		'additional_information', location),
 	'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
 FROM locus.listed_buildings_locus
@@ -149,6 +151,7 @@ SELECT distinct on (id_1)  id_1 AS id,
 		'name', venue,
 		'type', 'Community Hall',  
 		'url', google_url,
+		'url_description', 'Google Streetview',
 		'address', address,
 		'phone', phone),
 	'table', 'id_1'||':'||community_halls_locus.tableoid::regclass::text) AS attributes
@@ -255,6 +258,7 @@ SELECT id::INTEGER ,
 		'keyval', keyval,
 		'type', 'Application',
 		'address', address,
+		'url_description', 'Application details',
 		'url', 'https://publicaccess.surreyheath.gov.uk/online-applications/applicationDetails.do?keyVal='||keyval||'&activeTab=summary',
 		'completed', CASE WHEN dateapval > now() - INTERVAL '30 days' THEN false ELSE true END,
 		'additional_information', proposal::text),
@@ -275,6 +279,7 @@ SELECT COUN.id,
 			   'party', party,
 			   'ward', ward,
 			   'url', linkuri,
+			   'url_description', 'Additional details',
 			   'type', 'Councillor')
 			   ) AS attributes
 FROM locus.councillor_details_view COUN
@@ -320,6 +325,17 @@ CREATE OR REPLACE VIEW locus_core.tree_preservation_orders AS
         ),
     'table', 'ogc_fid'||':'||tpo_polygons_locus.tableoid::regclass::text) AS attributes
     FROM locus.tpo_polygons_locus where tptreecat is not null and tptreecat != ' ' ;
+
+--CRIME
+
+CREATE OR REPLACE VIEW locus_core.crime
+AS
+SELECT DISTINCT ON (id) id,
+wkb_geometry,
+date_added,
+ARRAY['Crime'::locus_core.search_category] AS category,
+jsonb_build_object('title', 'Crime', 'description', jsonb_build_object('type', 'Crime'), 'table', attributes) AS attributes
+FROM locus_core.all_crime;
 
 --REPORT IT
 
