@@ -42,7 +42,7 @@ strong {
 }
 @media only screen and (min-width: 1000px) {
     .on-home .head-section {
-        height: 80vh;
+        /*height: 80vh;*/
         min-height: 500px;
     }
 }
