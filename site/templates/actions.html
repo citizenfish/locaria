@@ -104,6 +104,9 @@
     @internals.nop({},{"queuePrepare":"session"});
 
     @api.websocketInit({"url":"{{config.ws}}"},{"queuePrepare":"wsClose"});
+
+    @templates.render({"targetId":".contain","template":"#network-error"},{"queuePrepare":"wsError"});
+
 </script>
 
 <script id="header" type="text/html">
@@ -771,3 +774,6 @@
     </section>
 </script>
 
+<script id="network-error" type="text/html">
+    NETWORK ERROR! Websock has failed, check your network connection!
+</script>
