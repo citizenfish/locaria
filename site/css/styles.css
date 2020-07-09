@@ -29,12 +29,16 @@ strong {
     flex-direction: column;
 }
 .on-home .head-section {
-    /*min-height: 90vh;*/
     height: 90vh;
+}
+@media only screen and (max-width: 795px) {
+    .on-home .head-section {
+        min-height: 500px;
+    }
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
     .on-home .head-section {
-        height: auto;
+        min-height: 650px;
     }
     .on-home .map-background {
         height: 150px;
@@ -42,8 +46,7 @@ strong {
 }
 @media only screen and (min-width: 1000px) {
     .on-home .head-section {
-        /*height: 80vh;*/
-        min-height: 500px;
+        min-height: 650px;
     }
 }
 .page-header {
