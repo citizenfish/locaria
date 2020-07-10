@@ -420,7 +420,7 @@
         <div class="item-main-info">
             <p>{{memory.historyReportRender.value.packet.description}}</p>
             {{#for memory.historyReportRender.value.packet.additionalLinks}}
-                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].link}}" target="_blank">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
+                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].url}}" target="_blank">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
             {{/for}}
         </div>
         <div class="map-with-controls">
@@ -523,7 +523,7 @@
                 <strong>Reference:</strong> {{memory.points.value.packet.features[#loop0].properties.description.ref}}
             </p>
             <p><a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a></p>
-           {{#if memory.points.value.packet.features[#loop0].properties.description.completed==false}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
+           {{#if memory.points.value.packet.features[#loop0].properties.description.completed!==true}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
 
         </div>
     </li>
@@ -653,7 +653,7 @@
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
             <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
             {{/if}}
-            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed===false}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed!==true}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
                 <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'View full application'}}</a></p>
             {{/if}}
