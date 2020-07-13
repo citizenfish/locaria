@@ -66,6 +66,20 @@ SELECT distinct on (id_1)  id_1 AS id,
 	'table', 'id_1'||':'||polling_stations_2019_locus.tableoid::regclass::text) AS attributes
 FROM locus.polling_stations_2019_locus;
 
+--POLLING DISTRICTS
+
+CREATE OR REPLACE VIEW locus_core.polling_districts
+AS SELECT DISTINCT ON (id) id,
+st_transform(geom, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Democracy'::locus_core.search_category] AS category,
+jsonb_build_object('title', address,
+                   'description', jsonb_build_object('name', address,
+                                                     'type', 'Polling Districts'),
+                   'table', ('id'::text || ':'::text) || polling_district_2019_polygons.tableoid::regclass::text) AS attributes
+FROM locus.polling_district_2019_polygons;
+
+
 --LISTED BUILDINGS
 
 CREATE OR REPLACE VIEW locus_core.listed_buildings AS
@@ -125,17 +139,18 @@ FROM locus.shbc_boundary_locus;
 --LIBRARIES
 
 CREATE OR REPLACE VIEW locus_core.libraries AS
-SELECT distinct on (id_1)  id_1 AS id,
-        ST_TRANSFORM(geom, 4326) AS wkb_geometry,
-        last_updated::TIMESTAMP AS date_added,
-        ARRAY['Community']::locus_core.search_category[] AS category,
-        jsonb_build_object(
-	'title', name,
-	'description', jsonb_build_object(
-		'name', name,
-		'type', 'Library'
-		), 
-	'table', 'id_1'||':'||libraries_locus.tableoid::regclass::text) AS attributes
+SELECT distinct on (id_1) id_1 AS id,
+ST_TRANSFORM(geom, 4326) AS wkb_geometry,
+last_updated::TIMESTAMP AS date_added,
+ARRAY['Community']::locus_core.search_category[] AS category,
+                jsonb_build_object(
+                'title', name,
+                'description', jsonb_build_object(
+                'name', name,
+                'type', 'Library',
+                'ur', url
+                ),
+                'table', 'id_1'||':'||libraries_locus.tableoid::regclass::text) AS attributes
 FROM locus.libraries_locus;
 
 --COMMUNITY HALLS
@@ -159,36 +174,63 @@ FROM locus.community_halls_locus;
 
 --TOILETS
 
-CREATE OR REPLACE VIEW locus_core.toilets AS
-SELECT distinct on (id_1)  id_1 AS id,
-        ST_TRANSFORM(geom, 4326) AS wkb_geometry,
-        last_updated::TIMESTAMP AS date_added,
-        ARRAY['Community']::locus_core.search_category[] AS category,
-        jsonb_build_object(
-	'title', location,
-	'description', jsonb_build_object(
-		'type', 'Toilet',
-		'name', location,
-		'additional_information',CASE WHEN disabled_a = 'Y' THEN 'Disabled Access' ELSE 'No Disabled Access' END),
-	'table', 'id_1'||':'||toilets_locus.tableoid::regclass::text) AS attributes
+CREATE OR REPLACE VIEW locus_core.toilets
+AS
+SELECT DISTINCT ON (toilets_locus.id_1) toilets_locus.id_1 AS id,
+st_transform(toilets_locus.geom, 4326) AS wkb_geometry,
+toilets_locus.last_updated::timestamp without time zone AS date_added,
+ARRAY['Community'::locus_core.search_category] AS category,
+jsonb_build_object(
+'title', toilets_locus.location,
+'description',
+jsonb_build_object(
+'type', 'Toilet',
+'name', toilets_locus.location,
+'additional_information', (
+
+ 'Disabled Access: '::text ||
+ 	CASE
+		WHEN toilets_locus.disabled_a::text = 'Y'::text THEN 'Yes'::text
+        ELSE 'No'::text
+    end || ' <br> Female Toilets: '::text ||
+         	CASE
+		WHEN toilets_locus.female_wc::text = 'N'::text THEN 'No'::text
+        ELSE 'Yes'::text
+    end || ' <br> Male Toilets: '::text ||
+         	CASE
+		WHEN toilets_locus.male_wc::text = 'N'::text THEN 'No'::text
+        ELSE 'Yes'::text
+    end || ' <br> Baby Changing: '::text ||
+         	CASE
+		WHEN toilets_locus.parent_bab::text = 'N'::text THEN 'No'::text
+        ELSE 'Yes'::text
+    end
+
+  )
+),
+    'table', ('id_1'::text || ':'::text) || toilets_locus.tableoid::regclass::text) AS attributes
 FROM locus.toilets_locus;
 
 
 --PLAY AREAS
 
-CREATE OR REPLACE VIEW locus_core.play_areas AS
-SELECT distinct on (id_1) id_1 AS id,
-        ST_TRANSFORM(geom, 4326) AS wkb_geometry,
-        last_updated::TIMESTAMP AS date_added,
-        ARRAY['Community']::locus_core.search_category[] AS category,
-        jsonb_build_object(
-	'title', name,
-	'description', jsonb_build_object(
-		'name', name,
-		'type', 'Play Area',  
-		'additional_information', 'Managed by' || managed_by::text),
-	'table', 'id_1'||':'||play_areas_locus.tableoid::regclass::text) AS attributes
-FROM locus.play_areas_locus;
+CREATE OR REPLACE VIEW locus_core.play_areas
+AS
+SELECT DISTINCT ON (play_areas_locus.id_1) play_areas_locus.id_1 AS id,
+st_transform(play_areas_locus.geom, 4326) AS wkb_geometry,
+play_areas_locus.last_updated::timestamp without time zone AS date_added,
+ARRAY['Community'::locus_core.search_category] AS category,
+jsonb_build_object(
+'title', play_areas_locus.name,
+'description',
+jsonb_build_object(
+
+'name', play_areas_locus.name,
+'type', 'Play Area',
+'additional_information', (
+'Managed by '::text || play_areas_locus.managed_by::text || '. Opening Time - '::text || play_areas_locus.opening_times::text || '. Closing Time - '::text || play_areas_locus.closing_times::text)
+),
+'table', ('id_1'::text || ':'::text) || play_areas_locus.tableoid::regclass::text) AS attributes
 
 --RECYCLING CENTRES
 
@@ -260,7 +302,7 @@ SELECT id::INTEGER ,
 		'address', address,
 		'url_description', 'Application details',
 		'url', 'https://publicaccess.surreyheath.gov.uk/online-applications/applicationDetails.do?keyVal='||keyval||'&activeTab=summary',
-		'completed', CASE WHEN dateapval > now() - INTERVAL '30 days' THEN false ELSE true END,
+		'completed', CASE WHEN dateapval > now() - INTERVAL '7 days' THEN false ELSE true END,
 		'additional_information', proposal::text),
 	'table', 'id'||':'||locus.dc_apps_readonly.tableoid::regclass::text) AS attributes
 FROM locus.dc_apps_readonly;
@@ -305,26 +347,27 @@ CREATE OR REPLACE VIEW locus_core.prow AS
 
 --TPOs
 
-CREATE OR REPLACE VIEW locus_core.tree_preservation_orders AS
-    SELECT DISTINCT ON (ogc_fid) ogc_fid AS id,
-    st_transform(CASE WHEN ST_AREA(ST_TRANSFORM(wkb_geometry, 4326)::GEOGRAPHY) < 500 THEN ST_CENTROID(wkb_geometry) ELSE wkb_geometry END, 4326) AS wkb_geometry,
-    now() AS date_added,
-    ARRAY['Planning'::locus_core.search_category] AS category,
-    jsonb_build_object(
-        'title', refval,
-        'description', jsonb_build_object(
-            'name', address,
-            'ref', refval,
-            'type', 'Tree Preservation Order',
-            'address', address,
-            'additional_information', 'Category: ' ||CASE WHEN tptreecat = 'G' THEN 'Group'
-                                           WHEN tptreecat = 'A' THEN 'Area'
-                                           WHEN tptreecat = 'W' THEN 'Woodland'
-                                           WHEN tptreecat = 'T' THEN 'Tree'
-                                           ELSE 'Unclassified' END
-        ),
-    'table', 'ogc_fid'||':'||tpo_polygons_locus.tableoid::regclass::text) AS attributes
-    FROM locus.tpo_polygons_locus where tptreecat is not null and tptreecat != ' ' ;
+CREATE OR REPLACE VIEW locus_core.tree_preservation_orders
+AS
+SELECT DISTINCT ON (tpo_polygons_locus.ogc_fid) tpo_polygons_locus.ogc_fid AS id,
+st_transform(
+CASE
+    WHEN st_area(st_transform(tpo_polygons_locus.wkb_geometry, 4326)::geography) < 500::double precision THEN st_centroid(tpo_polygons_locus.wkb_geometry)
+    ELSE tpo_polygons_locus.wkb_geometry
+    END, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Planning'::locus_core.search_category] AS category,
+jsonb_build_object('title', tpo_polygons_locus.refval, 'description', jsonb_build_object('name', tpo_polygons_locus.address, 'ref', tpo_polygons_locus.refval, 'type', 'Tree Preservation Order', 'address', tpo_polygons_locus.address, 'additional_information', 'Order Type: '::text ||
+CASE
+    WHEN tpo_polygons_locus.tptreecat::text = 'G'::text THEN 'A Group TPO'::text
+    WHEN tpo_polygons_locus.tptreecat::text = 'A'::text THEN 'An Area TPO'::text
+    WHEN tpo_polygons_locus.tptreecat::text = 'W'::text THEN 'A Woodland TPO'::text
+    WHEN tpo_polygons_locus.tptreecat::text = 'T'::text THEN 'An individual Tree ('||tpo_polygons_locus.treetype::text ||')'::text
+    ELSE 'Unclassified'::text
+    END
+    ), 'table', ('ogc_fid'::text || ':'::text) || tpo_polygons_locus.tableoid::regclass::text) AS attributes
+FROM locus.tpo_polygons_locus
+WHERE tpo_polygons_locus.tptreecat IS NOT NULL AND tpo_polygons_locus.tptreecat::text <> ' '::text;
 
 --CRIME
 

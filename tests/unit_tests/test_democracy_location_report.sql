@@ -10,7 +10,9 @@ BEGIN
     SELECT locus_core.locus_gateway(
         json_build_object('method',      'report',
                           'report_name', 'democracy_location',
-                          'location',    'SRID=4326;POINT(-0.743166424536075 51.3394703242612)')
+                          'location',    'SRID=4326;POINT(-0.743166424536075 51.3394703242612)'
+
+                          )
 
     ) INTO ret_var;
 
