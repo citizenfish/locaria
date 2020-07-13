@@ -14,7 +14,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
             SELECT distinct on(attributes#>>'{description,ward}')
                    wkb_geometry as ward_geom,
                    attributes#>>'{description,ward}' as ward,
-                   attributes#>>'{description,url}' as url,
+                   json_agg(json_build_object('title', attributes->>'title', 'url', attributes#>>'{description,url}')) OVER () as url,
                    string_agg(attributes->>'title',', ') over () as councillors
             FROM locus_core.global_search_view,point_geometry
             WHERE ST_CONTAINS(wkb_geometry, location_geometry)
@@ -27,15 +27,15 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
 
 			SELECT wkb_geometry as ps_geom,
 				   attributes#>>'{description,name}' AS ps_name
-				   FROM locus_core.global_search_view, COUNCILLOR_WARDS
-			WHERE ST_CONTAINS(ward_geom, wkb_geometry)
-			AND attributes#>>'{description,type}' = 'Polling Station'
+				   FROM locus_core.global_search_view, point_geometry
+			WHERE ST_CONTAINS(wkb_geometry, location_geometry)
+			AND attributes#>>'{description,type}' = 'Polling Districts'
 
 		), NEAREST_WARD AS (
 			SELECT
                    wkb_geometry as ward_geom,
                    attributes#>>'{description,ward}' as ward,
-                   attributes#>>'{description,url}' as url,
+                   json_agg(json_build_object('title', attributes->>'title', 'url', attributes#>>'{description,url}')) OVER () as url,
                    attributes->>'title' as councillors
             FROM locus_core.global_search_view,point_geometry
             WHERE (SELECT 1 FROM COUNCILLOR_WARDS LIMIT 1) IS NULL
@@ -47,11 +47,11 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
         SELECT json_build_object('title', 'Democratic Information',
                                  'description', '',
                                  'subTitle', ward,
-                                 'additionalLinks', json_build_array(json_build_object('title', 'More information', 'link', url)),
+                                 'additionalLinks', url,
                                  'items', json_build_array(
                                      json_build_object('title', 'Your Ward', 'value', ward ),
                                      json_build_object('title', 'Your Councillor(s)', 'value', councillors),
-
+                                     json_build_object('title', 'Your Polling Station', 'value', ps_name),
                                      json_build_object('title', 'Your MP', 'value', mp)
                                  ),
                                 'geojson', json_build_object('type', 'FeatureCollection',
@@ -67,7 +67,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
 		SELECT json_build_object('title', 'Democratic Information',
                                  'description', 'Your location is out of Surrey Heath BC area and this is displaying your nearest ward',
                                  'subTitle', 'Nearest ward :' ||ward,
-                                 'additionalLinks', json_build_array(json_build_object('title', 'More information', 'link', url)),
+                                 'additionalLinks', url,
                                  'items', json_build_array(
                                      json_build_object('title', 'Your Ward', 'value', ward ),
                                      json_build_object('title', 'Your Councillor(s)', 'value', councillors)
