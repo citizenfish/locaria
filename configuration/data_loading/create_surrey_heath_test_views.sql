@@ -83,21 +83,21 @@ FROM locus.polling_district_2019_polygons;
 --LISTED BUILDINGS
 
 CREATE OR REPLACE VIEW locus_core.listed_buildings AS
-SELECT distinct on (id_0)  id_0 AS id,
-        ST_TRANSFORM(geom, 4326) AS wkb_geometry,
-        last_updated::TIMESTAMP AS date_added,
-        ARRAY['Planning']::locus_core.search_category[] AS category,
-        jsonb_build_object(
-	'title', name || ' ' ||location,
-	'description', jsonb_build_object(
-		'name', name,
-		'ref',  grade,
-		'type', 'Listed Building',
-		'address', location,
-		'url',  url,
-		'url_description', 'Building Image',
-		'additional_information', location),
-	'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
+SELECT distinct on (id_0) id_0 AS id,
+ST_TRANSFORM(geom, 4326) AS wkb_geometry,
+last_updated::TIMESTAMP AS date_added,
+ARRAY['Planning']::locus_core.search_category[] AS category,
+jsonb_build_object(
+'title', name || ' ' ||location,
+'description', jsonb_build_object(
+'name', name,
+'ref', 'Grade: ' || listed_buildings_locus.grade::text,
+'type', 'Listed Building',
+'address', location,
+'url', 'https://historicengland.org.uk/listing/the-list/list-entry/' || listed_buildings_locus.list_entry::text,
+'url_description', 'Building Image',
+'additional_information', 'Notes on this building - ' || listed_buildings_locus.surveydate::text),
+'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
 FROM locus.listed_buildings_locus
 WHERE listed_buildings_locus.list_type = 'statutory';
 
