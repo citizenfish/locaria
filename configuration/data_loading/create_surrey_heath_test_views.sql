@@ -66,6 +66,20 @@ SELECT distinct on (id_1)  id_1 AS id,
 	'table', 'id_1'||':'||polling_stations_2019_locus.tableoid::regclass::text) AS attributes
 FROM locus.polling_stations_2019_locus;
 
+--POLLING DISTRICTS
+
+CREATE OR REPLACE VIEW locus_core.polling_districts
+AS SELECT DISTINCT ON (id) id,
+st_transform(geom, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Democracy'::locus_core.search_category] AS category,
+jsonb_build_object('title', address,
+                   'description', jsonb_build_object('name', address,
+                                                     'type', 'Polling Districts'),
+                   'table', ('id'::text || ':'::text) || polling_district_2019_polygons.tableoid::regclass::text) AS attributes
+FROM locus.polling_district_2019_polygons;
+
+
 --LISTED BUILDINGS
 
 CREATE OR REPLACE VIEW locus_core.listed_buildings AS
@@ -125,17 +139,18 @@ FROM locus.shbc_boundary_locus;
 --LIBRARIES
 
 CREATE OR REPLACE VIEW locus_core.libraries AS
-SELECT distinct on (id_1)  id_1 AS id,
-        ST_TRANSFORM(geom, 4326) AS wkb_geometry,
-        last_updated::TIMESTAMP AS date_added,
-        ARRAY['Community']::locus_core.search_category[] AS category,
-        jsonb_build_object(
-	'title', name,
-	'description', jsonb_build_object(
-		'name', name,
-		'type', 'Library'
-		), 
-	'table', 'id_1'||':'||libraries_locus.tableoid::regclass::text) AS attributes
+SELECT distinct on (id_1) id_1 AS id,
+ST_TRANSFORM(geom, 4326) AS wkb_geometry,
+last_updated::TIMESTAMP AS date_added,
+ARRAY['Community']::locus_core.search_category[] AS category,
+                jsonb_build_object(
+                'title', name,
+                'description', jsonb_build_object(
+                'name', name,
+                'type', 'Library',
+                'ur', url
+                ),
+                'table', 'id_1'||':'||libraries_locus.tableoid::regclass::text) AS attributes
 FROM locus.libraries_locus;
 
 --COMMUNITY HALLS
