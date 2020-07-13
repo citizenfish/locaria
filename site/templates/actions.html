@@ -410,15 +410,20 @@
                 {{memory.historyReportRender.value.packet.items[#loop0].value}}
             </p>
         {{/for}}
+        <p class="item-overview-title">
+            Your Councillor(s)
+        </p>
+        <p class="item-overview-detail">
+            {{#for memory.historyReportRender.value.packet.additionalLinks}}
+                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].link}}" target="_blank">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
+            {{/for}}
+        </p>
     </section>
     <section class="main-panel details item-democracy">
         <h4>{{memory.historyReportRender.value.packet.subTitle}}</h4>
         <p><strong>About this ward</strong></p>
         <div class="item-main-info">
             <p>{{memory.historyReportRender.value.packet.description}}</p>
-            {{#for memory.historyReportRender.value.packet.additionalLinks}}
-                <p><a href="{{memory.historyReportRender.value.packet.additionalLinks[#loop0].link}}" target="_blank">{{memory.historyReportRender.value.packet.additionalLinks[#loop0].title}}</a></p>
-            {{/for}}
         </div>
         <div class="map-with-controls">
             <div id="openlayersItemMap" class="item-main-map">
