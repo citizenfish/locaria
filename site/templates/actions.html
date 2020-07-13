@@ -185,7 +185,7 @@
             <div class="channel channel-planning">
                 <img src="images/channel-planning.jpg" title="An image illustrating the 'Planning' channel of information" alt="An image of a house" @browser.addHistory({"history":"Cat/Planning"});>
                 <h2>Planning</h2>
-                <p>Search nearby planning applications, conservation areas, Tree Preservation Orders and listed buildings.</p>
+                <p>Find all Conservation Areas, Tree Preservation Orders, Listed Buildings and view Planning Applications received within the last 7 days.</p>
                 <button type="button" class="explore-channel" aria-label="Explore planning applications near this postcode" @browser.addHistory({"history":"Cat/Planning"});>
                     Explore
                 </button>
@@ -523,7 +523,7 @@
                 <strong>Reference:</strong> {{memory.points.value.packet.features[#loop0].properties.description.ref}}
             </p>
             <p><a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a></p>
-           {{#if memory.points.value.packet.features[#loop0].properties.description.completed!==true}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
+           {{#if memory.points.value.packet.features[#loop0].properties.description.completed!==true&&memory.points.value.packet.features[#loop0].properties.description.type==='Application'}}<p class="submitted-date">This application was submitted within the last 7 days</p>{{/if}}
 
         </div>
     </li>
@@ -641,6 +641,15 @@
         <p class="item-type">
             Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
         </p>
+        <p class="item-type">Find out more:
+        </p>
+        <p class="item-type">
+            <a href="https://www.surreyheath.gov.uk/residents/planning/planning-applications">Planning</a>
+            <a href="https://www.surreyheath.gov.uk/residents/planning/historic-environment/statutory-listed-buildings">Listed Buildings</a>
+            <a href="https://www.surreyheath.gov.uk/residents/planning/tree-information-and-preservation-orders">Tree Preservation Orders</a>
+            <a href="https://www.surreyheath.gov.uk/residents/planning/historic-environment/conservation-areas">Conservation Areas</a>
+        </p>
+
     </section>
     <section class="main-panel details">
         <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
@@ -653,7 +662,7 @@
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
             <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
             {{/if}}
-            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed!==true}}<p class="submitted-date">This application was submitted within the last 30 days</p>{{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed!==true&&memory.historyDetailsRender.value.packet.features[0].properties.description.type==='Application'}}<p class="submitted-date">This application was submitted within the last 7 days</p>{{/if}}
             {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
                 <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'View full application'}}</a></p>
             {{/if}}
