@@ -39,6 +39,7 @@ BEGIN
 										category[1] as category,
 										attributes#>'{description,type}' as sub_category
 								FROM locus_core.global_search_view
+								WHERE search_parameters->>'category' IS NULL OR (category[1])::TEXT = search_parameters->>'category'
 								) FOO
 			) BAA;
 

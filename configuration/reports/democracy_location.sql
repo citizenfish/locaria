@@ -15,7 +15,8 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
                    wkb_geometry as ward_geom,
                    attributes#>>'{description,ward}' as ward,
                    json_agg(json_build_object('title', attributes->>'title', 'url', attributes#>>'{description,url}')) OVER () as url,
-                   string_agg(attributes->>'title',', ') over () as councillors
+                   string_agg(attributes->>'title',', ') over () as councillors,
+                   attributes#>>'{description,additional_information}' as additional_information
             FROM locus_core.global_search_view,point_geometry
             WHERE ST_CONTAINS(wkb_geometry, location_geometry)
             AND attributes->'description' @> jsonb_build_object('type', 'Councillor')
@@ -45,7 +46,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
 		)
         --If in area
         SELECT json_build_object('title', 'Democratic Information',
-                                 'description', '',
+                                 'description', additional_information,
                                  'subTitle', ward,
                                  'additionalLinks', url,
                                  'items', json_build_array(
