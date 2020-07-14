@@ -50,7 +50,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
                                  'additionalLinks', url,
                                  'items', json_build_array(
                                      json_build_object('title', 'Your Ward', 'value', ward ),
-                                     json_build_object('title', 'Your Councillor(s)', 'value', councillors),
+                                     --json_build_object('title', 'Your Councillor(s)', 'value', councillors),
                                      json_build_object('title', 'Your Polling Station', 'value', ps_name),
                                      json_build_object('title', 'Your MP', 'value', mp)
                                  ),
@@ -67,10 +67,10 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
 		SELECT json_build_object('title', 'Democratic Information',
                                  'description', 'Your location is out of Surrey Heath BC area and this is displaying your nearest ward',
                                  'subTitle', 'Nearest ward :' ||ward,
-                                 'additionalLinks', url,
+                                 --'additionalLinks', url,
                                  'items', json_build_array(
-                                     json_build_object('title', 'Your Ward', 'value', ward ),
-                                     json_build_object('title', 'Your Councillor(s)', 'value', councillors)
+                                     json_build_object('title', 'Your Ward', 'value', ward )
+                                    -- json_build_object('title', 'Your Councillor(s)', 'value', councillors)
 
                                  ),
                                 'geojson', json_build_object('type', 'FeatureCollection',
