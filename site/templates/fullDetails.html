@@ -1,0 +1,188 @@
+<!--
+Templates for showing the full details of an item
+-->
+
+
+<script id="full-details-Map" type="text/html">
+    <p><strong>Location:</strong></p>
+    <div class="map-with-controls">
+        <div id="openlayersItemMap" class="item-main-map">
+
+        </div>
+        <button class="details-map-button button-home-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"location","buffer":50});>
+        Current location
+        </button>
+        <button class="details-map-button button-reset-map" @openlayers.zoomToLayerExtent({"map":"itemMap","layer":"points","buffer":50});>
+        Reset map
+        </button>
+
+    </div>
+</script>
+
+<script id="full-details-Generic" type="text/html">
+    <section class="side-panel details">
+        <h6 class="items-channel-heading">Generic</h6>
+        <p class="item-overview-title">
+            Item overview title
+        </p>
+        <p class="item-overview-detail">
+            Item overview detail
+        </p>
+    </section>
+    <section class="main-panel details">
+        <h4>Item title</h4>
+        <p><strong>Details:</strong></p>
+        <div class="item-main-info">
+            <p>Detailed information about the item</p>
+        </div>
+        {{#include '#full-details-Map'}}
+    </section>
+</script>
+
+<script id="full-details-Planning" type="text/html">
+    <section class="side-panel details channel-planning">
+        <h6 class="items-channel-heading">Planning</h6>
+        <p class="item-type">
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
+        </p>
+        <p class="item-type">Find out more:
+        </p>
+        <p class="item-type">
+            <a href="https://www.surreyheath.gov.uk/residents/planning/planning-applications">Planning</a>
+            <a href="https://www.surreyheath.gov.uk/residents/planning/historic-environment/statutory-listed-buildings">Listed Buildings</a>
+            <a href="https://www.surreyheath.gov.uk/residents/planning/tree-information-and-preservation-orders">Tree Preservation Orders</a>
+            <a href="https://www.surreyheath.gov.uk/residents/planning/historic-environment/conservation-areas">Conservation Areas</a>
+        </p>
+
+    </section>
+    <section class="main-panel details">
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
+        <p><strong>Overview:</strong></p>
+        <div class="item-main-info">
+            <p>Reference: {{memory.historyDetailsRender.value.packet.features[0].properties.description.ref}}</p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.address}}
+            <p>Address: {{memory.historyDetailsRender.value.packet.features[0].properties.description.address}}</p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
+            <p>Additional information: {{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.completed!==true&&memory.historyDetailsRender.value.packet.features[0].properties.description.type==='Application'}}<p class="submitted-date">This application was submitted within the last 7 days</p>{{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
+            <p><a class="more-details-button" target="_blank" href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'View full application'}}</a></p>
+            {{/if}}
+        </div>
+        {{#include '#full-details-Map'}}
+
+    </section>
+</script>
+
+<script id="full-details-Reported" type="text/html">
+    <section class="side-panel details channel-reported">
+        <h6 class="items-channel-heading">Reported</h6>
+        <address>
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.location}}
+        </address>
+        <p class="item-type">
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
+        </p>
+    </section>
+    <section class="main-panel details">
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.location}}</h4>
+        <p><strong>Overview:</strong></p>
+        <div class="item-main-info">
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}</p>
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.details}}</p>
+        </div>
+        {{#include '#full-details-Map'}}
+
+    </section>
+</script>
+
+<script id="full-details-Democracy" type="text/html">
+    <section class="side-panel details channel-democracy">
+        <h6 class="items-channel-heading">Democracy</h6>
+        <p class="item-overview-title">
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}:
+        </p>
+        <p class="item-overview-detail">
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}
+        </p>
+    </section>
+    <section class="main-panel details">
+        <h4>Item title</h4>
+        <p><strong>Details:</strong></p>
+        <div class="item-main-info">
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.title}}</p>
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.type==="Councillor"}}
+            <p>Party: {{memory.historyDetailsRender.value.packet.features[0].properties.description.party}}</p>
+            <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External Link'}}</a>
+            {{/if}}
+        </div>
+        {{#include '#full-details-Map'}}
+
+    </section>
+</script>
+
+<script id="full-details-Events" type="text/html">
+    <section class="side-panel details channel-events">
+        <h6 class="items-channel-heading">Events</h6>
+        <address>
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.venue}}
+        </address>
+        <time>
+            From: {{memory.historyDetailsRender.value.packet.features[0].properties.description.start_date}}
+        </time>
+        <time>
+            To: {{memory.historyDetailsRender.value.packet.features[0].properties.description.end_date}}
+        </time>
+        <p class="item-type">
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.category}}
+        </p>
+        <p class="item-cost">
+            Cost: {{memory.historyDetailsRender.value.packet.features[0].properties.description.cost}}
+        </p>
+        <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}" title="Link to an external resource" target="_blank">
+            {{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}
+        </a>
+    </section>
+    <section class="main-panel details">
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.title}}</h4>
+        <p><strong>Details:</strong></p>
+        <div class="item-main-info">
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.event_details}}</p>
+            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}</a></p>
+        </div>
+        {{#include '#full-details-Map'}}
+
+    </section>
+</script>
+
+<script id="full-details-Community" type="text/html">
+    <section class="side-panel details channel-community">
+        <h6 class="items-channel-heading">Community</h6>
+        <p class="item-type">
+            Type: {{memory.historyDetailsRender.value.packet.features[0].properties.description.type}}
+        </p>
+    </section>
+    <section class="main-panel details">
+        <h4>{{memory.historyDetailsRender.value.packet.features[0].properties.description.name}}</h4>
+        <p><strong>Details:</strong></p>
+        <div class="item-main-info">
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}
+            <p>{{memory.historyDetailsRender.value.packet.features[0].properties.description.additional_information}}</p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.address}}
+            <p>Address: {{memory.historyDetailsRender.value.packet.features[0].properties.description.address}}</a></p>
+            {{/if}}
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}
+            <p>Phone: <a href="phone://{{memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.phone}}</a></p>
+            {{/if}}
+
+            {{#if memory.historyDetailsRender.value.packet.features[0].properties.description.url}}
+            <p>URL: <a href="{{memory.historyDetailsRender.value.packet.features[0].properties.description.url}}">{{memory.historyDetailsRender.value.packet.features[0].properties.description.url_description? memory.historyDetailsRender.value.packet.features[0].properties.description.url_description:'External link'}}</a></p>
+            {{/if}}
+        </div>
+        {{#include '#full-details-Map'}}
+
+    </section>
+</script>
