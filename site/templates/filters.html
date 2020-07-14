@@ -1,0 +1,115 @@
+<!-- Filters for search -->
+
+<script id="page-content-filter" type="text/html">
+    {{#include '#page-content-filter-Header'}}
+    <form class="search-filters">
+        <div>
+            {{#include '#display-distance-units'}}
+            <p><strong>Filter these results:</strong></p>
+            {{#include '#page-content-filter-Distance'}}
+            {{#include '#page-content-filter-Button'}}
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
+<script id="page-content-filter-Reported" type="text/html">
+    {{#include '#page-content-filter-Header-Reported'}}
+    <form class="search-filters">
+        <div>
+            {{#include '#display-distance-units'}}
+            <p><strong>Filter these results:</strong></p>
+            {{#include '#page-content-filter-Distance'}}
+            {{#include '#page-content-filter-Button'}}
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
+
+<script id="page-content-filter-types" type="text/html">
+    <form class="search-filters">
+        <div>
+            {{#include '#display-distance-units'}}
+            <p><strong>Filter these results:</strong></p>
+            {{#include '#page-content-filter-Distance'}}
+            {{#for memory.historyCat2.value.packet[0].sub_category}}
+            <label class="ck-cont" for="filterType{{memory.historyCat2.value.packet[0].sub_category[#loop0].replace(/ /,'')}}">{{memory.historyCat2.value.packet[0].sub_category[#loop0]}}
+                <input type="checkbox" value="{{memory.historyCat2.value.packet[0].sub_category[#loop0]}}" class="functionGetTypes" id="filterType{{memory.historyCat2.value.packet[0].sub_category[#loop0].replace(/ /,'')}}" {{#if memory.history.value[3]===undefined||decodeURI(memory.history.value[3]).match(memory.historyCat2.value.packet[0].sub_category[#loop0])}}checked{{/if}}>
+                <span class="checkmark"></span>
+            </label>
+            {{/for}}
+            {{#include '#page-content-filter-Button'}}
+
+        </div>
+    </form>
+    <hr class="no-lg-res">
+</script>
+
+<script id="page-content-filter-Header" type="text/html">
+    <p class="no-mb">What the user is doing here, why they are doing it and how they go about doing it better.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+</script>
+
+<script id="page-content-filter-Header-Planning" type="text/html">
+    <p class="no-mb">Search nearby planning applications, conservation areas, Tree Preservation Orders and listed buildings.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+</script>
+
+<script id="page-content-filter-Header-Reported" type="text/html">
+    <p class="no-mb">Search what issues have been reported by residents nearby.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+</script>
+
+<script id="page-content-filter-Header-Community" type="text/html">
+    <p class="no-mb">Find the nearest parks, community halls, toilets, playgrounds to your selected location.</p>
+    <p class="results-number">Results for 0 - {{memory.history.value[2]||10}} {{memory.unit.value}}</p>
+    <button type="button" class="show-filters no-lg-res" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.toggleClass({"targetId":"body","class":"open-filters"});>
+    Show/hide filters
+    </button>
+</script>
+
+<script id="page-content-filter-Distance" type="text/html">
+    {{#if memory.unit.value==='miles'}}
+    {{#include '#page-content-filter-Distance-miles'}}
+    {{else}}
+    {{#include '#page-content-filter-Distance-kms'}}
+    {{/if}}
+</script>
+
+<script id="page-content-filter-Distance-miles" type="text/html">
+    <label for="filter-distance">By distance:</label>
+    <select id="filter-distance">
+        <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 mile from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 miles from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 miles from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 miles from my location</option>
+    </select>
+</script>
+<script id="page-content-filter-Distance-kms" type="text/html">
+    <label for="filter-distance">By distance:</label>
+    <select id="filter-distance">
+        <option value="1" {{#if memory.history.value[2]==="1"||memory.history.value[2]===undefined}}selected{{/if}}>Up to 1 km from my location</option>
+        <option value="3" {{#if memory.history.value[2]==="3"}}selected{{/if}}>Up to 3 kms from my location</option>
+        <option value="5" {{#if memory.history.value[2]==="5"}}selected{{/if}}>Up to 5 kms from my location</option>
+        <option value="10" {{#if memory.history.value[2]==="10"}}selected{{/if}}>Up to 10 kms from my location</option>
+    </select>
+</script>
+
+
+<script id="page-content-filter-Button" type="text/html">
+    <!--  <label for="keywords">By keyword:</label>
+      <input type="text" id="keywords" value="{{memory.history.value[1]?memory.history.value[1]:''}}" >-->
+    <button type="button" class="apply-filters" aria-label="Apply filters to these search results" @internals.execute({"name":"updateSearch"});>
+    Apply
+    </button>
+</script>

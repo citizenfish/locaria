@@ -44,9 +44,9 @@ const meterSwitch=0;
 
 window.distanceActual= function(distance) {
 	if(memory.unit.value==='miles') {
-		return distance * 1609;
+		return distance * metersPerMile;
 	} else {
-		return distance *1000;
+		return distance *metersPerKm;
 	}
 }
 
