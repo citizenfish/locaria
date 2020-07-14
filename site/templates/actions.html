@@ -22,7 +22,8 @@
     -browser.setTitle({"title":"Surrey Heath Borough Council: Home"});
 
 
-    @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat"});
+    @api.websocketSend({"message":{"queue":"historyCat2","api":"api","data":{"method":"list_categories_with_data","category":"{{!memory.history.value[0]}}"}}},{"queuePrepare":"historyCat"});
+    @templates.render({"targetId":"#content-target","template":"#page-content"},{"queuePrepare":"historyCat2"});
     -internals.setMemory({"name":"updateQueueToRun","value":"reloadCat","mode":"Session"});
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
@@ -250,30 +251,21 @@
     <hr class="no-lg-res">
 </script>
 
-<script id="page-content-filter-Community" type="text/html">
-    {{#include '#page-content-filter-Header-Community'}}
+
+<script id="page-content-filter-types" type="text/html">
     <form class="search-filters">
         <div>
             {{#include '#display-distance-units'}}
             <p><strong>Filter these results:</strong></p>
             {{#include '#page-content-filter-Distance'}}
-            <label class="ck-cont" for="communityTypePlayArea">Play Area
-                <input type="checkbox" value="Play Area" class="functionGetTypes" id="communityTypePlayArea" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Play/)}}checked{{/if}}>
-                <span class="checkmark"></span>
-            </label>
-
-            <label class="ck-cont" for="communityTypeCommunityHall">Community Hall
-                <input type="checkbox" value="Community Hall" class="functionGetTypes" id="communityTypeCommunityHall" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Community/)}}checked{{/if}}>
-                <span class="checkmark"></span>
-            </label>
-
-
-            <label class="ck-cont" for="communityTypeToilet">Toilet
-                <input type="checkbox" value="Toilet" class="functionGetTypes" id="communityTypeToilet" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Toilet/)}}checked{{/if}}>
-                <span class="checkmark"></span>
-            </label>
-
+            {{#for memory.historyCat2.value.packet[0].sub_category}}
+                <label class="ck-cont" for="filterType{{memory.historyCat2.value.packet[0].sub_category[#loop0].replace(/ /,'')}}">{{memory.historyCat2.value.packet[0].sub_category[#loop0]}}
+                    <input type="checkbox" value="{{memory.historyCat2.value.packet[0].sub_category[#loop0]}}" class="functionGetTypes" id="filterType{{memory.historyCat2.value.packet[0].sub_category[#loop0].replace(/ /,'')}}" {{#if memory.history.value[3]===undefined||decodeURI(memory.history.value[3]).match(memory.historyCat2.value.packet[0].sub_category[#loop0])}}checked{{/if}}>
+                    <span class="checkmark"></span>
+                </label>
+            {{/for}}
             {{#include '#page-content-filter-Button'}}
+
         </div>
     </form>
     <hr class="no-lg-res">
@@ -354,36 +346,6 @@
     </select>
 </script>
 
-<script id="page-content-filter-Planning" type="text/html">
-    {{#include '#page-content-filter-Header-Planning'}}
-    <form class="search-filters">
-        <div>
-            {{#include '#display-distance-units'}}
-            <p><strong>Filter these results:</strong></p>
-            {{#include '#page-content-filter-Distance'}}
-            <label class="ck-cont" for="planningTypeApplication">Application
-                <input type="checkbox" value="Application" class="functionGetTypes" id="planningTypeApplication" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Application/)}}checked{{/if}}>
-                <span class="checkmark"></span>
-            </label>
-            <label class="ck-cont" for="planningTypeConservation">Conservation area
-                <input type="checkbox" value="Conservation Area" class="functionGetTypes" id="planningTypeConservation" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Conservation/)}}checked{{/if}}>
-                <span class="checkmark"></span>
-            </label>
-            <label class="ck-cont" for="planningTypeListed">Listed building
-                <input type="checkbox" value="Listed Building" class="functionGetTypes" id="planningTypeListed" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Listed/)}}checked{{/if}}>
-                <span class="checkmark"></span>
-            </label>
-            <label class="ck-cont" for="planningTypeTPO">Tree Preservation Orders
-                <input type="checkbox" value="Tree Preservation Order" class="functionGetTypes" id="planningTypeTPO" {{#if memory.history.value[3]===undefined||memory.history.value[3].match(/Tree/)}}checked{{/if}}>
-                <span class="checkmark"></span>
-            </label>
-            {{#include '#page-content-filter-Button'}}
-
-        </div>
-    </form>
-    <hr class="no-lg-res">
-</script>
-
 <script id="page-content-result-main" type="text/html">
     <section class="main-panel">
         <ul class="results-item-list">
@@ -450,7 +412,9 @@
     <section class="side-panel channel-planning">
         <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
         <h2>{{memory.history.value[0]}}</h2>
-        {{#include '#page-content-filter-Planning'}}
+        {{#include '#page-content-filter-Header-Planning'}}
+        {{#include '#page-content-filter-types'}}
+
     </section>
     {{#include '#page-content-result-main'}}
 </script>
@@ -468,7 +432,8 @@
     <section class="side-panel channel-community">
         <img src="images/channel-community.jpg" title="" alt="" class="no-mb">
         <h2>{{memory.history.value[0]}}</h2>
-        {{#include '#page-content-filter-Community'}}
+        {{#include '#page-content-filter-Header-Community'}}
+        {{#include '#page-content-filter-types'}}
     </section>
     {{#include '#page-content-result-main'}}
 </script>
