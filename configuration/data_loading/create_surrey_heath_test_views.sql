@@ -322,6 +322,7 @@ SELECT COUN.id,
 			   'ward', ward,
 			   'url', linkuri,
 			   'url_description', 'Additional details',
+			   'additional_information', COALESCE(profile, ''),
 			   'type', 'Councillor')
 			   ) AS attributes
 FROM locus.councillor_details_view COUN
@@ -377,7 +378,7 @@ SELECT DISTINCT ON (id) id,
 wkb_geometry,
 date_added,
 ARRAY['Crime'::locus_core.search_category] AS category,
-jsonb_build_object('title', 'Crime', 'description', jsonb_build_object('type', 'Crime'), 'table', attributes) AS attributes
+jsonb_build_object('title', 'Crime', 'description', jsonb_build_object('type', 'Crime'), 'table', ('id'::text || ':'::text) || all_crime.tableoid::regclass::text) AS attributes
 FROM locus_core.all_crime;
 
 --REPORT IT

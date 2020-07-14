@@ -16,6 +16,8 @@ module.exports = function (grunt) {
 
 					'configuration/reports/democracy_location.sql',
 					'tests/unit_tests/test_democracy_location_report.sql'
+					//'configuration/functions/locus_gateway.sql',
+					//'tests/unit_tests/test_list_categories_with_data.sql'
 
 				]
 			},
