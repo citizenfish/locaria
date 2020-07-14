@@ -251,18 +251,18 @@ FROM locus.recycling_centres_shbc_locus;
 --SCHOOLS
 
 CREATE OR REPLACE VIEW locus_core.schools AS
-SELECT distinct on (id_0)  id_0 AS id,
-        ST_TRANSFORM(geom, 4326) AS wkb_geometry,
-        now() AS date_added,
-        ARRAY['Education']::locus_core.search_category[] AS category,
-        jsonb_build_object(
-	'title', "EstablishmentName",
-	'description', jsonb_build_object(
-		'ref', "URN",
-		'type', 'School',
-		'name', "EstablishmentName",
-		'additional_information',"PhaseOfEducation (name)"),
-	'table', 'id_0'||':'||shbc_all_open_schools_locus.tableoid::regclass::text) AS attributes
+SELECT distinct on (id_0) id_0 AS id,
+ST_TRANSFORM(geom, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Education']::locus_core.search_category[] AS category,
+jsonb_build_object(
+'title', "EstablishmentName",
+'description', jsonb_build_object(
+'ref', "URN",
+'type', 'School',
+'name', "EstablishmentName",
+'additional_information',"PhaseOfEducation (name)" || ' ' || "TypeOfEstablishment (code)"),
+'table', 'id_0'||':'||shbc_all_open_schools_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_all_open_schools_locus;
 
 --COUNCIL TAX BANDS
