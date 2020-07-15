@@ -84,7 +84,11 @@ FROM locus.polling_district_2019_polygons;
 
 CREATE OR REPLACE VIEW locus_core.listed_buildings AS
 SELECT distinct on (id_0) id_0 AS id,
-ST_TRANSFORM(geom, 4326) AS wkb_geometry,
+st_transform(
+CASE
+    WHEN st_area(st_transform(geom, 4326)::geography) < 500::double precision THEN st_centroid(geom)
+    ELSE geom
+    END, 4326) AS wkb_geometry,
 last_updated::TIMESTAMP AS date_added,
 ARRAY['Planning']::locus_core.search_category[] AS category,
 jsonb_build_object(
@@ -95,7 +99,7 @@ jsonb_build_object(
 'type', 'Listed Building',
 'address', location,
 'url', 'https://historicengland.org.uk/listing/the-list/list-entry/' || listed_buildings_locus.list_entry::text,
-'url_description', 'Building Image',
+'url_description', 'Visit Historic England for more information',
 'additional_information', 'Notes on this building - ' || listed_buildings_locus.surveydate::text),
 'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
 FROM locus.listed_buildings_locus
@@ -353,8 +357,8 @@ AS
 SELECT DISTINCT ON (tpo_polygons_locus.ogc_fid) tpo_polygons_locus.ogc_fid AS id,
 st_transform(
 CASE
-    WHEN st_area(st_transform(tpo_polygons_locus.wkb_geometry, 4326)::geography) < 500::double precision THEN st_centroid(tpo_polygons_locus.wkb_geometry)
-    ELSE tpo_polygons_locus.wkb_geometry
+    WHEN st_area(st_transform(wkb_geometry, 4326)::geography) < 500::double precision THEN st_centroid(wkb_geometry)
+    ELSE wkb_geometry
     END, 4326) AS wkb_geometry,
 now() AS date_added,
 ARRAY['Planning'::locus_core.search_category] AS category,
