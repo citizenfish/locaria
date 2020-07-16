@@ -1,18 +1,21 @@
 --Note well casts on category
 --CAR PARKS
 
-CREATE OR REPLACE VIEW locus_core.car_parks AS 
-SELECT DISTINCT ON (id_0) id_0 AS id,
-	st_transform(geom, 4326) AS wkb_geometry,
-	now() AS date_added,
-	ARRAY['Highways and Transport'::locus_core.search_category] AS category,
-	jsonb_build_object(
-	'title', name,
-	'description', jsonb_build_object(
-		'name', name,
-		'type', 'Car Park',
-		'additional_information', name),
-	'table', 'id_0'||':'||shbc_carparks_locus.tableoid::regclass::text) AS attributes
+CREATE OR REPLACE VIEW locus_core.car_parks
+AS SELECT DISTINCT ON (shbc_carparks_locus.id_0) shbc_carparks_locus.id_0 AS id,
+st_transform(shbc_carparks_locus.geom, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Highways'::locus_core.search_category] AS category,
+jsonb_build_object(
+
+'title', shbc_carparks_locus.name,
+'description', jsonb_build_object(
+'name', shbc_carparks_locus.name,
+'type', 'Car Park',
+'additional_information', shbc_carparks_locus.name
+
+),
+'table', ('id_0'::text || ':'::text) || shbc_carparks_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_carparks_locus;
 
 --WARD BOUNDARIES
@@ -84,7 +87,11 @@ FROM locus.polling_district_2019_polygons;
 
 CREATE OR REPLACE VIEW locus_core.listed_buildings AS
 SELECT distinct on (id_0) id_0 AS id,
-ST_TRANSFORM(geom, 4326) AS wkb_geometry,
+st_transform(
+CASE
+    WHEN st_area(st_transform(geom, 4326)::geography) < 500::double precision THEN st_centroid(geom)
+    ELSE geom
+    END, 4326) AS wkb_geometry,
 last_updated::TIMESTAMP AS date_added,
 ARRAY['Planning']::locus_core.search_category[] AS category,
 jsonb_build_object(
@@ -95,7 +102,7 @@ jsonb_build_object(
 'type', 'Listed Building',
 'address', location,
 'url', 'https://historicengland.org.uk/listing/the-list/list-entry/' || listed_buildings_locus.list_entry::text,
-'url_description', 'Building Image',
+'url_description', 'Visit Historic England for more information',
 'additional_information', 'Notes on this building - ' || listed_buildings_locus.surveydate::text),
 'table', 'id_0'||':'||listed_buildings_locus.tableoid::regclass::text) AS attributes
 FROM locus.listed_buildings_locus
@@ -322,6 +329,7 @@ SELECT COUN.id,
 			   'ward', ward,
 			   'url', linkuri,
 			   'url_description', 'Additional details',
+			   'additional_information', COALESCE(profile, ''),
 			   'type', 'Councillor')
 			   ) AS attributes
 FROM locus.councillor_details_view COUN
@@ -330,20 +338,25 @@ ON trim(ward) = ward_name;
 
 -- PROW
 
-CREATE OR REPLACE VIEW locus_core.prow AS
-  SELECT DISTINCT ON (id) id,
-    st_transform(geom, 4326) AS wkb_geometry,
-    now() AS date_added,
-    ARRAY['Rights of Way'::locus_core.search_category] AS category,
-    jsonb_build_object(
-    	'title', prowno,
-    	'description', jsonb_build_object(
-    		'name', prow_loc,
-    		'type', 'Public Right Of Way',
-    		'stat_text', stat_text,
-    		'additional_information', prowstat),
-    		'table', 'id'||':'||rights_of_way_readonly_locus.tableoid::regclass::text) AS attributes
-   FROM locus.rights_of_way_readonly_locus;			   
+CREATE OR REPLACE VIEW locus_core.prow
+AS SELECT DISTINCT ON (rights_of_way_readonly_locus.id) rights_of_way_readonly_locus.id,
+st_transform(rights_of_way_readonly_locus.geom, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Row'::locus_core.search_category] AS category,
+jsonb_build_object(
+
+'title', rights_of_way_readonly_locus.prowno,
+'description', jsonb_build_object(
+'name', rights_of_way_readonly_locus.prow_loc,
+'type', 'Public Right Of Way',
+'stat_text', rights_of_way_readonly_locus.stat_text,
+'additional_information', rights_of_way_readonly_locus.prowstat
+
+),
+'table', ('id'::text || ':'::text) || rights_of_way_readonly_locus.tableoid::regclass::text) AS attributes
+FROM locus.rights_of_way_readonly_locus;
+
+
 
 --TPOs
 
@@ -352,8 +365,8 @@ AS
 SELECT DISTINCT ON (tpo_polygons_locus.ogc_fid) tpo_polygons_locus.ogc_fid AS id,
 st_transform(
 CASE
-    WHEN st_area(st_transform(tpo_polygons_locus.wkb_geometry, 4326)::geography) < 500::double precision THEN st_centroid(tpo_polygons_locus.wkb_geometry)
-    ELSE tpo_polygons_locus.wkb_geometry
+    WHEN st_area(st_transform(wkb_geometry, 4326)::geography) < 500::double precision THEN st_centroid(wkb_geometry)
+    ELSE wkb_geometry
     END, 4326) AS wkb_geometry,
 now() AS date_added,
 ARRAY['Planning'::locus_core.search_category] AS category,
@@ -377,7 +390,7 @@ SELECT DISTINCT ON (id) id,
 wkb_geometry,
 date_added,
 ARRAY['Crime'::locus_core.search_category] AS category,
-jsonb_build_object('title', 'Crime', 'description', jsonb_build_object('type', 'Crime'), 'table', attributes) AS attributes
+jsonb_build_object('title', 'Crime', 'description', jsonb_build_object('type', 'Crime'), 'table', ('id'::text || ':'::text) || all_crime.tableoid::regclass::text) AS attributes
 FROM locus_core.all_crime;
 
 --REPORT IT
