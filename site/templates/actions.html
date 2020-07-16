@@ -74,6 +74,9 @@
     -internals.setMemory({"name":"myPostcodeText","value":"{{!memory.postcode.value.packet.features[0].properties.title}}","mode":"Permanent"});
     -elements.innerHTML({"targetId":".user-entered","html":"{{!memory.myPostcodeText.value}}"});
     -locus.postcodeDisplay({"text":"{{!queue.getElement('#postcode').value}}"});
+    -elements.innerHTML({"targetId":".postcode-field-static","html":"{{!memory.myPostcode.value}}"});
+    -elements.addClass({"targetId":".postcode-field","class":"hidden"});
+    -elements.removeClass({"targetId":".postcode-field-static","class":"hidden"});
     -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
     -openlayers.flyTo({"coordinate":"{{!memory.myLocation.value}}"});
     -internals.execute({"name":"{{!memory.updateQueueToRun.value}}"});

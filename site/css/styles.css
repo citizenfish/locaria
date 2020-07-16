@@ -549,7 +549,7 @@ li.has-error::after {
 .location-text {
     font-weight: 500;
 }
-.your-current-postcode .postcode-field {
+.your-current-postcode .postcode-field-static {
     font-size: 3rem;
     font-weight: 700;
     display: inline-block;
@@ -560,9 +560,17 @@ li.has-error::after {
     border: none;
     padding: 2px 0 5px;
     height: 50px;
-    margin: 7px 0 10px;
+    margin: 0 0 10px;
+    line-height: 1;
 }
-.open-loc .your-current-postcode .postcode-field {
+.your-current-postcode .postcode-field {
+    font-size: 2rem;
+    font-weight: 700;
+    display: inline-block;
+    max-width: 280px;
+    text-align: center;
+    height: 50px;
+    margin: 7px 0 10px;
     background-color: white;
     border: 3px solid var(--dark);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.15);
@@ -575,14 +583,14 @@ li.has-error::after {
 @media only screen and (min-width: 795px) {
     .your-current-postcode .postcode-field {
         font-weight: 800;
-        font-size: 3.5rem;
+        /*font-size: 3.5rem;*/
         height: 60px;
         padding: 5px 0 10px;
         margin: 10px 0;
     }
-    .open-loc .your-current-postcode .postcode-field {
-        font-size: 3rem;
-    }
+    /*.open-loc .your-current-postcode .postcode-field {*/
+    /*    font-size: 3rem;*/
+    /*}*/
 }
 .your-current-postcode .error-msg {
      font-weight: 500;
@@ -616,6 +624,11 @@ li.has-error::after {
     width: 50%;
     max-width: 140px;
     margin: 0 5px;
+}
+@media only screen and (max-width: 350px) {
+    .your-current-postcode .edit-loc-b-panel .change-postcode {
+        max-width: 120px;
+    }
 }
 .your-current-postcode .edit-loc-b-panel .change-postcode.can-loc {
     background-color: var(--cancelButton);
