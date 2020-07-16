@@ -61,7 +61,6 @@ strong {
 }
 .document-content {
     color: var(--defaultText);
-    /*min-height: calc(100vh - 60px);*/
     display: flex;
     justify-content: center;
 }
@@ -79,10 +78,6 @@ strong {
         max-width: 80%;
     }
 }
-footer {
-
-}
-
 @media only screen and (min-width: 1000px) {
     .page-header, footer {
         min-height: 120px;
@@ -114,11 +109,6 @@ li.has-error::after {
     justify-content: center;
     box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.25);
 }
-@media only screen and (min-width: 1000px) {
-    .page-header {
-
-    }
-}
 .page-header .top-b {
     width: 100%;
     display: flex;
@@ -145,11 +135,6 @@ li.has-error::after {
     background-size: auto 30px;
     background-position: center;
 }
-/*@media only screen and (min-width: 400px) {*/
-/*    .logo {*/
-/*        background-size: auto 40px;*/
-/*    }*/
-/*}*/
 @media only screen and (min-width: 1000px) {
     .logo {
         width: calc(100% - 120px);
@@ -169,7 +154,6 @@ li.has-error::after {
 @media only screen and (min-width: 1000px) {
     .button-back {
         min-width: 60px;
-        /*margin-right: 60px;*/
         border: 3px solid white;
         background-color: var(--mainBrandColour);
         box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
@@ -220,6 +204,8 @@ li.has-error::after {
     opacity: 0.3;
 }
 
+/* main menu */
+
 .main-menu {
     min-width: 60px;
     max-width: 60px;
@@ -245,7 +231,6 @@ li.has-error::after {
 .main-menu.open-this-menu .menu-button-actual {
     background-color: var(--dark);
 }
-
 .main-menu .menu-button-actual::before {
     content: "";
     width: 100%;
@@ -397,23 +382,11 @@ li.has-error::after {
         font-size: 2.5rem;
     }
 }
-
-/*.subheading::before {*/
-/*    content: "";*/
-/*    position: absolute;*/
-/*    top: 0;*/
-/*    left: 0;*/
-/*    width: 100%;*/
-/*    height: 30px;*/
-/*    background: linear-gradient(to bottom, black, transparent);*/
-/*}*/
 .subheading h1,
 .subheading p {
-    /*flex: 1;*/
     margin: 0 0 0 0;
     text-align: center;
 }
-
 
 /* postcode / hero (map) */
 
@@ -446,13 +419,10 @@ li.has-error::after {
 .map-background canvas {
     height: 100%;
 }
-
 .postcode-search {
     position: relative;
     height: 100%;
     display: flex;
-    /*align-items: center;*/
-    /*justify-content: center;*/
     flex-direction: column;
 }
 .postcode-search::after {
@@ -467,19 +437,11 @@ li.has-error::after {
 .on-home .postcode-search::after {
     display: none;
 }
-
-@media only screen and (max-width: 795px) {
-
-}
 @media only screen and (min-width: 795px) {
     .postcode-search::after {
         height: 20px;
     }
 }
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-
-}
-
 
 .on-home .map-background::before {
     content: "";
@@ -500,19 +462,6 @@ li.has-error::after {
     }
 }
 
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    /*.on-home .postcode-search::before {*/
-    /*    content: "";*/
-    /*    width: 100%;*/
-    /*    height: 100%;*/
-    /*    position: absolute;*/
-    /*    top: 0;*/
-    /*    background-image: url(../images/marker.svg);*/
-    /*    background-position: center;*/
-    /*    background-repeat: no-repeat;*/
-    /*    background-size: 45px 135px;*/
-    /*}*/
-}
 .your-current-postcode {
     position: relative;
     display: flex;
@@ -531,15 +480,6 @@ li.has-error::after {
     .your-current-postcode {
         padding: 25px 0 30px;
     }
-}
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .your-current-postcode {
-        /*height: 25vh;*/
-    }
-}
-.your-current-postcode label,
-.location-text {
-    /*line-height: 30px;*/
 }
 .your-current-postcode label.label-loc-is-set { display: inline-block; }
 .your-current-postcode label.label-loc-is-edit { display: none; }
@@ -583,14 +523,10 @@ li.has-error::after {
 @media only screen and (min-width: 795px) {
     .your-current-postcode .postcode-field {
         font-weight: 800;
-        /*font-size: 3.5rem;*/
         height: 60px;
         padding: 5px 0 10px;
         margin: 10px 0;
     }
-    /*.open-loc .your-current-postcode .postcode-field {*/
-    /*    font-size: 3rem;*/
-    /*}*/
 }
 .your-current-postcode .error-msg {
      font-weight: 500;
@@ -633,9 +569,6 @@ li.has-error::after {
 .your-current-postcode .edit-loc-b-panel .change-postcode.can-loc {
     background-color: var(--cancelButton);
 }
-.your-current-postcode .change-postcode.edit-loc {
-    /*display: inline-block;*/
-}
 .your-current-postcode.has-error .change-postcode.set-loc {
     opacity: 0.4;
     pointer-events: none;
@@ -643,16 +576,6 @@ li.has-error::after {
 .open-loc .your-current-postcode .change-postcode.edit-loc {
     display: none;
 }
-/*.open-loc .your-current-postcode .change-postcode.set-loc {*/
-/*    display: inline-block;*/
-/*}*/
-/*.your-current-postcode .change-postcode.set-loc::before {*/
-/*    content: "\2714";*/
-/*    position: absolute;*/
-/*    left: 0;*/
-/*    top: 0;*/
-/*    height: 100%;*/
-/*}*/
 
 /* main content */
 
@@ -696,7 +619,6 @@ li.has-error::after {
 }
 .side-panel .results-number {
     margin: 0 0 0 0;
-    /*font-style: italic;*/
     font-weight: 600;
 }
 @media only screen and (min-width: 795px) {
@@ -897,20 +819,13 @@ li.has-error::after {
 .main-panel h1 {
     font-weight: 600;
 }
-.main-panel p {
-    /*margin: 0 0 15px 0;*/
-}
 .channel img {
     width: 100%;
     max-width: 280px;
     cursor: pointer;
 }
-.results-item-list {
-
-}
 .results-item-list li {
     padding: 15px 0;
-    /*margin-bottom: 15px;*/
     border-bottom: 2px dashed #707070;
     display: flex;
     flex-direction: row;
@@ -953,9 +868,6 @@ li.has-error::after {
 .results-item-list .item-detail h4 {
     margin-bottom: 5px;
 }
-/*.results-item-list .item-detail .result-class {*/
-/*    margin-bottom: 5px;*/
-/*}*/
 .results-item-list .item-detail a {
     color: var(--actionBlue);
     text-decoration: underline;
@@ -1014,9 +926,6 @@ li.has-error::after {
         min-height: 100px;
     }
 }
-.side-panel h2 {
-
-}
 @media only screen and (min-width: 795px) {
     .side-panel h2 {
         padding-bottom: 15px;
@@ -1047,11 +956,9 @@ li.has-error::after {
 .channel p {
     margin: 0 0 5px 0;
 }
-
 .main-panel .channel img:hover + h2 {
     border-color: var(--dark);
 }
-
 @media only screen and (min-width: 795px) {
     .channels {
         width: 100%;
@@ -1144,12 +1051,6 @@ li.has-error::after {
 .side-panel.details time {
     font-style: italic;
 }
-.side-panel.details .item-type {
-
-}
-.side-panel.details .item-ref {
-
-}
 .side-panel.details a {
     text-decoration: underline;
 }
@@ -1164,9 +1065,6 @@ li.has-error::after {
         padding-top: 0;
         padding-bottom: 30px;
     }
-}
-.main-panel.details h4 {
-
 }
 .main-panel.details .item-main-info {
     margin-bottom: 30px;
