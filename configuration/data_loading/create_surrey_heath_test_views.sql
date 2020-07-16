@@ -1,18 +1,21 @@
 --Note well casts on category
 --CAR PARKS
 
-CREATE OR REPLACE VIEW locus_core.car_parks AS 
-SELECT DISTINCT ON (id_0) id_0 AS id,
-	st_transform(geom, 4326) AS wkb_geometry,
-	now() AS date_added,
-	ARRAY['Highways and Transport'::locus_core.search_category] AS category,
-	jsonb_build_object(
-	'title', name,
-	'description', jsonb_build_object(
-		'name', name,
-		'type', 'Car Park',
-		'additional_information', name),
-	'table', 'id_0'||':'||shbc_carparks_locus.tableoid::regclass::text) AS attributes
+CREATE OR REPLACE VIEW locus_core.car_parks
+AS SELECT DISTINCT ON (shbc_carparks_locus.id_0) shbc_carparks_locus.id_0 AS id,
+st_transform(shbc_carparks_locus.geom, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Highways'::locus_core.search_category] AS category,
+jsonb_build_object(
+
+'title', shbc_carparks_locus.name,
+'description', jsonb_build_object(
+'name', shbc_carparks_locus.name,
+'type', 'Car Park',
+'additional_information', shbc_carparks_locus.name
+
+),
+'table', ('id_0'::text || ':'::text) || shbc_carparks_locus.tableoid::regclass::text) AS attributes
 FROM locus.shbc_carparks_locus;
 
 --WARD BOUNDARIES
@@ -335,20 +338,25 @@ ON trim(ward) = ward_name;
 
 -- PROW
 
-CREATE OR REPLACE VIEW locus_core.prow AS
-  SELECT DISTINCT ON (id) id,
-    st_transform(geom, 4326) AS wkb_geometry,
-    now() AS date_added,
-    ARRAY['Rights of Way'::locus_core.search_category] AS category,
-    jsonb_build_object(
-    	'title', prowno,
-    	'description', jsonb_build_object(
-    		'name', prow_loc,
-    		'type', 'Public Right Of Way',
-    		'stat_text', stat_text,
-    		'additional_information', prowstat),
-    		'table', 'id'||':'||rights_of_way_readonly_locus.tableoid::regclass::text) AS attributes
-   FROM locus.rights_of_way_readonly_locus;			   
+CREATE OR REPLACE VIEW locus_core.prow
+AS SELECT DISTINCT ON (rights_of_way_readonly_locus.id) rights_of_way_readonly_locus.id,
+st_transform(rights_of_way_readonly_locus.geom, 4326) AS wkb_geometry,
+now() AS date_added,
+ARRAY['Row'::locus_core.search_category] AS category,
+jsonb_build_object(
+
+'title', rights_of_way_readonly_locus.prowno,
+'description', jsonb_build_object(
+'name', rights_of_way_readonly_locus.prow_loc,
+'type', 'Public Right Of Way',
+'stat_text', rights_of_way_readonly_locus.stat_text,
+'additional_information', rights_of_way_readonly_locus.prowstat
+
+),
+'table', ('id'::text || ':'::text) || rights_of_way_readonly_locus.tableoid::regclass::text) AS attributes
+FROM locus.rights_of_way_readonly_locus;
+
+
 
 --TPOs
 
