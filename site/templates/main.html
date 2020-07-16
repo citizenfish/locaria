@@ -46,15 +46,20 @@ Home page / general layout
         <label class="label-loc-is-set" for="postcode">showing information about:</label>
         <label class="label-loc-is-edit" for="postcode">change this location to:</label>
         <span class="location-text">"<span class="user-entered">{{memory.myPostcodeText.value}}</span>"</span>
-        <input id="postcode" class="postcode-field" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queueEvent":"focus"});>
+        <span class="postcode-field-static">{{memory.myPostcode.value}}</span>
+        <input id="postcode" class="postcode-field hidden" value="{{memory.myPostcode.value}}" @elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queueEvent":"focus"});>
         <span class="error-msg">unknown location</span>
         <button type="button" class="change-postcode edit-loc" aria-label="Open search" aria-haspopup="true" @elements.addClass({"targetId":"body","class":"open-loc"});>
         -elements.removeClass({"targetId":".your-current-postcode","class":"has-error"},{"queuePrepare":"locationBad"});
+        -elements.removeClass({"targetId":".postcode-field","class":"hidden"});
+        -elements.addClass({"targetId":".postcode-field-static","class":"hidden"});
         Change location
         </button>
         <div class="edit-loc-b-panel">
             <button type="button" class="change-postcode can-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @elements.removeClass({"targetId":"body","class":"open-loc"});>
             -elements.setInputValue({"targetId":"#postcode","value":"{{!memory.myPostcode.value}}"});
+            -elements.addClass({"targetId":".postcode-field","class":"hidden"});
+            -elements.removeClass({"targetId":".postcode-field-static","class":"hidden"});
             Cancel
             </button>
             <button type="button" id="functionSaveButtonFocus" class="change-postcode set-loc" aria-label="Open search" aria-haspopup="true" aria-controls="searchSite" @api.websocketSend({"message":{"queue":"postcode","api":"api","data":{"method":"address_search","address":"{{!queue.getElement('#postcode').value}}"}}});>
