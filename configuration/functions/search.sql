@@ -40,8 +40,9 @@ BEGIN
     END IF;
 
 	IF COALESCE(search_parameters->>'filter', '') != '' THEN
-		json_filter = COALESCE((search_parameters->'filter')::JSONB, jsonb_build_object());
+		json_filter = COALESCE((search_parameters->>'filter')::JSONB, jsonb_build_object());
 	END IF;
+
 
     --Requires BBOX as 'xmax ymax, xmin ymin'
     IF COALESCE(search_parameters->>'bbox','') ~ '^[0-9 ,\-.%C]+$' THEN

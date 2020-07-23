@@ -12,6 +12,7 @@ time {
 
 body {
     font-weight: 300;
+    height: 100%;
 }
 strong {
     font-weight: 600;
@@ -28,12 +29,16 @@ strong {
     flex-direction: column;
 }
 .on-home .head-section {
-    /*min-height: 90vh;*/
     height: 90vh;
+}
+@media only screen and (max-width: 795px) {
+    .on-home .head-section {
+        min-height: 500px;
+    }
 }
 @media only screen and (orientation: landscape) and (max-height: 795px) {
     .on-home .head-section {
-        height: auto;
+        min-height: 650px;
     }
     .on-home .map-background {
         height: 150px;
@@ -41,8 +46,7 @@ strong {
 }
 @media only screen and (min-width: 1000px) {
     .on-home .head-section {
-        height: 80vh;
-        min-height: 500px;
+        min-height: 650px;
     }
 }
 .page-header {
@@ -57,9 +61,13 @@ strong {
 }
 .document-content {
     color: var(--defaultText);
-    /*min-height: calc(100vh - 60px);*/
     display: flex;
     justify-content: center;
+}
+@media only screen and (min-width: 1000px) {
+    .document-content {
+        min-height: calc(100% - 531px);
+    }
 }
 .content-holder {
     width: 100%;
@@ -70,10 +78,6 @@ strong {
         max-width: 80%;
     }
 }
-footer {
-
-}
-
 @media only screen and (min-width: 1000px) {
     .page-header, footer {
         min-height: 120px;
@@ -105,11 +109,6 @@ li.has-error::after {
     justify-content: center;
     box-shadow: 5px 0 20px 0 rgba(0, 0, 0, 0.25);
 }
-@media only screen and (min-width: 1000px) {
-    .page-header {
-
-    }
-}
 .page-header .top-b {
     width: 100%;
     display: flex;
@@ -136,11 +135,6 @@ li.has-error::after {
     background-size: auto 30px;
     background-position: center;
 }
-/*@media only screen and (min-width: 400px) {*/
-/*    .logo {*/
-/*        background-size: auto 40px;*/
-/*    }*/
-/*}*/
 @media only screen and (min-width: 1000px) {
     .logo {
         width: calc(100% - 120px);
@@ -160,7 +154,6 @@ li.has-error::after {
 @media only screen and (min-width: 1000px) {
     .button-back {
         min-width: 60px;
-        /*margin-right: 60px;*/
         border: 3px solid white;
         background-color: var(--mainBrandColour);
         box-shadow: 3px 3px 10px 0 rgba(0,0,0,0.15);
@@ -211,6 +204,8 @@ li.has-error::after {
     opacity: 0.3;
 }
 
+/* main menu */
+
 .main-menu {
     min-width: 60px;
     max-width: 60px;
@@ -236,7 +231,6 @@ li.has-error::after {
 .main-menu.open-this-menu .menu-button-actual {
     background-color: var(--dark);
 }
-
 .main-menu .menu-button-actual::before {
     content: "";
     width: 100%;
@@ -388,23 +382,11 @@ li.has-error::after {
         font-size: 2.5rem;
     }
 }
-
-/*.subheading::before {*/
-/*    content: "";*/
-/*    position: absolute;*/
-/*    top: 0;*/
-/*    left: 0;*/
-/*    width: 100%;*/
-/*    height: 30px;*/
-/*    background: linear-gradient(to bottom, black, transparent);*/
-/*}*/
 .subheading h1,
 .subheading p {
-    /*flex: 1;*/
     margin: 0 0 0 0;
     text-align: center;
 }
-
 
 /* postcode / hero (map) */
 
@@ -437,13 +419,10 @@ li.has-error::after {
 .map-background canvas {
     height: 100%;
 }
-
 .postcode-search {
     position: relative;
     height: 100%;
     display: flex;
-    /*align-items: center;*/
-    /*justify-content: center;*/
     flex-direction: column;
 }
 .postcode-search::after {
@@ -458,19 +437,11 @@ li.has-error::after {
 .on-home .postcode-search::after {
     display: none;
 }
-
-@media only screen and (max-width: 795px) {
-
-}
 @media only screen and (min-width: 795px) {
     .postcode-search::after {
         height: 20px;
     }
 }
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-
-}
-
 
 .on-home .map-background::before {
     content: "";
@@ -491,19 +462,6 @@ li.has-error::after {
     }
 }
 
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    /*.on-home .postcode-search::before {*/
-    /*    content: "";*/
-    /*    width: 100%;*/
-    /*    height: 100%;*/
-    /*    position: absolute;*/
-    /*    top: 0;*/
-    /*    background-image: url(../images/marker.svg);*/
-    /*    background-position: center;*/
-    /*    background-repeat: no-repeat;*/
-    /*    background-size: 45px 135px;*/
-    /*}*/
-}
 .your-current-postcode {
     position: relative;
     display: flex;
@@ -523,15 +481,6 @@ li.has-error::after {
         padding: 25px 0 30px;
     }
 }
-@media only screen and (orientation: landscape) and (max-height: 795px) {
-    .on-home .your-current-postcode {
-        /*height: 25vh;*/
-    }
-}
-.your-current-postcode label,
-.location-text {
-    /*line-height: 30px;*/
-}
 .your-current-postcode label.label-loc-is-set { display: inline-block; }
 .your-current-postcode label.label-loc-is-edit { display: none; }
 .open-loc .your-current-postcode label.label-loc-is-set { display: none; }
@@ -540,7 +489,7 @@ li.has-error::after {
 .location-text {
     font-weight: 500;
 }
-.your-current-postcode .postcode-field {
+.your-current-postcode .postcode-field-static {
     font-size: 3rem;
     font-weight: 700;
     display: inline-block;
@@ -551,9 +500,17 @@ li.has-error::after {
     border: none;
     padding: 2px 0 5px;
     height: 50px;
-    margin: 7px 0 10px;
+    margin: 0 0 10px;
+    line-height: 1;
 }
-.open-loc .your-current-postcode .postcode-field {
+.your-current-postcode .postcode-field {
+    font-size: 2rem;
+    font-weight: 700;
+    display: inline-block;
+    max-width: 280px;
+    text-align: center;
+    height: 50px;
+    margin: 7px 0 10px;
     background-color: white;
     border: 3px solid var(--dark);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.15);
@@ -566,13 +523,9 @@ li.has-error::after {
 @media only screen and (min-width: 795px) {
     .your-current-postcode .postcode-field {
         font-weight: 800;
-        font-size: 3.5rem;
         height: 60px;
         padding: 5px 0 10px;
         margin: 10px 0;
-    }
-    .open-loc .your-current-postcode .postcode-field {
-        font-size: 3rem;
     }
 }
 .your-current-postcode .error-msg {
@@ -608,11 +561,13 @@ li.has-error::after {
     max-width: 140px;
     margin: 0 5px;
 }
+@media only screen and (max-width: 350px) {
+    .your-current-postcode .edit-loc-b-panel .change-postcode {
+        max-width: 120px;
+    }
+}
 .your-current-postcode .edit-loc-b-panel .change-postcode.can-loc {
     background-color: var(--cancelButton);
-}
-.your-current-postcode .change-postcode.edit-loc {
-    /*display: inline-block;*/
 }
 .your-current-postcode.has-error .change-postcode.set-loc {
     opacity: 0.4;
@@ -621,16 +576,6 @@ li.has-error::after {
 .open-loc .your-current-postcode .change-postcode.edit-loc {
     display: none;
 }
-/*.open-loc .your-current-postcode .change-postcode.set-loc {*/
-/*    display: inline-block;*/
-/*}*/
-/*.your-current-postcode .change-postcode.set-loc::before {*/
-/*    content: "\2714";*/
-/*    position: absolute;*/
-/*    left: 0;*/
-/*    top: 0;*/
-/*    height: 100%;*/
-/*}*/
 
 /* main content */
 
@@ -674,7 +619,6 @@ li.has-error::after {
 }
 .side-panel .results-number {
     margin: 0 0 0 0;
-    /*font-style: italic;*/
     font-weight: 600;
 }
 @media only screen and (min-width: 795px) {
@@ -875,20 +819,13 @@ li.has-error::after {
 .main-panel h1 {
     font-weight: 600;
 }
-.main-panel p {
-    /*margin: 0 0 15px 0;*/
-}
 .channel img {
     width: 100%;
     max-width: 280px;
     cursor: pointer;
 }
-.results-item-list {
-
-}
 .results-item-list li {
     padding: 15px 0;
-    /*margin-bottom: 15px;*/
     border-bottom: 2px dashed #707070;
     display: flex;
     flex-direction: row;
@@ -931,12 +868,12 @@ li.has-error::after {
 .results-item-list .item-detail h4 {
     margin-bottom: 5px;
 }
-.results-item-list .item-detail .result-class {
-    margin-bottom: 5px;
-}
 .results-item-list .item-detail a {
     color: var(--actionBlue);
     text-decoration: underline;
+}
+.results-item-list .item-detail p {
+    margin: 0 0 5px 0;
 }
 
 /* channels - home */
@@ -989,9 +926,6 @@ li.has-error::after {
         min-height: 100px;
     }
 }
-.side-panel h2 {
-
-}
 @media only screen and (min-width: 795px) {
     .side-panel h2 {
         padding-bottom: 15px;
@@ -1022,11 +956,9 @@ li.has-error::after {
 .channel p {
     margin: 0 0 5px 0;
 }
-
 .main-panel .channel img:hover + h2 {
     border-color: var(--dark);
 }
-
 @media only screen and (min-width: 795px) {
     .channels {
         width: 100%;
@@ -1036,7 +968,7 @@ li.has-error::after {
     }
     .channel {
         margin: 0 15px;
-        min-width: calc(25% - 30px);
+        min-width: calc(33% - 30px);
     }
 }
 
@@ -1119,12 +1051,6 @@ li.has-error::after {
 .side-panel.details time {
     font-style: italic;
 }
-.side-panel.details .item-type {
-
-}
-.side-panel.details .item-ref {
-
-}
 .side-panel.details a {
     text-decoration: underline;
 }
@@ -1139,9 +1065,6 @@ li.has-error::after {
         padding-top: 0;
         padding-bottom: 30px;
     }
-}
-.main-panel.details h4 {
-
 }
 .main-panel.details .item-main-info {
     margin-bottom: 30px;
@@ -1166,6 +1089,44 @@ li.has-error::after {
     transition: background-color ease 0.3s;
     font-size: 0.75rem;
     text-decoration: none;
+}
+.submitted-date {
+    position: relative;
+    padding: 9px 15px 11px 42px;
+    box-shadow: rgba(0, 0, 0, 0.1) 2px 2px 3px 0;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.24);
+    border-radius: 5px;
+    background: linear-gradient(white, #f7f7f7);
+}
+.submitted-date::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url(../images/submitted-date.svg);
+    background-size: 26px 26px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.results-item-list .item-detail .submitted-date {
+    font-size: 0.75rem;
+    padding: 6px 12px 8px 38px;
+    margin: 5px 0 5px 0;
+}
+.results-item-list .item-detail .submitted-date::before {
+    content: "";
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url(../images/submitted-date.svg);
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 .main-panel.details .map-with-controls {
     position: relative;
