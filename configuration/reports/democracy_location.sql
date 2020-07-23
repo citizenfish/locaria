@@ -57,3 +57,4 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
 
 
     $SQL$);
+
