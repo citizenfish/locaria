@@ -40,7 +40,7 @@ DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
                                      json_build_object('title', 'Your Councillor(s)', 'value', councillors),
 
                                      json_build_object('title', 'Your MP', 'value', mp),
-									 json_build_object('title', 'Your Polling Station', 'value',ps_name)
+        json_build_object('title', 'Your Polling Station', 'value',ps_name)
                                  ),
                                 'geojson', json_build_object('type', 'FeatureCollection',
                                                             'features', json_build_array(
