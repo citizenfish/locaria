@@ -16,13 +16,14 @@ export function mainMapStyle(feature, resolution) {
 							image: new Icon({
 								src: 'images/marker-polling.svg',
 								size: [40, 70],
-								zIndex: 100
+								zIndex: 100,
+								anchor:[0.5,1]
 							}),
 							text: new Text({
 								text: 'Polling station',
 								font: 'bold 11px "Soleil"',
 								textBaseline: 'bottom',
-								offsetY: 50,
+								offsetY: 15,
 								fill: new Fill({
 									color: '#000000'
 								}),
@@ -39,13 +40,14 @@ export function mainMapStyle(feature, resolution) {
 						image: new Icon({
 							src: 'images/marker-tpo.svg',
 							size: [40, 70],
-							zIndex: 100
+							zIndex: 100,
+							anchor:[0.5,1]
 						}),
 						text: new Text({
 							text: 'Tree Preservation Order',
 							font: 'bold 11px "Soleil"',
 							textBaseline: 'bottom',
-							offsetY: 50,
+							offsetY: 15,
 							fill: new Fill({
 								color: '#000000'
 							}),
@@ -63,13 +65,15 @@ export function mainMapStyle(feature, resolution) {
 						image: new Icon({
 							src: 'images/marker-thing.svg',
 							size: [40, 70],
-							zIndex: 100
+							zIndex: 100,
+							anchor:[0.5,1]
+
 						}),
 						text: new Text({
 							text: type||'unknown',
 							font: 'bold 11px "Soleil"',
 							textBaseline: 'bottom',
-							offsetY: 50,
+							offsetY: 15,
 							fill: new Fill({
 								color: '#000000'
 							}),
@@ -110,13 +114,16 @@ export function locationStyle(feature, resolution) {
 				image: new Icon({
 					src: 'images/marker-home.svg',
 					size: [40,70],
-					zIndex: 100
+					zIndex: 100,
+					anchor:[0.5,1]
+
+
 				}),
 				text: new Text({
 					text: 'Your location',
 					font: 'bold 11px "Soleil"',
 					textBaseline: 'bottom',
-					offsetY: 50,
+					offsetY: 15,
 					fill: new Fill({
 						color: '#000000'
 					}),
