@@ -58,12 +58,12 @@ module.exports = function (grunt) {
 		},
 		aws_s3: {
 			options: {
-				region: 'eu-west-1',
+				region: grunt.option('region'),
 				awsProfile: grunt.option('profile') || 'locus'
 			},
 			site: {
 				options: {
-					bucket: 'locus-hosting',
+					bucket: grunt.option('bucket'),
 					params: {}
 				},
 				files: [

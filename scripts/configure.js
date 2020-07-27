@@ -227,7 +227,7 @@ function deployWEB(stage) {
 	const options={
 		cwd: "./"
 	};
-	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].distribution}`;
+	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].distribution} --bucket=${configs['custom'][stage].bucket} --region=${configs['custom'][stage].region}`;
 	console.log(`#${cmdLine}`);
 
 	exec(cmdLine ,options, (err, stdout, stderr) => {
@@ -295,6 +295,7 @@ const configQuestions = [
 	{name:"domain",text:"Domain name to use for api",default:"api.vialocus.co.uk",config:"custom"},
 	{name:"wsdomain",text:"Domain name to use for websocket",default:"ws.vialocus.co.uk",config:"custom"},
 	{name:"distribution",text:"Cloudfront distribution to clear",default:"ABCD",config:"custom"},
+	{name:"bucket",text:"Bucket to store hosted files",default:"locus-hosting",config:"custom"},
 	{name:"createRoute53Record",text:"Create S3 record",default:"false",config:"custom"}
 
 ];
