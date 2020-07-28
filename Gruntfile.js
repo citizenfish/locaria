@@ -14,10 +14,8 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					'configuration/reports/democracy_location.sql',
-					'tests/unit_tests/test_democracy_location_report.sql'
-					//'configuration/functions/locus_gateway.sql',
-					//'tests/unit_tests/test_list_categories_with_data.sql'
+					'configuration/schema_and_views/create_base_search_table.sql',
+					'configuration/data_loading/json_apis/create_surrey_heath_json_data_sources.sql'
 
 				]
 			},

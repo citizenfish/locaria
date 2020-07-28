@@ -54,7 +54,7 @@ SELECT 'json_sources',
                                     SELECT locus_core.base36_decode(($1::JSONB)#>>'{stationReference}')::BIGINT,
                                            jsonb_build_object('title', 'Flood warning', 'description', $1::JSONB),
                                            ST_GEOMFROMEWKT('SRID=4326;POINT('||(($1::JSONB)#>>'{long}')||' '||(($1::JSONB)#>>'{lat}')||')'),
-                                           ARRAY['Environment']::locus_core.search_category[]
+                                           ARRAY['ea_flood']::locus_core.search_category[]
                                     ON CONFLICT (nid) DO UPDATE
                                     SET attributes = jsonb_build_object('title', 'Flood warning', 'description', $1::JSONB)
                                  $SQL$,
