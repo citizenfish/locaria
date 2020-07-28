@@ -48,6 +48,15 @@ module.exports = function (grunt) {
 					'configuration/functions/locate.sql',
 					'configuration/functions/get_json_data_urls.sql',
 
+					'configuration/functions/reverse_geocoder.sql',
+					'configuration/functions/create_materialised_view.sql',
+					'configuration/functions/address_search.sql',
+					'configuration/functions/report.sql',
+
+					'configuration/functions/reverse_geocoder.sql',
+					'configuration/functions/search_view_union.sql',
+					'configuration/functions/update_json_data_url.sql',
+
 					'configuration/schema_and_views/create_search_views.sql',
 					//Create SH data views then refresh the materialized view
 					'configuration/data_loading/create_surrey_heath_test_views.sql',
