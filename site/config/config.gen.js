@@ -1,6 +1,6 @@
 var config={
-	"api": "https://api.sh.vialocus.co.uk",
-	"baseURL": "https://api.sh.vialocus.co.uksite/",
+	"api": "https://api.surreyheath.gov.uk",
+	"baseURL": "https://api.surreyheath.gov.uksite/",
 	"center":[-0.6966581,51.3135123],
-	"ws":"wss://ws.sh.vialocus.co.uk>/test"
+	"ws":"wss://ws.locus.surreyheath.gov.uk>/test"
 };
