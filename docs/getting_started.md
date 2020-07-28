@@ -54,6 +54,7 @@ services:
 - S3: Full access
 - API Gateway: Full access
 - Lambda: Full access
+- Cloudformation: Full access
 
 To do this go to the IAM console, select the user and then add permissions using pre exiting policies. Then search for the above
 listed policies and add them to the user.

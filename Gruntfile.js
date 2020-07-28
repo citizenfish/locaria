@@ -29,6 +29,10 @@ module.exports = function (grunt) {
 					configObjectName: 'postgres'
 				},
 				tables: [
+					// Session
+					'configuration/schema_and_views/create_sessions_table.sql',
+					'configuration/functions/sessions_api.sql',
+
 					//Base database configuration
 					'configuration/schema_and_views/create_search_schema.sql',
 					'configuration/schema_and_views/create_search_categories.sql',
@@ -70,7 +74,7 @@ module.exports = function (grunt) {
 					{expand: true, cwd: 'site/', src: ['**'], dest: 'site/'},
 					{
 						expand: false,
-						src: ['site/config/config-test.js'],
+						src: ['site/config/config.gen.js'],
 						dest: 'site/config/config.js'
 					},
 					{dest: 'sites/config/config.gen.js', 'action': 'delete'}
