@@ -37,8 +37,8 @@ module.exports.run = (event, context, callback) => {
 	 * @param result
 	 */
 	function processURLSetup(result) {
-		stack=[result.attributes];
-		currentTable=result['table_name'];
+		stack=[result[0].attributes];
+		currentTable=result[0]['table_name'];
 		console.log(`Found ${stack.length} URLS to process`);
 		processURL();
 	}
@@ -237,10 +237,7 @@ module.exports.run = (event, context, callback) => {
 			if (err) {
 				fail(err);
 			} else {
-				if(result.rows.length>1)
-					success(result.rows);
-				else
-					success(result.rows[0]);
+				success(result.rows);
 			}
 		});
 	}
