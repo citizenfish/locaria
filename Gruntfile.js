@@ -37,6 +37,8 @@ module.exports = function (grunt) {
 					'configuration/schema_and_views/create_base_search_table.sql',
 					'configuration/schema_and_views/create_log_table.sql',
 					'configuration/schema_and_views/create_parameters_table.sql',
+					'configuration/schema_and_views/create_reports_table.sql',
+					'configuration/schema_and_views/create_sessions_table.sql'
 
 					//Create functions before creating views that need them
 					'configuration/functions/search_view_union.sql',
@@ -47,18 +49,20 @@ module.exports = function (grunt) {
 					'configuration/functions/base36_decode.sql',
 					'configuration/functions/locate.sql',
 					'configuration/functions/get_json_data_urls.sql',
-
 					'configuration/functions/reverse_geocoder.sql',
 					'configuration/functions/create_materialised_view.sql',
 					'configuration/functions/address_search.sql',
 					'configuration/functions/report.sql',
-
 					'configuration/functions/reverse_geocoder.sql',
 					'configuration/functions/search_view_union.sql',
 					'configuration/functions/update_json_data_url.sql',
 
-					'configuration/schema_and_views/create_search_views.sql',
+					//Reports
+					'configuration/reports/category_types.sql',
+					'configuration/reports/democracy_location.sql',
+
 					//Create SH data views then refresh the materialized view
+					'configuration/schema_and_views/create_search_views.sql',
 					'configuration/data_loading/create_surrey_heath_test_views.sql',
 
 					//Used by batch processes to load json and update materialized views

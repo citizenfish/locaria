@@ -107,6 +107,10 @@ functions:
           method: GET
           cors: ${self:custom.cors}
       - http:
+          path: /list_categories
+          method: GET
+          cors: ${self:custom.cors}
+      - http:
           path: /search
           method: GET
           cors: ${self:custom.cors}
