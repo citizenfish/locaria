@@ -26,9 +26,10 @@
     -internals.setMemory({"name":"updateQueueToRun","value":"reloadCat","mode":"Session"});
     -internals.execute({"name":"reloadCat"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
-    -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -elements.ariaHiddenToggle({"targetId":".button-back","class":"inactive","mode":"remove"});
     -openlayers.updateSize({});
     -browser.setTitle({"title":"Surrey Heath Borough Council: {{!memory.history.value[0]}}"});
+    -elements.focus({"targetId":".results-item-list"});
 
 
 
@@ -36,7 +37,7 @@
     @templates.render({"targetId":"#content-target","template":"#report_display"},{"queuePrepare":"historyReportRender"});
     -internals.setMemory({"name":"updateQueueToRun","value":"historyReport","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
-    -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -elements.ariaHiddenToggle({"targetId":".button-back","class":"inactive","mode":"remove"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
     -browser.setTitle({"title":"Surrey Heath Borough Council: Democracy"});
     -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});
@@ -50,7 +51,7 @@
     @templates.render({"targetId":"#content-target","template":"#full-details-{{!memory.history.value[0]}}"},{"queuePrepare":"historyDetailsRender"});
     -internals.setMemory({"name":"updateQueueToRun","value":"historyDetailsRender","mode":"Session"});
     -elements.removeClass({"targetId":"body","class":"on-home"});
-    -elements.removeClass({"targetId":".button-back","class":"inactive"});
+    -elements.ariaHiddenToggle({"targetId":".button-back","class":"inactive","mode":"remove"});
     -browser.setTitle({"title":"Surrey Heath Borough Council: {{!memory.history.value[0]}} - {{!memory.history.value[1]}}"});
     -openlayers.addMap({"map":"itemMap","target":"openlayersItemMap","projection":"EPSG:3857","maxZoom":17});
     -openlayers.addLayer({"map":"itemMap","name":"xyz","type":"xyz","url":"https://tiles.nautoguide.com/redistrict/LayerGroupInfoImpl-2e2d13db:172793e1071:-7110/EPSG:900913/png/default/{z}/{x}/{-y}.png","active":true});

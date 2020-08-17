@@ -1280,3 +1280,11 @@ footer ul li {
         display: none;
     }
 }
+
+/*
+ * Accessiblity debug
+ */
+/*
+*:focus {
+    border: 1px solid red;
+}*/

@@ -52,16 +52,12 @@ All the results templates
 
 <script id="page-content-results" type="text/html">
     {{#if memory.points.value.packet.features.length===0}}
-    <li>
-        No results
-    </li>
+        <li aria-label="No search results, try expanding your search area">
+            No search results, try expanding your search area
+        </li>
     {{/if}}
     {{#for memory.points.value.packet.features}}
-    {{#if ['Planning','Events','Community','Democracy','Reported'].indexOf(memory.points.value.packet.features[#loop0].properties.category)!==-1}}
-    {{#include '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category}}
-    {{else}}
-    {{#include '#page-content-results-Generic'}}
-    {{/if}}
+        {{#include queue.getElement('#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category)? '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category:'#page-content-results-Generic'}}
     {{/for}}
 </script>
 
@@ -73,7 +69,7 @@ All the results templates
 </script>
 
 <script id="page-content-results-Planning" type="text/html">
-    <li>
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
         {{#include '#page-content-results-Distance'}}
         <div class="item-detail">
             <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
@@ -81,7 +77,7 @@ All the results templates
                 <strong>Type:</strong> {{memory.points.value.packet.features[#loop0].properties.description.type}}
                 <strong>Reference:</strong> {{memory.points.value.packet.features[#loop0].properties.description.ref}}
             </p>
-            <p><a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a></p>
+            <p><a href="#" tabindex="-1">View details</a></p>
             {{#if memory.points.value.packet.features[#loop0].properties.description.completed!==true&&memory.points.value.packet.features[#loop0].properties.description.type==='Application'}}<p class="submitted-date">This application was submitted within the last 7 days</p>{{/if}}
 
         </div>
@@ -89,7 +85,7 @@ All the results templates
 </script>
 
 <script id="page-content-results-Events" type="text/html">
-    <li>
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
@@ -101,7 +97,7 @@ All the results templates
 </script>
 
 <script id="page-content-results-Reported" type="text/html">
-    <li>
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
@@ -113,19 +109,19 @@ All the results templates
 </script>
 
 <script id="page-content-results-Community" type="text/html">
-    <li>
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
             <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
             <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</p>
-            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+            <a href="#" tabindex="-1" >View details</a>
         </div>
     </li>
 </script>
 
 <script id="page-content-results-Democracy" type="text/html">
-    <li>
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
         {{#include '#page-content-results-Distance'}}
 
         <div class="item-detail">
@@ -137,13 +133,13 @@ All the results templates
             <h4>{{memory.points.value.packet.features[#loop0].properties.description.type}}: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
             {{/if}}
 
-            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+            <a href="#" tabindex="-1">View details</a>
         </div>
     </li>
 </script>
 
 <script id="page-content-results-Generic" type="text/html">
-    <li>
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
         <div class="distance-from">
             <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
             <em>miles</em>
@@ -151,7 +147,7 @@ All the results templates
         <div class="item-detail">
             <h4>Category: {{memory.points.value.packet.features[#loop0].properties.category}}</h4>
             <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.name}}</p>
-            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+            <a href="#" tabindex="-1">View details</a>
         </div>
     </li>
 </script>
