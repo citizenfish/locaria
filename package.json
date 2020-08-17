@@ -3,14 +3,15 @@
 	"version": "1.0.0",
 	"scripts": {
 		"configure": "node scripts/configure.js",
-		"build:full": "webpack --config webpack.config.js",
+		"build:dev": "webpack --config webpack.config.js",
+		"build:prod": "webpack --config webpack.config.prod.js",
 		"runLocalSite": "http-server site/",
 		"testApi": "grunt apiTest --url=http://localhost:3000",
 		"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"
 	},
 	"dependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
-		"@nautoguide/ourthings": "^0.4.7",
+		"@nautoguide/ourthings": "^0.4.15",
 		"aws-sdk": "^2.587.0",
 		"console-badge": "^1.1.0",
 		"grunt": "^1.1.0",

@@ -8,7 +8,7 @@ Home page / general layout
         <span class="sr-only">Surrey Heath Borough Council</span>
         </a>
 
-        <button class="button-back inactive" type="button" @browser.backHistory();>
+        <button class="button-back inactive" aria-hidden="true" aria-label="Back to previous screen" type="button" @browser.backHistory();>
             <span class="sr-only">Back to previous screen</span>
         </button>
 
@@ -17,13 +17,10 @@ Home page / general layout
                 <span class="sr-only">Open main menu</span>
             </button>
             <div class="clip-menu open-this-menu" tabindex="-1">
-                <ul id="menuTop" tabindex="0" class="menu-options" role="menu" aria-labelledby="menubutton1">
+                <ul id="menuTop" tabindex="-1" class="menu-options" role="menu" aria-labelledby="menubutton1" aria-hidden="true">
                     <li role="menuitem"  tabindex="0" aria-label="Home" @browser.addHistory({"history":"Home"});>Home</li>
                     <li role="menuitem"  tabindex="0" aria-label="Planning" @browser.addHistory({"history":"Cat/Planning"});>Planning</li>
                     <li role="menuitem"  tabindex="0" aria-label="Democracy" @browser.addHistory({"history":"Report/democracy_location"});>Democracy</li>
-                    <!--
-                                        <li role="menuitem"  tabindex="0" aria-label="Events" @browser.addHistory({"history":"Cat/Events"});>Events</li>
-                    -->
                     <li role="menuitem"  tabindex="0" aria-label="Community" @browser.addHistory({"history":"Cat/Community"});>Community</li>
                 </ul>
             </div>
@@ -134,7 +131,7 @@ Home page / general layout
 
 <script id="page-content-result-main" type="text/html">
     <section class="main-panel">
-        <ul class="results-item-list">
+        <ul class="results-item-list" tabindex="0" role="list" aria-label="Your search results">
 
         </ul>
     </section>
