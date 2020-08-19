@@ -437,4 +437,4 @@ functions:
                 report_parameters: true
 plugins:
   - serverless-offline
-#  - serverless-domain-manager
+  - serverless-domain-manager
