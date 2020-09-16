@@ -38,7 +38,7 @@ module.exports = function (grunt) {
 					'configuration/schema_and_views/create_log_table.sql',
 					'configuration/schema_and_views/create_parameters_table.sql',
 					'configuration/schema_and_views/create_reports_table.sql',
-					'configuration/schema_and_views/create_sessions_table.sql'
+					'configuration/schema_and_views/create_sessions_table.sql',
 
 					//Create functions before creating views that need them
 					'configuration/functions/search_view_union.sql',
