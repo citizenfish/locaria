@@ -9,8 +9,6 @@ BEGIN
 
     postcode_var := locus_core.find_postcode_in_text(text_parameter);
 
-    RAISE NOTICE 'DEBUG % ',postcode_var;
-
     IF postcode_var = '' THEN
         RETURN NULL;
     END IF;

@@ -208,7 +208,7 @@ module.exports.run = (event, context, callback) => {
 
 
 	/**
-	 * Get a param from the paramters table
+	 * Get a param from the parameters table
 	 * @param name
 	 * @param success
 	 * @param fail

@@ -6,7 +6,7 @@ import AWS from 'aws-sdk';
 /**
  * @classdesc
  *
- * Madeline core functions
+ * Locus core functions
  *
  * @author Richard Reynolds richard@nautoguide.com
  *

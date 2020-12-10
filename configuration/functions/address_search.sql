@@ -7,9 +7,6 @@ DECLARE
     default_offset INTEGER DEFAULT 0;
 BEGIN
 
-		--IF (SELECT 1 FROM   information_schema.tables WHERE  table_schema = 'locus_core' AND table_name = 'address_search_view') IS NULL THEN
-		--	RETURN json_build_object('error', 'Missing address search view table');
-		--END IF;
 
         IF COALESCE(address_parameters->>'limit','') ~ '^[0-9]+$' THEN
             default_limit = LEAST(default_limit, (address_parameters->>'limit')::INTEGER);
