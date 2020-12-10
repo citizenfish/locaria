@@ -14,5 +14,5 @@ Searches are actioned using the SQL language within the database. LOCUS implemen
   
 - [How To](docs/how_to.md)
 
-- [Architecture](docs/LOCUS Architecture Overview.pdf) 
+- [Architecture](docs/LOCUS_Architecture_Overview.pdf) 
 
