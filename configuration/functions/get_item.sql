@@ -1,3 +1,5 @@
+--Retrieve an item's detail from the search view
+
 CREATE OR REPLACE FUNCTION locus_core.get_item(item_id_parameter TEXT) RETURNS JSON AS
 $$
 DECLARE

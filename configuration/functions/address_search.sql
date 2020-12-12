@@ -1,3 +1,5 @@
+--Function to search for an address using keyword search principle
+
 CREATE OR REPLACE FUNCTION locus_core.address_search(address_parameters JSON) RETURNS JSON AS
 $$
 DECLARE

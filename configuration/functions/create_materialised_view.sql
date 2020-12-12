@@ -1,3 +1,5 @@
+--The materialized view global_search_view is used for the majority of search operations
+
 CREATE OR REPLACE FUNCTION locus_core.create_materialised_view() RETURNS JSON AS
 $$
 

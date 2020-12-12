@@ -1,3 +1,4 @@
+--Look up an address against co-ordinates
 CREATE OR REPLACE FUNCTION locus_core.reverse_geocoder(search_parameters JSON) RETURNS JSON AS
 $$
 DECLARE

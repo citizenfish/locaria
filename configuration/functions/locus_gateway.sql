@@ -1,3 +1,4 @@
+--Single gateway for all aPI calls to locus_core
 CREATE OR REPLACE FUNCTION locus_core.locus_gateway(search_parameters JSON) RETURNS JSON AS
 $$
 DECLARE

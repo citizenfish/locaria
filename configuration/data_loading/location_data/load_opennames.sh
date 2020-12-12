@@ -1,3 +1,4 @@
+--A legacy process not required any more but for loading the OS openames data set
 --Download opennames locally from Ordnance Survey
 
 cat DATA/*.csv > opennames-all.csv

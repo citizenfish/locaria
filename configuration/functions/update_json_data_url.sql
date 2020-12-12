@@ -1,3 +1,4 @@
+--Update an api data retrieval url
 CREATE OR REPLACE FUNCTION locus_core.update_json_data_urls(table_name TEXT, json_url_data JSON) RETURNS JSON AS
 $$
 DECLARE

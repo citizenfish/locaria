@@ -1,3 +1,4 @@
+--Return a list of categories from the system
 DELETE FROM locus_core.reports WHERE report_name = 'category_types';
  INSERT INTO locus_core.reports(report_name, report_parameters)
     SELECT 'category_types', jsonb_build_object('sql',

@@ -1,5 +1,4 @@
---Note well casts on category
---CAR PARKS
+--Sample SQL to show how we create views/load data into the system. These are based upon Surrey Heath configurations
 
 CREATE OR REPLACE VIEW locus_core.car_parks
 AS SELECT DISTINCT ON (shbc_carparks_locus.id_0) shbc_carparks_locus.id_0 AS id,

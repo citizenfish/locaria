@@ -1,4 +1,5 @@
---This function is used to take an alpha numeric ID and turn it into a unique integer
+--This function is used to take an alpha numeric ID and turn it into a unique integer. We use this to create integer keys on tables that have character ids
+
 CREATE OR REPLACE FUNCTION locus_core.base36_decode(IN base36 TEXT)
   RETURNS bigint AS $$
         DECLARE

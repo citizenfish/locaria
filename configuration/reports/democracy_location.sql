@@ -1,4 +1,4 @@
-
+--Specific report for retrieving local democracy data from a location
 DELETE FROM locus_core.reports WHERE report_name = 'democracy_location';
 INSERT INTO locus_core.reports(report_name, report_parameters)
 SELECT 'democracy_location', jsonb_build_object('sql',

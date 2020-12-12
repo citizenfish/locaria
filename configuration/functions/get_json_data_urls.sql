@@ -1,3 +1,5 @@
+--Retrieve and process urls for data fetching operations
+
 CREATE OR REPLACE FUNCTION locus_core.get_json_data_urls(parameters JSON DEFAULT json_build_object(), OUT table_name TEXT, OUT attributes JSON) AS
 $$
 DECLARE

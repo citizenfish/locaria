@@ -1,3 +1,4 @@
+--Make a single view from all sub-views to be consumed by the materialized view and indexed
 CREATE OR REPLACE FUNCTION locus_core.views_union() RETURNS TEXT AS $$
 DECLARE
 	query_var TEXT;
