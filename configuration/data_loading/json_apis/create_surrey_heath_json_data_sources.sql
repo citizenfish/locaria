@@ -1,3 +1,5 @@
+--This file configures jobs for the scraper which is able to load data from a number of sources including json apis.
+
 DELETE FROM locus_core.parameters WHERE parameter_name = 'json_sources';
 
 INSERT INTO locus_core.parameters(parameter_name, parameter)

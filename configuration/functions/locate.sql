@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE FUNCTION locus_core.locate(locate_parameters JSON) RETURNS JSON AS
 $$
 DECLARE

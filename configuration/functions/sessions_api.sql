@@ -1,3 +1,4 @@
+--Create and manage API sessions
 CREATE OR REPLACE FUNCTION locus_core.session_api(method_param TEXT, id_param TEXT, json_param JSON DEFAULT NULL) RETURNS JSON AS
 $$
 DECLARE

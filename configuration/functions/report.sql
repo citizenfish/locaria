@@ -1,3 +1,4 @@
+--Run a system report
 CREATE OR REPLACE FUNCTION locus_core.run_report(search_parameters JSON) RETURNS JSON AS
 $$
 DECLARE

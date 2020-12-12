@@ -1,3 +1,4 @@
+--The main search query engine
 CREATE OR REPLACE FUNCTION locus_core.search(search_parameters JSON) RETURNS JSON AS $$
 DECLARE
     default_limit INTEGER DEFAULT 1000;

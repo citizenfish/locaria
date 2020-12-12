@@ -1,3 +1,4 @@
+--Geocode postcode data against Opennames
 CREATE OR REPLACE FUNCTION locus_core.opennames_postcode_geocoder(text_parameter TEXT) RETURNS GEOMETRY (Point, 4326) AS
 $$
 DECLARE
