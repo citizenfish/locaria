@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
-		"@nautoguide/ourthings": "^0.4.15",
+		"@nautoguide/ourthings": "^0.4.24",
 		"aws-sdk": "^2.587.0",
 		"console-badge": "^1.1.0",
 		"grunt": "^1.1.0",
@@ -23,6 +23,8 @@
 		"mapbox-gl": "^1.8.0",
 		"node-fetch": "^2.6.0",
 		"ol": "^6.2.1",
+		"proj4": "^2.5.0",
+		"@turf/turf": "^5.1.6",
 		"serverless": "^1.60.5",
 		"serverless-offline": "^5.12.1",
 		"webpack": "^4.29.6",
