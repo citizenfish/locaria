@@ -3,7 +3,6 @@
  * @type {string}
  */
 
-const envFile='../locus-env.yml';
 const customFile='../locus-custom.yml';
 
 
@@ -39,14 +38,12 @@ function checkEnvironment() {
 			process.exit();
 		} else {
 			//console.log(`stdout: ${stdout}`);
-			if (fs.existsSync(envFile)) {
+			if (fs.existsSync(customFile)) {
 				console.log('Existing config found');
-				configs.env=YAML.parse(fs.readFileSync(envFile, 'utf8'));
 				configs.custom=YAML.parse(fs.readFileSync(customFile, 'utf8'));
 				configNew=false;
 				listConfig();
 			} else {
-				configs.env={};
 				configs.custom={};
 				console.log('No existing config found');
 			}
@@ -276,28 +273,23 @@ function deleteConfig() {
 	readline.question(`system stage [${stage}]?`, (cmd) => {
 		if(cmd.length>0)
 			stage=cmd;
-			delete configs.env[stage];
 			delete configs.custom[stage];
 			commandLoop();
 	});
 }
 
 const configQuestions = [
-	{details:"Give the deployment stage a name, EG dev|test|live. This is used to reference this profile in the future",name:"stage",text:"Stage name",default:"dev",config:"env",stage:true},
+	{details:"Give the deployment stage a name, EG dev|test|live. This is used to reference this profile in the future",name:"stage",text:"Stage name",default:"dev",config:"custom",stage:true},
 	{details:"You need aws cli install and configured to access your account, enter the profile used here",name:"profile",text:"AWS profile to use",default:"default",config:"custom"},
 
-	{details:"This section details will Lambda settings",name:"securityGroupIds",text:"AWS Security group to assign to lambda",default:"default",config:"custom"},
 	{name:"region",text:"AWS region",default:"eu-west-1",config:"custom"},
-	{name:"subnet1",text:"AWS first subnet to use",default:"subnet1",config:"custom"},
-	{name:"subnet2",text:"AWS second subnet to use",default:"subnet2",config:"custom"},
-	{name:"postgres",text:"postgres connect string",default:"pg://locus:locus@localhost:5432/locus",config:"env"},
 	{name:"cron",text:"Cron string to use for scraper",default:"cron(0/10 * ? * MON-FRI *)",config:"custom"},
 	{name:"domain",text:"Domain name to use for api",default:"api.vialocus.co.uk",config:"custom"},
 	{name:"wsdomain",text:"Domain name to use for websocket",default:"ws.vialocus.co.uk",config:"custom"},
-	{name:"distribution",text:"Cloudfront distribution to clear",default:"ABCD",config:"custom"},
-	{name:"bucket",text:"Bucket to store hosted files",default:"locus-hosting",config:"custom"},
-	{name:"createRoute53Record",text:"Create S3 record",default:"false",config:"custom"}
-
+	{name:"certARN",text:"AWS cert ARN",default:"arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx",config:"custom"},
+	{name:"auroraDatabaseName",text:"Aurora database name",default:"locus",config:"custom"},
+	{name:"auroraMasterUser",text:"Aurora master user",default:"locus",config:"custom"},
+	{name:"auroraMasterPass",text:"Aurora master password",default:"CHANGEME",config:"custom"}
 ];
 
 function addConfig() {
@@ -315,7 +307,6 @@ function addConfig() {
 					cmd = configQuestions[index].default;
 				if (configQuestions[index].stage === true) {
 					stage = cmd;
-					configs['env'][stage] = {};
 					configs['custom'][stage] = {};
 				} else {
 					configs[configQuestions[index].config][stage][configQuestions[index].name] = cmd;
@@ -330,7 +321,6 @@ function addConfig() {
 }
 
 function writeConfig() {
-	fs.writeFileSync(envFile,YAML.stringify(configs.env) );
 	fs.writeFileSync(customFile,YAML.stringify(configs.custom) );
 	console.log('Config files written');
 	commandLoop();
@@ -338,7 +328,7 @@ function writeConfig() {
 }
 
 function listConfig() {
-	for(let i in configs.env) {
+	for(let i in configs.custom) {
 		console.log(`[${i}]`);
 	}
 	commandLoop();
