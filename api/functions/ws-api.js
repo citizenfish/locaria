@@ -17,7 +17,9 @@ const MAX_BYTES=50000;
 module.exports.run = (event, context, callback) => {
 	let client = null;
 
-	let conn = process.env.postgres;
+	const conn=`pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
+	console.log(conn);
+	//let conn = process.env.postgres;
 	const suuid=uuid();
 
 	const connectionId=event.requestContext.connectionId;
@@ -70,7 +72,7 @@ module.exports.run = (event, context, callback) => {
 
 	function newSession() {
 		client = database.getClient();
-		let querysql = "SELECT locus_core.session_api('set', $1, $2::JSON)";
+		let querysql = "SELECT locus_core.session_api('set', $1, $2::JSONB)";
 		let qarguments = [connectionId,{"status":"Connected"}];
 		client.query(querysql, qarguments, function (err, result) {
 			if(err) {
@@ -104,7 +106,7 @@ module.exports.run = (event, context, callback) => {
 				break;
 			case 'api':
 				client = database.getClient();
-				let querysql = 'SELECT locus_core.locus_gateway($1::JSON)';
+				let querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
 				let qarguments = [packet.data];
 				client.query(querysql, qarguments, function (err, result) {
 					payload.packet=result.rows[0]['locus_gateway'];
