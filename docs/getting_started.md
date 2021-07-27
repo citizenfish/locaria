@@ -62,7 +62,13 @@ aws configure --profile locus
 
 It will ask for both keys and also a default region, this will be the region you wish you services to be installed in.
 
-You will also need to create a certificate for subdomains you wish to use in the us-east-1 region. Get the certificate validatated, then you will need the arn for
+You will also need to create a certificate for subdomains you wish to use in the following regions:
+
+domain: us-east-1
+restdomain: us-east-1
+wsdomain: (region your stack is deployed in)
+
+Get the certificates validated, then you will need the arn for
 the next step.
 
 ## Step 3 - Access infrastructure via VPN

@@ -224,7 +224,7 @@ function deployWEB(stage) {
 	const options={
 		cwd: "./"
 	};
-	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].distribution} --bucket=${configs['custom'][stage].bucket} --region=${configs['custom'][stage].region}`;
+	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].distribution} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region}`;
 	console.log(`#${cmdLine}`);
 
 	exec(cmdLine ,options, (err, stdout, stderr) => {
@@ -284,7 +284,8 @@ const configQuestions = [
 
 	{name:"region",text:"AWS region",default:"eu-west-1",config:"custom"},
 	{name:"cron",text:"Cron string to use for scraper",default:"cron(0/10 * ? * MON-FRI *)",config:"custom"},
-	{name:"domain",text:"Domain name to use for api",default:"api.vialocus.co.uk",config:"custom"},
+	{name:"domain",text:"Domain name to use for website",default:"api.vialocus.co.uk",config:"custom"},
+	{name:"restdomain",text:"Domain name to use for rest api",default:"api.vialocus.co.uk",config:"custom"},
 	{name:"wsdomain",text:"Domain name to use for websocket",default:"ws.vialocus.co.uk",config:"custom"},
 	{name:"certARN",text:"AWS cert ARN",default:"arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx",config:"custom"},
 	{name:"auroraDatabaseName",text:"Aurora database name",default:"locus",config:"custom"},

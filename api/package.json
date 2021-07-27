@@ -4,11 +4,11 @@
   "description": "Locus API",
   "dependencies": {
     "pg": "*",
-    "aws-sdk": "*"
+    "aws-sdk": "*",
+    "uuidv4": "^6.0.2"
   },
   "devDependencies": {
-    "serverless-domain-manager": "^5.1.3",
-    "serverless-offline": "^7.0.0"
+    "serverless-domain-manager": "^5.1.4"
   },
   "scripts": {
     "runLocalApi": "serverless offline --stage localhost"

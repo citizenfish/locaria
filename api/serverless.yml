@@ -1,10 +1,10 @@
 service: locus-api
-configValidationMode: error
-projectDir: ../../
+#configValidationMode: error
+#projectDir: ../../
 provider:
   name: aws
   profile: ${file(../../locus-custom.yml):${self:custom.stage}.profile}
-  lambdaHashingVersion: 20201221
+  #lambdaHashingVersion: 20201221
   runtime: nodejs10.x
   environment:
     postgresHost:
@@ -15,6 +15,8 @@ provider:
     auroraMasterUser: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterPass}
   region: ${file(../../locus-custom.yml):${self:custom.stage}.region}
+  websocketsApiName: locus-websockets-api
+  websocketsApiRouteSelectionExpression: $request.body.action
   memorySize: 512
   timeout: 30
   logRetentionInDays: 30
@@ -46,10 +48,21 @@ custom:
       - x-token
     allowCredentials: false
   customDomain:
-    basePath: ""
-    domainName: ${file(../../locus-custom.yml):${self:custom.stage}.wsdomain}
-    stage: ${self:custom.stage}
-    createRoute53Record: false
+    rest:
+      basePath: ""
+      certificateName: ${file(../../locus-custom.yml):${self:custom.stage}.restdomain}
+      domainName: ${file(../../locus-custom.yml):${self:custom.stage}.restdomain}
+      #stage: ${self:custom.stage}
+      createRoute53Record: false
+      endpointType: 'edge'
+    websocket:
+      basePath: ""
+      certificateName: ${file(../../locus-custom.yml):${self:custom.stage}.wsdomain}
+      domainName: ${file(../../locus-custom.yml):${self:custom.stage}.wsdomain}
+      #stage: ${self:custom.stage}
+      createRoute53Record: false
+      endpointType: 'regional'
+
 
 resources:
   Resources:
@@ -343,12 +356,13 @@ resources:
 
 functions:
   api:
-    handler: locus_open/api/functions/api.run
+    handler: functions/api.run
     vpc:
       securityGroupIds:
         - Fn::GetAtt: [ServerlessSecurityGroup,GroupId]
       subnetIds:
         - Ref: PrivateSubnetA
+        - Ref: PrivateSubnetB
     events:
       - http:
           path: /search
@@ -735,4 +749,30 @@ functions:
                 report_name: true
                 location: true
                 report_parameters: true
+
+  connectionHandler:
+    handler: functions/ws-api.run
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup,GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+        - Ref: PrivateSubnetB
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  defaultHandler:
+    handler: functions/ws-api.run
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup,GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+        - Ref: PrivateSubnetB
+    events:
+      - websocket:
+          route: $default
 plugins:
+  - serverless-domain-manager
