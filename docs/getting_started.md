@@ -14,9 +14,7 @@ LOCUS comes with an installer that will guide you through the process.
 
 In order to install Locus you will need the following components:-
 
-- a PostgreSQL database service running postgres version 9.6 or higher (we recommend 11)
 - an Amazon AWS account
-- super user credentials for the PostgreSQL database
 - Amazon IAM credentials [[link](https://docs.aws.amazon.com/iam/index.html)]
 - Git and Nodejs installed locally
 - AWS cli installed and configured [[link](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)]
@@ -37,7 +35,6 @@ npm install
 ```
 
 
-
 ## Step 2 - AWS Setup
 
 Locus needs access to your AWS account using the AWS cli. For this to work you need an IAM account that has privileges to the following
@@ -47,6 +44,7 @@ services:
 - API Gateway: Full access
 - Lambda: Full access
 - Cloudformation: Full access
+- RDS: Full access
 
 To do this go to the IAM console, select the user and then add permissions using pre exiting policies. Then search for the above
 listed policies and add them to the user.
@@ -64,43 +62,31 @@ aws configure --profile locus
 
 It will ask for both keys and also a default region, this will be the region you wish you services to be installed in.
 
-We will also need details of your VPC setup, specifically the 2 private subnets you wish to launch your lambda code into.
+You will also need to create a certificate for subdomains you wish to use in the us-east-1 region. Get the certificate validatated, then you will need the arn for
+the next step.
 
-If you are unsure of the AWS VPC you can read more details here: https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html
+## Step 3 - Access infrastructure via VPN
 
-If you have never setup a VPC before or are running on the default setup it is insecure and we suggest using this example layout:
+There steps are site specific but we use:
 
-https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html
+https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-getting-started.html
 
-This layout of 2 private subnets is required for locus. Lambda should never be deployed in a public subnet and it will not have access to the internet
-in that configuration.
+We have added to the config security rules for a VPN CIDR of: 10.1.0.0/22
 
-The subnets will need access to your postgres server or RDS server and also access to the internet via NAT gateway. Follow this guide to setup NAT on those private subnets you created earlier.
+If you are following the guide then use the above as your CIDR for the VPN and then
+associate with the VPC that contains our created 10.0.0.0/16 CIDR.
 
-https://aws.amazon.com/premiumsupport/knowledge-center/internet-access-lambda-function/
-
-Once done note down the subnet id's
-
-You will also need a security group for your lambda, this will normally contain rules that allow access to your postgres instance and the NAT gateway.
-
-For more information on security groups see this: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html  
-
-## Step 3 - Setup & Deploy
+## Step 4 - Setup & Deploy
 
 Firstly make sure you have the following information for your system
 
-- Postgress
-    - username
-    - password
-    - host
-    - port
-    - database name
-- AWS
-    - API Key
-    - API Secret Key
-    - 2 VPC subnets id's
-    - Security group
-    - Domain name for the API
+
+- API Key
+- API Secret Key
+- 2 VPC subnets id's
+- Security group
+- Domain name for the API & Website
+- Certificate arn
     
 Now run:
 

@@ -12,7 +12,9 @@ let client = null;
 
 module.exports.run = (event, context, callback) => {
 
-	let conn = process.env.postgres;
+	const conn=`pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
+	console.log(conn);
+	//let conn = process.env.postgres;
 
 	/**
 	 *  We support POST and GET, process the packet body based on method
