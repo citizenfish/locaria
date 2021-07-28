@@ -74,6 +74,11 @@ resources:
         BucketName: ${file(../../locus-custom.yml):${self:custom.stage}.domain}
         WebsiteConfiguration:
           IndexDocument: index.html
+    DataImportBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: BucketOwnerRead
+        BucketName: ${file(../../locus-custom.yml):${self:custom.stage}.domain}-data
     WebsiteBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
