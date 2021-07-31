@@ -6,8 +6,16 @@ import Openlayers from './Openlayers';
 import Browser from '@nautoguide/ourthings/Queueable/Browser';
 import Api from '@nautoguide/ourthings/Queueable/Api';
 import Menu from '@nautoguide/ourthings/Queueable/Menu';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+import 'semantic-ui-less/semantic.less';
+
+ReactDOM.render(<App />, document.getElementById('root'));
 
 import Locus from './locus';
+
+
 
 import {mainMapStyle,locationStyle} from '../../site/map-styles/main';
 window.styles={};

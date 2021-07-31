@@ -2,7 +2,7 @@
 
 <script id="init" type="text/html">
     <!-- Setup the app -->
-    @api.websocketInit({"url":"{{config.ws}}"},{"queueRun":"Instant"});
+    @api.websocketInit({"url":"{{config.ws}}"},{"queueRun":"fail-Instant"});
     -api.websocketSend({"message":{"queue":"session","api":"session"}});
     -locus.defaultValues();
     -templates.render({"targetId":"#header-target","template":"#header"});
