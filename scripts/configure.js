@@ -299,11 +299,6 @@ async function loadDataS3(parameters){
 
 	} else {
 		console.log("Data in sync no need to upload to S3");
-		//TODO remove
-		//const dest = configs.custom[parameters.stage].tmp + "/data.zip";
-		//parameters['dest'] = dest;
-		///processZip(parameters);
-		//END TODO
 		commandLoop();
 
 	}
