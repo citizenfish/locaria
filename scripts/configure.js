@@ -82,7 +82,7 @@ function commandLoop() {
 				console.log('d - Delete config section');
 				console.log('w - Write the current config');
 				console.log('e - Deploy system');
-				console.log('ld - Load Data');
+				console.log('ld - Load Data (OS Opendata)');
 				console.log('q - Quit');
 				commandLoop();
 				break;
