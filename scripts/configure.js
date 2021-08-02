@@ -18,6 +18,26 @@ const readline = require('readline').createInterface({
 	output: process.stdout
 });
 
+//For data downloads
+const fetch = require('node-fetch');
+const request = require('request');
+const {S3Client, ListObjectsCommand, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+
+
+//For decoding file contents as S3 api uses filestreams
+const streamToString = (stream) =>
+	new Promise((resolve, reject) => {
+		const chunks = [];
+		stream.on("data", (chunk) => chunks.push(chunk));
+		stream.on("error", reject);
+		stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+	});
+
+//Unzip and process files
+const yauzl = require('yauzl');
+const { Pool, Client } = require('pg')
+let copyFrom = require('pg-copy-streams').from
+
 let configNew=true;
 let configs={};
 
@@ -62,6 +82,7 @@ function commandLoop() {
 				console.log('d - Delete config section');
 				console.log('w - Write the current config');
 				console.log('e - Deploy system');
+				console.log('ld - Load Data');
 				console.log('q - Quit');
 				commandLoop();
 				break;
@@ -79,6 +100,9 @@ function commandLoop() {
 				break;
 			case 'e':
 				deploySystem();
+				break;
+			case 'ld':
+				loadData();
 				break;
 			case 'q':
 				process.exit(0);
@@ -107,6 +131,7 @@ function deploySystemMain(stage) {
 				console.log('web - Deploy Web interface');
 				console.log('scrape - Deploy scraper');
 				console.log('ws - Deploy websocket');
+				console.log('tests - Run Tests');
 				console.log('q - Exit deploy mode');
 			case 'all':
 				deploySystemMain(stage);
@@ -129,6 +154,9 @@ function deploySystemMain(stage) {
 			case 'ws':
 				deployWS(stage);
 				break;
+			case 'tests':
+				runTests(stage);
+				break;
 			case 'q':
 				commandLoop();
 				break;
@@ -140,6 +168,288 @@ function deploySystemMain(stage) {
 	});
 }
 
+function loadData(){
+
+	let stage='test';
+	readline.question(`Stage to deploy [test]?`, (cmd) => {
+
+		if(cmd) {
+			stage = cmd;
+			//set the profile to be used by AWS commands
+
+		}
+
+		process.env["AWS_PROFILE"] = configs.custom[stage].profile;
+
+		readline.question(`Data set to load [OpenNames]?`, (cmd) => {
+			if(cmd === 'OpenNames' || cmd === ''){
+				loadOSOpenData('OpenNames', stage);
+			} else {
+				console.log('Data set '+ cmd + ' not supported');
+				commandLoop();
+			}
+
+
+		});
+	});
+
+
+
+}
+
+function loadOSOpenData(product, stage){
+	console.log("Loading OS " + product + ".. checking current version");
+	let osDataHubProductURL = configs.custom[stage].osDataHubProductURL;
+
+	if(!osDataHubProductURL){
+		console.log("Missing osDataHubProductURL");
+		commandLoop();
+	}
+
+	/* Use OS API to get product list, find product then get version and file url */
+
+	 fetch(osDataHubProductURL)
+		.then(res => res.json())
+		.then(json => {
+
+			for(var i in json) {
+				if(json[i].id === product){
+					let pURL = json[i].url;
+					let pVer = json[i].version;
+
+					//get the download url which means 3 calls to OS API
+					console.log("Retrieving details for "+product+ " version " + pVer);
+
+					fetch(pURL)
+						.then(res => res.json())
+						.then (json => {
+							let dURL = json.downloadsUrl;
+							fetch(dURL)
+								.then(res => res.json())
+								.then(json => {
+									for(var i in json){
+										if(json[i].format === 'CSV'){
+											loadDataS3({version : pVer, url : json[i].url, product : product, size: json[i].size, stage: stage});
+										}
+									}
+								})
+						})
+
+
+				}
+			}
+		});
+
+}
+
+async function loadDataS3(parameters){
+
+
+	let makeDir = true;
+	let version = '';
+	const s3Client = new S3Client({ region: configs.custom[parameters.stage].region, signatureVersion: 'v4' });
+	let command = new ListObjectsCommand({Bucket : configs.custom[parameters.stage].domain + "-data"})
+	let response =  await s3Client.send(command);
+
+
+	//Do we need to create the version file ?
+	for(var i in response.Contents){
+		if(response.Contents[i].Key === parameters.product +'/version.txt'){
+			console.log("Folder Exists");
+			makeDir = false;
+
+			//get the version string
+			command  = new GetObjectCommand({
+				Bucket : configs.custom[parameters.stage].domain + "-data",
+				Key: parameters.product + "/" + "version.txt"
+			});
+
+			response = await s3Client.send(command);
+			const bodyContents = await streamToString(response.Body);
+			version  = bodyContents.replace('[0-9\-]', '');
+			console.log("Version ["+ version + "]");
+		}
+	}
+
+	//Create the directory
+	if(makeDir){
+		console.log("Making new folder");
+		command = new PutObjectCommand({
+			Bucket : configs.custom[parameters.stage].domain + "-data",
+			Key :  parameters.product + "/" + "version.txt",
+			Body : parameters.version
+		});
+
+		response = await s3Client.send(command);
+
+	}
+
+	//If the versions differ we need to download the data and upload it
+	if(version !== parameters.version) {
+
+		console.log("Step 1 - downloading locally");
+			const dest = configs.custom[parameters.stage].tmp + "/data.zip";
+			const file = fs.createWriteStream(dest);
+			parameters['dest'] = dest;
+
+			request(parameters.url).pipe(file);
+			file.on('finish', function() {
+				file.close(processZip(parameters));
+			})
+
+	} else {
+		console.log("Data in sync no need to upload to S3");
+		//TODO remove
+		//const dest = configs.custom[parameters.stage].tmp + "/data.zip";
+		//parameters['dest'] = dest;
+		///processZip(parameters);
+		//END TODO
+		commandLoop();
+
+	}
+
+}
+
+function processZip(parameters){
+	console.log("Processing downloaded data");
+
+	const outFilePath = parameters.dest + '.csv';
+	try {
+		fs.unlinkSync(outFilePath);
+
+	} catch (e) {
+		console.log("No output file to delete");
+	}
+
+	yauzl.open(parameters.dest, {lazyEntries: true}, function(err, zipfile){
+		if(err) {
+			console.log(err.message);
+			commandLoop();
+		}
+
+
+		zipfile.readEntry();
+		zipfile.on('entry', function(entry){
+			if(/csv/.test(entry.fileName)){
+				console.log(entry.fileName);
+				zipfile.openReadStream(entry, function(err, readStream){
+					if(err){
+						console.log(err.message);
+						commandLoop();
+					}
+					readStream.on('end', function(){
+						zipfile.readEntry();
+					});
+
+					//Read OS header into a separate file
+					if(/Docs(.*)csv/.test(entry.fileName)){
+						const outFile = fs.createWriteStream(outFilePath + ".header");
+						readStream.pipe(outFile);
+					} else {
+						const outFile = fs.createWriteStream(outFilePath, {'flags': 'a'});
+						readStream.pipe(outFile);
+					}
+
+				})
+			} else {
+				console.log("Ignoring " + entry.fileName);
+				zipfile.readEntry();
+			}
+
+		}).on('end', function(){
+			console.log("Data extracted - moving on to database load");
+			//First we need to make our table create statement
+
+			loadCSV(parameters,outFilePath)
+		});
+	});
+}
+
+async function loadCSV(parameters, outFilePath) {
+	const headerFile = fs.createReadStream(outFilePath + ".header");
+	let header = await streamToString(headerFile);
+	let tableCreate = "CREATE TABLE IF NOT EXISTS locus_core.opennames_import(" +
+						header.toLowerCase().split(',').map(function(value){
+						return value + " TEXT"
+						}).join(',')
+						+")";
+
+	console.log(tableCreate);
+
+	//fs.unlink(parameters.dest);
+
+	const client = new Client({
+		user: configs.custom[parameters.stage].auroraMasterUser,
+		host: configs.custom[parameters.stage].auroraHost,
+		database: configs.custom[parameters.stage].auroraDatabaseName,
+		password: configs.custom[parameters.stage].auroraMasterPass,
+		port: configs.custom[parameters.stage].auroraPort,
+	});
+
+	client.connect();
+
+	client.query(tableCreate, function(err,res){
+
+		if (err) {
+			console.log(err.stack)
+		} else {
+			//Finally load the data
+			console.log("Loading " + parameters.product + " this may take some time.")
+			let stream = client.query(copyFrom('COPY locus_core.opennames_import FROM STDIN WITH CSV'));
+			let fileStream = fs.createReadStream(outFilePath);
+			fileStream.on('error',function(err){
+				console.log(err.message);
+			});
+			stream.on('finish',function(){
+				console.log("Loaded " + parameters.product + " cleaning up and creating views");
+
+				//finally create the search view
+				//TODO this should be in yaml or a config file
+				const query = `DROP MATERIALIZED VIEW IF EXISTS locus_core.location_search_view;
+							CREATE MATERIALIZED VIEW locus_core.location_search_view AS
+							SELECT "﻿id" AS id,
+							   ST_TRANSFORM(ST_GEOMFROMEWKT('SRID=27700;POINT('||geometry_x||' '||geometry_y||')'), 4326) AS wkb_geometry,
+							  
+							   name1 AS location,
+							   local_type as location_type,
+							   setweight(to_tsvector(COALESCE(name1,'')), 'A') ||
+							   setweight(to_tsvector(COALESCE(name2,'')), 'B') ||
+							   setweight(to_tsvector(COALESCE(populated_place,'')), 'C') ||
+							  setweight(to_tsvector(COALESCE(district_borough,'')), 'D') AS tsv
+							FROM   locus_core.opennames_import
+							WHERE  local_type IN ('City','Town','Other Settlement','Village','Hamlet','Suburban Area','Named Road','Postcode');
+							
+							CREATE INDEX opennames_wkb_geometry_idx ON locus_core.location_search_view USING GIST(wkb_geometry);
+							CREATE INDEX os_opennames_weighted_tsv  ON locus_core.location_search_view USING GIN(tsv);`;
+
+				client.query(query, function(err, res){
+					//clean up
+					fs.unlinkSync(outFilePath);
+					fs.unlinkSync(parameters.dest);
+					console.log("View created");
+					commandLoop();
+				});
+
+			});
+			fileStream.pipe(stream);
+		}
+	});
+
+
+}
+
+ function runTests(stage) {
+	const options={
+	};
+	const cmdLine=`grunt runTests --stage=${stage}`;
+	console.log(`#${cmdLine}`);
+	exec( cmdLine,options, (err, stdout, stderr) => {
+		console.log(stdout);
+		console.log(err);
+		console.log(stderr);
+		deploySystemMain(stage);
+	});
+}
 
 function deployScrape(stage) {
 	const options={
@@ -289,7 +599,9 @@ const configQuestions = [
 	{name:"certARN",text:"AWS cert ARN",default:"arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx",config:"custom"},
 	{name:"auroraDatabaseName",text:"Aurora database name",default:"locus",config:"custom"},
 	{name:"auroraMasterUser",text:"Aurora master user",default:"locus",config:"custom"},
-	{name:"auroraMasterPass",text:"Aurora master password",default:"CHANGEME",config:"custom"}
+	{name:"auroraMasterPass",text:"Aurora master password",default:"CHANGEME",config:"custom"},
+	{name:"osDataHubProductURL", text:"OS Data Hub Product URL (Data Downloads)", default:"https://api.os.uk/downloads/v1/products", config:"custom"},
+	{name:"tmp", text:"Temporary local storage for downloads", default:"/tmp", config:"custom"}
 ];
 
 function addConfig() {

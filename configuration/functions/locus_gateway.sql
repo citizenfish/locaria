@@ -1,10 +1,10 @@
 --Single gateway for all aPI calls to locus_core
-CREATE OR REPLACE FUNCTION locus_core.locus_gateway(search_parameters JSON) RETURNS JSON AS
+CREATE OR REPLACE FUNCTION locus_core.locus_gateway(search_parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
     log_var BOOLEAN DEFAULT TRUE;
-    ret_var JSON;
+    ret_var JSONB;
     logid_var BIGINT;
     version_var TEXT DEFAULT '0.2';
 BEGIN
@@ -24,25 +24,11 @@ BEGIN
 
          WHEN search_parameters->>'method' IN ('list_categories') THEN
 
-            SELECT json_agg(CAT.unnest) INTO ret_var FROM (
-                    select * FROM unnest(enum_range(enum_first(null::locus_core.search_category)))
-	        ) CAT;
+            ret_var = list_categories_with_data(search_parameters);
 
          WHEN search_parameters->>'method' IN ('list_categories_with_data') THEN
 
-			SELECT json_agg(json) INTO ret_var FROM (
-							SELECT distinct ON (category)
-								json_build_object('category',	  category,
-												  'sub_category', COALESCE(json_agg(sub_category) FILTER (WHERE sub_category IS NOT NULL) OVER (partition by category), json_build_array())
-												  ) as json
-							FROM (
-								SELECT distinct on( category[1], attributes#>'{description,type}')
-										category[1] as category,
-										attributes#>'{description,type}' as sub_category
-								FROM locus_core.global_search_view
-								WHERE search_parameters->>'category' IS NULL OR (category[1])::TEXT = search_parameters->>'category'
-								) FOO
-			) BAA;
+            ret_var = list_categories_with_data(search_parameters);
 
 	     WHEN search_parameters->>'method' IN ('address_search') THEN
 	     	 ret_var = address_search(search_parameters);
@@ -62,7 +48,7 @@ BEGIN
 
     --If debug_var is set then the API will return the calling parameters in a debug object. NOTE WELL this will break GeoJSON returned
     IF debug_var OR search_parameters->>'debug' = 'true' THEN
-        ret_var = (ret_var::JSONB || jsonb_build_object('debug', search_parameters))::JSON;
+        ret_var = ret_var || jsonb_build_object('debug', search_parameters);
     END IF;
 
     -- Searches can be logged to the logs table. This is set on by default but can be switched off with a parameter

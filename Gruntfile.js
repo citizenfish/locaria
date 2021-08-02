@@ -4,6 +4,22 @@ const YAML = require('yaml');
 module.exports = function (grunt) {
 	grunt.initConfig({
 		pgsql: {
+			tests: {
+				options: {
+					configFile: '../locus-env.yml',
+					configSection: grunt.option('stage') || 'test',
+					configType: 'yaml',
+					configObjectName: 'postgres'
+
+				},
+				tables: [
+
+					//'tests/integration_tests/check_core_tables.sql',
+					//'tests/integration_tests/load_test_data.sql',
+					'tests/unit_tests/check_api_functions.sql'
+
+				]
+			},
 			upgrade: {
 				options: {
 					configFile: '../locus-env.yml',
@@ -14,8 +30,8 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					'configuration/schema_and_views/create_base_search_table.sql',
-					'configuration/data_loading/json_apis/create_surrey_heath_json_data_sources.sql'
+					'configuration/functions/locus_gateway.sql',
+					'configuration/functions/sessions_api.sql'
 
 				]
 			},
@@ -45,7 +61,6 @@ module.exports = function (grunt) {
 					'configuration/functions/locus_gateway.sql',
 					'configuration/functions/search.sql',
 					'configuration/functions/get_item.sql',
-					'configuration/functions/opennames_postcode_geocoder.sql',
 					'configuration/functions/base36_decode.sql',
 					'configuration/functions/locate.sql',
 					'configuration/functions/get_json_data_urls.sql',
@@ -54,20 +69,21 @@ module.exports = function (grunt) {
 					'configuration/functions/address_search.sql',
 					'configuration/functions/report.sql',
 					'configuration/functions/reverse_geocoder.sql',
-					'configuration/functions/search_view_union.sql',
+					'configuration/functions/views_union.sql',
 					'configuration/functions/update_json_data_url.sql',
+					'configuration/functions/list_categories_with_data.sql',
+					'configuration/functions/list_categories.sql',
+					'configuration/functions/sessions_api.sql',
 
 					//Reports
 					'configuration/reports/category_types.sql',
-					'configuration/reports/democracy_location.sql',
-
-					//Create SH data views then refresh the materialized view
-					'configuration/schema_and_views/create_search_views.sql',
-					'configuration/data_loading/create_surrey_heath_test_views.sql',
 
 					//Used by batch processes to load json and update materialized views
-					'configuration/data_loading/json_apis/create_surrey_heath_json_data_sources.sql',
-					'configuration/system_parameters/system_parameters.sql'
+					'configuration/system_parameters/system_parameters.sql',
+
+					//Global search view
+
+					'configuration/schema_and_views/create_search_views.sql'
 				]
 			}
 		},
@@ -182,6 +198,7 @@ module.exports = function (grunt) {
 	});
 
 
+	grunt.registerTask('runTests', ['pgsql:tests']);
 	grunt.registerTask('deploySQLFull', ['pgsql:full']);
 	grunt.registerTask('deploySQLupgrade', ['pgsql:upgrade']);
 	grunt.registerTask('deploySite', ['loadyaml','template:buildConfig','aws_s3:site','shell:invalidate']);

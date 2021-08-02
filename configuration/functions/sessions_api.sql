@@ -1,8 +1,8 @@
 --Create and manage API sessions
-CREATE OR REPLACE FUNCTION locus_core.session_api(method_param TEXT, id_param TEXT, json_param JSON DEFAULT NULL) RETURNS JSON AS
+CREATE OR REPLACE FUNCTION locus_core.session_api(method_param TEXT, id_param TEXT, json_param JSONB DEFAULT NULL) RETURNS JSONB AS
 $$
 DECLARE
-	ret_var JSON;
+	ret_var JSONB;
 BEGIN
 
 	CASE WHEN method_param = 'set' THEN
@@ -30,7 +30,7 @@ BEGIN
 
     END CASE;
 
-    RETURN COALESCE(ret_var, json_build_object(method_param, 'success', 'id', id_param));
+    RETURN COALESCE(ret_var, jsonb_build_object(method_param, 'success', 'id', id_param));
 
 
 END;

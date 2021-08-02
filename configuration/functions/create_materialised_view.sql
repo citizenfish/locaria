@@ -1,6 +1,6 @@
 --The materialized view global_search_view is used for the majority of search operations
 
-CREATE OR REPLACE FUNCTION locus_core.create_materialised_view() RETURNS JSON AS
+CREATE OR REPLACE FUNCTION locus_core.create_materialised_view() RETURNS JSONB AS
 $$
 
 BEGIN
@@ -58,10 +58,11 @@ BEGIN
     --Permissions
     GRANT SELECT ON locus_core.global_search_view TO PUBLIC;
 
-	RETURN json_build_object('success', 'locus search materialised view created');
+	RETURN jsonb_build_object('success', 'locus search materialised view created');
+
 EXCEPTION WHEN OTHERS THEN
     RAISE NOTICE '%',SQLERRM;
-    RETURN json_build_object('error', 'locus search materialised view could not be installed due to an SQL error [%]', 'sql_error', SQLERRM);
+    RETURN jsonb_build_object('error', 'locus search materialised view could not be installed due to an SQL error [%]', 'sql_error', SQLERRM);
 END;
 $$
 LANGUAGE PLPGSQL;

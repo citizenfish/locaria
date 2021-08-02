@@ -18,6 +18,10 @@ BEGIN
 
     CREATE EXTENSION IF NOT EXISTS postgis;
     CREATE EXTENSION IF NOT EXISTS pg_trgm;
+    CREATE EXTENSION aws_s3 CASCADE;
+
+    --TODO REMOVE
+    DROP SCHEMA locus_core CASCADE;
 
     --Create schema for search functions, data and views.
     CREATE SCHEMA IF NOT EXISTS locus_core;

@@ -1,10 +1,10 @@
 --The main search query engine
-CREATE OR REPLACE FUNCTION locus_core.search(search_parameters JSON) RETURNS JSON AS $$
+CREATE OR REPLACE FUNCTION locus_core.search(search_parameters JSONB) RETURNS JSONB AS $$
 DECLARE
     default_limit INTEGER DEFAULT 1000;
     default_offset INTEGER DEFAULT 0;
 	json_filter JSONB DEFAULT json_build_object();
-    results_var JSON;
+    results_var JSONB;
     search_ts_query tsquery;
     bbox_var GEOMETRY DEFAULT NULL;
     location_geometry GEOMETRY DEFAULT NULL;
@@ -66,7 +66,7 @@ BEGIN
 
     --This is the core search query
 
-    SELECT json_build_object('type','FeatureCollection',
+    SELECT jsonb_build_object('type','FeatureCollection',
                              'features', COALESCE(json_agg(
                                             json_build_object('type',        'Feature',
                                                               'properties',  attributes || jsonb_build_object('rank', search_rank)

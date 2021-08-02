@@ -1,9 +1,9 @@
 --Run a system report
-CREATE OR REPLACE FUNCTION locus_core.run_report(search_parameters JSON) RETURNS JSON AS
+CREATE OR REPLACE FUNCTION locus_core.run_report(search_parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
     query_var TEXT;
-    ret_var JSON;
+    ret_var JSONB;
     logid_var BIGINT;
     cu_var TEXT;
 BEGIN
@@ -32,7 +32,7 @@ BEGIN
 
     IF ret_var IS NULL THEN
         RAISE NOTICE 'No response from query: [%] ',query_var;
-        RETURN json_build_object();
+        RETURN jsonb_build_object();
     END IF;
 
     RETURN ret_var;
@@ -43,7 +43,7 @@ EXCEPTION WHEN OTHERS THEN
                jsonb_build_object('parameters',search_parameters, 'response', SQLERRM)
         RETURNING id INTO logid_var;
 
-    RETURN json_build_object('error', 'request could not be completed','system_log_id', logid_var);
+    RETURN jsonb_build_object('error', 'request could not be completed','system_log_id', logid_var);
 
 END;
 $$
