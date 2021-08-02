@@ -35,7 +35,7 @@ const streamToString = (stream) =>
 
 //Unzip and process files
 const yauzl = require('yauzl');
-const { Pool, Client } = require('pg')
+const { Client } = require('pg')
 let copyFrom = require('pg-copy-streams').from
 
 let configNew=true;
