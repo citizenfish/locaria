@@ -98,13 +98,13 @@ module.exports = function (grunt) {
 					params: {}
 				},
 				files: [
-					{expand: true, cwd: 'site/', src: ['**'], dest: 'site/'},
+					{expand: true, cwd: 'site/', src: ['**'], dest: '/'},
 					{
 						expand: false,
 						src: ['site/config/config.gen.js'],
-						dest: 'site/config/config.js'
+						dest: 'config/config.js'
 					},
-					{dest: 'sites/config/config.gen.js', 'action': 'delete'}
+					{dest: 'config/config.gen.js', 'action': 'delete'}
 				]
 			}
 		},
@@ -192,6 +192,8 @@ module.exports = function (grunt) {
 		let fileData = YAML.parse(grunt.file.read('../locus-custom.yml'));
 		let stage=grunt.option('stage');
 		grunt.config(['template','buildConfig','options','data'],fileData[stage]);
+		grunt.config(['template','buildConfig','options','data','stage'],stage);
+		//grunt.config(['aws_s3','site','bucket'],fileData[stage].domain);
 		console.log(fileData[stage]);
 		grunt.log.write("Yaml Loaded").ok();
 

@@ -56,7 +56,7 @@ module.exports.run = (event, context, callback) => {
 		client = database.getClient();
 
 
-		let querysql = 'SELECT locus_core.locus_gateway($1::JSON)';
+		let querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
 		let qarguments = [packet];
 		client.query(querysql, qarguments, function (err, result) {
 			/**

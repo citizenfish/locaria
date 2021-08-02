@@ -62,7 +62,13 @@ aws configure --profile locus
 
 It will ask for both keys and also a default region, this will be the region you wish you services to be installed in.
 
-You will also need to create a certificate for subdomains you wish to use in the us-east-1 region. Get the certificate validatated, then you will need the arn for
+You will also need to create a certificate for subdomains you wish to use in the following regions:
+
+domain: us-east-1
+restdomain: us-east-1
+wsdomain: (region your stack is deployed in)
+
+Get the certificates validated, then you will need the arn for
 the next step.
 
 ## Step 3 - Access infrastructure via VPN
@@ -83,8 +89,6 @@ Firstly make sure you have the following information for your system
 
 - API Key
 - API Secret Key
-- 2 VPC subnets id's
-- Security group
 - Domain name for the API & Website
 - Certificate arn
     
@@ -106,37 +110,29 @@ You will be asked various questions that require entry of all the above informat
 
 pg://USERNAME:PASSWORD@HOST:PORT/DATABASE
 
-Once compete hit 'w' to save these details. This will write out two files in the directory below the repo:
-
-**locus-env.yml**
-
-```yaml
-
-test:
-  postgres: pg://USERNAME:PASSWORD@HOST:PORT/DATABASE
-```
+Once compete hit 'w' to save these details. This will write out a file in the directory below the repo:
 
 **locus-custom.yml**
 
 ```yaml
 test:
-  securityGroupIds: foo
-  subnet1: bar
-  subnet2: foo
-  profile: bar
+ profile: locus
+ region: eu-west-1
+ cron: cron(0/10 * ? * MON-FRI *)
+ .......
 ```
 
-These file can contain multiple connection strings to allow you to set up development,test and live instances of the databases. As shown above with local and development versions
+This file can contain multiple connection strings to allow you to set up development,test and live instances of the databases. As shown above with local and development versions
 
 We highly recommend that you take this approach if you are planning on making your own changes to locus.
 
-We strongly advise that you keep these files outside of the git directory structure in order to ensure that it cannot accidently be shared outside of your organisation or checked into a public repository.
+We strongly advise that you keep these files outside of the git directory structure in order to ensure that it cannot accidentally be shared outside of your organisation or checked into a public repository.
 
 You can now use the deploy option from the cli 'e'.
 
 It will ask which stage you wish to deploy then present some options for deploying components
 
-- api - Install te gateway/lambda API
+- api - Install all the infrastructure into AWS
 - sql - Run the sql required to create the schemas and functions
 - scrape - Install the web scaper in lambda/cloudwatch
 - web - Install the web frontend
