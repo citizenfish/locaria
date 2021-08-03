@@ -245,6 +245,7 @@ function loadOSOpenData(product, stage){
 async function loadDataS3(parameters){
 
 
+	//Compare our last version with the version present at OS datahub
 	let makeDir = true;
 	let version = '';
 	const s3Client = new S3Client({ region: configs.custom[parameters.stage].region, signatureVersion: 'v4' });
