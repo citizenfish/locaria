@@ -10,10 +10,11 @@
 		"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.23.0",
+		"@aws-sdk/client-s3": "^3.24.0",
 		"@nautoguide/grunt-pgsql": "^0.1.4",
 		"@nautoguide/ourthings": "^0.4.24",
-		"aws-sdk": "^2.587.0",
+		"@turf/turf": "^5.1.6",
+		"aws-sdk": "^2.959.0",
 		"console-badge": "^1.1.0",
 		"grunt": "^1.1.0",
 		"grunt-aws-s3": "^2.0.0",
@@ -24,15 +25,16 @@
 		"mapbox-gl": "^1.8.0",
 		"node-fetch": "^2.6.1",
 		"ol": "^6.2.1",
+		"pg": "^8.7.1",
 		"pg-copy-streams": "^5.1.1",
 		"proj4": "^2.5.0",
+		"request": "^2.88.2",
 		"serverless": "^2.52.1",
 		"serverless-offline": "^7.0.0",
 		"unzip-stream": "^0.3.1",
-		"@turf/turf": "^5.1.6",
 		"webpack": "^4.29.6",
 		"webpack-cli": "^3.2.3",
-		"yaml": "^1.10.0",
+		"yaml": "^1.10.2",
 		"yauzl": "^2.10.0"
 	}
 }
