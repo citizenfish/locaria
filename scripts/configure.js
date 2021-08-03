@@ -397,7 +397,7 @@ async function loadCSV(parameters, outFilePath) {
 				console.log("Step 5 - Loaded " + parameters.product + " cleaning up and creating views");
 
 				//finally create the search view
-				//TODO this should be in yaml or a config file
+				//TODO this should be in a config file
 				const query = `DROP MATERIALIZED VIEW IF EXISTS locus_core.location_search_view;
 							CREATE MATERIALIZED VIEW locus_core.location_search_view AS
 							SELECT "﻿id" AS id,
