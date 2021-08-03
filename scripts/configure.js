@@ -306,7 +306,7 @@ async function loadDataS3(parameters){
 }
 
 function processZip(parameters){
-	console.log("Processing downloaded data");
+	console.log("Step 2 - Processing downloaded data");
 
 	const outFilePath = parameters.dest + '.csv';
 	try {
@@ -352,7 +352,7 @@ function processZip(parameters){
 			}
 
 		}).on('end', function(){
-			console.log("Data extracted - moving on to database load");
+			console.log("Step 3 - moving on to database load");
 			//First we need to make our table create statement
 
 			loadCSV(parameters,outFilePath)
@@ -363,15 +363,13 @@ function processZip(parameters){
 async function loadCSV(parameters, outFilePath) {
 	const headerFile = fs.createReadStream(outFilePath + ".header");
 	let header = await streamToString(headerFile);
+	//TODO move out of code
 	let tableCreate = "CREATE TABLE IF NOT EXISTS locus_core.opennames_import(" +
 						header.toLowerCase().split(',').map(function(value){
 						return value + " TEXT"
 						}).join(',')
 						+")";
 
-	console.log(tableCreate);
-
-	//fs.unlink(parameters.dest);
 
 	const client = new Client({
 		user: configs.custom[parameters.stage].auroraMasterUser,
@@ -389,14 +387,14 @@ async function loadCSV(parameters, outFilePath) {
 			console.log(err.stack)
 		} else {
 			//Finally load the data
-			console.log("Loading " + parameters.product + " this may take some time.")
+			console.log("Step 4 - Loading " + parameters.product + " this may take some time.")
 			let stream = client.query(copyFrom('COPY locus_core.opennames_import FROM STDIN WITH CSV'));
 			let fileStream = fs.createReadStream(outFilePath);
 			fileStream.on('error',function(err){
 				console.log(err.message);
 			});
 			stream.on('finish',function(){
-				console.log("Loaded " + parameters.product + " cleaning up and creating views");
+				console.log("Step 5 - Loaded " + parameters.product + " cleaning up and creating views");
 
 				//finally create the search view
 				//TODO this should be in yaml or a config file
