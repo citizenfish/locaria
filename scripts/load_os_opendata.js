@@ -23,7 +23,7 @@ let copyFrom = require('pg-copy-streams').from
 
 let configs = process.env;
 
-module.exports.loadOSOpenData = (params) => {
+module.exports.loadOSOpenData = async(params) =>  {
 
     if(params){
         configs = params;
@@ -31,14 +31,15 @@ module.exports.loadOSOpenData = (params) => {
     const load = configs.dataSet;
 
     if (load === 'OpenNames' || load === '') {
-        return loadOSOpenDataProduct('OpenNames');
+        let res =  await loadOSOpenDataProduct('OpenNames');
+        return res;
     } else {
         return {'error': "Product [" + load + "] not supported"};
     }
 
 
 
- function loadOSOpenDataProduct(product) {
+ async function loadOSOpenDataProduct(product) {
     console.log("Loading OS " + product + ".. checking current version");
     let osDataHubProductURL = configs.osDataHubProductURL;
 
@@ -48,7 +49,7 @@ module.exports.loadOSOpenData = (params) => {
 
     /* Use OS API to get product list, find product then get version and file url */
 
-    fetch(osDataHubProductURL)
+   await fetch(osDataHubProductURL)
         .then(res => res.json())
         .then(json => {
 
@@ -69,12 +70,12 @@ module.exports.loadOSOpenData = (params) => {
                                 .then(json => {
                                     for (var i in json) {
                                         if (json[i].format === 'CSV') {
-                                            loadDataS3({
+                                           loadDataS3({
                                                 version: pVer,
                                                 url: json[i].url,
                                                 product: product,
                                                 size: json[i].size
-                                            });
+                                            })
                                         }
                                     }
                                 })
@@ -84,6 +85,7 @@ module.exports.loadOSOpenData = (params) => {
                 }
             }
         });
+
 
 }
 
@@ -202,7 +204,7 @@ function processZip(parameters) {
             console.log("Step 3 - moving on to database load");
             //First we need to make our table create statement
 
-            loadCSV(parameters, outFilePath)
+            return loadCSV(parameters, outFilePath)
         });
     });
 }
@@ -275,7 +277,7 @@ async function loadCSV(parameters, outFilePath) {
         }
     });
 
-
+    return {'message': 'All done'};
 }
 
 }

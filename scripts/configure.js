@@ -111,7 +111,7 @@ function loadData(){
 				configs.custom[stage]['dataSet'] = cmd;
 
 				const ret = OSOpenData.loadOSOpenData(configs.custom[stage]);
-				console.log(ret);
+				ret.then(console.log(ret));
 
 		});
 	});
