@@ -22,7 +22,7 @@ const readline = require('readline').createInterface({
 let configNew=true;
 let configs={};
 
-let OSOpenData = require('./load_os_opendata');
+let OSOpenData = require('./docker/load_os_opendata');
 /**
  *  Start
  */
@@ -94,27 +94,28 @@ function commandLoop() {
 	})
 }
 
-function loadData(){
+async function loadData(){
 
 	let stage='test';
-	readline.question(`Stage to deploy [test]?`, (cmd) => {
 
-		if(cmd) {
-			stage = cmd;
 
-		}
-
-		process.env["AWS_PROFILE"] = configs.custom[stage].profile;
-
-		readline.question(`Data set to load [OpenNames]?`, (cmd) => {
-
-				configs.custom[stage]['dataSet'] = cmd;
-
-				const ret = OSOpenData.loadOSOpenData(configs.custom[stage]);
-				ret.then(console.log(ret));
-
-		});
+	let cmd = await new Promise(resolve => {
+		readline.question("Stage to deploy [test]?", resolve);
 	});
+
+	if(cmd) {
+		stage = cmd;
+	}
+
+	cmd = await new Promise(resolve => {
+		readline.question("Data set to load [OpenNames]?", resolve);
+	});
+
+	configs.custom[stage]['dataSet'] = cmd;
+	process.env["AWS_PROFILE"] = configs.custom[stage].profile;
+	let ret = await OSOpenData.loadOSOpenData(configs.custom[stage]);
+
+
 
 	commandLoop();
 
