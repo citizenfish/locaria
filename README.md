@@ -14,4 +14,4 @@ Searches are actioned using the SQL language within the database. LOCUS implemen
   
 - [How To](docs/how_to.md)
 
-6th August 2021 TEST 2
+6th August 2021
