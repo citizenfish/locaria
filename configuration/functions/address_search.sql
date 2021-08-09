@@ -1,9 +1,9 @@
 --Function to search for an address using keyword search principle
 
-CREATE OR REPLACE FUNCTION locus_core.address_search(address_parameters JSON) RETURNS JSON AS
+CREATE OR REPLACE FUNCTION locus_core.address_search(address_parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
-	results_var JSON;
+	results_var JSONB;
 	search_ts_query tsquery;
 	default_limit INTEGER DEFAULT 100;
     default_offset INTEGER DEFAULT 0;

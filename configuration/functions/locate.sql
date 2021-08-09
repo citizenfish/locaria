@@ -1,8 +1,8 @@
 
-CREATE OR REPLACE FUNCTION locus_core.locate(locate_parameters JSON) RETURNS JSON AS
+CREATE OR REPLACE FUNCTION locus_core.locate(locate_parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
-	results_var JSON;
+	results_var JSONB;
 	search_ts_query tsquery;
 	default_limit INTEGER DEFAULT 10;
     default_offset INTEGER DEFAULT 0;
@@ -38,7 +38,7 @@ BEGIN
 
         END IF;
 
-	    SELECT json_build_object('type','FeatureCollection',
+	    SELECT jsonb_build_object('type','FeatureCollection',
                              'features', COALESCE(json_agg(
                                             json_build_object('type',        'Feature',
                                                               'properties',  attributes || jsonb_build_object('rank', search_rank),

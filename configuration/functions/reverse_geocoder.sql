@@ -1,8 +1,8 @@
 --Look up an address against co-ordinates
-CREATE OR REPLACE FUNCTION locus_core.reverse_geocoder(search_parameters JSON) RETURNS JSON AS
+CREATE OR REPLACE FUNCTION locus_core.reverse_geocoder(search_parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
-	results_var JSON;
+	results_var JSONB;
 	default_limit INTEGER DEFAULT 15;
     default_offset INTEGER DEFAULT 0;
     point_geometry GEOMETRY (Point, 4326);
@@ -29,7 +29,7 @@ BEGIN
 
 		point_geometry = ST_GEOMFROMEWKT('SRID=4326;POINT('|| (search_parameters->>'lon') ||' '||(search_parameters->>'lat')||')');
 
-	    SELECT json_build_object('type','FeatureCollection',
+	    SELECT jsonb_build_object('type','FeatureCollection',
                              'features', COALESCE(json_agg(
                                             json_build_object('type',        'Feature',
                                                               'properties',  attributes || jsonb_build_object('distance_rank', distance_rank),

@@ -18,14 +18,16 @@ const readline = require('readline').createInterface({
 	output: process.stdout
 });
 
+
 let configNew=true;
 let configs={};
 
-
+let OSOpenData = require('./docker/load_os_opendata');
 /**
  *  Start
  */
 console.log("Locus config tool");
+
 checkEnvironment();
 
 
@@ -62,6 +64,7 @@ function commandLoop() {
 				console.log('d - Delete config section');
 				console.log('w - Write the current config');
 				console.log('e - Deploy system');
+				console.log('ld - Load Data (OS Opendata)');
 				console.log('q - Quit');
 				commandLoop();
 				break;
@@ -80,6 +83,9 @@ function commandLoop() {
 			case 'e':
 				deploySystem();
 				break;
+			case 'ld':
+				loadData();
+				break;
 			case 'q':
 				process.exit(0);
 				break;
@@ -87,6 +93,34 @@ function commandLoop() {
 		}
 	})
 }
+
+async function loadData(){
+
+	let stage='test';
+
+
+	let cmd = await new Promise(resolve => {
+		readline.question("Stage to deploy [test]?", resolve);
+	});
+
+	if(cmd) {
+		stage = cmd;
+	}
+
+	cmd = await new Promise(resolve => {
+		readline.question("Data set to load [OpenNames]?", resolve);
+	});
+
+	configs.custom[stage]['dataSet'] = cmd;
+	process.env["AWS_PROFILE"] = configs.custom[stage].profile;
+	let ret = await OSOpenData.loadOSOpenData(configs.custom[stage]);
+
+
+
+	commandLoop();
+
+}
+
 
 function deploySystem() {
 	let stage='test';
@@ -107,6 +141,7 @@ function deploySystemMain(stage) {
 				console.log('web - Deploy Web interface');
 				console.log('scrape - Deploy scraper');
 				console.log('ws - Deploy websocket');
+				console.log('tests - Run Tests');
 				console.log('q - Exit deploy mode');
 			case 'all':
 				deploySystemMain(stage);
@@ -129,6 +164,9 @@ function deploySystemMain(stage) {
 			case 'ws':
 				deployWS(stage);
 				break;
+			case 'tests':
+				runTests(stage);
+				break;
 			case 'q':
 				commandLoop();
 				break;
@@ -140,6 +178,20 @@ function deploySystemMain(stage) {
 	});
 }
 
+
+
+ function runTests(stage) {
+	const options={
+	};
+	const cmdLine=`grunt runTests --stage=${stage}`;
+	console.log(`#${cmdLine}`);
+	exec( cmdLine,options, (err, stdout, stderr) => {
+		console.log(stdout);
+		console.log(err);
+		console.log(stderr);
+		deploySystemMain(stage);
+	});
+}
 
 function deployScrape(stage) {
 	const options={
@@ -290,7 +342,9 @@ const configQuestions = [
 	{name:"certARN",text:"AWS cert ARN",default:"arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx",config:"custom"},
 	{name:"auroraDatabaseName",text:"Aurora database name",default:"locus",config:"custom"},
 	{name:"auroraMasterUser",text:"Aurora master user",default:"locus",config:"custom"},
-	{name:"auroraMasterPass",text:"Aurora master password",default:"CHANGEME",config:"custom"}
+	{name:"auroraMasterPass",text:"Aurora master password",default:"CHANGEME",config:"custom"},
+	{name:"osDataHubProductURL", text:"OS Data Hub Product URL (Data Downloads)", default:"https://api.os.uk/downloads/v1/products", config:"custom"},
+	{name:"tmp", text:"Temporary local storage for downloads", default:"/tmp", config:"custom"}
 ];
 
 function addConfig() {
