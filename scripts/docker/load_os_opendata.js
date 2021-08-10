@@ -1,11 +1,11 @@
 const fs = require('fs')
 const readline = require('readline');
-
-//For data downloads
 const fetch = require('node-fetch');
-const request = require('request');
 const {S3Client, ListObjectsCommand, PutObjectCommand, GetObjectCommand} = require("@aws-sdk/client-s3");
-
+const yauzl = require('yauzl');
+const {Client} = require('pg')
+const {execFile} = require("child_process");
+const copyFrom = require('pg-copy-streams').from
 
 //For decoding file contents as S3 api uses filestreams
 const streamToString = (stream) =>
@@ -16,11 +16,6 @@ const streamToString = (stream) =>
         stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
     });
 
-//Unzip and process files
-const yauzl = require('yauzl');
-const {Client} = require('pg')
-const {execFile} = require("child_process");
-let copyFrom = require('pg-copy-streams').from
 
 /*We need the following:
 
@@ -180,7 +175,15 @@ module.exports.loadOSOpenData = async (params) => {
 
 
             let cmd = await new Promise(resolve => {
-                request(parameters.url).pipe(file);
+                //request(parameters.url).pipe(file);
+
+                fetch(parameters.url)
+                    .then(
+                        res => new Promise((resolve) => {
+                            res.body.pipe(file)
+                            res.body.on('end', () => resolve())
+                        }
+                    ))
                 file.on('finish', resolve);
             });
 
