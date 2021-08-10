@@ -113,7 +113,6 @@ async function loadData(){
 
 	configs.custom[stage]['dataSet'] = cmd;
 	process.env["AWS_PROFILE"] = configs.custom[stage].profile;
-	let ret = await OSOpenData.loadOSOpenData(configs.custom[stage]);
 
 
 
