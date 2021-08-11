@@ -237,6 +237,13 @@ resources:
           Ref: PrivateSubnetA
         RouteTableId:
           Ref: PrivateRouteTable
+    SubnetRouteTableAssociationLambdaPrivateB:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PrivateSubnetB
+        RouteTableId:
+          Ref: PrivateRouteTable
     SubnetRouteTableAssociationLambdaPublicA:
       Type: AWS::EC2::SubnetRouteTableAssociation
       Properties:

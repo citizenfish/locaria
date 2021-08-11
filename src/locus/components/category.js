@@ -4,10 +4,11 @@ import Define from '@nautoguide/ourthings-react/Define';
 
 const DEFINE = new Define();
 import Layout from './Layout';
+import {channels} from "../../theme/locus";
 
-const Report = () => {
+const Category = () => {
 
-	let {reportId} = useParams();
+	let {category} = useParams();
 	const [report, setReport] = React.useState(null);
 
 	React.useEffect(() => {
@@ -20,16 +21,16 @@ const Report = () => {
 					command: "websocketSend",
 					json: {
 						"message": {
-							"queue": "historyReportRender",
+							"queue": "categoryLoader",
 							"api": "api",
-							"data": {"method": "report", "report_name": reportId, "location": ""}
+							"data": {"method": "search", "category": category}
 						}
 					}
 				},
 				// We have a report
 				{
 					options: {
-						queuePrepare: "historyReportRender"
+						queuePrepare: "categoryLoader"
 					},
 					queueable: "Internals",
 					command: "run",
@@ -45,8 +46,8 @@ const Report = () => {
 	if (report !== null) {
 		return (
 			<Layout>
-				<p>Reports page init: {reportId}</p>
-				<ReportActual>{report}</ReportActual>
+				<p>Category: {category}</p>
+				<CategoryActual></CategoryActual>
 			</Layout>
 		);
 	} else {
@@ -60,14 +61,19 @@ const Report = () => {
 };
 
 
-const ReportActual = ({children}) => {
+const CategoryActual = () => {
 	return (
 		<div>
 			<h1>the actual report</h1>
-			<p>{children}</p>
+			<ul>
+			{memory.categoryLoader.value.packet.features
+				.map(feature => (
+				<li>{feature.properties.title}</li>
+			))}
+			</ul>
 		</div>
 	)
 }
 
 
-export default Report;
+export default Category;
