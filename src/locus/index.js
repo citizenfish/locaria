@@ -1,51 +1,72 @@
-import { Queue } from '@nautoguide/ourthings';
-import Templates from '@nautoguide/ourthings/Queueable/Templates';
-import Elements from '@nautoguide/ourthings/Queueable/Elements';
-import Internals from '@nautoguide/ourthings/Queueable/Internals';
-import Openlayers from './Openlayers';
-import Browser from '@nautoguide/ourthings/Queueable/Browser';
-import Api from '@nautoguide/ourthings/Queueable/Api';
-import Menu from '@nautoguide/ourthings/Queueable/Menu';
+/*
+ * Add ourthings react queue
+ */
+import {Queue} from '@nautoguide/ourthings-react';
+import Websockets from '@nautoguide/ourthings-react/Queueable/Websockets';
+import Internals from '@nautoguide/ourthings-react/Queueable/Internals';
+import Locus from './locus';
+import Define from '@nautoguide/ourthings-react/Define.js';
+const DEFINE = new Define();
+/*
+ * Add react
+ */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import 'semantic-ui-less/semantic.less';
-
-ReactDOM.render(<App />, document.getElementById('root'));
-
-import Locus from './locus';
-
-
-
-import {mainMapStyle,locationStyle} from '../../site/map-styles/main';
-window.styles={};
-window.styles.mainMapStyle=mainMapStyle;
-window.styles.locationStyle=locationStyle;
-
 
 /*
- * Startup
+ * Start our queues
  */
-let queue;
-document.addEventListener("DOMContentLoaded", function(event) {
-	queue = new Queue({
-		"templates": Templates,
-		"elements": Elements,
-		"api": Api,
-		"locus": Locus,
-		"internals": Internals,
-		"openlayers": Openlayers,
-		"browser": Browser,
-		"menu":Menu
-
-	});
-	window.queue=queue;
+window.queue = new Queue({
+	"Websockets": Websockets,
+	"Internals":Internals,
+	"Locus": Locus
 });
+
+/*
+ * define all our queues
+ */
+window.queue.commandsQueue(
+	[
+		// Start the websocket
+		{
+			options: {
+				queueRun: DEFINE.COMMAND_INSTANT
+			},
+			queueable: "Websockets",
+			command: "websocketInit",
+			json: {"url": window.config.ws},
+			commands: [
+				{
+					queueable: "Websockets",
+					command: "websocketSend",
+					json: {"message":{"queue":"session","api":"session"}}
+				}
+			]
+		},
+
+		// We have a session
+		{
+			options: {
+				queuePrepare: "session"
+			},
+			queueable: "Internals",
+			command: "nop"
+		}
+	]
+)
+
+
+ReactDOM.render(<App/>, document.getElementById('root'));
+
 
 /*
  * HELPERS
  */
 
+/*
+
+ TODO: Move to a class
 const metersPerMile=1609;
 const metersPerKm=1000;
 const meterSwitch=0;
@@ -92,5 +113,6 @@ window.distanceFormat = function (distance) {
 		return 'more';
 	}
 }
+*/
 
 

@@ -7,20 +7,33 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'site/dist')
+		path: path.resolve(__dirname, 'site/dist'),
+		assetModuleFilename: 'other/[hash][ext][query]'
 	},
 	module: {
 		rules: [
+			{
+				test: /\.(svg|png)$/i,
+				type: 'asset/resource',
+				generator: {
+					filename: 'images/[hash][ext][query]'
+				}
+			},
+			{
+				test: /\.(ttf|otf)$/i,
+				type: 'asset/resource',
+				generator: {
+					filename: 'fonts/[hash][ext][query]'
+				}
+			},
 			{
 				test: /\.(js)$/,
 				exclude: /node_modules/,
 				use: ['babel-loader']
 			},
 			{
-				test: /\.(woff|woff2|eot|ttf)(\?.*$|$)/i,
-				use: [
-					'file-loader',
-				],
+				test: /\.css$/i,
+				use: ['style-loader', 'css-loader'],
 			},
 			{
 				test: /\.less$/,
@@ -43,29 +56,12 @@ module.exports = {
 						},
 					},
 				],
-			},
-			{
-				test: /\.css$/,
-				use: [
-					{
-						loader: 'style-loader'
-					},
-					{
-						loader: 'css-loader',
-						options: {
-							sourceMap: true,
-						}
-					}
-				]
 			}
 		]
 	},
 	resolve: {
 		fallback: {
-			util: require.resolve('util/'),
-			"../../theme.config$": path.join(__dirname, "./src/semantic-ui/theme.config"),
-			"../semantic-ui/site": path.join(__dirname, "/semantic-ui/site")
-
-		}
+			util: require.resolve('util/')
+			}
 	}
 };

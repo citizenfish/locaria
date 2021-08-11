@@ -1,16 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Header, Container, Divider, Icon,Menu,Label } from 'semantic-ui-react';
 
-import styles from './css/styles.css';
+import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import { useStyles } from "../../theme/locus";
+
+
 
 const Layout = ({ children }) => {
+	const classes = useStyles();
 	return (
-		<Container>
+			<Container>
+				<Button  variant="contained" color="primary" className={classes.button}>
+					Stuff
+				</Button>
+				{children}
+			</Container>
+	);
+};
+
+export default Layout;
+
+/** OLDS
+ <Container>
 			<Link to="/">
 
 
-				<Header className={styles.headSection}>
+				<Header className="">
 					<div className="page-header" id="header-target">
 
 					</div>
@@ -37,7 +52,7 @@ const Layout = ({ children }) => {
 			</main>
 			<Divider />
 			<footer role="contentinfo">
-				<span className={styles.logoBw}></span>
+				<span className=""></span>
 				<ul>
 					<li><a href="https://www.surreyheath.gov.uk/council/contact-us" target="_blank">Contact</a></li>
 					<li><a href="https://www.surreyheath.gov.uk/visitors/whats-on/all" target="_blank">Events</a></li>
@@ -49,7 +64,4 @@ const Layout = ({ children }) => {
 				<p>Surrey Heath Borough Council | Developed in partnership</p>
 			</footer>
 		</Container>
-	);
-};
-
-export default Layout;
+ **/

@@ -4,8 +4,6 @@ import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 import Home from './home';
 import Report from './report';
 import Error from './error';
-/*import DynamicPage from './DynamicPage';
-import NoMatch from './NoMatch';*/
 
 const App = () => {
 	return (
@@ -13,7 +11,7 @@ const App = () => {
 			<div>
 				<Switch>
 					<Route exact path="/" component={Home} />
-					<Route exact path="/Report" component={Report} />
+					<Route path="/Report/:reportId" component={Report} />
 					<Route component={Error} />
 				</Switch>
 			</div>

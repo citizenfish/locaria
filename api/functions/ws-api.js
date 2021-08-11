@@ -108,10 +108,19 @@ module.exports.run = (event, context, callback) => {
 				client = database.getClient();
 				let querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
 				let qarguments = [packet.data];
+				console.log(querysql);
+				console.log(qarguments);
 				client.query(querysql, qarguments, function (err, result) {
-					payload.packet=result.rows[0]['locus_gateway'];
-					payload.method=packet.data.method;
-					sendToClient(payload);
+					if(err) {
+						console.log(err);
+						callback(null, {statusCode: 500 });
+						client.end();
+
+					} else {
+						payload.packet = result.rows[0]['locus_gateway'];
+						payload.method = packet.data.method;
+						sendToClient(payload);
+					}
 				});
 				break;
 

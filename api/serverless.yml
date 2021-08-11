@@ -1,6 +1,6 @@
 service: locus-api
 #configValidationMode: error
-#projectDir: ../../
+projectDir: ../../
 provider:
   name: aws
   profile: ${file(../../locus-custom.yml):${self:custom.stage}.profile}
