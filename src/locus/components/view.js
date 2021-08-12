@@ -1,14 +1,12 @@
 import React from 'react';
-import {useParams} from 'react-router-dom';
 import Define from '@nautoguide/ourthings-react/Define';
 
 const DEFINE = new Define();
 import Layout from './Layout';
 
-const Report = () => {
+const View = () => {
 
-	let {reportId} = useParams();
-	const [report, setReport] = React.useState(null);
+	const [view, setView] = React.useState(null);
 
 	React.useEffect(() => {
 		window.queue.commandsQueue([
@@ -21,21 +19,21 @@ const Report = () => {
 					command: "websocketSend",
 					json: {
 						"message": {
-							"queue": "historyReportRender",
+							"queue": "categoryLoader",
 							"api": "api",
-							"data": {"method": "report", "report_name": reportId, "location": ""}
+							"data": {"method": "search", "category": view}
 						}
 					}
 				},
 				// We have a report
 				{
 					options: {
-						queuePrepare: "historyReportRender"
+						queuePrepare: "categoryLoader"
 					},
 					queueable: "Internals",
 					command: "run",
 					json:  function () {
-							setReport('foobar');
+							setView(true);
 					}
 
 				}
@@ -43,11 +41,11 @@ const Report = () => {
 		);
 	}, []);
 
-	if (report !== null) {
+	if (view !== null) {
 		return (
 			<Layout>
-				<p>Reports page init: {reportId}</p>
-				<ReportActual>{report}</ReportActual>
+				<p>Feature: {feature}</p>
+				<ViewActual></ViewActual>
 			</Layout>
 		);
 	} else {
@@ -61,14 +59,19 @@ const Report = () => {
 };
 
 
-const ReportActual = ({children}) => {
+const ViewActual = () => {
 	return (
 		<div>
 			<h1>the actual report</h1>
-			<p>{children}</p>
+			<ul>
+			{memory.categoryLoader.value.packet.features
+				.map(feature => (
+				<li>{feature.properties.title}</li>
+			))}
+			</ul>
 		</div>
 	)
 }
 
 
-export default Report;
+export default View;

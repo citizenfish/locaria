@@ -4,6 +4,7 @@
 import {Queue} from '@nautoguide/ourthings-react';
 import Websockets from '@nautoguide/ourthings-react/Queueable/Websockets';
 import Internals from '@nautoguide/ourthings-react/Queueable/Internals';
+import Openlayers from '@nautoguide/ourthings-react/Queueable/Openlayers';
 import Locus from './locus';
 import Define from '@nautoguide/ourthings-react/Define.js';
 const DEFINE = new Define();
@@ -20,6 +21,7 @@ import App from './components/App';
 window.queue = new Queue({
 	"Websockets": Websockets,
 	"Internals":Internals,
+	"Openlayers":Openlayers,
 	"Locus": Locus
 });
 

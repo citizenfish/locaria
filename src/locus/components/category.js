@@ -1,10 +1,9 @@
 import React from 'react';
-import {useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import Define from '@nautoguide/ourthings-react/Define';
 
 const DEFINE = new Define();
 import Layout from './Layout';
-import {channels} from "../../theme/locus";
 
 const Category = () => {
 
@@ -15,7 +14,8 @@ const Category = () => {
 		window.queue.commandsQueue([
 				{
 					options: {
-						queueRun: DEFINE.COMMAND_INSTANT
+						queueRun: DEFINE.COMMAND_INSTANT,
+						queueRegister: 'wsActive'
 					},
 					queueable: "Websockets",
 					command: "websocketSend",
@@ -68,7 +68,7 @@ const CategoryActual = () => {
 			<ul>
 			{memory.categoryLoader.value.packet.features
 				.map(feature => (
-				<li>{feature.properties.title}</li>
+					<Link to={`/View/${feature.properties.fid}`} key={feature.properties.fid}>{feature.properties.title}</Link>
 			))}
 			</ul>
 		</div>
