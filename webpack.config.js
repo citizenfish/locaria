@@ -63,5 +63,13 @@ module.exports = {
 		fallback: {
 			util: require.resolve('util/')
 			}
+	},
+	devServer: {
+		contentBase: path.join(__dirname, 'site'),
+		compress: true,
+		port: 8080,
+		historyApiFallback: {
+			index: 'index.html'
+		}
 	}
 };
