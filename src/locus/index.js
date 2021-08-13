@@ -1,13 +1,5 @@
-/*
- * Add ourthings react queue
- */
-import {Queue} from '@nautoguide/ourthings-react';
-import Websockets from '@nautoguide/ourthings-react/Queueable/Websockets';
-import Internals from '@nautoguide/ourthings-react/Queueable/Internals';
-import Openlayers from '@nautoguide/ourthings-react/Queueable/Openlayers';
-import Locus from './locus';
-import Define from '@nautoguide/ourthings-react/Define.js';
-const DEFINE = new Define();
+
+import Websockets from "./libs/Websockets";
 /*
  * Add react
  */
@@ -15,51 +7,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 
-/*
- * Start our queues
- */
-window.queue = new Queue({
-	"Websockets": Websockets,
-	"Internals":Internals,
-	"Openlayers":Openlayers,
-	"Locus": Locus
-});
+window.websocket=new Websockets();
 
-/*
- * define all our queues
- */
-window.queue.commandsQueue(
-	[
-		// Start the websocket
-		{
-			options: {
-				queueRun: DEFINE.COMMAND_INSTANT
-			},
-			queueable: "Websockets",
-			command: "websocketInit",
-			json: {"url": window.config.ws},
-			commands: [
-				{
-					queueable: "Websockets",
-					command: "websocketSend",
-					json: {"message":{"queue":"session","api":"session"}}
-				}
-			]
-		},
-
-		// We have a session
-		{
-			options: {
-				queuePrepare: "session"
-			},
-			queueable: "Internals",
-			command: "nop"
-		}
-	]
-)
+window.websocket.init({"url": window.config.ws},connected,closed,errored);
 
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+function connected() {
+	ReactDOM.render(<App/>, document.getElementById('root'));
+
+}
+
+function closed(event) {
+	console.log(`websock closed: ${event}`);
+	window.websocket.connect();
+}
+
+function errored(event) {
+	console.log(`websock errored: ${event}`);
+
+}
+
 
 
 /*

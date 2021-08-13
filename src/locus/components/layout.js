@@ -18,6 +18,7 @@ import {Link} from "react-router-dom";
 const Layout = ({ children }) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [location, setLocation] = React.useState(null);
 
 	const isMenuOpen = Boolean(anchorEl);
 
@@ -33,11 +34,37 @@ const Layout = ({ children }) => {
 
 	const menuId = 'primary-search-account-menu';
 
+	React.useEffect(() => {
+
+		window.websocket.registerQueue("postcode", function (json) {
+			setLocation(json);
+			console.log(json);
+		});
+
+	}, []);
+
+
+
+	function handleKeyDown(e) {
+		let postcode=document.getElementById('myPostcode').value;
+		console.log(postcode);
+
+		window.websocket.send({
+			"queue":"postcode",
+			"api":"api",
+			"data":{
+				"method":"address_search",
+				"address":postcode
+			}
+		});
+
+	}
+
 	function channelDisplay(channel) {
 		if(channel.type==='Report')
-			return (<MenuItem component={Link} to={`/${channel.type}/${channel.report_name}`} key={channel.key} content={channel.description}>{channel.description}</MenuItem>)
+			return (<MenuItem component={Link} to={`/${channel.type}/${channel.report_name}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
 		else
-			return (<MenuItem component={Link} to={`/${channel.type}/${channel.category}`} key={channel.key} content={channel.description}>{channel.description}</MenuItem>)
+			return (<MenuItem component={Link} to={`/${channel.type}/${channel.category}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
 
 	}
 
@@ -86,7 +113,9 @@ const Layout = ({ children }) => {
 								input: classes.inputInput,
 							}}
 							inputProps={{ 'aria-label': 'search' }}
-							defaultValue="GU15 3HD"
+							defaultValue="PP1 1PP"
+							onKeyPress={handleKeyDown}
+							id="myPostcode"
 						/>
 					</div>
 				</Toolbar>
@@ -101,53 +130,4 @@ const Layout = ({ children }) => {
 };
 
 
-
-
-
 export default Layout;
-
-/** OLDS
- <Container>
-			<Link to="/">
-
-
-				<Header className="">
-					<div className="page-header" id="header-target">
-
-					</div>
-					<div className="subheading" id="subheading-target">
-
-					</div>
-					<div className="postcode-search" id="location-target">
-
-					</div>
-
-					<Menu vertical>
-						<Menu.Item name='inbox' active='true'>
-							<Label color='teal'>1</Label>
-							Inbox
-						</Menu.Item>
-
-					</Menu>
-				</Header>
-			</Link>
-			<main className="document-content">
-				<div className="content-holder" id="content-target">
-					{children}
-				</div>
-			</main>
-			<Divider />
-			<footer role="contentinfo">
-				<span className=""></span>
-				<ul>
-					<li><a href="https://www.surreyheath.gov.uk/council/contact-us" target="_blank">Contact</a></li>
-					<li><a href="https://www.surreyheath.gov.uk/visitors/whats-on/all" target="_blank">Events</a></li>
-					<li><a href="https://www.surreyheath.gov.uk/council/news" target="_blank">News</a></li>
-					<li><a href="https://www.surreyheath.gov.uk/disclaimer" target="_blank">Disclaimer</a></li>
-					<li><a href="https://www.surreyheath.gov.uk/cookies" target="_blank">Cookies</a></li>
-					<li><a href="https://www.surreyheath.gov.uk/council/information-governance/how-we-use-your-data" target="_blank">How we use your data</a></li>
-				</ul>
-				<p>Surrey Heath Borough Council | Developed in partnership</p>
-			</footer>
-		</Container>
- **/

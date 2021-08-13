@@ -1,8 +1,6 @@
 import React from 'react';
 import {Link, useParams} from 'react-router-dom';
-import Define from '@nautoguide/ourthings-react/Define';
 
-const DEFINE = new Define();
 import Layout from './Layout';
 
 const Category = () => {
@@ -11,43 +9,32 @@ const Category = () => {
 	const [report, setReport] = React.useState(null);
 
 	React.useEffect(() => {
-		window.queue.commandsQueue([
-				{
-					options: {
-						queueRun: DEFINE.COMMAND_INSTANT,
-						queueRegister: 'wsActive'
-					},
-					queueable: "Websockets",
-					command: "websocketSend",
-					json: {
-						"message": {
-							"queue": "categoryLoader",
-							"api": "api",
-							"data": {"method": "search", "category": category}
-						}
-					}
-				},
-				// We have a report
-				{
-					options: {
-						queuePrepare: "categoryLoader"
-					},
-					queueable: "Internals",
-					command: "run",
-					json:  function () {
-							setReport('foobar');
-					}
 
-				}
-			]
-		);
+		window.websocket.registerQueue("categoryLoader",function(json) {
+			setReport(json);
+		});
+
+		window.websocket.send({
+			"queue": "categoryLoader",
+			"api": "api",
+			"data": {"method": "search", "category": category}
+		});
+
 	}, []);
 
 	if (report !== null) {
 		return (
 			<Layout>
 				<p>Category: {category}</p>
-				<CategoryActual></CategoryActual>
+				<div>
+					<h1>the actual report</h1>
+					<ul>
+						{report.packet.features
+							.map(feature => (
+								<Link to={`/View/${feature.properties.fid}`} key={feature.properties.fid}>{feature.properties.title}</Link>
+							))}
+					</ul>
+				</div>
 			</Layout>
 		);
 	} else {
@@ -59,21 +46,5 @@ const Category = () => {
 	}
 
 };
-
-
-const CategoryActual = () => {
-	return (
-		<div>
-			<h1>the actual report</h1>
-			<ul>
-			{memory.categoryLoader.value.packet.features
-				.map(feature => (
-					<Link to={`/View/${feature.properties.fid}`} key={feature.properties.fid}>{feature.properties.title}</Link>
-			))}
-			</ul>
-		</div>
-	)
-}
-
 
 export default Category;

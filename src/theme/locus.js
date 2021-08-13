@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 			pointerEvents: 'none',
 			display: 'flex',
 			alignItems: 'center',
-			justifyContent: 'center',
+			justifyContent: 'center'
 		},
 		inputRoot: {
 			color: 'inherit',
@@ -49,6 +49,8 @@ const useStyles = makeStyles((theme) => ({
 			[theme.breakpoints.up('md')]: {
 				width: '20ch',
 			},
+			"margin-left": '50px'
+
 		},
 		sectionDesktop: {
 			display: 'none',
@@ -77,9 +79,9 @@ const useStyles = makeStyles((theme) => ({
 );
 
 const channels = [
-	{"type": "Category", "key": "chanPlanning", "description": "Planning", "category": "Planning"},
-	{"type": "Category", "key": "chanAll", "description": "All", "category": "*"},
-	{"type": "Report", "key": "chanDemocracy", "description": "Democracy", "report_name": "democracy_location"}
+	{"type": "Category", "key": "chanPlanning","name":"Planning", "description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica", "category": "Planning"},
+	{"type": "Category", "key": "chanAll", "name":"All","description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica", "category": "*"},
+	{"type": "Report", "key": "chanDemocracy","name":"Democracy", "description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica", "report_name": "democracy_location"}
 ];
 
 export {useStyles, channels};

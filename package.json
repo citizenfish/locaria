@@ -10,8 +10,9 @@
 		"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"
 	},
 	"dependencies": {
-		"@nautoguide/ourthings-react": "file:../ourthings-react/src/ourthings-react",
-
+	  	"@nautoguide/aws-wsp": "^1.1.0",
+	  "ol": "^6.5.0",
+	  "proj4": "^2.5.0",
 		"react-router-dom": "5.2.0",
 		"console-badge": "^1.1.0",
 		"node-fetch": "^2.6.0",

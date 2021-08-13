@@ -1,51 +1,38 @@
 import React from 'react';
-import Define from '@nautoguide/ourthings-react/Define';
 
-const DEFINE = new Define();
 import Layout from './Layout';
+import {useParams} from "react-router-dom";
 
 const View = () => {
+	let {feature} = useParams();
 
 	const [view, setView] = React.useState(null);
 
 	React.useEffect(() => {
-		window.queue.commandsQueue([
-				{
-					options: {
-						queueRun: DEFINE.COMMAND_INSTANT,
-						queueRegister: 'wsActive'
-					},
-					queueable: "Websockets",
-					command: "websocketSend",
-					json: {
-						"message": {
-							"queue": "categoryLoader",
-							"api": "api",
-							"data": {"method": "search", "category": view}
-						}
-					}
-				},
-				// We have a report
-				{
-					options: {
-						queuePrepare: "categoryLoader"
-					},
-					queueable: "Internals",
-					command: "run",
-					json:  function () {
-							setView(true);
-					}
 
-				}
-			]
-		);
+
+		window.websocket.registerQueue("viewLoader",function(json) {
+			setView(json);
+		});
+
+		window.websocket.send({
+			"queue": "viewLoader",
+			"api": "api",
+			"data": {"method": "get_item", "fid": feature}
+		});
+
 	}, []);
 
 	if (view !== null) {
 		return (
 			<Layout>
 				<p>Feature: {feature}</p>
-				<ViewActual></ViewActual>
+				<div>
+					<h1>Detailed report</h1>
+					<p>
+						{view.packet.features[0].properties.title}
+					</p>
+				</div>
 			</Layout>
 		);
 	} else {
@@ -57,21 +44,6 @@ const View = () => {
 	}
 
 };
-
-
-const ViewActual = () => {
-	return (
-		<div>
-			<h1>the actual report</h1>
-			<ul>
-			{memory.categoryLoader.value.packet.features
-				.map(feature => (
-				<li>{feature.properties.title}</li>
-			))}
-			</ul>
-		</div>
-	)
-}
 
 
 export default View;
