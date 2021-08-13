@@ -22,7 +22,7 @@ const readline = require('readline').createInterface({
 let configNew=true;
 let configs={};
 
-let OSOpenData = require('./docker/load_os_opendata');
+//let OSOpenData = require('./docker/load_os_opendata');
 /**
  *  Start
  */
