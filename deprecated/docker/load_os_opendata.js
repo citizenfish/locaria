@@ -14,7 +14,7 @@ const streamToString = (stream) =>
         stream.on("data", (chunk) => chunks.push(chunk));
         stream.on("error", reject);
         stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-    });
+});
 
 
 /*We need the following:
@@ -200,7 +200,8 @@ module.exports.loadOSOpenData = async (params) => {
     async function processZip(parameters) {
         global.result.status = "Step 2 - Processing downloaded data";
 
-        const outFilePath = parameters.dest + parameters.format.toLowerCase();
+        const outFilePath = `${parameters.dest}.${parameters.format.toLowerCase()}`;
+
         try {
             //remove any previously downloaded data/headers
             fs.unlinkSync(outFilePath);
@@ -405,6 +406,15 @@ module.exports.loadOSOpenData = async (params) => {
         let header = await streamToString(headerFile);
         let import_table = configs.import_table || defaultImportTable;
 
+        const client = new Client({
+             user: configs.auroraMasterUser,
+            host: configs.auroraHost,
+            database: configs.auroraDatabaseName,
+            password: configs.auroraMasterPass,
+            port: configs.auroraPort,
+        });
+
+
         global.result.status = "Step 3 - moving on to database load";
 
         try {
@@ -419,13 +429,6 @@ module.exports.loadOSOpenData = async (params) => {
             let tableCreate = `DROP TABLE IF  EXISTS ${import_table} CASCADE; CREATE TABLE ${import_table}(${header});`;
 
 
-            const client = new Client({
-                user: configs.auroraMasterUser,
-                host: configs.auroraHost,
-                database: configs.auroraDatabaseName,
-                password: configs.auroraMasterPass,
-                port: configs.auroraPort,
-            });
 
             client.connect();
 
@@ -475,16 +478,24 @@ module.exports.loadOSOpenData = async (params) => {
             return {error : e.message};
         }
 
-        return await postProcess(parameters, outFilePath, client);
+        return await postProcess(parameters, outFilePath);
     }
 
-    async function postProcess(parameters, outFilePath, client){
+    async function postProcess(parameters, outFilePath){
 
         global.result.status = "Step 5 - Loaded " + parameters.product + " cleaning up and creating views";
 
         let fileStream = fs.createReadStream(sqlPath[parameters.product]);
         let query = await streamToString(fileStream);
 
+        //TODO remove repeated code
+        const client = new Client({
+            user: configs.auroraMasterUser,
+            host: configs.auroraHost,
+            database: configs.auroraDatabaseName,
+            password: configs.auroraMasterPass,
+            port: configs.auroraPort,
+        });
 
         let finish = await new Promise((resolve, reject) => {
 

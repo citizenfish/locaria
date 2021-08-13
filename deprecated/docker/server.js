@@ -1,6 +1,7 @@
 
 
-const load = require('./load_os_opendata');
+const loadOS = require('./load_os_opendata');
+const loadPlanning = require('./load_planning_data');
 
 const express = require('express');
 
@@ -13,7 +14,7 @@ const app = express();
 app.use(express.json());
 global.result = {status: 'complete'};
 
-app.post('/', async (req, res) => {
+app.post('/load_os_opendata', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json');
 
@@ -27,10 +28,24 @@ app.post('/', async (req, res) => {
 
     //This is fine as long as only one call made
     result.status = 'processing';
-    await load.loadOSOpenData(req.body);
+    await loadOS.loadOSOpenData(req.body);
     result.status = 'complete';
 });
 
+app.post('/load_planning_data', async(req, res) => {
+
+    res.setHeader('Content-Type', 'application/json');
+
+    if(result.status !== 'complete'){
+        res.end(JSON.stringify({message : "Another load in progress please wait until complete", status : result.status, product : result.product}))
+    }
+
+    res.end(JSON.stringify({message : "Planning load in progress"}));
+    result.status = 'processing';
+    result['end'] = await loadPlanning.loadPlanningData(req.body);
+    result.status = 'complete';
+
+});
 app.post('/status', (req,res)=> {
 
     res.send(JSON.stringify(result));
