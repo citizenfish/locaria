@@ -76,7 +76,7 @@ module.exports.load_os_opendata = async (command, us) => {
         let response = await s3Client.send(s3command)
         us({message: "Tidy Up complete", details: response})
 
-        return {message : "Loaded OS opendata", product: product, productURL: productURL, version: version}
+        return {message : "Loaded OS Opendata", product: product, productURL: productURL, version: version}
 
 
     /*
@@ -106,7 +106,8 @@ module.exports.load_os_opendata = async (command, us) => {
                 return(await utils.unzipFile({input: zipFile, output: `${outFile}.${productURL.format.toLowerCase()}`}))
 
         } catch (e) {
-            return {error: e}
+            throw ({message: 'downloadAndUnzip', error: e})
+
         }
     }
 
@@ -132,7 +133,7 @@ module.exports.load_os_opendata = async (command, us) => {
 
         } catch(e) {
 
-            return {error : e}
+            return ({load: true, version: productDetails.version})
         }
     }
     /*
@@ -142,6 +143,7 @@ module.exports.load_os_opendata = async (command, us) => {
     async function getProductURL(product) {
 
         try {
+
             let json = await fetch(osDataHubProductURL).then(res => res.json());
 
             for (var i in json) {
@@ -152,7 +154,6 @@ module.exports.load_os_opendata = async (command, us) => {
                     let pVer = json[i].version;
 
                     //get the download url which means 3 calls to OS API
-                    console.log(`Retrieving details for ${product} version ${pVer}`)
 
                     json = await fetch(pURL).then(res => res.json())
 
@@ -163,8 +164,6 @@ module.exports.load_os_opendata = async (command, us) => {
 
 
                         if (formats[product] === json[i].format) {
-
-                            console.log(`Loading ${product}`)
 
                             return {
                                 version: pVer,
@@ -181,9 +180,11 @@ module.exports.load_os_opendata = async (command, us) => {
 
             }
 
-            return {error: `Product ${product} not found`}
+            throw {error: `Product ${product} not found`}
+
         } catch(e) {
-            return {error: e}
+
+            throw ({message: 'getProductURL error', error: e})
         }
 
     }

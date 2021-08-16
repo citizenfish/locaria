@@ -1,10 +1,10 @@
 const {S3Client, GetObjectCommand,PutObjectCommand} = require("@aws-sdk/client-s3")
-const yauzl = require('yauzl');
-const fs = require("fs");
-const {execFile} = require("child_process");
-const {Client} = require("pg");
-const {runQuery} = require("./load_utils");
-const copyFrom = require('pg-copy-streams').from
+const yauzl = require('yauzl')
+const fs = require("fs")
+const {execFile} = require("child_process")
+const {Client} = require("pg")
+const fetch = require("node-fetch");
+
 
 const streamToString = (stream) =>
     new Promise((resolve, reject) => {
@@ -12,7 +12,7 @@ const streamToString = (stream) =>
         stream.on("data", (chunk) => chunks.push(chunk))
         stream.on("error", reject)
         stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")))
-});
+})
 
 module.exports.gets3File  = async (region,bucket,path)  => {
 
@@ -35,7 +35,7 @@ module.exports.gets3File  = async (region,bucket,path)  => {
                 return fileContents
 
         } catch(e){
-                return {error: e}
+                throw ({message: 'gets3File error', error: e})
         }
 
 }
@@ -57,7 +57,7 @@ module.exports.puts3File = async(region,bucket,path,body, contentType='applicati
                 return {message: s3response}
 
         } catch(e) {
-                return {error: e}
+                throw ({message: 'puts3File error', error: e})
         }
 
 }
@@ -108,7 +108,6 @@ module.exports.unzipFile = async(parameters) => {
                                 })
 
                                 zipfile.once('close', async function () {
-                                        console.log('zip done')
                                         resolve()
 
                                 });
@@ -121,8 +120,8 @@ module.exports.unzipFile = async(parameters) => {
                 return returnValue
 
         } catch(e){
-                console.log(e)
-                return {error: e}
+
+                throw ({message: 'unzipFile error', error: e})
         }
 }
 
@@ -134,7 +133,6 @@ module.exports.loadGeopackage = async(command) => {
 
         let args = ['-f',     'PostgreSQL',
                     '-lco',   'OVERWRITE=YES',
-                    '-lco',   'GEOMETRY_NAME=wkb_geometry',
                     '-lco',   'PG_USE_COPY=YES',
                     '-lco',   'OGR_TRUNCATE=YES',
                     '-t_srs', 'EPSG:4326',
@@ -160,76 +158,25 @@ module.exports.loadGeopackage = async(command) => {
                 return {message : res}
 
         } catch(e){
-                return {error : e.message}
+                throw ({message: 'loadGeopackage error', error: e})
         }
 
 
 }
 
+//TODO refactor loadgeopackage as ogr2ogr will do this
 module.exports.loadCSV = async(command) => {
 
-        try {
-                //read header from first line of file
-                let header = ''
-                let import_table = command.import_table
-
-                await new Promise( (resolve) => {
-                        const dataFile = fs.createReadStream(command.output)
-                        const reader = readline.createInterface({input: dataFile})
-
-                        reader.on('line', (line) => {
-                                header = line
-                                reader.close()
-                                resolve()
-                        })
-                })
-
-                if(header === ''){
-                        return {error : "Cannot read header"}
-                }
-
-                //Now make the table
-                header = header.toLowerCase()
-                    .split(',')
-                    .map(function (value) {
-                            return value + " TEXT"
-                    })
-                    .join(',')
-                    .replace(/[^0-9A-Z_ ]/, '');
-
-                command['query'] = `DROP TABLE IF  EXISTS ${import_table} CASCADE; CREATE TABLE ${import_table}(${header});`;
-                let res = await runQuery(command)
-
-                //import the data
-                let res2 = await new Promise((resolve, reject) => {
-
-                        let stream = client.query(copyFrom(`COPY ${import_table} FROM STDIN WITH CSV HEADER`));
-                        let fileStream = fs.createReadStream(command.output);
-                        fileStream.on('error', function (err) {
-                                reject(err.message);
-                        });
-                        stream.on('finish', function () {
-                                resolve({});
-                        });
-                        fileStream.pipe(stream);
-
-                });
-
-                return {message : 'CSV data load complete'}
-
-        } catch(e) {
-                return {error : e.message};
-        }
-
 
 }
 
-module.exports.runQuery =  async(parameters) => {
+module.exports.runQuery =  async(parameters, values=[]) => {
 
         try {
                 //query in parameters or read from file
-                let filestream = parameters.sqlFile ? fs.createReadStream(parameters.sqlFile) : ''
-                let query = filestream === '' ? parameters.query : await streamToString(fileStream)
+                let fileStream = parameters.sqlFile ? fs.createReadStream(parameters.sqlFile) : ''
+                let query = fileStream === '' ? parameters.query : await streamToString(fileStream)
+
 
                 const client = new Client({
                         user: parameters.credentials.auroraMasterUser,
@@ -239,25 +186,40 @@ module.exports.runQuery =  async(parameters) => {
                         port: parameters.credentials.auroraPort,
                 });
 
+
                 let finish = await new Promise((resolve, reject) => {
 
-                        client.query(query, function (err, res) {
-
-                                if (err) {
-                                        console.log(err.stack)
-                                        reject(err.stack);
-                                }
+                        client.connect().catch(e => {reject(err.stack)})
 
 
-                                resolve(res);
-                        });
+                                client.query(query, values, (err, res) => {
+
+                                        if (err) {
+                                                reject(err.stack)
+                                        }
+
+                                        client.end()
+                                        resolve(res)
+                                });
+
+
                 });
 
-                return {message: res}
+                return {message: finish}
 
         } catch(e){
-                return {error : e.message};
+
+                throw ({message: 'runQuery error', error: e})
         }
 
 
+}
+
+module.exports.fetch_sync = async (url, data) => {
+
+        return await fetch(url).then(res => res.json());
+}
+
+module.exports.sleep = async (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
 }

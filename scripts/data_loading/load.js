@@ -1,5 +1,6 @@
 //requires
 const {load_os_opendata} = require('./load_os_opendata.js')
+const {load_planning_data} = require('./load_planning_data.js')
 const utils = require('./load_utils.js')
 
 
@@ -23,7 +24,7 @@ async function main(){
     }
 
     //TODO check to see if a command is already in progress and return if so
-    await update_status({messasge : 'read command', status : 'success', command: command})
+    await update_status({message : 'read command', status : 'success', command: command})
 
 
     command['region'] = region
@@ -34,8 +35,11 @@ async function main(){
         switch (command.command) {
 
             case 'load_os_opendata':
-
                 returnValue = await load_os_opendata(command, update_status)
+                break;
+
+            case 'load_planning_data':
+                returnValue = await load_planning_data(command, update_status)
                 break;
 
             default:
@@ -51,24 +55,25 @@ async function main(){
         update_status({message: 'Error in load', details: e})
         returnValue = {error : e}
     }
-    return(returnValue);
+    return(returnValue)
 }
 
 async function update_status(status_update)  {
 
-    console.log(status_update.message)
+    console.log(JSON.stringify(status_update))
+
 
     //we pass this function into modules so persist the s3 details
-    this.region = region;
-    this.bucket = bucket;
-    this.status_path = status_path;
+    this.region = region
+    this.bucket = bucket
+    this.status_path = status_path
 
     //Add a timestamp
 
     status_update['timestamp'] = Date().toLocaleString()
     //Add status to array and write to S3
     status.push(status_update);
-    return await utils.puts3File(region,bucket,status_path,JSON.stringify(status));
+    return await utils.puts3File(region,bucket,status_path,JSON.stringify(status))
 
 }
 
