@@ -31,7 +31,10 @@ const Home = () => {
 	return (
 		<Layout>
 			<Paper elevation={3} className={classes.paperMargin}>
-				<div id="map" className={classes.map}></div>
+				<div className={classes.mapContainer}>
+					<div id="map" className={classes.map}></div>
+					<div id="pointer" className={classes.pointer}></div>
+				</div>
 			</Paper>
 			<Paper elevation={3} className={classes.paperMargin}>
 				<Grid container className={classes.root} spacing={2}>

@@ -1,4 +1,5 @@
 import {alpha, makeStyles} from '@material-ui/core/styles';
+import marker from '../locus/components/images/marker.svg';
 
 const useStyles = makeStyles((theme) => ({
 		grow: {
@@ -64,9 +65,24 @@ const useStyles = makeStyles((theme) => ({
 				display: 'none',
 			},
 		},
+	mapContainer: {
+		position: "relative",
+		width: '100%',
+		height: '50vh'
+	},
+	pointer:{
+		width: '100%',
+		height: '50vh',
+		"background-image": `url('${marker}')`,
+		"background-size": "75px 113px",
+		"background-position": "center",
+		"background-repeat": "no-repeat",
+		position: "absolute"
+	},
 		map: {
 			width: '100%',
-			height: '50vh'
+			height: '50vh',
+			position:"absolute"
 		},
 		paperMargin: {
 			margin: '5px'
