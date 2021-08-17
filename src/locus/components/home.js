@@ -31,7 +31,7 @@ const Home = () => {
 	return (
 		<Layout>
 			<Paper elevation={3} className={classes.paperMargin}>
-				<div className={classes.mapContainer}>
+				<div className={classes.mapContainer+" no-controls"}>
 					<div id="map" className={classes.map}></div>
 					<div id="pointer" className={classes.pointer}></div>
 				</div>
@@ -46,12 +46,12 @@ const Home = () => {
 									<CardActionArea>
 										<CardMedia
 											className={classes.media}
-											image="/static/images/cards/contemplative-reptile.jpg"
+											image={channel.image}
 											title="Contemplative Reptile"
 										/>
 										<CardContent>
 											<Typography gutterBottom variant="h5" component="h2">
-												{channelDisplay(channel)}
+												{channelDisplay(channel,channel.name)}
 											</Typography>
 											<Typography variant="body2" color="textSecondary" component="p">
 												{channel.description}
@@ -63,7 +63,7 @@ const Home = () => {
 											Share
 										</Button>
 										<Button size="small" color="primary">
-											Learn More
+											{channelDisplay(channel,'View')}
 										</Button>
 									</CardActions>
 								</Card>
@@ -78,11 +78,11 @@ const Home = () => {
 	);
 };
 
-function channelDisplay(channel) {
+function channelDisplay(channel,text) {
 	if(channel.type==='Report')
-		return (<Link to={`/${channel.type}/${channel.report_name}`} key={channel.key}>{channel.name}</Link>)
+		return (<Link to={`/${channel.type}/${channel.report_name}`} key={channel.key}>{text}</Link>)
 	else
-		return (<Link to={`/${channel.type}/${channel.category}`} key={channel.key}>{channel.name}</Link>)
+		return (<Link to={`/${channel.type}/${channel.category}`} key={channel.key}>{text}</Link>)
 
 }
 

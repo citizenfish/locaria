@@ -13,7 +13,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.(svg|png)$/i,
+				test: /\.(svg|png|jpg)$/i,
 				type: 'asset/resource',
 				generator: {
 					filename: 'images/[hash][ext][query]'

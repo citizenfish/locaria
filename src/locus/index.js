@@ -7,6 +7,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 
+import cssOL from './components/css/ol.css';
+
 window.websocket=new Websockets();
 
 window.websocket.init({"url": window.config.ws},connected,closed,errored);

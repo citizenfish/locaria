@@ -1,7 +1,24 @@
 import {alpha, makeStyles} from '@material-ui/core/styles';
+import {green, purple} from '@material-ui/core/colors';
+
+// Fixed images
 import marker from '../locus/components/images/marker.svg';
 
+// Channel Images
+import channelPlanning from './images/channel-planning.jpg';
+import channelDemocracy from './images/channel-democracy.jpg';
+import channelEvents from './images/channel-events.jpg';
+import channelReported from './images/channel-reported.jpg';
+
+
 const useStyles = makeStyles((theme) => ({
+		primary: {
+			main: green,
+		}, secondary: {
+			main: green,
+		},
+
+
 		grow: {
 			flexGrow: 1,
 		},
@@ -22,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 				backgroundColor: alpha(theme.palette.common.white, 0.25),
 			},
 			marginRight: theme.spacing(2),
-			marginLeft: 0,
 			width: '100%',
 			[theme.breakpoints.up('sm')]: {
 				marginLeft: theme.spacing(3),
@@ -36,10 +52,10 @@ const useStyles = makeStyles((theme) => ({
 			pointerEvents: 'none',
 			display: 'flex',
 			alignItems: 'center',
-			justifyContent: 'center'
+			justifyContent: 'center',
 		},
 		inputRoot: {
-			color: 'inherit',
+			color: 'inherit'
 		},
 		inputInput: {
 			padding: theme.spacing(1, 1, 1, 0),
@@ -65,24 +81,24 @@ const useStyles = makeStyles((theme) => ({
 				display: 'none',
 			},
 		},
-	mapContainer: {
-		position: "relative",
-		width: '100%',
-		height: '50vh'
-	},
-	pointer:{
-		width: '100%',
-		height: '50vh',
-		"background-image": `url('${marker}')`,
-		"background-size": "75px 113px",
-		"background-position": "center",
-		"background-repeat": "no-repeat",
-		position: "absolute"
-	},
+		mapContainer: {
+			position: "relative",
+			width: '100%',
+			height: '50vh'
+		},
+		pointer: {
+			width: '100%',
+			height: '50vh',
+			"background-image": `url('${marker}')`,
+			"background-size": "75px 113px",
+			"background-position": "center",
+			"background-repeat": "no-repeat",
+			position: "absolute"
+		},
 		map: {
 			width: '100%',
 			height: '50vh',
-			position:"absolute"
+			position: "absolute"
 		},
 		paperMargin: {
 			margin: '5px'
@@ -90,14 +106,46 @@ const useStyles = makeStyles((theme) => ({
 		channelPanel: {
 			"min-with": '200px',
 			"min-height": '150px'
+		},
+		media: {
+			height: '220px'
 		}
 	})
 );
 
 const channels = [
-	{"type": "Category", "key": "chanPlanning","name":"Planning", "description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica", "category": "Planning"},
-	{"type": "Category", "key": "chanAll", "name":"All","description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica", "category": "*"},
-	{"type": "Report", "key": "chanDemocracy","name":"Democracy", "description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica", "report_name": "democracy_location"}
+	{
+		"type": "Category",
+		"key": "chanPlanning",
+		"name": "Planning",
+		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+		"category": "Planning",
+		"image": `${channelPlanning}`
+	},
+	{
+		"type": "Category",
+		"key": "chanAll",
+		"name": "All",
+		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+		"category": "*",
+		"image": `${channelEvents}`
+	},
+	{
+		"type": "Category",
+		"key": "chanReported",
+		"name": "Reported",
+		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+		"category": "Reported",
+		"image": `${channelReported}`
+	},
+	{
+		"type": "Report",
+		"key": "chanDemocracy",
+		"name": "Democracy",
+		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+		"report_name": "democracy_location",
+		"image": `${channelDemocracy}`
+	}
 ];
 
 export {useStyles, channels};
