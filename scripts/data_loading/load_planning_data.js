@@ -28,7 +28,7 @@ module.exports.load_planning_data = async (command, us) => {
     let applications = []
     let fetch = true
     let fetched = 0
-    let remaining =0
+    let remaining = 0
     while(fetch) {
 
         let results = await fetch_sync(`${url}&pg_sz=${page}&index=${index}`)
