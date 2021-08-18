@@ -12,7 +12,12 @@ const formats = {
 const sqlPath = {
     OpenNames: './opennames_view.sql',
     OpenUPRN : './openuprn_view.sql'
-};
+}
+
+const suffix = {
+    geopackage: 'gpkg',
+    csv: 'csv'
+}
 
 const zipFile = '/tmp/zipfile.zip'
 const outFile = '/tmp/outfile'
@@ -46,7 +51,7 @@ module.exports.load_os_opendata = async (command, us) => {
 
         //Download and unzip the data file
         let unzip = await downloadAndUnzip(productURL)
-        us({message: "Unzip complete", details : unzip})
+        us({message: "Unzip complete, loading to database", details : unzip})
 
         //Add input/output files to command so we can delete later
         command = Object.assign(command, unzip)
@@ -100,10 +105,12 @@ module.exports.load_os_opendata = async (command, us) => {
                     file.on('finish', resolve);
                 });
 
-                us({message : `Downloaded ${productURL.url} to ${zipFile}`})
+                let zipoutput = `${outFile}.${suffix[productURL.format.toLowerCase()]}`
+                us({message : `Downloaded ${productURL.url} to ${zipFile} unzipping to ${zipoutput}`})
+
 
                 //Next we unzip the file
-                return(await utils.unzipFile({input: zipFile, output: `${outFile}.${productURL.format.toLowerCase()}`}))
+                return(await utils.unzipFile({input: zipFile, output: `${zipoutput}`}))
 
         } catch (e) {
             throw ({message: 'downloadAndUnzip', error: e})

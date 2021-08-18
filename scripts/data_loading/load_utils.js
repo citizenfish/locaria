@@ -71,28 +71,42 @@ module.exports.unzipFile = async(parameters) => {
                         yauzl.open(parameters.input, {
                                 lazyEntries: true,
                                 autoClose: true
-                        }, function (err, zipfile)
-                        {
+                        },  (err, zipfile) => {
 
                                 if (err) {
                                         console.log(err.message);
                                         reject(err.message);
                                 }
 
+                                let gpkg = false;
+                                let finishedZip =false;
+
+                                //make sure we have finished writing before we close the process
+                                const checkFinished = () => {
+                                        if(gpkg && finishedZip) {
+                                                resolve()
+                                        }
+                                }
                                 zipfile.readEntry()
 
                                 zipfile.on('entry', (entry) =>{
 
                                         if(/gpkg|csv/.test(entry.fileName)){
                                                 returnValue.processedFiles.push(entry.fileName)
-                                                zipfile.openReadStream(entry, function (err, readStream) {
+                                                zipfile.openReadStream(entry,  (err, readStream) => {
 
                                                         if (err) {
                                                                 console.log(err.message)
                                                                 reject(err);
                                                         }
 
+                                                        //ensure we finish writing before closing zip
+                                                        gpkg = false;
                                                         const outFile = fs.createWriteStream(parameters.output)
+                                                            .on('finish', () => {
+                                                                gpkg = true;
+                                                                checkFinished()
+                                                        })
 
                                                         readStream.pipe(outFile)
 
@@ -108,7 +122,8 @@ module.exports.unzipFile = async(parameters) => {
                                 })
 
                                 zipfile.once('close', async function () {
-                                        resolve()
+                                        finishedZip = true
+                                        checkFinished()
 
                                 });
 
@@ -132,9 +147,11 @@ module.exports.loadGeopackage = async(command) => {
         const db = `PG:dbname=${command.credentials.auroraDatabaseName} active_schema=${command.parameters.schema || 'locus_data'} user=${command.credentials.auroraMasterUser} password=${command.credentials.auroraMasterPass} port=${command.credentials.auroraPort} host=${command.credentials.auroraHost}`;
 
         let args = ['-f',     'PostgreSQL',
+                    '-oo',    'LIST_ALL_TABLES=NO',
                     '-lco',   'OVERWRITE=YES',
                     '-lco',   'PG_USE_COPY=YES',
                     '-lco',   'OGR_TRUNCATE=YES',
+                    '-lco',   'GEOMETRY_NAME=wkb_geometry',
                     '-t_srs', 'EPSG:4326',
                     '-skipfailures',
                     db,

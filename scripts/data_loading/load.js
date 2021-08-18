@@ -8,23 +8,42 @@ const utils = require('./load_utils.js')
 const region = process.env.region || 'eu-west-1'
 const bucket = `${process.env.domain || 'locus1.nautoguide.com'}-data`
 const path = 'command.json'
-const status_path = 'status.json'
+let status_path = 'status.json'
 let status = []
 
 main()
 
-async function main(){
+async function main() {
 
-    let command = JSON.parse(await utils.gets3File(region,bucket,path))
+    let command = {}
     let returnValue = ''
 
-    if(command.error) {
-        console.log({error : 'Failed', bucket : bucket, diagnostics : command})
-        return(command)
+    try {
+        //read the command file from s3
+        command = JSON.parse(await utils.gets3File(region, bucket, path))
+
+        if (command.error) {
+            console.log({error: 'Failed', bucket: bucket, diagnostics: command})
+            return
+        }
+
+        status_path = `${command.command}_${status_path}`
+
+        //Check to see if a command is already in progress and return
+        let current_status = JSON.parse(await utils.gets3File(region, bucket, status_path))
+
+        if (current_status[0].status === 'processing') {
+            console.log({error: `${status_path} is already processing`, details: current_status})
+            //TODO if command is still in processing after too long then re-run
+            return
+        }
+    } catch (e) {
+        update_status({message: e, status: 'error'})
+        return
     }
 
-    //TODO check to see if a command is already in progress and return if so
-    await update_status({message : 'read command', status : 'success', command: command})
+
+    await update_status({message: 'read command', status: 'processing', command: command.command})
 
 
     command['region'] = region
@@ -43,22 +62,24 @@ async function main(){
                 break;
 
             default:
-                await update_status({
-                    operation: 'execute command',
+                returnValue = {
+                    message: 'execute command failure',
                     status: 'error',
                     error: `Invalid command ${command.command}`
-                })
+                }
 
         }
-    } catch(e){
+    } catch (e) {
 
-        update_status({message: 'Error in load', details: e})
-        returnValue = {error : e}
+        await update_status({message: 'Error in load', details: e, status: 'error'})
+        returnValue = {error: e}
     }
-    return(returnValue)
+
+    await update_status({message: returnValue, status: 'end'})
+    return
 }
 
-async function update_status(status_update)  {
+async function update_status(status_update) {
 
     console.log(JSON.stringify(status_update))
 
@@ -73,7 +94,13 @@ async function update_status(status_update)  {
     status_update['timestamp'] = Date().toLocaleString()
     //Add status to array and write to S3
     status.push(status_update);
-    return await utils.puts3File(region,bucket,status_path,JSON.stringify(status))
+    
+    try {
+        return await utils.puts3File(region, bucket, status_path, JSON.stringify(status))
+    } catch(e) {
+        console.log(e)
+        return
+    }
 
 }
 
