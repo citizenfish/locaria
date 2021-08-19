@@ -15,7 +15,7 @@ import channelReported from './images/channel-reported.jpg';
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: '#eccb1c',
+			main: '#ff9d00',
 		},
 		secondary: {
 			main: '#f44336',
@@ -64,15 +64,15 @@ const useStyles = makeStyles((theme) => ({
 			color: 'inherit'
 		},
 		inputInput: {
-			padding: theme.spacing(1, 1, 1, 0),
+			//padding: theme.spacing(1, 1, 1, 0),
 			// vertical padding + font size from searchIcon
-			paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+			//paddingLeft: '50px',
 			transition: theme.transitions.create('width'),
 			width: '100%',
 			[theme.breakpoints.up('md')]: {
 				width: '20ch',
 			},
-			"margin-left": '50px'
+			marginLeft: "50px !important"
 
 		},
 		sectionDesktop: {
@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
 const channels = [
 	{
 		"type": "Category",
-		"key": "chanPlanning",
+		"key": "Planning",
 		"name": "Planning",
 		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
 		"category": "Planning",
@@ -130,7 +130,7 @@ const channels = [
 	},
 	{
 		"type": "Category",
-		"key": "chanAll",
+		"key": "All",
 		"name": "All",
 		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
 		"category": "*",
@@ -138,7 +138,7 @@ const channels = [
 	},
 	{
 		"type": "Category",
-		"key": "chanReported",
+		"key": "Reported",
 		"name": "Reported",
 		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
 		"category": "Reported",
@@ -146,7 +146,7 @@ const channels = [
 	},
 	{
 		"type": "Report",
-		"key": "chanDemocracy",
+		"key": "Democracy",
 		"name": "Democracy",
 		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
 		"report_name": "democracy_location",
