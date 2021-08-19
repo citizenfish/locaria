@@ -1,7 +1,7 @@
 //requires
-const {load_os_opendata} = require('./load_os_opendata.js')
-const {load_planning_data} = require('./load_planning_data.js')
-const utils = require('./load_utils.js')
+const {load_os_opendata} = require('./os_opendata/load_os_opendata.js')
+const {load_planning_data} = require('./planning/load_planning_data.js')
+const {gets3File,puts3File,deletes3File} = require('./load_utils.js')
 
 
 ///Variables
@@ -20,31 +20,33 @@ async function main() {
 
     try {
         //read the command file from s3
-        command = JSON.parse(await utils.gets3File(region, bucket, path))
+        command = JSON.parse(await gets3File(region, bucket, path))
 
         if (command.error) {
             console.log({error: 'Failed', bucket: bucket, diagnostics: command})
             return
         }
 
-        status_path = `${command.command}_${status_path}`
+        status_path = `${command.parameters.product}_${status_path}`
 
         //Check to see if a command is already in progress and return
-        let current_status = JSON.parse(await utils.gets3File(region, bucket, status_path))
+        let current_status = JSON.parse(await gets3File(region, bucket, status_path))
 
-        if (current_status[0].status === 'processing') {
+        if (current_status[current_status.length - 1].status !== 'end') {
             console.log({error: `${status_path} is already processing`, details: current_status})
+            await deletes3File(region, bucket, path)
             //TODO if command is still in processing after too long then re-run
             return
         }
     } catch (e) {
-        update_status({message: e, status: 'error'})
-        return
+        if(!command.command) {
+            update_status({message: e, status: 'error'})
+            return
+        }
+
     }
 
-
     await update_status({message: 'read command', status: 'processing', command: command.command})
-
 
     command['region'] = region
     command['bucket'] = bucket
@@ -76,6 +78,7 @@ async function main() {
     }
 
     await update_status({message: returnValue, status: 'end'})
+    await deletes3File(region, bucket, path)
     return
 }
 
@@ -94,22 +97,12 @@ async function update_status(status_update) {
     status_update['timestamp'] = Date().toLocaleString()
     //Add status to array and write to S3
     status.push(status_update);
-    
+
     try {
-        return await utils.puts3File(region, bucket, status_path, JSON.stringify(status))
-    } catch(e) {
+        return await puts3File(region, bucket, status_path, JSON.stringify(status))
+    } catch (e) {
         console.log(e)
         return
     }
 
 }
-
-
-
-
-
-
-
-
-
-

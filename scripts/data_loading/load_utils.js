@@ -1,4 +1,4 @@
-const {S3Client, GetObjectCommand,PutObjectCommand} = require("@aws-sdk/client-s3")
+const {S3Client, GetObjectCommand,PutObjectCommand,DeleteObjectCommand} = require("@aws-sdk/client-s3")
 const yauzl = require('yauzl')
 const fs = require("fs")
 const {execFile} = require("child_process")
@@ -60,6 +60,27 @@ module.exports.puts3File = async(region,bucket,path,body, contentType='applicati
                 throw ({message: 'puts3File error', error: e})
         }
 
+}
+
+module.exports.deletes3File = async(region,bucket,path) => {
+
+        const s3Client = new S3Client({region: region, signatureVersion : "v4"});
+        console.log(`${region} ${bucket} ${path}`)
+        try {
+
+                const S3command = new DeleteObjectCommand({
+                        Bucket: bucket,
+                        Key: path
+                })
+
+                let s3response = await s3Client.send(S3command)
+
+                return {message: s3response}
+
+        } catch(e) {
+                console.log(e)
+                throw ({message: 'deletes3File error', error: e})
+        }
 }
 
 module.exports.unzipFile = async(parameters) => {
@@ -158,6 +179,10 @@ module.exports.loadGeopackage = async(command) => {
                     command.output
         ];
 
+        //Allow layers to be specified
+        if(command.parameters.layers) {
+                args = args.concat(command.parameters.layers)
+        }
 
         try {
                 let res  = await new Promise((resolve,reject) => {
