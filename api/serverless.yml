@@ -1,6 +1,6 @@
 service: locus-api
 #configValidationMode: error
-#projectDir: ../../
+projectDir: ../../
 provider:
   name: aws
   profile: ${file(../../locus-custom.yml):${self:custom.stage}.profile}
@@ -114,18 +114,10 @@ resources:
               Cookies:
                 Forward: 'all'
           CustomErrorResponses:
-            - ErrorCode: '403'
-              ErrorCachingMinTTL: 1
             - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
               ErrorCachingMinTTL: 1
-            - ErrorCode: '500'
-              ErrorCachingMinTTL: 1
-            - ErrorCode: '502'
-              ErrorCachingMinTTL: 1
-            - ErrorCode: '503'
-              ErrorCachingMinTTL: 1
-            - ErrorCode: '504'
-              ErrorCachingMinTTL: 1
+              ResponseCode: 200
           DefaultRootObject: 'index.html'
           Enabled: true
           PriceClass: 'PriceClass_100'
@@ -243,6 +235,13 @@ resources:
       Properties:
         SubnetId:
           Ref: PrivateSubnetA
+        RouteTableId:
+          Ref: PrivateRouteTable
+    SubnetRouteTableAssociationLambdaPrivateB:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PrivateSubnetB
         RouteTableId:
           Ref: PrivateRouteTable
     SubnetRouteTableAssociationLambdaPublicA:

@@ -1,43 +1,43 @@
-import { Queue } from '@nautoguide/ourthings';
-import Templates from '@nautoguide/ourthings/Queueable/Templates';
-import Elements from '@nautoguide/ourthings/Queueable/Elements';
-import Internals from '@nautoguide/ourthings/Queueable/Internals';
-import Openlayers from './Openlayers';
-import Browser from '@nautoguide/ourthings/Queueable/Browser';
-import Api from '@nautoguide/ourthings/Queueable/Api';
-import Menu from '@nautoguide/ourthings/Queueable/Menu';
 
-import Locus from './locus';
-
-import {mainMapStyle,locationStyle} from '../../site/map-styles/main';
-window.styles={};
-window.styles.mainMapStyle=mainMapStyle;
-window.styles.locationStyle=locationStyle;
-
-
+import Websockets from "./libs/Websockets";
 /*
- * Startup
+ * Add react
  */
-let queue;
-document.addEventListener("DOMContentLoaded", function(event) {
-	queue = new Queue({
-		"templates": Templates,
-		"elements": Elements,
-		"api": Api,
-		"locus": Locus,
-		"internals": Internals,
-		"openlayers": Openlayers,
-		"browser": Browser,
-		"menu":Menu
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
 
-	});
-	window.queue=queue;
-});
+import cssOL from './components/css/ol.css';
+
+window.websocket=new Websockets();
+
+window.websocket.init({"url": window.config.ws},connected,closed,errored);
+
+
+function connected() {
+	ReactDOM.render(<App/>, document.getElementById('root'));
+
+}
+
+function closed(event) {
+	console.log(`websock closed: ${event}`);
+	window.websocket.connect();
+}
+
+function errored(event) {
+	console.log(`websock errored: ${event}`);
+
+}
+
+
 
 /*
  * HELPERS
  */
 
+/*
+
+ TODO: Move to a class
 const metersPerMile=1609;
 const metersPerKm=1000;
 const meterSwitch=0;
@@ -84,5 +84,6 @@ window.distanceFormat = function (distance) {
 		return 'more';
 	}
 }
+*/
 
 
