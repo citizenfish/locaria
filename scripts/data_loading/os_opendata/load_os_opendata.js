@@ -1,14 +1,16 @@
 const fetch = require('node-fetch')
-const utils = require('./load_utils.js')
+const utils = require('../load_utils.js')
 const {S3Client, PutObjectCommand} = require("@aws-sdk/client-s3");
 const fs = require('fs')
 
 const formats = {
     OpenNames: 'GeoPackage',
-    OpenUPRN: 'CSV',
+    OpenUPRN: 'GeoPackage',
+    OpenUSRN: 'GeoPackage',
     BoundaryLine: 'GeoPackage'
 }
 
+//SQL to run post install
 const sqlPath = {
     OpenNames: './opennames_view.sql',
     OpenUPRN : './openuprn_view.sql'
@@ -25,7 +27,7 @@ const outFile = '/tmp/outfile'
 module.exports.load_os_opendata = async (command, us) => {
 
 
-        us({message: "Loading os opendata", details: command.parameters.dataSet})
+        us({message: "Loading OS Open Data", details: command.parameters.dataSet})
 
         //We need to know what we are loading and where we get it from
         let osDataHubProductURL = command.parameters.osDataHubProductURL
@@ -46,8 +48,8 @@ module.exports.load_os_opendata = async (command, us) => {
             return {message: `${product} is already up to date version ${version.version}`}
         }
 
-        us({message: "Loading commenced", details: version})
-        //console.log(productURL);
+        us({message: "Loading commenced", details: version, product: product})
+
 
         //Download and unzip the data file
         let unzip = await downloadAndUnzip(productURL)

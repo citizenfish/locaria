@@ -1,6 +1,4 @@
-
-
-const {runQuery,fetch_sync,sleep} = require('./load_utils')
+const {runQuery,fetch_sync,sleep} = require('../load_utils')
 const planitURL = 'https://www.planit.org.uk/api'
 
 const planning_table_sql = './planning_table.sql'
@@ -8,12 +6,13 @@ const default_table = 'locus_core.planning_applications'
 let page = 1000
 let index = 0
 let rate_limit = 5
+
 module.exports.load_planning_data = async (command, us) => {
 
 
     if(!command.authority_id) {
 
-        throw {'error' : 'Local authority id (authority_id required to download data'}
+        throw {error : 'Local authority id (authority_id required to download data'}
     }
 
     //Create planning table if it does not already exist
