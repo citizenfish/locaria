@@ -1,6 +1,5 @@
 /** @module locus/Locus */
-import Queueable from "@nautoguide/ourthings/Queueable";
-import AWS from 'aws-sdk';
+import Queueable from "@nautoguide/ourthings-react/Queueable";
 
 
 /**

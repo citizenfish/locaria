@@ -1,0 +1,153 @@
+<!--
+All the results templates
+-->
+
+<script id="page-content-Planning" type="text/html">
+    <section class="side-panel channel-planning">
+        <img src="images/channel-planning.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value[0]}}</h2>
+        {{#include '#page-content-filter-Header-Planning'}}
+        {{#include '#page-content-filter-types'}}
+
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+<script id="page-content-Democracy" type="text/html">
+    <section class="side-panel channel-democracy">
+        <img src="images/channel-democracy.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value[0]}}</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+<script id="page-content-Community" type="text/html">
+    <section class="side-panel channel-community">
+        <img src="images/channel-community.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value[0]}}</h2>
+        {{#include '#page-content-filter-Header-Community'}}
+        {{#include '#page-content-filter-types'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+<script id="page-content-Events" type="text/html">
+    <section class="side-panel channel-events">
+        <img src="images/channel-events.jpg" title="" alt="" class="no-mb">
+        <h2>{{memory.history.value[0]}}</h2>
+        {{#include '#page-content-filter'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+<script id="page-content-Reported" type="text/html">
+    <section class="side-panel channel-reported">
+        <img src="images/channel-reported.jpg" title="" alt="" class="no-mb">
+        <h2>Reported</h2>
+        {{#include '#page-content-filter-Reported'}}
+    </section>
+    {{#include '#page-content-result-main'}}
+</script>
+
+<script id="page-content-results" type="text/html">
+    {{#if memory.points.value.packet.features.length===0}}
+        <li aria-label="No search results, try expanding your search area">
+            No search results, try expanding your search area
+        </li>
+    {{/if}}
+    {{#for memory.points.value.packet.features}}
+        {{#include queue.getElement('#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category)? '#page-content-results-'+memory.points.value.packet.features[#loop0].properties.category:'#page-content-results-Generic'}}
+    {{/for}}
+</script>
+
+<script id="page-content-results-Distance" type="text/html">
+    <div class="distance-from {{distanceFormat(memory.points.value.packet.features[#loop0].properties.distance)}}">
+        <span class="miles-no">{{distanceFormatNumber(memory.points.value.packet.features[#loop0].properties.distance)}}</span>
+        <em>{{memory.unit.value}}</em>
+    </div>
+</script>
+
+<script id="page-content-results-Planning" type="text/html">
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
+        {{#include '#page-content-results-Distance'}}
+        <div class="item-detail">
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            <p class="result-class">
+                <strong>Type:</strong> {{memory.points.value.packet.features[#loop0].properties.description.type}}
+                <strong>Reference:</strong> {{memory.points.value.packet.features[#loop0].properties.description.ref}}
+            </p>
+            <p><a href="#" tabindex="-1">View details</a></p>
+            {{#if memory.points.value.packet.features[#loop0].properties.description.completed!==true&&memory.points.value.packet.features[#loop0].properties.description.type==='Application'}}<p class="submitted-date">This application was submitted within the last 7 days</p>{{/if}}
+
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Events" type="text/html">
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
+        {{#include '#page-content-results-Distance'}}
+
+        <div class="item-detail">
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.title}}</h4>
+            <p class="result-class">Cost: {{memory.points.value.packet.features[#loop0].properties.description.cost}}</p>
+            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Reported" type="text/html">
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
+        {{#include '#page-content-results-Distance'}}
+
+        <div class="item-detail">
+            <h4>Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</h4>
+            <p class="result-class">{{memory.points.value.packet.features[#loop0].properties.description.location}}</p>
+            <!--            <a href="#" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>View details</a>-->
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Community" type="text/html">
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
+        {{#include '#page-content-results-Distance'}}
+
+        <div class="item-detail">
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.type}}</p>
+            <a href="#" tabindex="-1" >View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Democracy" type="text/html">
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
+        {{#include '#page-content-results-Distance'}}
+
+        <div class="item-detail">
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type==="Councillor"}}
+            <h4>Title: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            <address>{{memory.points.value.packet.features[#loop0].properties.description.party}}</address>
+            {{/if}}
+            {{#if memory.points.value.packet.features[#loop0].properties.description.type!=="Councillor"}}
+            <h4>{{memory.points.value.packet.features[#loop0].properties.description.type}}: {{memory.points.value.packet.features[#loop0].properties.description.name}}</h4>
+            {{/if}}
+
+            <a href="#" tabindex="-1">View details</a>
+        </div>
+    </li>
+</script>
+
+<script id="page-content-results-Generic" type="text/html">
+    <li role="listitem" aria-label="{{memory.points.value.packet.features[#loop0].properties.description.name}}" tabindex="0" @browser.addHistory({"history":"Details/{{memory.points.value.packet.features[#loop0].properties.category}}/{{memory.points.value.packet.features[#loop0].properties.fid}}"});>
+        <div class="distance-from">
+            <span class="miles-no">{{(parseFloat(memory.points.value.packet.features[#loop0].properties.distance)/1609).toFixed(1);}}</span>
+            <em>miles</em>
+        </div>
+        <div class="item-detail">
+            <h4>Category: {{memory.points.value.packet.features[#loop0].properties.category}}</h4>
+            <p class="result-class">Type: {{memory.points.value.packet.features[#loop0].properties.description.name}}</p>
+            <a href="#" tabindex="-1">View details</a>
+        </div>
+    </li>
+</script>
