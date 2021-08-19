@@ -1,4 +1,4 @@
-import {alpha, makeStyles} from '@material-ui/core/styles';
+import {alpha, makeStyles,createTheme} from '@material-ui/core/styles';
 import {green, purple} from '@material-ui/core/colors';
 
 // Fixed images
@@ -11,13 +11,19 @@ import channelEvents from './images/channel-events.jpg';
 import channelReported from './images/channel-reported.jpg';
 
 
-const useStyles = makeStyles((theme) => ({
+//https://next.material-ui.com/customization/palette/
+const theme = createTheme({
+	palette: {
 		primary: {
-			main: green,
-		}, secondary: {
-			main: green,
+			main: '#eccb1c',
 		},
+		secondary: {
+			main: '#f44336',
+		},
+	},
+});
 
+const useStyles = makeStyles((theme) => ({
 
 		grow: {
 			flexGrow: 1,
@@ -148,4 +154,4 @@ const channels = [
 	}
 ];
 
-export {useStyles, channels};
+export {useStyles, channels, theme};

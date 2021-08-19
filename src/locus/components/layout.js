@@ -10,7 +10,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import {channels, useStyles} from "../../theme/locus";
+import {channels, useStyles,theme} from "../../theme/locus";
+import {ThemeProvider} from '@material-ui/core/styles';
+
 import {Link} from "react-router-dom";
 
 
@@ -86,6 +88,7 @@ const Layout = ({ children }) => {
 	);
 
 	return (
+		<ThemeProvider theme={theme}>
 		<Container>
 		<div className={classes.grow}>
 			<AppBar position="static">
@@ -126,6 +129,7 @@ const Layout = ({ children }) => {
 			{children}
 		</div>
 		</Container>
+		</ThemeProvider>
 	);
 };
 
