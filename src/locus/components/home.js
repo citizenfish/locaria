@@ -51,7 +51,7 @@ const Home = () => {
 										/>
 										<CardContent>
 											<Typography gutterBottom variant="h5" component="h2">
-												{channelDisplay(channel,channel.name)}
+												{channel.name}
 											</Typography>
 											<Typography variant="body2" color="textSecondary" component="p">
 												{channel.description}
@@ -62,9 +62,11 @@ const Home = () => {
 										<Button size="small" color="primary">
 											Share
 										</Button>
-										<Button size="small" color="primary">
-											{channelDisplay(channel,'View')}
-										</Button>
+										<Link to={`/${channel.type}/${channel.key}`}>
+											<Button size="small" color="primary">
+												View
+											</Button>
+										</Link>
 									</CardActions>
 								</Card>
 
@@ -78,12 +80,5 @@ const Home = () => {
 	);
 };
 
-function channelDisplay(channel,text) {
-	if(channel.type==='Report')
-		return (<Link to={`/${channel.type}/${channel.report_name}`} key={channel.key}>{text}</Link>)
-	else
-		return (<Link to={`/${channel.type}/${channel.category}`} key={channel.key}>{text}</Link>)
-
-}
 
 export default Home;

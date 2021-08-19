@@ -198,71 +198,14 @@ export default class Openlayers {
 		/*
 		 * Add our own values to the layer so we can track loading states
 		 */
-		olLayer.loadState = false;
-		if (options.loadIgnore === true)
-			olLayer.loadState = true;
-		olLayer.on('rendercomplete', function (event) {
-			if (options.type !== 'xyz') {
-				olLayer.loadState = true;
-				if (!self.maps[options.map].layerLoadState) {
-					self._checkLayerLoadState(self.maps[options.map], `${options.map}-allLoaded`);
 
-				}
-			}
-		});
 		self.maps[options.map].layers[options.name] = olLayer;
 
 	}
 
-	enableAllMapsLoadedCheck(pid, json) {
-		let self = this;
-		this.allMapsLoadedCheck = true;
-		this._checkMapLoadState();
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-	}
-
-	_checkMapLoadState() {
-		let allLoaded = true;
-		for (let m in this.maps) {
-			//console.log(`${m} - ${this.maps[m].layerLoadState} - report? ${this.allMapsLoadedCheck}`);
-			if (!this.maps[m].layerLoadState)
-				allLoaded = false;
-		}
-		if (this.allMapsLoadedCheck) {
-			if (allLoaded)
-				this.queue.setRegister('allMapsLoaded');
-		}
-		return true;
-	}
 
 
-	enableLoadCheck(pid, json) {
-		let self = this;
-		let options = Object.assign({
-			"map": "default"
-		}, json);
-		let map = self.maps[options.map];
-		map.loadStateEnabled = true;
-		this._checkLayerLoadState(map, `${options.map}-allLoaded`);
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-	}
 
-	_checkLayerLoadState(map, register) {
-		let allLoaded = true;
-		for (let l in map.layers) {
-			//console.log(`${l} - ${map.layers[l].loadState}`)
-			if (map.layers[l].loadState === undefined || map.layers[l].loadState === false) {
-				allLoaded = false;
-			}
-		}
-		if (map.loadStateEnabled) {
-			map.layerLoadState = allLoaded;
-			if (allLoaded)
-				this.queue.setRegister(register);
-		}
-		this._checkMapLoadState();
-		return true;
-	}
 
 	/**
 	 * Add an osm layer
@@ -361,48 +304,6 @@ export default class Openlayers {
 			visible: options.active,
 			name: options.name,
 			source: source,
-		});
-		source.set('tilesNeeded', 0);
-		source.set('totalTilesNeeded', 0);
-		source.on('tileloadstart', function (e) {
-			//console.log(e);
-			let tilesNeeded = source.get('tilesNeeded');
-			let totalTilesNeeded = source.get('totalTilesNeeded');
-			totalTilesNeeded++;
-			source.set('totalTilesNeeded', totalTilesNeeded);
-
-			tilesNeeded++;
-			source.set('tilesNeeded', tilesNeeded);
-			//console.log(`LOADING: ${e.tile.src_} Needed ${tilesNeeded}`);
-		});
-
-		source.on('tileloadend', function (e) {
-			let toc;
-			let tilesNeeded = source.get('tilesNeeded');
-			tilesNeeded--;
-			source.set('tilesNeeded', tilesNeeded);
-			//console.log(`GOT: ${e.tile.src_}  Needed ${tilesNeeded}`);
-			if (tilesNeeded <= 0) {
-				clearTimeout(toc);
-				toc = setTimeout(function () {
-					let tilesNeeded = source.get('tilesNeeded');
-					let totalTilesNeeded = source.get('totalTilesNeeded');
-					if (tilesNeeded <= 0) {
-						//console.log(`MAP ${options.map}: Layer ${options.name} all tiles loaded - Total ${totalTilesNeeded}`);
-						olLayer.loadState = true;
-						if (!self.maps[options.map].layerLoadState) {
-							self._checkLayerLoadState(self.maps[options.map], `${options.map}-allLoaded`);
-
-						}
-					}
-				}, 10000);
-			}
-		});
-		source.on('tileloaderror', function (e) {
-			let tilesNeeded = source.get('tilesNeeded');
-			tilesNeeded--;
-			source.set('tilesNeeded', tilesNeeded);
-			console.log(`ERROR: ${e.tile.src_}  Needed ${tilesNeeded}`);
 		});
 		return olLayer;
 	}
