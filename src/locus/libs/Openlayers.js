@@ -1273,14 +1273,14 @@ export default class Openlayers {
 	 * @example
 	 * openlayers.flyTo({"location":"2});
 	 */
-	flyTo(pid, json) {
+	flyTo( options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
 			"duration": 2000,
 			"coordinate": "",
 			"wait": false
-		}, json);
+		}, options);
 		/*
 		 * Pull all our resources
 		 */
@@ -1299,9 +1299,6 @@ export default class Openlayers {
 			}
 			if (parts === 0 || !complete) {
 				called = true;
-				if (options.wait === true)
-					self.finished(pid, self.queue.DEFINE.FIN_OK);
-
 			}
 		}
 
@@ -1315,9 +1312,7 @@ export default class Openlayers {
 		}, {
 			zoom: newZoom,
 			duration: options.duration / 2
-		}, callback);
-		if (options.wait === false)
-			self.finished(pid, self.queue.DEFINE.FIN_OK);
+		});
 
 	}
 

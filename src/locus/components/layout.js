@@ -10,17 +10,26 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import {channels, useStyles,theme} from "../../theme/locus";
+import {channels, useStyles,theme,configs} from "../../theme/locus";
 import {ThemeProvider} from '@material-ui/core/styles';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import {Link} from "react-router-dom";
+import Openlayers from "../libs/Openlayers";
+import Paper from "@material-ui/core/Paper";
+import { useCookies } from 'react-cookie';
 
 
-
-const Layout = ({ children }) => {
+const Layout = ({ children,map }) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [location, setLocation] = React.useState(null);
+
+	const [openError, setOpenError] = React.useState(false);
+
+	const [location, setLocation] = useCookies(['location']);
+
+
+	const ol=new Openlayers();
 
 	const isMenuOpen = Boolean(anchorEl);
 
@@ -38,27 +47,65 @@ const Layout = ({ children }) => {
 
 	React.useEffect(() => {
 
+		if(map===true) {
+
+			ol.addMap({
+				"target": "map",
+				"projection": "EPSG:3857",
+				"renderer": ["canvas"],
+				"zoom": 10,
+				center: configs.defaultLocation
+			});
+			ol.addLayer({
+				"name": "xyz",
+				"type": "xyz",
+				"url": `https://api.os.uk/maps/raster/v1/zxy/${configs.OSLayer}/{z}/{x}/{y}.png?key=${configs.OSKey}`,
+				"active": true
+			});
+			if(location) {
+				console.log(location);
+				ol.flyTo({"coordinate":location.location,"projection":"4326"});
+			} else {
+				console.log('no location');
+			}
+		}
+
 		window.websocket.registerQueue("postcode", function (json) {
-			setLocation(json);
-			console.log(json);
+			if(json.packet.features.length>0) {
+				setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/'});
+				if(map===true) {
+					ol.flyTo({"coordinate": location.location, "projection": "4326"});
+				}
+				console.log(json.packet.features[0].geometry.coordinates);
+
+ 			} else {
+				setOpenError(true);
+				console.log(json);
+			}
 		});
 
 	}, []);
 
-
+	function closeError() {
+		setOpenError(false);
+	}
 
 	function handleKeyDown(e) {
-		let postcode=document.getElementById('myPostcode').value;
-		console.log(postcode);
+		if( e.key === 'Enter') {
+			let postcode = document.getElementById('myPostcode').value;
+			console.log(postcode);
 
-		window.websocket.send({
-			"queue":"postcode",
-			"api":"api",
-			"data":{
-				"method":"address_search",
-				"address":postcode
-			}
-		});
+			window.websocket.send({
+				"queue": "postcode",
+				"api": "api",
+				"data": {
+					"method": "address_search",
+					"address": postcode
+				}
+			});
+			setLocation('postcode', postcode, {path: '/'});
+
+		}
 
 	}
 
@@ -103,7 +150,7 @@ const Layout = ({ children }) => {
 						<MenuIcon />
 					</IconButton>
 					<Typography className={classes.title} variant="h6" noWrap>
-						Locus - My council name
+						{configs.siteTitle}
 					</Typography>
 					<div className={classes.search}>
 						<div className={classes.searchIcon}>
@@ -116,7 +163,7 @@ const Layout = ({ children }) => {
 								input: classes.inputInput,
 							}}
 							inputProps={{ 'aria-label': 'search' }}
-							defaultValue="PP1 1PP"
+							defaultValue={configs.defaultPostcode}
 							onKeyPress={handleKeyDown}
 							id="myPostcode"
 						/>
@@ -126,11 +173,34 @@ const Layout = ({ children }) => {
 			{renderMenu}
 		</div>
 		<div>
+			{displayMap()}
+
 			{children}
+
+			<Snackbar open={openError} autoHideDuration={3000} onClose={closeError} anchorOrigin={{vertical: 'top',horizontal: 'center'}}>
+				<Alert severity="error">
+					Postcode not found — <strong>try another!</strong>
+				</Alert>
+			</Snackbar>
+
 		</div>
+
 		</Container>
 		</ThemeProvider>
 	);
+
+	function displayMap() {
+		if(map===true) {
+			return (
+				<Paper elevation={3} className={classes.paperMargin}>
+					<div className={classes.mapContainer + " no-controls"}>
+						<div id="map" className={classes.map}></div>
+						<div id="pointer" className={classes.pointer}></div>
+					</div>
+				</Paper>
+			)
+		}
+	}
 };
 
 
