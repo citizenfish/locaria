@@ -4,7 +4,7 @@ LOCUS depends upon two key views within the Postgres database. The **global_sear
 
 Both views are maintained and refreshed periodically by the **scraper** batch process. This uses a custom SQL snippet to refresh the materialized view.
 
-It is IMPORTANT that any view in the search_views_union view is not deleted without recreating the global_seach_view. The reason is that the delete must be cascaded which in turn will remove the global_search view.
+It is IMPORTANT that any view in the search_views_union view is not deleted without recreating the global_search_view. The reason is that the delete must be cascaded which in turn will remove the global_search view.
 
 If you wish to remove a view it is better to update it with null values. eg:-
 
@@ -47,7 +47,11 @@ SELECT 1234,
 Each data item should have:-
 
 - a unique nid
-- an attributes column in JSONB format
+- an attributes column in JSONB format, the following data items will be propogated from attributes into the global_search_view
+  - title
+  - url (an external url to link to for more information)
+  - description (formatted as a object)
+  - ref (a reference used for reference searches)
 - a geometry in EPSG:4326 CRS
 - one or more categories, cast to locus_core.search_category
 

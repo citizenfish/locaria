@@ -1,0 +1,19 @@
+{
+	"name": "locus",
+	"version": "1.0.0",
+	"scripts": {
+		"start": "node load.js"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.25.0",
+		"aws-sdk": "^2.959.0",
+		"child_process": "^1.0.2",
+		"fs": "0.0.1-security",
+		"node-fetch": "^2.6.1",
+		"node-fetch-sync": "^1.0.1",
+		"pg": "^8.7.1",
+		"pg-copy-streams": "^5.1.1",
+		"yaml": "^1.10.2",
+		"yauzl": "^2.10.0"
+	}
+}

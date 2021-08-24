@@ -66,6 +66,7 @@ BEGIN
 
     --This is the core search query
 
+
     SELECT jsonb_build_object('type','FeatureCollection',
                              'features', COALESCE(json_agg(
                                             json_build_object('type',        'Feature',
@@ -92,15 +93,15 @@ BEGIN
                 --Free text on JSONB attributes search
                 AND (jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb) @@ search_ts_query OR search_ts_query = '')
                 --Bounding box search
-                AND (bbox_var IS NULL OR wkb_geometry && bbox_var)
+               AND (bbox_var IS NULL OR wkb_geometry && bbox_var)
                 --distance search
                 AND (location_distance = -1 OR location_geometry IS NULL OR ST_DWithin(wkb_geometry::GEOGRAPHY, location_geometry::GEOGRAPHY, location_distance, FALSE))
                 --contains search
                 AND (location_geometry IS NULL OR location_distance != -1 OR  (location_distance = -1  AND ST_Contains(wkb_geometry, location_geometry)))
                 --reference search
-                AND (ref_search IS NULL OR attributes @> ref_search)
+               AND (ref_search IS NULL OR attributes @> ref_search)
                 --date search
-                AND (start_date_var IS NULL OR date_added::DATE BETWEEN start_date_var AND end_date_var)
+               AND (start_date_var IS NULL OR date_added::DATE BETWEEN start_date_var AND end_date_var)
                 --for sub-categorisation
                 AND (
                         --first use any filters not related to type, if empty it will match all
@@ -111,6 +112,7 @@ BEGIN
                             attributes#>>'{description,type}' = ANY (string_to_array(json_filter->>'type', ','))
                         )
                 )
+
                 OFFSET default_offset
             ) INNER_SUB
             ORDER by distance ASC, search_rank DESC

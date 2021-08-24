@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 				tables: [
 
 					//'tests/integration_tests/check_core_tables.sql',
-					//'tests/integration_tests/load_test_data.sql',
+					'tests/integration_tests/load_test_data.sql',
 					'tests/unit_tests/check_api_functions.sql'
 
 				]
@@ -30,8 +30,10 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					'configuration/functions/locus_gateway.sql',
-					'configuration/functions/sessions_api.sql'
+					//'configuration/functions/locus_gateway.sql',
+					//'configuration/functions/sessions_api.sql'
+					//'configuration/functions/search.sql'
+					'configuration/functions/address_search.sql'
 
 				]
 			},

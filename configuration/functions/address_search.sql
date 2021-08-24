@@ -21,7 +21,7 @@ BEGIN
         IF REPLACE(address_parameters->>'address', ' ', '') = '' THEN
             RETURN json_build_object('error', 'Missing address');
         ELSE
-            search_ts_query = plainto_tsquery('English', address_parameters->>'address');
+            search_ts_query = plainto_tsquery(address_parameters->>'address');
         END IF;
 
 	    SELECT json_build_object('type','FeatureCollection',
@@ -34,16 +34,18 @@ BEGIN
         INTO results_var
 		FROM (
 
+            --TODO rank order as per deprecated/data_loading/location_data/load_opennames.sh
 		    SELECT attributes,
 		           wkb_geometry,
-		           ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) as search_rank
+		           ts_rank(jsonb_to_tsvector('simple'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) as search_rank
             FROM   locus_core.address_search_view
-            WHERE  jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb)
+            WHERE  jsonb_to_tsvector('simple'::regconfig, attributes, '["string", "numeric"]'::jsonb)
+
                    @@ search_ts_query
-            ORDER BY search_rank DESC,
-					 (attributes->>'pao_start_number')::NUMERIC,
-					 attributes->>'pao_start_suffix' ASC,
-					 attributes->>'pao_text'
+            ORDER BY search_rank DESC --,
+					 --(attributes->>'pao_start_number')::NUMERIC,
+					 --attributes->>'pao_start_suffix' ASC,
+					 --attributes->>'pao_text'
             OFFSET default_offset
             LIMIT  default_limit
 		) SUB;
