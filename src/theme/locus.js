@@ -128,31 +128,31 @@ const channels = [
 		"type": "Category",
 		"key": "Planning",
 		"name": "Planning",
-		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+		"description": "Find all Conservation Areas, Tree Preservation Orders, Listed Buildings and view Planning Applications received within the last 30 days.",
 		"category": "Planning",
 		"image": `${channelPlanning}`
 	},
 	{
 		"type": "Category",
-		"key": "All",
-		"name": "All",
-		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-		"category": "*",
+		"key": "Events",
+		"name": "Events",
+		"description": "A list of events and happenings running in your area",
+		"category": "Events",
 		"image": `${channelEvents}`
 	},
 	{
 		"type": "Category",
-		"key": "Reported",
-		"name": "Reported",
-		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-		"category": "Reported",
+		"key": "Crime",
+		"name": "Crime",
+		"description": "View Crime data, accessed via the Police Crime Data API. The data does not show cases within the last three months. Figures obtained from Police.UK.",
+		"category": "Crime",
 		"image": `${channelReported}`
 	},
 	{
 		"type": "Report",
 		"key": "Democracy",
 		"name": "Democracy",
-		"description": "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+		"description": "Find information about wards, parishes, councillors, MPs, polling stations and council tax in your selected location.",
 		"report_name": "democracy_location",
 		"image": `${channelDemocracy}`
 	}
