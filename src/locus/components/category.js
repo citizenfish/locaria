@@ -12,14 +12,21 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
+import CardHeader from '@material-ui/core/CardHeader';
+import Avatar from '@material-ui/core/Avatar';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import {useCookies} from "react-cookie";
+
+import Distance from "../libs/Distance";
 
 const Category = () => {
 
 	const classes = useStyles();
+	const distance= new Distance();
 
 	let {category} = useParams();
 	const [report, setReport] = React.useState(null);
+	const [location, setLocation] = useCookies(['location']);
 
 	let channel;
 	for(let c in channels) {
@@ -31,12 +38,13 @@ const Category = () => {
 
 		window.websocket.registerQueue("categoryLoader",function(json) {
 			setReport(json);
+			console.log(json);
 		});
 
 		window.websocket.send({
 			"queue": "categoryLoader",
 			"api": "api",
-			"data": {"method": "search", "category": category}
+			"data": {"method": "search", "category": category,"location":`SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,"location_distance":10000000}
 		});
 
 
@@ -58,6 +66,15 @@ const Category = () => {
 							{report.packet.features
 								.map(feature => (
 									<Card variant="outlined" className={classes.root}>
+										<CardHeader
+											avatar={
+												<Avatar aria-label="recipe" className={classes.avatar}>
+													{feature.properties.description.type[0]}
+												</Avatar>
+											}
+											title={feature.properties.title}
+											subheader={'Distance: '+distance.distanceFormatNice(feature.properties.distance,'mile')}
+										/>
 										<CardActionArea>
 											<CardContent>
 												<Typography gutterBottom variant="h5" component="h2">

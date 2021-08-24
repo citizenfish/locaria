@@ -14,6 +14,34 @@ export function viewStyle(feature, resolution) {
 	const geometry=feature.getGeometry();
 	if(geometry.getType()==='Point') {
 		switch(type) {
+			case 'location':
+
+				return [
+					new Style({
+						image: new Icon({
+							src: markerHome,
+							size: [40,70],
+							zIndex: 100,
+							anchor:[0.5,1]
+
+
+						}),
+						text: new Text({
+							text: 'Your location',
+							font: 'bold 11px "Soleil"',
+							textBaseline: 'bottom',
+							offsetY: 15,
+							fill: new Fill({
+								color: '#000000'
+							}),
+							stroke: new Stroke({
+								color: '#FFFFFF',
+								width: 3.5
+							})
+						})
+					})
+				]
+
 			case 'polling_station':
 				return [
 					new Style({
