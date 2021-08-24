@@ -10,18 +10,16 @@
 		"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"
 	},
 	"dependencies": {
-	  	"@nautoguide/aws-wsp": "^1.1.0",
-	  "ol": "^6.5.0",
-	  "proj4": "^2.5.0",
+		"@nautoguide/aws-wsp": "^1.1.0",
+		"ol": "^6.2.1",
+		"proj4": "^2.5.0",
 		"react-router-dom": "5.2.0",
 		"console-badge": "^1.1.0",
 		"node-fetch": "^2.6.0",
-		"ol": "^6.2.1",
-		"proj4": "^2.5.0",
 		"@turf/turf": "^5.1.6",
 		"webpack": "^5.47.1",
 		"webpack-cli": "^4.7.2",
-	  "webpack-dev-server": "^3.11.2",
+		"webpack-dev-server": "^3.11.2",
 		"@babel/core": "^7.14.8",
 		"@babel/preset-env": "^7.14.8",
 		"@babel/preset-react": "^7.14.5",
@@ -57,11 +55,11 @@
 		"@babel/plugin-syntax-dynamic-import": "^7.0.0",
 		"css-loader": "^6.2.0",
 		"style-loader": "^3.2.1",
-	  "@material-ui/core": "^4.12.3",
-	  "@material-ui/icons": "^4.11.2"
+		"@material-ui/core": "^4.12.3",
+		"@material-ui/icons": "^4.11.2"
 	},
-  "peerDependencies": {
-	"react": "17.0.2",
-	"react-dom": "17.0.2"
-  }
+	"peerDependencies": {
+		"react": "17.0.2",
+		"react-dom": "17.0.2"
+	}
 }
