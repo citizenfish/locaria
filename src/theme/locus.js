@@ -106,6 +106,10 @@ const useStyles = makeStyles((theme) => ({
 			height: '50vh',
 			position: "absolute"
 		},
+	mapView: {
+		width: '100%',
+		height: '100%'
+	},
 		paperMargin: {
 			margin: '5px'
 		},

@@ -62,7 +62,7 @@ const Layout = ({ children,map }) => {
 				"url": `https://api.os.uk/maps/raster/v1/zxy/${configs.OSLayer}/{z}/{x}/{y}.png?key=${configs.OSKey}`,
 				"active": true
 			});
-			if(location) {
+			if(location.location) {
 				console.log(location);
 				ol.flyTo({"coordinate":location.location,"projection":"4326"});
 			} else {
@@ -72,7 +72,10 @@ const Layout = ({ children,map }) => {
 
 		window.websocket.registerQueue("postcode", function (json) {
 			if(json.packet.features.length>0) {
+				let postcode = document.getElementById('myPostcode').value;
 				setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/'});
+				setLocation('postcode', postcode, {path: '/'});
+
 				if(map===true) {
 					ol.flyTo({"coordinate": location.location, "projection": "4326"});
 				}
@@ -103,7 +106,6 @@ const Layout = ({ children,map }) => {
 					"address": postcode
 				}
 			});
-			setLocation('postcode', postcode, {path: '/'});
 
 		}
 
@@ -157,13 +159,13 @@ const Layout = ({ children,map }) => {
 							<SearchIcon />
 						</div>
 						<InputBase
-							placeholder="Search…"
+							placeholder="Postcode…"
 							classes={{
 								root: classes.inputRoot,
 								input: classes.inputInput,
 							}}
 							inputProps={{ 'aria-label': 'search' }}
-							defaultValue={configs.defaultPostcode}
+							defaultValue={location.postcode? location.postcode:configs.defaultPostcode}
 							onKeyPress={handleKeyDown}
 							id="myPostcode"
 						/>

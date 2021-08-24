@@ -38,6 +38,11 @@ import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction
 
 import {v4 as uuidv4} from 'uuid';
 
+import bbox from '@turf/bbox';
+import bboxPolygon from '@turf/bbox-polygon';
+import buffer from '@turf/buffer';
+
+
 
 proj4.defs([
 	["EPSG:27700", "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894 +datum=OSGB36 +units=m +no_defs"]
@@ -956,22 +961,20 @@ export default class Openlayers {
 	 * @param {string} json.layer - Layer to get extent from
 	 * @param {string} json.gejson - geojson
 	 */
-	addGeojson(pid, json) {
+	addGeojson(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
 			"layer": "default",
 			"geojson": {},
 			"clear": false
-		}, json);
+		}, options);
 		let layer = self.maps[options.map].layers[options.layer];
 		let source = layer.getSource();
 		if (options.clear === true)
 			source.clear();
 		let features = this._loadGeojson(options.map, options.geojson);
 		source.addFeatures(this._idFeatures(features));
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-
 	}
 
 	/**
@@ -1339,14 +1342,14 @@ export default class Openlayers {
 	 * @example
 	 * openlayers.zoomToLayerExtent({"map":"map_1","layer":"data"});
 	 */
-	zoomToLayerExtent(pid, json) {
+	zoomToLayerExtent(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
 			"layer": "default",
 			"buffer": 100,
 			"unit": "meters",
-		}, json);
+		}, options);
 		/*
 		 * Pull all our resources
 		 */
@@ -1381,7 +1384,6 @@ export default class Openlayers {
 			}
 		}
 
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
 	}
 
 	/**
