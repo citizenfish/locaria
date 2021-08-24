@@ -123,6 +123,13 @@ const useStyles = makeStyles((theme) => ({
 		avatar: {
 			backgroundColor: theme.palette.primary.main,
 		},
+		formControl: {
+			margin: theme.spacing(1),
+			minWidth: 120,
+		},
+		selectEmpty: {
+			marginTop: theme.spacing(2),
+		}
 	})
 );
 

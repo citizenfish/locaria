@@ -14,10 +14,15 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {useCookies} from "react-cookie";
 
 import Distance from "../libs/Distance";
+import {MenuItem} from "@material-ui/core";
 
 const Category = () => {
 
@@ -51,6 +56,10 @@ const Category = () => {
 
 	}, []);
 
+	function handleChange(e) {
+		console.log(e);
+	}
+
 	if (report !== null) {
 		return (
 			<Layout>
@@ -58,6 +67,21 @@ const Category = () => {
 					<Grid item xs={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
 							<ChannelCard></ChannelCard>
+
+
+					{/*		<FormControl className={classes.formControl}>
+								<InputLabel id="distance-select-label">Distance display</InputLabel>
+								<Select
+									labelId="distance-select-label"
+									id="distance-select"
+									value="mile"
+									onChange={handleChange}
+								>
+									<MenuItem value="mile">Miles</MenuItem>
+									<MenuItem value="km">Kilometers</MenuItem>
+								</Select>
+							</FormControl>
+*/}
 						</Paper>
 					</Grid>
 					<Grid item xs={8}>

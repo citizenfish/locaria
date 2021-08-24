@@ -38,7 +38,7 @@ const Home = () => {
 												image={channel.image}
 												title="Contemplative Reptile"
 											/>
-											<CardContent>
+											<CardContent className={classes.channelPanel}>
 												<Typography gutterBottom variant="h5" component="h2">
 													{channel.name}
 												</Typography>
