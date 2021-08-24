@@ -66,7 +66,6 @@ BEGIN
 
     --This is the core search query
 
-    RAISE NOTICE 'DEBU %',json_filter;
 
     SELECT jsonb_build_object('type','FeatureCollection',
                              'features', COALESCE(json_agg(

@@ -1,7 +1,7 @@
 const {runQuery,fetch_sync,sleep} = require('../load_utils')
 const planitURL = 'https://www.planit.org.uk/api'
 
-const planning_table_sql = './planning_table.sql'
+const planning_table_sql = './planning/planning_table.sql'
 const default_table = 'locus_core.planning_applications'
 let page = 1000
 let index = 0
@@ -10,7 +10,7 @@ let rate_limit = 5
 module.exports.load_planning_data = async (command, us) => {
 
 
-    if(!command.authority_id) {
+    if(!command.parameters.authority_id) {
 
         throw {error : 'Local authority id (authority_id required to download data'}
     }
@@ -23,7 +23,7 @@ module.exports.load_planning_data = async (command, us) => {
     delete command['sqlFile']
 
     //Retrieve applications for location provided
-    let url = `${planitURL}/applics/json?auth=${command.authority_id}&recent=${command.recent || 60}`;
+    let url = `${planitURL}/applics/json?auth=${command.parameters.authority_id}&recent=${command.parameters.recent || 60}`;
     let applications = []
     let fetch = true
     let fetched = 0
@@ -60,12 +60,18 @@ module.exports.load_planning_data = async (command, us) => {
 
     us({message: `Loading ${applications.length} records into ${default_table}`})
 
-    let query = `INSERT INTO ${command.planning_table || default_table} (attributes, wkb_geometry, category) VALUES($1::JSONB, ST_GEOMFROMEWKT($2), ARRAY['Planning']::locus_core.search_category[])`
+    let query = `INSERT INTO ${command.parameters.planning_table || default_table} (attributes, wkb_geometry, category) VALUES($1::JSONB, ST_GEOMFROMEWKT($2), ARRAY['Planning']::locus_core.search_category[])`
     command['query'] = query
 
     for(let i in applications) {
-        await runQuery(command, [applications[i], `SRID=4326;POINT(${applications[i].location_x} ${applications[i].location_y})`])
+
+        //Add in any pre-formatting here
+        let attributes  = {...applications[i], ...{ref: applications[i].uid, title: applications[i].address, description: {text: applications[i].description, type: applications[i].app_type}}}
+
+        await runQuery(command, [attributes, `SRID=4326;POINT(${applications[i].location_x} ${applications[i].location_y})`])
     }
+
+
 
     us({message: 'Refreshing global_search_view'})
 
