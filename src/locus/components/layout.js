@@ -64,7 +64,7 @@ const Layout = ({ children,map }) => {
 			});
 			if(location.location) {
 				console.log(location);
-				ol.flyTo({"coordinate":location.location,"projection":"4326"});
+				ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326"});
 			} else {
 				console.log('no location');
 			}
@@ -77,7 +77,8 @@ const Layout = ({ children,map }) => {
 				setLocation('postcode', postcode, {path: '/'});
 
 				if(map===true) {
-					ol.flyTo({"coordinate": location.location, "projection": "4326"});
+					console.log('Moving to');
+					ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
 				}
 				console.log(json.packet.features[0].geometry.coordinates);
 
