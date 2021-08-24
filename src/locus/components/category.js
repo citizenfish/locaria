@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Category = () => {
 
@@ -88,7 +89,7 @@ const Category = () => {
 	} else {
 		return (
 			<Layout>
-				<p>Loading</p>
+				<LinearProgress />
 			</Layout>
 		)
 	}

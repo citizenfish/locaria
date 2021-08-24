@@ -106,6 +106,10 @@ const useStyles = makeStyles((theme) => ({
 			height: '50vh',
 			position: "absolute"
 		},
+	mapView: {
+		width: '100%',
+		height: '100%'
+	},
 		paperMargin: {
 			margin: '5px'
 		},
@@ -154,4 +158,12 @@ const channels = [
 	}
 ];
 
-export {useStyles, channels, theme};
+const configs= {
+	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
+	OSLayer: "Road_3857",
+	siteTitle: "Locus - My council",
+	defaultPostcode: "PP1 1PP",
+	defaultLocation: [-447255.32888684,7332420.40741905]
+}
+
+export {useStyles, channels, theme,configs};
