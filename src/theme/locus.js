@@ -114,11 +114,15 @@ const useStyles = makeStyles((theme) => ({
 			margin: '5px'
 		},
 		channelPanel: {
-			"min-with": '200px',
+			"min-width": '200px',
 			"min-height": '150px'
 		},
+		channel: {
+			width: '100%'
+		},
 		media: {
-			height: '220px'
+			height: '220px',
+			backgroundSize: '220px 220px'
 		},
 		avatar: {
 			backgroundColor: theme.palette.primary.main,
