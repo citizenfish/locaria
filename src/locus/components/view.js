@@ -87,12 +87,12 @@ const View = () => {
 		return (
 			<Layout>
 				<Grid container className={classes.root} spacing={6}>
-					<Grid item xs={4}>
+					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
 							<ChannelCard></ChannelCard>
 						</Paper>
 					</Grid>
-					<Grid item xs={8}>
+					<Grid item md={8}>
 						<Paper elevation={3} className={classes.paperMargin}>
 							<Card className={classes.root}>
 								<CardContent>
