@@ -6,15 +6,16 @@ const {Client} = require("pg")
 const fetch = require("node-fetch");
 
 
-const streamToString = (stream) =>
+const streamToString = (stream, toString = true) =>
     new Promise((resolve, reject) => {
         const chunks = []
         stream.on("data", (chunk) => chunks.push(chunk))
         stream.on("error", reject)
-        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")))
+        stream.on("end", () => resolve(toString? Buffer.concat(chunks).toString("utf8") : Buffer.concat(chunks)))
 })
 
-module.exports.gets3File  = async (region,bucket,path)  => {
+
+module.exports.gets3File  = async (region,bucket,path, toString = true)  => {
 
         const s3Client = new S3Client({region: region, signatureVersion : "v4"});
 
@@ -30,7 +31,7 @@ module.exports.gets3File  = async (region,bucket,path)  => {
                         return {error: "Command body empty"}
                 }
 
-                let fileContents = await streamToString(s3response.Body)
+                let fileContents = await streamToString(s3response.Body, toString)
 
                 return fileContents
 

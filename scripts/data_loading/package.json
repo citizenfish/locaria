@@ -13,6 +13,7 @@
 		"node-fetch-sync": "^1.0.1",
 		"pg": "^8.7.1",
 		"pg-copy-streams": "^5.1.1",
+		"xlsx": "^0.17.1",
 		"yaml": "^1.10.2",
 		"yauzl": "^2.10.0"
 	}

@@ -1,5 +1,6 @@
-DROP MATERIALIZED VIEW IF EXISTS locus_core.address_search_view;
-CREATE MATERIALIZED VIEW locus_core.address_search_view
+DROP MATERIALIZED VIEW IF EXISTS locus_core.opennames_search_view;
+
+CREATE MATERIALIZED VIEW locus_core.opennames_search_view
 AS
 SELECT
 fid AS id,
@@ -9,11 +10,19 @@ FROM locus_data.namedplace N
 WHERE  local_type IN ('City','Town','Other Settlement','Village','Hamlet','Suburban Area','Named Road','Postcode');
 
 
-CREATE INDEX address_view_jsonb_ts_vector
-ON locus_core.address_search_view
+CREATE INDEX opennames_search_view_jsonb_ts_vector
+ON locus_core.opennames_search_view
 USING GIN (jsonb_to_tsvector('Simple'::regconfig, attributes, '["string", "numeric"]'::jsonb));
 
-CREATE INDEX address_view_geometry_gist
-ON locus_core.address_search_view
+CREATE INDEX opennames_search_view_geometry_gist
+ON locus_core.opennames_search_view
 USING GIST(wkb_geometry);
 
+CREATE INDEX opennames_search_view_jsonb_ops
+ON locus_core.opennames_search_view
+USING gin(attributes jsonb_path_ops);
+
+DROP MATERIALIZED VIEW IF EXISTS locus_core.address_search_view;
+
+CREATE VIEW locus_core.address_search_view
+AS SELECT * FROM locus_core.opennames_search_view;
