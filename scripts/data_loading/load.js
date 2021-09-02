@@ -1,6 +1,9 @@
 //requires
 const {load_os_opendata} = require('./os_opendata/load_os_opendata.js')
 const {load_planning_data} = require('./planning/load_planning_data.js')
+const {load_crime_data} = require('./crime/load_crime_data')
+const {load_excel} = require('./data_file/load_excel.js')
+
 const {gets3File,puts3File,deletes3File} = require('./load_utils.js')
 
 
@@ -57,11 +60,19 @@ async function main() {
 
             case 'load_os_opendata':
                 returnValue = await load_os_opendata(command, update_status)
-                break;
+                break
 
             case 'load_planning_data':
                 returnValue = await load_planning_data(command, update_status)
-                break;
+                break
+
+            case 'load_crime_data':
+                returnValue = await load_crime_data(command, update_status)
+                break
+
+            case 'load_excel':
+                returnValue = await load_excel(command, update_status)
+                break
 
             default:
                 returnValue = {
@@ -78,7 +89,8 @@ async function main() {
     }
 
     await update_status({message: returnValue, status: 'end'})
-    await deletes3File(region, bucket, path)
+    //TODO remove comment out
+    // await deletes3File(region, bucket, path)
     return
 }
 
