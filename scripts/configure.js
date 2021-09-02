@@ -12,6 +12,8 @@ const customFile='../locus-custom.yml';
 const fs = require('fs')
 const YAML = require('yaml');
 const { exec } = require('child_process');
+const dotenv = require('dotenv')
+
 
 const readline = require('readline').createInterface({
 	input: process.stdin,
@@ -264,7 +266,12 @@ function deployAPI(stage) {
 				console.log(`#${cmdLine}`);
 				exec(cmdLine, options, (err, stdout, stderr) => {
 					console.log(stdout);
-					deploySystemMain(stage);
+					const cmdLine = `sls export-env --stage ${stage}`;
+					console.log(`#${cmdLine}`);
+					exec(cmdLine, options, (err, stdout, stderr) => {
+						console.log(stdout);
+						deploySystemMain(stage);
+					});
 				});
 			});
 		}
@@ -275,7 +282,12 @@ function deployWEB(stage) {
 	const options={
 		cwd: "./"
 	};
-	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].distribution} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region}`;
+
+	const buf = fs.readFileSync('api/.env');
+	const config = dotenv.parse(buf)
+
+
+	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${config.cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region}`;
 	console.log(`#${cmdLine}`);
 
 	exec(cmdLine ,options, (err, stdout, stderr) => {

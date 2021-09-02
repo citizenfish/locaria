@@ -11,9 +11,11 @@ provider:
       Fn::GetAtt: [ AuroraRDSInstance , Endpoint.Address ]
     postgresPort:
       Fn::GetAtt: [ AuroraRDSInstance , Endpoint.Port ]
+      # TODO fix this for .env via https://www.serverless.com/plugins/serverless-export-env/
     auroraDatabaseName: ${file(../../locus-custom.yml):${self:custom.stage}.auroraDatabaseName}
     auroraMasterUser: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterPass}
+    cfdist: !Ref WebsiteDistribution
   region: ${file(../../locus-custom.yml):${self:custom.stage}.region}
   websocketsApiName: locus-websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action
@@ -780,3 +782,4 @@ functions:
           route: $default
 plugins:
   - serverless-domain-manager
+  - serverless-export-env

@@ -27,9 +27,9 @@ const Home = () => {
 		<Layout map={true}>
 
 			<Paper elevation={3} className={classes.paperMargin}>
-				<Grid container className={classes.root} spacing={2}>
+				<Grid container className={classes.root} spacing={2}  justifyContent="center">
 						{channels.map(channel => (
-							<Grid item xs={3}>
+							<Grid item md={3} className={classes.channel}>
 
 
 								<Card className={classes.root}>
@@ -38,7 +38,7 @@ const Home = () => {
 												image={channel.image}
 												title="Contemplative Reptile"
 											/>
-											<CardContent>
+											<CardContent className={classes.channelPanel}>
 												<Typography gutterBottom variant="h5" component="h2">
 													{channel.name}
 												</Typography>

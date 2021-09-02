@@ -1,4 +1,4 @@
-import {alpha, makeStyles,createTheme} from '@material-ui/core/styles';
+import {alpha, makeStyles, createTheme} from '@material-ui/core/styles';
 import {green, purple} from '@material-ui/core/colors';
 
 // Fixed images
@@ -106,19 +106,33 @@ const useStyles = makeStyles((theme) => ({
 			height: '50vh',
 			position: "absolute"
 		},
-	mapView: {
-		width: '100%',
-		height: '100%'
-	},
+		mapView: {
+			width: '100%',
+			height: '100%'
+		},
 		paperMargin: {
 			margin: '5px'
 		},
 		channelPanel: {
-			"min-with": '200px',
+			"min-width": '200px',
 			"min-height": '150px'
 		},
+		channel: {
+			width: '100%'
+		},
 		media: {
-			height: '220px'
+			height: '220px',
+			backgroundSize: '220px 220px'
+		},
+		avatar: {
+			backgroundColor: theme.palette.primary.main,
+		},
+		formControl: {
+			margin: theme.spacing(1),
+			minWidth: 120,
+		},
+		selectEmpty: {
+			marginTop: theme.spacing(2),
 		}
 	})
 );
@@ -158,12 +172,12 @@ const channels = [
 	}
 ];
 
-const configs= {
+const configs = {
 	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
 	OSLayer: "Road_3857",
 	siteTitle: "Locus - My council",
 	defaultPostcode: "PP1 1PP",
-	defaultLocation: [-447255.32888684,7332420.40741905]
+	defaultLocation: [-447255.32888684, 7332420.40741905] // EPSG:3857
 }
 
-export {useStyles, channels, theme,configs};
+export {useStyles, channels, theme, configs};

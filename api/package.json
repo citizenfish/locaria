@@ -8,7 +8,9 @@
     "uuidv4": "^6.0.2"
   },
   "devDependencies": {
-    "serverless-domain-manager": "^5.1.4"
+    "serverless-domain-manager": "^5.1.4",
+    "serverless-export-env": "^2.0.0",
+    "dotenv": "^10.0.0"
   },
   "scripts": {
     "runLocalApi": "serverless offline --stage localhost"
