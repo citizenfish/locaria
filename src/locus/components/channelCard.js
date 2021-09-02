@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import {channels, useStyles} from "../../theme/locus";
 
-const ChannelCard = () => {
+const ChannelCard = ({path}) => {
 	const classes = useStyles();
 	let {category} = useParams();
 	let channel;
@@ -36,7 +36,7 @@ const ChannelCard = () => {
 				</CardContent>
 			</CardActionArea>
 			<CardActions>
-				<Link to="/">
+				<Link to={path}>
 					<Button size="small" color="primary">
 						Back
 					</Button>

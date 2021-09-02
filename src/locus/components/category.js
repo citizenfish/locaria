@@ -66,7 +66,7 @@ const Category = () => {
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
-							<ChannelCard></ChannelCard>
+							<ChannelCard path={'/'}></ChannelCard>
 
 
 					{/*		<FormControl className={classes.formControl}>

@@ -89,7 +89,7 @@ const View = () => {
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
-							<ChannelCard></ChannelCard>
+							<ChannelCard path={'/Category/'+category}></ChannelCard>
 						</Paper>
 					</Grid>
 					<Grid item md={8}>
