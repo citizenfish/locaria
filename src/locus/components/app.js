@@ -19,6 +19,7 @@ const App = () => {
 		setLocation('location', configs.defaultLocation, {path: '/',sameSite:true});
 		setLocation('postcode', configs.defaultPostcode, {path: '/',sameSite:true});
 		setLocation('distanceSelect', configs.defaultDistanceSelect, {path: '/',sameSite:true});
+		setLocation('range', configs.defaultRange, {path: '/',sameSite:true});
 	}
 
 	return (

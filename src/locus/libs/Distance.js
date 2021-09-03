@@ -23,14 +23,15 @@ const units= {
 export default class Distance {
 
 	distanceActual(distance,unit) {
-		return distance*units[unit];
+		distance=parseFloat(distance);
+		return distance*units[unit].value;
 	}
 
 	distanceFormatNice(distance,unit,meterSwitch) {
 		meterSwitch=meterSwitch||0;
 		let niceDistance = parseFloat(distance / units[unit].value).toFixed(1);
 		if (niceDistance <= meterSwitch)
-			return `&lt;0.1 ${units[unit].lang}`;
+			return `<0.1 ${units[unit].lang}`;
 		return `${niceDistance} ${units[unit].lang}`;
 	}
 

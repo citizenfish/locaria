@@ -16,6 +16,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -30,6 +31,11 @@ const Category = () => {
 	const distance= new Distance();
 
 	let {category} = useParams();
+
+	const [currentCategory, setCurrentCategory] = React.useState(category);
+
+
+
 	const [report, setReport] = React.useState(null);
 	const [location, setLocation] = useCookies(['location']);
 
@@ -43,7 +49,6 @@ const Category = () => {
 
 		window.websocket.registerQueue("categoryLoader",function(json) {
 			setReport(json);
-			console.log(json);
 		});
 
 		forceUpdate();
@@ -53,10 +58,15 @@ const Category = () => {
 	}, []);
 
 	function handleChange(e) {
-		let distanceSelect = e.target.value;
-		//console.log(distanceSelect);
-		setLocation('distanceSelect', distanceSelect, {path: '/',sameSite:true});
+		setLocation('distanceSelect', e.target.value, {path: '/',sameSite:true});
 
+	}
+
+	function handleFilterChange(e) {
+		setLocation('range', e.target.value, {path: '/',sameSite:true});
+		location.range=e.target.value;
+		console.log(location.range);
+		forceUpdate();
 	}
 
 	const forceUpdate = () => {
@@ -64,8 +74,13 @@ const Category = () => {
 		window.websocket.send({
 			"queue": "categoryLoader",
 			"api": "api",
-			"data": {"method": "search", "category": category,"location":`SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,"location_distance":10000000}
+			"data": {"method": "search", "category": category,"limit":100,"location":`SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,"location_distance":distance.distanceActual(location.range,location.distanceSelect)}
 		});
+	}
+
+	if(currentCategory!==category) {
+		setCurrentCategory(category);
+		forceUpdate();
 	}
 
 	if (report !== null) {
@@ -77,22 +92,36 @@ const Category = () => {
 							<ChannelCard path={'/'}></ChannelCard>
 
 							<Card className={classes.channelCardForm}>
-								<CardActionArea>
-									<CardContent>
-										<FormControl className={classes.formControl}>
-											<InputLabel id="distance-select-label">Distance display</InputLabel>
-											<Select
-												labelId="distance-select-label"
-												id="distance-select"
-												value={location.distanceSelect}
-												onChange={handleChange}
-											>
-												<MenuItem value="mile">Miles</MenuItem>
-												<MenuItem value="km">Kilometers</MenuItem>
-											</Select>
-										</FormControl>
-									</CardContent>
-								</CardActionArea>
+								<CardContent>
+									<FormControl className={classes.formControl}>
+										<InputLabel id="distance-select-label">Distance</InputLabel>
+										<NativeSelect
+											labelId="distance-select-label"
+											id="distance-select"
+											value={location.distanceSelect}
+											onChange={handleChange}
+										>
+											<option value="mile">Miles</option>
+											<option value="km">Kilometers</option>
+										</NativeSelect>
+									</FormControl>
+									<FormControl className={classes.formControl}>
+
+										<InputLabel id="filter-range-select-label">Range</InputLabel>
+										<NativeSelect
+											labelId="filter-range-select-label"
+											id="range-select"
+											value={location.range}
+											onChange={handleFilterChange}
+										>
+											<option value="1">1</option>
+											<option value="3">3</option>
+											<option value="5">5</option>
+											<option value="10">10</option>
+											<option value="1000000000000">All</option>
+										</NativeSelect>
+									</FormControl>
+								</CardContent>
 							</Card>
 						</Paper>
 					</Grid>

@@ -130,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		formControl: {
 			margin: theme.spacing(1),
-			minWidth: 120,
+			minWidth: 220,
 		},
 		selectEmpty: {
 			marginTop: theme.spacing(2),
@@ -186,7 +186,8 @@ const configs = {
 	siteTitle: "Locus - My council",
 	defaultPostcode: "TQ1 4TN",
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
-	defaultDistanceSelect: 'km' // km|mile
+	defaultDistanceSelect: 'km', // km|mile
+	defaultRange: 10 // km|mile
 }
 
 export {useStyles, channels, theme, configs};
