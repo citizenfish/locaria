@@ -22,6 +22,9 @@ const units= {
 
 export default class Distance {
 
+	distanceLang(unit) {
+		return units[unit].lang;
+	}
 	distanceActual(distance,unit) {
 		distance=parseFloat(distance);
 		return distance*units[unit].value;
