@@ -15,7 +15,6 @@ import Card from "@material-ui/core/Card";
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import InputLabel from '@material-ui/core/InputLabel';
 
@@ -23,7 +22,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import {useCookies} from "react-cookie";
 
 import Distance from "../libs/Distance";
-import {MenuItem} from "@material-ui/core";
 
 const Category = () => {
 
