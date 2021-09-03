@@ -46,42 +46,54 @@ const Category = () => {
 			console.log(json);
 		});
 
-		window.websocket.send({
-			"queue": "categoryLoader",
-			"api": "api",
-			"data": {"method": "search", "category": category,"location":`SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,"location_distance":10000000}
-		});
+		forceUpdate();
 
 
 
 	}, []);
 
 	function handleChange(e) {
-		console.log(e);
+		let distanceSelect = e.target.value;
+		//console.log(distanceSelect);
+		setLocation('distanceSelect', distanceSelect, {path: '/',sameSite:true});
+
+	}
+
+	const forceUpdate = () => {
+		setReport(null);
+		window.websocket.send({
+			"queue": "categoryLoader",
+			"api": "api",
+			"data": {"method": "search", "category": category,"location":`SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,"location_distance":10000000}
+		});
 	}
 
 	if (report !== null) {
 		return (
-			<Layout>
+			<Layout update={forceUpdate}>
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
 							<ChannelCard path={'/'}></ChannelCard>
 
-
-					{/*		<FormControl className={classes.formControl}>
-								<InputLabel id="distance-select-label">Distance display</InputLabel>
-								<Select
-									labelId="distance-select-label"
-									id="distance-select"
-									value="mile"
-									onChange={handleChange}
-								>
-									<MenuItem value="mile">Miles</MenuItem>
-									<MenuItem value="km">Kilometers</MenuItem>
-								</Select>
-							</FormControl>
-*/}
+							<Card className={classes.channelCardForm}>
+								<CardActionArea>
+									<CardContent>
+										<FormControl className={classes.formControl}>
+											<InputLabel id="distance-select-label">Distance display</InputLabel>
+											<Select
+												labelId="distance-select-label"
+												id="distance-select"
+												value={location.distanceSelect}
+												onChange={handleChange}
+											>
+												<MenuItem value="mile">Miles</MenuItem>
+												<MenuItem value="km">Kilometers</MenuItem>
+											</Select>
+										</FormControl>
+									</CardContent>
+								</CardActionArea>
+							</Card>
 						</Paper>
 					</Grid>
 					<Grid item md={8}>
@@ -89,7 +101,7 @@ const Category = () => {
 
 							{report.packet.features
 								.map(feature => (
-									<Card variant="outlined" className={classes.root}>
+									<Card variant="outlined" className={classes.categoryResultsCard}>
 										<CardHeader
 											avatar={
 												<Avatar aria-label="recipe" className={classes.avatar}>
@@ -97,7 +109,7 @@ const Category = () => {
 												</Avatar>
 											}
 											title={feature.properties.title}
-											subheader={'Distance: '+distance.distanceFormatNice(feature.properties.distance,'mile')}
+											subheader={'Distance: '+distance.distanceFormatNice(feature.properties.distance,location.distanceSelect)}
 										/>
 										<CardActionArea>
 											<CardContent>

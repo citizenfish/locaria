@@ -20,7 +20,7 @@ import Paper from "@material-ui/core/Paper";
 import { useCookies } from 'react-cookie';
 
 
-const Layout = ({ children,map }) => {
+const Layout = ({ children,map,update }) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -70,25 +70,30 @@ const Layout = ({ children,map }) => {
 			}
 		}
 
-		window.websocket.registerQueue("postcode", function (json) {
-			if(json.packet.features.length>0) {
-				let postcode = document.getElementById('myPostcode').value;
-				setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/'});
-				setLocation('postcode', postcode, {path: '/'});
 
-				if(map===true) {
-					console.log('Moving to');
-					ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
-				}
-				console.log(json.packet.features[0].geometry.coordinates);
-
- 			} else {
-				setOpenError(true);
-				console.log(json);
-			}
-		});
 
 	}, []);
+
+	window.websocket.registerQueue("postcode", function (json) {
+		if(json.packet.features.length>0) {
+			let postcode = document.getElementById('myPostcode').value;
+			setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/',sameSite:true});
+			setLocation('postcode', postcode, {path: '/',sameSite:true});
+
+			if(map===true) {
+				console.log('Moving to');
+				ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
+			} else {
+				if(update!==undefined)
+					update();
+			}
+			console.log(json.packet.features[0].geometry.coordinates);
+
+		} else {
+			setOpenError(true);
+			console.log(json);
+		}
+	});
 
 	function closeError() {
 		setOpenError(false);

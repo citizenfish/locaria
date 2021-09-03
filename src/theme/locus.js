@@ -111,7 +111,8 @@ const useStyles = makeStyles((theme) => ({
 			height: '100%'
 		},
 		paperMargin: {
-			margin: '5px'
+			margin: '5px',
+			padding: '5px'
 		},
 		channelPanel: {
 			"min-width": '200px',
@@ -133,6 +134,13 @@ const useStyles = makeStyles((theme) => ({
 		},
 		selectEmpty: {
 			marginTop: theme.spacing(2),
+		},
+		channelCardForm: {
+			marginTop: '5px',
+			marginBottom: '5px'
+		},
+	categoryResultsCard: {
+			margin: '5px'
 		}
 	})
 );
@@ -176,8 +184,9 @@ const configs = {
 	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
 	OSLayer: "Road_3857",
 	siteTitle: "Locus - My council",
-	defaultPostcode: "PP1 1PP",
-	defaultLocation: [-447255.32888684, 7332420.40741905] // EPSG:3857
+	defaultPostcode: "TQ1 4TN",
+	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
+	defaultDistanceSelect: 'km' // km|mile
 }
 
 export {useStyles, channels, theme, configs};
