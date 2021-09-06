@@ -6,8 +6,22 @@ import Report from './report';
 import Category from './category';
 import View from './view';
 import Error from './error';
+import {useCookies} from "react-cookie";
+import {configs} from "../../theme/locus";
+
 
 const App = () => {
+
+	// fix our cookie defaults
+
+	const [location, setLocation] = useCookies(['location']);
+	if(location.location===undefined) {
+		setLocation('location', configs.defaultLocation, {path: '/',sameSite:true});
+		setLocation('postcode', configs.defaultPostcode, {path: '/',sameSite:true});
+		setLocation('distanceSelect', configs.defaultDistanceSelect, {path: '/',sameSite:true});
+		setLocation('range', configs.defaultRange, {path: '/',sameSite:true});
+	}
+
 	return (
 		<Router>
 			<div>

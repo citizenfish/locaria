@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Layout from './Layout';
+import Share from './share';
 import ChannelCard from './channelCard';
 
 import {Link, useParams, BrowserRouter} from "react-router-dom";
@@ -89,7 +90,7 @@ const View = () => {
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
-							<ChannelCard></ChannelCard>
+							<ChannelCard path={'/Category/'+category}></ChannelCard>
 						</Paper>
 					</Grid>
 					<Grid item md={8}>
@@ -111,9 +112,7 @@ const View = () => {
 									</Typography>
 								</CardContent>
 								<CardActions>
-									<Button size="small" color="primary">
-										Share
-									</Button>
+									<Share></Share>
 
 								</CardActions>
 							</Card>

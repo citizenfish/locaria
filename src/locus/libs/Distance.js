@@ -14,32 +14,28 @@
 
 
 const units= {
-	"mile":1609,
-	"km":1000
+	"mile":{"lang":"Miles",value:1609},
+	"km":{"lang":"KM",value:1000}
 }
+
+
+
 export default class Distance {
 
-
-	/**
-	 * Create a new websocket
-	 *
-	 * @param {number} pid - Process ID
-	 * @param {object} json - queue arguments
-	 * @param {string} json.url - URL to connect websocket too
-	 * @param {string} json.action - What json param will contain the 'action' router
-	 * @param {string} json.queues - Array of {action:"action", queue:"queue" }
-
-	 */
+	distanceLang(unit) {
+		return units[unit].lang;
+	}
 	distanceActual(distance,unit) {
-		return distance*units[unit];
+		distance=parseFloat(distance);
+		return distance*units[unit].value;
 	}
 
 	distanceFormatNice(distance,unit,meterSwitch) {
 		meterSwitch=meterSwitch||0;
-		let niceDistance = parseFloat(distance / units[unit]).toFixed(1);
+		let niceDistance = parseFloat(distance / units[unit].value).toFixed(1);
 		if (niceDistance <= meterSwitch)
-			return 0.1;
-		return niceDistance;
+			return `<0.1 ${units[unit].lang}`;
+		return `${niceDistance} ${units[unit].lang}`;
 	}
 
 
