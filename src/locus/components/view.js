@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Layout from './Layout';
+import Share from './share';
 import ChannelCard from './channelCard';
 
 import {Link, useParams, BrowserRouter} from "react-router-dom";
@@ -111,9 +112,7 @@ const View = () => {
 									</Typography>
 								</CardContent>
 								<CardActions>
-									<Button size="small" color="primary">
-										Share
-									</Button>
+									<Share></Share>
 
 								</CardActions>
 							</Card>
