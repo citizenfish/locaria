@@ -9,6 +9,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import {channels, useStyles} from "../../theme/locus";
+import Share from "./share";
 
 const ChannelCard = ({path}) => {
 	const classes = useStyles();
@@ -20,7 +21,6 @@ const ChannelCard = ({path}) => {
 	}
 	return (
 		<Card className={classes.root}>
-			<CardActionArea>
 				<CardMedia
 					className={classes.media}
 					image={channel.image}
@@ -34,8 +34,8 @@ const ChannelCard = ({path}) => {
 						{channel.description}
 					</Typography>
 				</CardContent>
-			</CardActionArea>
 			<CardActions>
+				<Share></Share>
 				<Link to={path}>
 					<Button size="small" color="primary">
 						Back

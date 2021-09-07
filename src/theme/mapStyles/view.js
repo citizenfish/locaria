@@ -3,6 +3,7 @@ import markerHome from '../../locus/components/images/marker-home.svg';
 import markerPolling from '../../locus/components/images/marker-polling.svg';
 import markerThing from '../../locus/components/images/marker-thing.svg';
 import markerTPO from '../../locus/components/images/marker-tpo.svg';
+import marker from '../../locus/components/images/marker.svg';
 
 
 export function viewStyle(feature, resolution) {
@@ -38,6 +39,20 @@ export function viewStyle(feature, resolution) {
 								color: '#FFFFFF',
 								width: 3.5
 							})
+						})
+					})
+				]
+
+			case 'location_big':
+
+				return [
+					new Style({
+						image: new Icon({
+							src: marker,
+							size: [40,90],
+							zIndex: 100,
+							anchor:[0.5,1]
+
 						})
 					})
 				]

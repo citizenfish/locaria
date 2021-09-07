@@ -111,9 +111,6 @@ const Category = () => {
 								</CardContent>
 							</CardActionArea>
 							<CardActions>
-								<Button size="small" color="primary">
-									Share
-								</Button>
 								<Link to={`/View/${category}/${feature.properties.fid}`}>
 									<Button size="small" color="primary">
 										View
@@ -147,7 +144,7 @@ const Category = () => {
 
 							<Card className={classes.channelCardForm}>
 								<CardContent>
-									<FormControl className={classes.formControl}>
+									<FormControl className={classes.formControl} fullWidth>
 										<InputLabel id="distance-select-label">Distance</InputLabel>
 										<NativeSelect
 											labelId="distance-select-label"
@@ -159,7 +156,7 @@ const Category = () => {
 											<option value="km">Kilometers</option>
 										</NativeSelect>
 									</FormControl>
-									<FormControl className={classes.formControl}>
+									<FormControl className={classes.formControl} fullWidth>
 
 										<InputLabel id="filter-range-select-label">Range</InputLabel>
 										<NativeSelect

@@ -8,7 +8,6 @@ import {Link, useParams, BrowserRouter} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {configs, useStyles} from "../../theme/locus";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -30,11 +29,19 @@ const View = () => {
 
 	const [view, setView] = React.useState(null);
 
+
+
 	React.useEffect(() => {
 
+		if(view===null) {
+			console.log('NO MAP');
 
-		window.websocket.registerQueue("viewLoader", function (json) {
-			setView(json);
+			window.websocket.send({
+				"queue": "viewLoader",
+				"api": "api",
+				"data": {"method": "get_item", "fid": feature}
+			});
+		} else {
 			ol.addMap({
 				"target": "map",
 				"projection": "EPSG:3857",
@@ -59,30 +66,34 @@ const View = () => {
 				"geojson": {
 					"type": "FeatureCollection",
 					"features": [
-							{
-								"geometry": {
-									"type": "Point",
-									"coordinates": location.location
-								},
-								"type": "Feature",
-								"properties":{
-									"type":"location"
-								}
+						{
+							"geometry": {
+								"type": "Point",
+								"coordinates": location.location
+							},
+							"type": "Feature",
+							"properties":{
+								"type":"location"
 							}
-						]
+						}
+					]
 				}
 			});
-			ol.addGeojson({"layer": "data", "geojson": json.packet});
+			ol.addGeojson({"layer": "data", "geojson": view.packet});
 			ol.zoomToLayerExtent({"layer": "data", "buffer": 50});
-		});
+			console.log('Map');
+		}
 
-		window.websocket.send({
-			"queue": "viewLoader",
-			"api": "api",
-			"data": {"method": "get_item", "fid": feature}
-		});
+	} );
 
-	}, []);
+	window.websocket.registerQueue("viewLoader", function (json) {
+		console.log('RENDER DATA');
+		setView(json);
+	});
+
+	function resetMap() {
+		ol.zoomToLayerExtent({"layer": "data", "buffer": 50});
+	}
 
 	if (view !== null) {
 		return (
@@ -97,23 +108,25 @@ const View = () => {
 						<Paper elevation={3} className={classes.paperMargin}>
 							<Card className={classes.root}>
 								<CardContent>
+
+									<CardMedia
+										className={classes.mediaMap}
+										title={view.packet.features[0].properties.title}
+									>
+										<div id="map" className={classes.mapView}>
+											<Button className={classes.mapResetButton} onClick={() => {resetMap()}}>Reset map</Button>
+										</div>
+									</CardMedia>
 									<Typography gutterBottom variant="h5" component="h2">
 										{view.packet.features[0].properties.title}
 									</Typography>
-									<CardMedia
-										className={classes.media}
-										title={view.packet.features[0].properties.title}
-									>
-										<div id="map" className={classes.mapView}></div>
-									</CardMedia>
-
 									<Typography variant="body2" color="textSecondary" component="p">
 										{view.packet.features[0].properties.description.text}
 									</Typography>
 								</CardContent>
 								<CardActions>
+									<OutsideLink to={view.packet.features[0].properties.url}></OutsideLink>
 									<Share></Share>
-
 								</CardActions>
 							</Card>
 
@@ -131,6 +144,17 @@ const View = () => {
 	}
 
 };
+
+const OutsideLink = ({to}) => {
+	if(to!==undefined) {
+		return (
+			<Button size="small" color="primary" onClick={() => {window.location=to}}>External Link</Button>
+		)
+	} else {
+		return '';
+	}
+}
+
 
 
 export default View;
