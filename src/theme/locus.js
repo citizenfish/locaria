@@ -1,8 +1,6 @@
 import {alpha, makeStyles, createTheme} from '@material-ui/core/styles';
 import {green, purple} from '@material-ui/core/colors';
 
-// Fixed images
-import marker from '../locus/components/images/marker.svg';
 
 // Channel Images
 import channelPlanning from './images/channel-planning.jpg';
@@ -92,15 +90,6 @@ const useStyles = makeStyles((theme) => ({
 			width: '100%',
 			height: '50vh'
 		},
-		pointer: {
-			width: '100%',
-			height: '50vh',
-			"background-image": `url('${marker}')`,
-			"background-size": "75px 113px",
-			"background-position": "center",
-			"background-repeat": "no-repeat",
-			position: "absolute"
-		},
 		map: {
 			width: '100%',
 			height: '50vh',
@@ -110,6 +99,17 @@ const useStyles = makeStyles((theme) => ({
 			width: '100%',
 			height: '100%'
 		},
+	mediaMap: {
+		height: '50vh',
+		position:"relative"
+	},
+	mapResetButton: {
+		position: "absolute",
+		bottom: "10px",
+		right: "10px",
+		zIndex: 100,
+		background: alpha(theme.palette.common.white, 0.25)
+	},
 		paperMargin: {
 			margin: '5px',
 			padding: '5px'
@@ -184,6 +184,7 @@ const configs = {
 	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
 	OSLayer: "Road_3857",
 	siteTitle: "Locus - My council",
+	defaultZoom: 12,
 	defaultPostcode: "TQ1 4TN",
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile

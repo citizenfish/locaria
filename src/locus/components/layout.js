@@ -18,6 +18,8 @@ import {Link} from "react-router-dom";
 import Openlayers from "../libs/Openlayers";
 import Paper from "@material-ui/core/Paper";
 import { useCookies } from 'react-cookie';
+import {viewStyle} from "../../theme/mapStyles/view";
+import Button from "@material-ui/core/Button";
 
 
 const Layout = ({ children,map,update }) => {
@@ -53,7 +55,7 @@ const Layout = ({ children,map,update }) => {
 				"target": "map",
 				"projection": "EPSG:3857",
 				"renderer": ["canvas"],
-				"zoom": 10,
+				"zoom": configs.defaultZoom,
 				center: configs.defaultLocation
 			});
 			ol.addLayer({
@@ -62,12 +64,48 @@ const Layout = ({ children,map,update }) => {
 				"url": `https://api.os.uk/maps/raster/v1/zxy/${configs.OSLayer}/{z}/{x}/{y}.png?key=${configs.OSKey}`,
 				"active": true
 			});
+			ol.addLayer({
+				"name": "data",
+				"type": "vector",
+				"active": true,
+				"style": viewStyle
+			});
 			if(location.location) {
 				console.log(location);
 				ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326"});
+				ol.addGeojson({
+					"layer": "data",
+					"geojson": {
+						"type": "FeatureCollection",
+						"features": [
+							{
+								"geometry": {
+									"type": "Point",
+									"coordinates": location.location
+								},
+								"type": "Feature",
+								"properties":{
+									"type":"location_big"
+								}
+							}
+						]
+					}
+				});
+				window.websocket.send({
+					"queue": "homeLoader",
+					"api": "api",
+					"data": {
+						"method": "search",
+						"category": "Events",
+						"limit": 20,
+						"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
+						"location_distance": 5000000000
+					}
+				});
 			} else {
 				console.log('no location');
 			}
+
 		}
 
 
@@ -93,6 +131,11 @@ const Layout = ({ children,map,update }) => {
 			setOpenError(true);
 			console.log(json);
 		}
+	});
+
+	window.websocket.registerQueue("homeLoader", function (json) {
+		ol.addGeojson({"layer": "data", "geojson": json.packet});
+
 	});
 
 	function closeError() {
@@ -123,6 +166,10 @@ const Layout = ({ children,map,update }) => {
 		else
 			return (<MenuItem component={Link} to={`/${channel.type}/${channel.category}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
 
+	}
+
+	function resetMap() {
+		ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326","zoom":configs.defaultZoom});
 	}
 
 	const renderMenu = (
@@ -202,8 +249,9 @@ const Layout = ({ children,map,update }) => {
 			return (
 				<Paper elevation={3} className={classes.paperMargin}>
 					<div className={classes.mapContainer + " no-controls"}>
-						<div id="map" className={classes.map}></div>
-						<div id="pointer" className={classes.pointer}></div>
+						<div id="map" className={classes.map}>
+							<Button className={classes.mapResetButton} onClick={resetMap}>Reset map</Button>
+						</div>
 					</div>
 				</Paper>
 			)

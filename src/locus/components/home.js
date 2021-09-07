@@ -47,9 +47,6 @@ const Home = () => {
 												</Typography>
 											</CardContent>
 									<CardActions>
-										<Button size="small" color="primary">
-											Share
-										</Button>
 										<Link to={`/${channel.type}/${channel.key}`}>
 											<Button size="small" color="primary">
 												View
