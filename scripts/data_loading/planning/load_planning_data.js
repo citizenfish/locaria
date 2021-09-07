@@ -18,7 +18,7 @@ module.exports.load_planning_data = async (command, us) => {
     //Create planning table if it does not already exist
 
     us({message: `Running ${planning_table_sql}`})
-    command['sqlFile'] = planning_table_sql;
+    command['sqlFile'] = planning_table_sql
     let sql = await runQuery(command)
     delete command['sqlFile']
 

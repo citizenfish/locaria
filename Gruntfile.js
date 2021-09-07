@@ -33,7 +33,8 @@ module.exports = function (grunt) {
 					//'configuration/functions/locus_gateway.sql',
 					//'configuration/functions/sessions_api.sql'
 					//'configuration/functions/search.sql'
-					'configuration/functions/address_search.sql'
+					//'configuration/functions/address_search.sql'
+					'configuration/functions/geocoder.sql'
 
 				]
 			},
@@ -67,6 +68,7 @@ module.exports = function (grunt) {
 					'configuration/functions/locate.sql',
 					'configuration/functions/get_json_data_urls.sql',
 					'configuration/functions/reverse_geocoder.sql',
+					'configuration/functions/geocoder.sql',
 					'configuration/functions/create_materialised_view.sql',
 					'configuration/functions/address_search.sql',
 					'configuration/functions/report.sql',
@@ -76,6 +78,7 @@ module.exports = function (grunt) {
 					'configuration/functions/list_categories_with_data.sql',
 					'configuration/functions/list_categories.sql',
 					'configuration/functions/sessions_api.sql',
+
 
 					//Reports
 					'configuration/reports/category_types.sql',
