@@ -27,6 +27,8 @@ const Layout = ({ children,map,update }) => {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
 	const [openError, setOpenError] = React.useState(false);
+	const [openSuccess, setOpenSuccess] = React.useState(false);
+
 
 	const [location, setLocation] = useCookies(['location']);
 
@@ -43,7 +45,6 @@ const Layout = ({ children,map,update }) => {
 	const handleMenuClose = () => {
 		setAnchorEl(null);
 	};
-
 
 	const menuId = 'primary-search-account-menu';
 
@@ -108,40 +109,48 @@ const Layout = ({ children,map,update }) => {
 
 		}
 
+		window.websocket.registerQueue("postcode", function (json) {
+			if(json.packet.features.length>0) {
+				let postcode = document.getElementById('myPostcode').value;
+				setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/',sameSite:true});
+				setLocation('postcode', postcode, {path: '/',sameSite:true});
+
+				if(map===true) {
+					console.log('Moving to');
+					ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
+				} else {
+					if(update!==undefined)
+						update();
+				}
+				setOpenSuccess(true);
+
+				console.log(json.packet.features[0].geometry.coordinates);
+
+
+			} else {
+				setOpenError(true);
+				console.log(json);
+			}
+		});
+
+		window.websocket.registerQueue("homeLoader", function (json) {
+			ol.addGeojson({"layer": "data", "geojson": json.packet});
+
+		});
+
 
 
 	}, []);
 
-	window.websocket.registerQueue("postcode", function (json) {
-		if(json.packet.features.length>0) {
-			let postcode = document.getElementById('myPostcode').value;
-			setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/',sameSite:true});
-			setLocation('postcode', postcode, {path: '/',sameSite:true});
 
-			if(map===true) {
-				console.log('Moving to');
-				ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
-			} else {
-				if(update!==undefined)
-					update();
-			}
-			console.log(json.packet.features[0].geometry.coordinates);
-
-		} else {
-			setOpenError(true);
-			console.log(json);
-		}
-	});
-
-	window.websocket.registerQueue("homeLoader", function (json) {
-		ol.addGeojson({"layer": "data", "geojson": json.packet});
-
-	});
 
 	function closeError() {
 		setOpenError(false);
 	}
 
+	function closeSuccess() {
+		setOpenSuccess(false);
+	}
 	function handleKeyDown(e) {
 		if( e.key === 'Enter') {
 			let postcode = document.getElementById('myPostcode').value;
@@ -191,7 +200,19 @@ const Layout = ({ children,map,update }) => {
 
 	return (
 		<ThemeProvider theme={theme}>
+			<Snackbar open={openError} autoHideDuration={3000} onClose={closeError} anchorOrigin={{vertical: 'top',horizontal: 'center'}}>
+				<Alert severity="error">
+					Postcode not found — <strong>try another!</strong>
+				</Alert>
+			</Snackbar>
+
+			<Snackbar open={openSuccess} autoHideDuration={2000} onClose={closeSuccess} anchorOrigin={{vertical: 'top',horizontal: 'center'}}>
+				<Alert severity="success">
+					Found your location
+				</Alert>
+			</Snackbar>
 		<Container>
+
 		<div className={classes.grow}>
 			<AppBar position="static">
 				<Toolbar>
@@ -232,11 +253,7 @@ const Layout = ({ children,map,update }) => {
 
 			{children}
 
-			<Snackbar open={openError} autoHideDuration={3000} onClose={closeError} anchorOrigin={{vertical: 'top',horizontal: 'center'}}>
-				<Alert severity="error">
-					Postcode not found — <strong>try another!</strong>
-				</Alert>
-			</Snackbar>
+
 
 		</div>
 
