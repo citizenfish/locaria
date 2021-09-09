@@ -1073,12 +1073,12 @@ export default class Openlayers {
 	 * @param {string} json.map - Map reference
 	 * @param {string} json.layer - Layer to clear
 	 */
-	clearLayer(pid, json) {
+	clearLayer(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
 			"layer": "default"
-		}, json);
+		}, options);
 		let layer = self.maps[options.map].layers[options.layer];
 		if (layer) {
 			let source = layer.getSource();
@@ -1086,8 +1086,6 @@ export default class Openlayers {
 		} else {
 			console.warn(`No such layer [${options.layer}]`);
 		}
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-
 	}
 
 	/**

@@ -71,11 +71,17 @@ const Layout = ({ children,map,update }) => {
 				"active": true,
 				"style": viewStyle
 			});
+			ol.addLayer({
+				"name": "location",
+				"type": "vector",
+				"active": true,
+				"style": viewStyle
+			});
 			if(location.location) {
 				console.log(location);
 				ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326"});
 				ol.addGeojson({
-					"layer": "data",
+					"layer": "location",
 					"geojson": {
 						"type": "FeatureCollection",
 						"features": [
@@ -116,7 +122,25 @@ const Layout = ({ children,map,update }) => {
 				setLocation('postcode', postcode, {path: '/',sameSite:true});
 
 				if(map===true) {
-					console.log('Moving to');
+					ol.clearLayer({"layer":"location"});
+					ol.addGeojson({
+						"layer": "location",
+						"geojson": {
+							"type": "FeatureCollection",
+							"features": [
+								{
+									"geometry": {
+										"type": "Point",
+										"coordinates": json.packet.features[0].geometry.coordinates
+									},
+									"type": "Feature",
+									"properties":{
+										"type":"location_big"
+									}
+								}
+							]
+						}
+					});
 					ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
 				} else {
 					if(update!==undefined)

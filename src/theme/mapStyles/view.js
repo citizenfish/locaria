@@ -23,7 +23,7 @@ export function viewStyle(feature, resolution) {
 							src: markerHome,
 							size: [40,70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchor:[0.5,0.5]
 
 
 						}),
@@ -51,7 +51,11 @@ export function viewStyle(feature, resolution) {
 							src: marker,
 							size: [40,90],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction'
+
 
 						})
 					})
