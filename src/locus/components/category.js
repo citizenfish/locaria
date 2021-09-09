@@ -93,8 +93,8 @@ const Category = () => {
 						<Card variant="outlined" className={classes.categoryResultsCard}>
 							<CardHeader
 								avatar={
-									<Avatar aria-label="recipe" className={classes.avatar}>
-										{feature.properties.description.type[0]}
+									<Avatar aria-label={feature.properties.description.type} className={classes.categoryAvatar}>
+										{feature.properties.description.type[0].toUpperCase()}
 									</Avatar>
 								}
 								title={feature.properties.title}

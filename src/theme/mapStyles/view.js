@@ -23,7 +23,10 @@ export function viewStyle(feature, resolution) {
 							src: markerHome,
 							size: [40,70],
 							zIndex: 100,
-							anchor:[0.5,0.5]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 
 
 						}),
@@ -54,7 +57,8 @@ export function viewStyle(feature, resolution) {
 							anchorOrigin: 'top-left',
 							anchor:[0.5,0.5],
 							anchorXUnits: 'fraction',
-							anchorYUnits: 'fraction'
+							anchorYUnits: 'fraction',
+							scale:1.5
 
 
 						})
@@ -68,7 +72,10 @@ export function viewStyle(feature, resolution) {
 							src: markerPolling,
 							size: [40, 70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 						}),
 						text: new Text({
 							text: 'Polling station',
@@ -92,7 +99,10 @@ export function viewStyle(feature, resolution) {
 							src: markerTPO,
 							size: [40, 70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 						}),
 						text: new Text({
 							text: 'Tree Preservation Order',
@@ -117,7 +127,10 @@ export function viewStyle(feature, resolution) {
 							src: markerThing,
 							size: [40, 70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 
 						}),
 						text: new Text({

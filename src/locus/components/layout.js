@@ -178,7 +178,8 @@ const Layout = ({ children,map,update }) => {
 	function handleKeyDown(e) {
 		if( e.key === 'Enter') {
 			let postcode = document.getElementById('myPostcode').value;
-			console.log(postcode);
+			postcode=postcode.toUpperCase();
+			document.getElementById('myPostcode').value=postcode;
 
 			window.websocket.send({
 				"queue": "postcode",
