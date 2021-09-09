@@ -188,7 +188,8 @@ const configs = {
 	defaultPostcode: "TQ1 4TN",
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
-	defaultRange: 10 // km|mile
+	defaultRange: 10, // km|mile
+	websocket:"wss://cp90vff2qi.execute-api.eu-west-1.amazonaws.com/new"
 }
 
 export {useStyles, channels, theme, configs};
