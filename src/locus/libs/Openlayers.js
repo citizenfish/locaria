@@ -372,14 +372,14 @@ export default class Openlayers {
 	 * @param {array} json.control - The control function to use
 	 *
 	 */
-	makeControl(pid, json) {
+	makeControl(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
 			"mode": "on",
 			"control": "simpleSelect",
 			"name": "ss"
-		}, json);
+		}, options);
 		let map = self.maps[options.map].object;
 		let control;
 		/*
@@ -389,7 +389,6 @@ export default class Openlayers {
 		if (typeof controlFunction === "function") {
 			control = controlFunction.apply(self, [options]);
 		} else {
-			self.finished(pid, self.queue.DEFINE.FIN_ERROR, "No control function for " + options.control);
 			return false;
 		}
 
@@ -406,8 +405,6 @@ export default class Openlayers {
 			else
 				map.addControl(control);
 		}
-
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
 	}
 
 	/**
@@ -599,19 +596,19 @@ export default class Openlayers {
 
 			control.getFeatures().clear();
 			control.getFeatures().push(feature);
-			self.queue.setMemory(options.prefix + 'simpleSelect', {"selected": [feature]}, "Session");
-			self.queue.setMemory(options.map + 'selectedFeatures', [feature], "Session");
+			options.selectedFunction([feature]);
+
 
 		}
 
 		function selectFunction(e) {
-			self.queue.setMemory(options.prefix + 'simpleSelect', e, "Session");
-			self.queue.setMemory(options.map + 'selectedFeatures', e.selected, "Session");
 
-			if (e.deselected.length > 0 && e.selected.length === 0)
-				self.queue.execute(options.prefix + "simpleDeselect");
+			if (e.deselected.length > 0 && e.selected.length === 0 &&options.deselectectedFunction!== undefined )
+				options.deselectectedFunction(e.selected);
+
 			if (e.selected.length > 0)
-				self.queue.execute(options.prefix + "simpleSelect");
+				options.selectedFunction(e.selected);
+
 		}
 
 

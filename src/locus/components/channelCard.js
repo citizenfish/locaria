@@ -1,7 +1,6 @@
 import React from 'react';
 
-import {Link, useParams} from "react-router-dom";
-import CardActionArea from "@material-ui/core/CardActionArea";
+import {Link, useHistory, useParams} from "react-router-dom";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -11,7 +10,10 @@ import Card from "@material-ui/core/Card";
 import {channels, useStyles} from "theme_locus";
 import Share from "./share";
 
+
 const ChannelCard = ({path}) => {
+	const history = useHistory();
+
 	const classes = useStyles();
 	let {category} = useParams();
 	let channel;
@@ -19,6 +21,11 @@ const ChannelCard = ({path}) => {
 		if(channels[c].key===category)
 			channel=channels[c];
 	}
+
+	const historyBack = () => {
+		history.goBack();
+	}
+
 	return (
 		<Card className={classes.root}>
 				<CardMedia
@@ -36,11 +43,9 @@ const ChannelCard = ({path}) => {
 				</CardContent>
 			<CardActions>
 				<Share></Share>
-				<Link to={path}>
-					<Button size="small" color="primary">
+				<Button size="small" color="primary" onClick={historyBack}>
 						Back
-					</Button>
-				</Link>
+				</Button>
 
 			</CardActions>
 		</Card>

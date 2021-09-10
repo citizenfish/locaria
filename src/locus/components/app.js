@@ -16,9 +16,15 @@ const App = () => {
 
 	const [location, setLocation] = useCookies(['location']);
 	if(location.location===undefined) {
-		setLocation('location', configs.defaultLocation, {path: '/',sameSite:true});
-		setLocation('postcode', configs.defaultPostcode, {path: '/',sameSite:true});
-		setLocation('distanceSelect', configs.defaultDistanceSelect, {path: '/',sameSite:true});
+		setLocation('location', configs.defaultLocation, {path: '/', sameSite: true});
+	}
+	if(location.postcode===undefined) {
+		setLocation('postcode', configs.defaultPostcode, {path: '/', sameSite: true});
+	}
+	if(location.distanceSelect===undefined) {
+		setLocation('distanceSelect', configs.defaultDistanceSelect, {path: '/', sameSite: true});
+	}
+	if(location.range===undefined) {
 		setLocation('range', configs.defaultRange, {path: '/',sameSite:true});
 	}
 
