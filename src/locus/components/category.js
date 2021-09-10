@@ -5,7 +5,7 @@ import Layout from './Layout';
 import ChannelCard from './channelCard';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {channels, useStyles} from "../../theme/locus";
+import {channels, useStyles} from "theme_locus";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -93,8 +93,8 @@ const Category = () => {
 						<Card variant="outlined" className={classes.categoryResultsCard}>
 							<CardHeader
 								avatar={
-									<Avatar aria-label="recipe" className={classes.avatar}>
-										{feature.properties.description.type[0]}
+									<Avatar aria-label={feature.properties.description.type} className={classes.categoryAvatar}>
+										{feature.properties.description.type[0].toUpperCase()}
 									</Avatar>
 								}
 								title={feature.properties.title}

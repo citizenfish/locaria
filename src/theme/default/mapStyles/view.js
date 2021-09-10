@@ -1,9 +1,9 @@
 import {Circle, Text, RegularShape, Fill, Stroke, Style,Icon} from 'ol/style.js';
-import markerHome from '../../locus/components/images/marker-home.svg';
-import markerPolling from '../../locus/components/images/marker-polling.svg';
-import markerThing from '../../locus/components/images/marker-thing.svg';
-import markerTPO from '../../locus/components/images/marker-tpo.svg';
-import marker from '../../locus/components/images/marker.svg';
+import markerHome from '../images/marker-home.svg';
+import markerPolling from '../images/marker-polling.svg';
+import markerThing from '../images/marker-thing.svg';
+import markerTPO from '../images/marker-tpo.svg';
+import marker from '../images/marker.svg';
 
 
 export function viewStyle(feature, resolution) {
@@ -23,7 +23,10 @@ export function viewStyle(feature, resolution) {
 							src: markerHome,
 							size: [40,70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 
 
 						}),
@@ -51,7 +54,12 @@ export function viewStyle(feature, resolution) {
 							src: marker,
 							size: [40,90],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
+							scale:1.5
+
 
 						})
 					})
@@ -64,7 +72,10 @@ export function viewStyle(feature, resolution) {
 							src: markerPolling,
 							size: [40, 70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 						}),
 						text: new Text({
 							text: 'Polling station',
@@ -88,7 +99,10 @@ export function viewStyle(feature, resolution) {
 							src: markerTPO,
 							size: [40, 70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 						}),
 						text: new Text({
 							text: 'Tree Preservation Order',
@@ -113,7 +127,10 @@ export function viewStyle(feature, resolution) {
 							src: markerThing,
 							size: [40, 70],
 							zIndex: 100,
-							anchor:[0.5,1]
+							anchorOrigin: 'top-left',
+							anchor:[0.5,0.5],
+							anchorXUnits: 'fraction',
+							anchorYUnits: 'fraction',
 
 						}),
 						text: new Text({

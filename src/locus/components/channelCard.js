@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import {channels, useStyles} from "../../theme/locus";
+import {channels, useStyles} from "theme_locus";
 import Share from "./share";
 
 const ChannelCard = ({path}) => {

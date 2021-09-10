@@ -10,7 +10,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import {channels, useStyles,theme,configs} from "../../theme/locus";
+import {channels, useStyles,theme,configs} from "theme_locus";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
@@ -18,7 +18,7 @@ import {Link} from "react-router-dom";
 import Openlayers from "../libs/Openlayers";
 import Paper from "@material-ui/core/Paper";
 import { useCookies } from 'react-cookie';
-import {viewStyle} from "../../theme/mapStyles/view";
+import {viewStyle} from "../../theme/default/mapStyles/view";
 import Button from "@material-ui/core/Button";
 
 
@@ -71,11 +71,17 @@ const Layout = ({ children,map,update }) => {
 				"active": true,
 				"style": viewStyle
 			});
+			ol.addLayer({
+				"name": "location",
+				"type": "vector",
+				"active": true,
+				"style": viewStyle
+			});
 			if(location.location) {
 				console.log(location);
 				ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326"});
 				ol.addGeojson({
-					"layer": "data",
+					"layer": "location",
 					"geojson": {
 						"type": "FeatureCollection",
 						"features": [
@@ -116,7 +122,25 @@ const Layout = ({ children,map,update }) => {
 				setLocation('postcode', postcode, {path: '/',sameSite:true});
 
 				if(map===true) {
-					console.log('Moving to');
+					ol.clearLayer({"layer":"location"});
+					ol.addGeojson({
+						"layer": "location",
+						"geojson": {
+							"type": "FeatureCollection",
+							"features": [
+								{
+									"geometry": {
+										"type": "Point",
+										"coordinates": json.packet.features[0].geometry.coordinates
+									},
+									"type": "Feature",
+									"properties":{
+										"type":"location_big"
+									}
+								}
+							]
+						}
+					});
 					ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
 				} else {
 					if(update!==undefined)
@@ -154,7 +178,8 @@ const Layout = ({ children,map,update }) => {
 	function handleKeyDown(e) {
 		if( e.key === 'Enter') {
 			let postcode = document.getElementById('myPostcode').value;
-			console.log(postcode);
+			postcode=postcode.toUpperCase();
+			document.getElementById('myPostcode').value=postcode;
 
 			window.websocket.send({
 				"queue": "postcode",

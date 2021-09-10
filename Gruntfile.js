@@ -113,17 +113,6 @@ module.exports = function (grunt) {
 				]
 			}
 		},
-		template: {
-			buildConfig: {
-				options: {
-					data: {}
-				},
-				files: {
-					'site/config/config.gen.js': ['site/config/config.tpl.js']
-				}
-			}
-
-		},
 
 		http: {
 			version: {
@@ -188,26 +177,12 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-aws-s3');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-http');
-	grunt.loadNpmTasks('grunt-template');
 
-	/**
-	 *  Custom task to load yml file and set up or template processor
-	 */
-	grunt.registerTask('loadyaml', 'Load S3 file url.', function() {
-		let fileData = YAML.parse(grunt.file.read('../locus-custom.yml'));
-		let stage=grunt.option('stage');
-		grunt.config(['template','buildConfig','options','data'],fileData[stage]);
-		grunt.config(['template','buildConfig','options','data','stage'],stage);
-		//grunt.config(['aws_s3','site','bucket'],fileData[stage].domain);
-		console.log(fileData[stage]);
-		grunt.log.write("Yaml Loaded").ok();
-
-	});
 
 
 	grunt.registerTask('runTests', ['pgsql:tests']);
 	grunt.registerTask('deploySQLFull', ['pgsql:full']);
 	grunt.registerTask('deploySQLupgrade', ['pgsql:upgrade']);
-	grunt.registerTask('deploySite', ['loadyaml','template:buildConfig','aws_s3:site','shell:invalidate']);
+	grunt.registerTask('deploySite', ['aws_s3:site','shell:invalidate']);
 	grunt.registerTask('apiTest', ['http:version','http:list_categories','http:get_item','http:search','http:bboxsearch']);
 };

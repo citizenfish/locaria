@@ -99,17 +99,17 @@ const useStyles = makeStyles((theme) => ({
 			width: '100%',
 			height: '100%'
 		},
-	mediaMap: {
-		height: '50vh',
-		position:"relative"
-	},
-	mapResetButton: {
-		position: "absolute",
-		bottom: "10px",
-		right: "10px",
-		zIndex: 100,
-		background: alpha(theme.palette.common.white, 0.25)
-	},
+		mediaMap: {
+			height: '50vh',
+			position: "relative"
+		},
+		mapResetButton: {
+			position: "absolute",
+			bottom: "10px",
+			right: "10px",
+			zIndex: 100,
+			background: alpha(theme.palette.common.white, 0.25)
+		},
 		paperMargin: {
 			margin: '5px',
 			padding: '5px'
@@ -125,8 +125,8 @@ const useStyles = makeStyles((theme) => ({
 			height: '220px',
 			backgroundSize: '220px 220px'
 		},
-		avatar: {
-			backgroundColor: theme.palette.primary.main,
+		categoryAvatar: {
+			backgroundColor: alpha(theme.palette.secondary.main,1)+" !important"
 		},
 		formControl: {
 			margin: theme.spacing(1),
@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
 			marginTop: '5px',
 			marginBottom: '5px'
 		},
-	categoryResultsCard: {
+		categoryResultsCard: {
 			margin: '5px'
 		}
 	})
@@ -188,7 +188,8 @@ const configs = {
 	defaultPostcode: "TQ1 4TN",
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
-	defaultRange: 10 // km|mile
+	defaultRange: 10, // km|mile
+	websocket: "wss://cp90vff2qi.execute-api.eu-west-1.amazonaws.com/new"
 }
 
 export {useStyles, channels, theme, configs};
