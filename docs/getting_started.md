@@ -134,7 +134,6 @@ It will ask which stage you wish to deploy then present some options for deployi
 
 - api - Install all the infrastructure into AWS
 - sql - Run the sql required to create the schemas and functions
-- scrape - Install the web scraper in lambda/cloudwatch
 - web - Install the web frontend
 
 

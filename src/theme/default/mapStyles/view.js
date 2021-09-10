@@ -1,9 +1,9 @@
 import {Circle, Text, RegularShape, Fill, Stroke, Style,Icon} from 'ol/style.js';
-import markerHome from '../../locus/components/images/marker-home.svg';
-import markerPolling from '../../locus/components/images/marker-polling.svg';
-import markerThing from '../../locus/components/images/marker-thing.svg';
-import markerTPO from '../../locus/components/images/marker-tpo.svg';
-import marker from '../../locus/components/images/marker.svg';
+import markerHome from '../images/marker-home.svg';
+import markerPolling from '../images/marker-polling.svg';
+import markerThing from '../images/marker-thing.svg';
+import markerTPO from '../images/marker-tpo.svg';
+import marker from '../images/marker.svg';
 
 
 export function viewStyle(feature, resolution) {

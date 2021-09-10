@@ -10,7 +10,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import {channels, useStyles,theme,configs} from "../../theme/locus";
+import {channels, useStyles,theme,configs} from "theme_locus";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
@@ -18,7 +18,7 @@ import {Link} from "react-router-dom";
 import Openlayers from "../libs/Openlayers";
 import Paper from "@material-ui/core/Paper";
 import { useCookies } from 'react-cookie';
-import {viewStyle} from "../../theme/mapStyles/view";
+import {viewStyle} from "../../theme/default/mapStyles/view";
 import Button from "@material-ui/core/Button";
 
 

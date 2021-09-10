@@ -6,7 +6,7 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import { configs } from "../theme/locus";
+import { configs } from "../theme/default/locus";
 
 import cssOL from './components/css/ol.css';
 

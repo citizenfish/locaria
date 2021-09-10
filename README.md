@@ -9,6 +9,8 @@ Amazon refer to these microservices as Lambda functions. Lambda functions are wr
 Searches are actioned using the SQL language within the database. LOCUS implements all search logic in the database using the PL/PGSQL language which is very similar to SQL. This allows us to separate search logic from api handling code making LOCUS easy to change and maintain.
 
 - [Getting Started](docs/getting_started.md)
+
+- [Customizing](docs/customizing.md)
   
 - [How It Works](docs/how_it_works.md)
   

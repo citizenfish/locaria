@@ -3,13 +3,12 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { channels ,useStyles,configs} from "../../theme/locus";
+import { channels ,useStyles} from "theme_locus";
 
 
 import Layout from './Layout';
@@ -36,7 +35,7 @@ const Home = () => {
 											<CardMedia
 												className={classes.media}
 												image={channel.image}
-												title="Contemplative Reptile"
+												title={channel.name}
 											/>
 											<CardContent className={classes.channelPanel}>
 												<Typography gutterBottom variant="h5" component="h2">
