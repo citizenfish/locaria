@@ -20,9 +20,12 @@ import Paper from "@material-ui/core/Paper";
 import { useCookies } from 'react-cookie';
 import {viewStyle} from "../../theme/default/mapStyles/view";
 import Button from "@material-ui/core/Button";
+import { useHistory } from 'react-router-dom';
 
 
 const Layout = ({ children,map,update }) => {
+	const history = useHistory();
+
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -47,6 +50,12 @@ const Layout = ({ children,map,update }) => {
 	};
 
 	const menuId = 'primary-search-account-menu';
+
+	const handleFeatureSelected = function (features) {
+		console.log('selected');
+		console.log(features);
+		history.push(`/View/Events/${features[0].get('fid')}`)
+	}
 
 	React.useEffect(() => {
 
@@ -77,6 +86,8 @@ const Layout = ({ children,map,update }) => {
 				"active": true,
 				"style": viewStyle
 			});
+			ol.makeControl({"layers":["data"],"selectedFunction":handleFeatureSelected});
+
 			if(location.location) {
 				console.log(location);
 				ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326"});
