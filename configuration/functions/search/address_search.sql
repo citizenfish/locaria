@@ -5,7 +5,7 @@ $$
 DECLARE
 	results_var JSONB;
 	search_ts_query tsquery;
-	default_limit INTEGER DEFAULT 100;
+	default_limit INTEGER DEFAULT 10;
     default_offset INTEGER DEFAULT 0;
 BEGIN
 
@@ -39,9 +39,7 @@ BEGIN
 		           wkb_geometry,
 		           ts_rank(jsonb_to_tsvector('simple'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) as search_rank
             FROM   locus_core.address_search_view
-            WHERE  jsonb_to_tsvector('simple'::regconfig, attributes, '["string", "numeric"]'::jsonb)
-
-                   @@ search_ts_query
+            WHERE  jsonb_to_tsvector('simple'::regconfig, attributes, '["string", "numeric"]'::jsonb) @@ search_ts_query
             ORDER BY search_rank DESC --,
 					 --(attributes->>'pao_start_number')::NUMERIC,
 					 --attributes->>'pao_start_suffix' ASC,

@@ -4,26 +4,16 @@ CREATE OR REPLACE FUNCTION locus_core.get_item(item_id_parameter TEXT) RETURNS J
 $$
 DECLARE
     ret_var JSONB;
-    attributes_var JSON DEFAULT json_build_object();
-    record_id_var BIGINT;
-    table_name_var TEXT;
     geometry_var JSON;
 BEGIN
 
-
-        SELECT  ST_ASGEOJSON(ST_TRANSFORM(wkb_geometry,4326))::JSON,
-                attributes
-        INTO geometry_var, attributes_var
-        FROM locus_core.global_search_view
-        WHERE fid = item_id_parameter::BIGINT;
-
-
+        --TODO this needs a massive rewrite to pull from source table
        SELECT  jsonb_build_object(
                                 'type', 'FeatureCollection',
                                 'features', json_build_array(
                                     json_build_object(
                                             'type', 'Feature',
-                                            'properties', attributes,
+                                            'properties', attributes || jsonb_build_object('category',category[1]::TEXT),
                                             'geometry',   ST_ASGEOJSON(ST_TRANSFORM(wkb_geometry,4326))::JSON
                                     )
                                 )

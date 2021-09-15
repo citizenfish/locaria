@@ -84,7 +84,7 @@ async function main() {
         }
     } catch (e) {
 
-        await update_status({message: 'Error in load', details: e, status: 'error'})
+        await update_status({message: 'Error in load', details: e, e_details: e.message, status: 'error'})
         returnValue = {error: e}
     }
 

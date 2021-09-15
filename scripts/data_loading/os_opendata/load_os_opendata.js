@@ -13,7 +13,8 @@ const formats = {
 //SQL to run post install
 const sqlPath = {
     OpenNames: './opennames_view.sql',
-    OpenUPRN : './openuprn_view.sql'
+    OpenUPRN : './openuprn_view.sql',
+    BoundaryLine: './boundaryline_view.sql'
 }
 
 const suffix = {
@@ -45,7 +46,8 @@ module.exports.load_os_opendata = async (command, us) => {
 
         if (version.load == false) {
             us({message: "Data is up to date load cancelled", details: version.version})
-            return {message: `${product} is already up to date version ${version.version}`}
+            //TODO UNCOMMENTS!!
+            //return {message: `${product} is already up to date version ${version.version}`}
         }
 
         us({message: "Loading commenced", details: version, product: product})
@@ -53,7 +55,7 @@ module.exports.load_os_opendata = async (command, us) => {
 
         //Download and unzip the data file
         let unzip = await downloadAndUnzip(productURL)
-        us({message: "Unzip complete, loading to database", details : unzip})
+        us({message: "Unzip complete, loading to database", details : unzip, format: productURL.format})
 
         //Add input/output files to command so we can delete later
         command = Object.assign(command, unzip)

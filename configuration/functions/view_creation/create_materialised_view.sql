@@ -54,6 +54,10 @@ BEGIN
     CREATE INDEX search_view_jsonb_ts_vector  ON locus_core.global_search_view USING GIN (jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb));
     --Supporting date range searches
     CREATE INDEX locus_core_global_search_view_date_idx ON locus_core.global_search_view (CAST(date_added AS DATE));
+    --tags
+    CREATE INDEX locus_core_global_search_view_jsonb_ops_idx ON locus_core.global_search_view USING GIN((attributes#>'{description,tags}'));
+    --jsonb_path operations
+    CREATE INDEX locus_core_global_search_view_jsonb_path_ops_idx ON locus_core.global_search_view USING GIN(attributes jsonb_path_ops);
 
     --Permissions
     GRANT SELECT ON locus_core.global_search_view TO PUBLIC;
