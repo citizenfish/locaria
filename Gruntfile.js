@@ -15,8 +15,9 @@ module.exports = function (grunt) {
 				tables: [
 
 					//'tests/integration_tests/check_core_tables.sql',
-					'tests/integration_tests/load_test_data.sql',
-					'tests/unit_tests/check_api_functions.sql'
+					//'tests/integration_tests/load_test_data.sql',
+					//'tests/unit_tests/check_api_functions.sql'
+					'tests/unit_tests/search_get_records.sql'
 
 				]
 			},
@@ -30,11 +31,10 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					//'configuration/functions/locus_gateway.sql',
-					//'configuration/functions/sessions_api.sql'
-					//'configuration/functions/search.sql'
-					//'configuration/functions/address_search.sql'
-					'configuration/functions/geocoder.sql'
+					'configuration/functions/search/search_get_records.sql',
+					'configuration/functions/search/list_tags.sql',
+					'configuration/functions/locus_gateway.sql',
+					'configuration/functions/search/list_categories.sql'
 
 				]
 			},
@@ -63,6 +63,8 @@ module.exports = function (grunt) {
 					'configuration/functions/search_view_union.sql',
 					'configuration/functions/locus_gateway.sql',
 					'configuration/functions/search.sql',
+					'configuration/functions/search_get_records.sql',
+					'configuration/functions/cluster.sql',
 					'configuration/functions/get_item.sql',
 					'configuration/functions/base36_decode.sql',
 					'configuration/functions/locate.sql',

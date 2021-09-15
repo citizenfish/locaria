@@ -32,21 +32,26 @@ module.exports.load_excel = async (command, us) => {
     }
 
     //Map data and load
-
+    let count = 0
     for(let j in jsonData){
-
+        try {
         //A mask allows you to format your Excel data into the required LOCUS structure on load
         let mask = JSON.stringify(command.parameters.mapping)
 
         for(let k in jsonData[j]){
 
-            //substitute into mask and get rid of newlines and tabs etc...
-            let rgx = new RegExp(`__${k}__`, 'gm')
-            mask = mask.replace(rgx, jsonData[j][k].replace(/(\r\n|\n|\r|['"]|\t)/gm, ''), 'g')
-        }
+            //substitute into mask and get rid of newlines and tabs etc..
 
+                let rgx = new RegExp(`__${k}__`, 'gm')
+                mask = mask.replace(rgx, String(jsonData[j][k]).replace(/(\r\n|\n|\r|['"]|\t)/gm, ''), 'g')
+                mask = mask.replace('@INC@', count)
+
+        }
+        count++
         //load the record
-        try {
+
+
+
 
             jsonData[j] = {...jsonData[j], ...JSON.parse(mask)}
 
@@ -57,12 +62,15 @@ module.exports.load_excel = async (command, us) => {
                                  ARRAY['${command.parameters.category}']::locus_core.search_category[]) 
                          ON CONFLICT(nid) DO NOTHING`
 
+
             command['query'] = query;
+
             await runQuery(command, [jsonData[j]])
+
 
         } catch(e){
 
-            us({message: 'Error in record load', error: e, data: jsonData[j]})
+            us({message: 'Error in record load', error: e, e_message: e.message, data: jsonData[j]})
         }
     }
 

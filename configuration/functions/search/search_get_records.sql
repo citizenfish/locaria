@@ -1,7 +1,13 @@
 --The main search query engine
-CREATE OR REPLACE FUNCTION locus_core.search(search_parameters JSONB) RETURNS JSONB AS $$
+
+CREATE OR REPLACE FUNCTION locus_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 1000) RETURNS TABLE (
+    _fid BIGINT,
+    _search_rank DOUBLE PRECISION,
+    _wkb_geometry GEOMETRY,
+    _attributes JSONB
+
+) AS $$
 DECLARE
-    default_limit INTEGER DEFAULT 1000;
     default_offset INTEGER DEFAULT 0;
 	json_filter JSONB DEFAULT json_build_object();
     results_var JSONB;
@@ -14,6 +20,7 @@ DECLARE
     end_date_var DATE DEFAULT  NULL;
 BEGIN
 
+    SET SEARCH_PATH = 'locus_core', 'public';
 
     IF NULLIF(search_parameters->>'search_text', '*') IS NULL THEN
         search_parameters = (search_parameters::JSONB || jsonb_build_object('search_text', ''))::JSON;
@@ -59,67 +66,53 @@ BEGIN
     --Build our search ts_vector
 
     IF REPLACE(search_parameters->>'search_text', ' ', '') = '' THEN
-        search_ts_query = to_tsquery(''); 
+        search_ts_query = '_IGNORE';
+
     ELSE
 		search_ts_query = plainto_tsquery('English', search_parameters->>'search_text');
     END IF;
 
     --This is the core search query
 
+    RETURN QUERY
 
-    SELECT jsonb_build_object('type','FeatureCollection',
-                             'features', COALESCE(json_agg(
-                                            json_build_object('type',        'Feature',
-                                                              'properties',  attributes || jsonb_build_object('rank', search_rank)
-                                                                                       ,
-                                                              'geometry',    ST_ASGEOJSON(wkb_geometry)::JSON)
-                                            ), json_build_array())
-                            )
-     INTO results_var
-     FROM
-            (
 
-            SELECT fid,search_rank,wkb_geometry,
+            SELECT fid,
+                   search_rank::DOUBLE PRECISION,
+                   wkb_geometry,
                    attributes || CASE WHEN distance >= 0 THEN jsonb_build_object('distance', distance) ELSE jsonb_build_object() END as attributes
             FROM (
                 SELECT  distinct ON(fid) fid,
-			            ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query)  as search_rank,
+			            CASE WHEN search_ts_query = '_IGNORE' tHEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
 			            wkb_geometry,
 			            (attributes::JSONB - 'table') || jsonb_build_object('category', category[1], 'fid', fid) as attributes,
 			            COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance
-                FROM locus_core.global_search_view
+
+                FROM global_search_view
                 WHERE wkb_geometry IS NOT NULL
                 AND (COALESCE(search_parameters->>'category', '*') = '*' OR  ARRAY[regexp_split_to_array(search_parameters->>'category', ',')] && category::text[])
                 --Free text on JSONB attributes search
-                AND (jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb) @@ search_ts_query OR search_ts_query = '')
+                AND (search_ts_query = '_IGNORE' OR jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb) @@ search_ts_query)
                 --Bounding box search
-               AND (bbox_var IS NULL OR wkb_geometry && bbox_var)
+                AND (bbox_var IS NULL OR wkb_geometry && bbox_var)
                 --distance search
                 AND (location_distance = -1 OR location_geometry IS NULL OR ST_DWithin(wkb_geometry::GEOGRAPHY, location_geometry::GEOGRAPHY, location_distance, FALSE))
                 --contains search
                 AND (location_geometry IS NULL OR location_distance != -1 OR  (location_distance = -1  AND ST_Contains(wkb_geometry, location_geometry)))
-                --reference search
-               AND (ref_search IS NULL OR attributes @> ref_search)
+
+                --reference search TODO index
+                AND (ref_search IS NULL OR attributes @> ref_search)
                 --date search
-               AND (start_date_var IS NULL OR date_added::DATE BETWEEN start_date_var AND end_date_var)
-                --for sub-categorisation
-                AND (
-                        --first use any filters not related to type, if empty it will match all
-                        attributes->'description' @> json_filter - 'type'
-                        --then apply the type filter
-                        AND (
-                            (json_filter->'type') IS NULL OR
-                            attributes#>>'{description,type}' = ANY (string_to_array(json_filter->>'type', ','))
-                        )
-                )
+                AND (start_date_var IS NULL OR date_added::DATE BETWEEN start_date_var AND end_date_var)
+                --for tags
+                AND ( (search_parameters->'tags') IS NULL OR attributes#>'{description,tags}' ?| json_array_casttext(search_parameters->'tags') )
 
                 OFFSET default_offset
             ) INNER_SUB
             ORDER by distance ASC, search_rank DESC
-            LIMIT default_limit
-            ) SUB_QUERY;
+            LIMIT default_limit;
 
-    RETURN results_var;
+
 END;
 $$
 LANGUAGE PLPGSQL;

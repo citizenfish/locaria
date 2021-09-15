@@ -170,9 +170,8 @@ module.exports.loadGeopackage = async(command) => {
 
         let args = ['-f',     'PostgreSQL',
                     '-oo',    'LIST_ALL_TABLES=NO',
-                    '-lco',   'OVERWRITE=YES',
-                    '-lco',   'PG_USE_COPY=YES',
-                    '-lco',   'OGR_TRUNCATE=YES',
+                    '--config',   'PG_USE_COPY YES',
+                    '--config',   'OGR_TRUNCATE YES',
                     '-lco',   'GEOMETRY_NAME=wkb_geometry',
                     '-t_srs', 'EPSG:4326',
                     '-skipfailures',
@@ -184,6 +183,8 @@ module.exports.loadGeopackage = async(command) => {
         if(command.parameters.layers) {
                 args = args.concat(command.parameters.layers)
         }
+
+        console.log(args)
 
         try {
                 let res  = await new Promise((resolve,reject) => {
@@ -197,6 +198,7 @@ module.exports.loadGeopackage = async(command) => {
                                 resolve(stdout)
                         });
                 });
+
 
                 return {message : res}
 

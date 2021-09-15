@@ -12,6 +12,8 @@ module.exports.load_planning_data = async (command, us) => {
 
     if(!command.parameters.authority_id) {
 
+        //https://www.planit.org.uk/api/areas/json?select=area_name,area_id
+
         throw {error : 'Local authority id (authority_id required to download data'}
     }
 
@@ -65,10 +67,16 @@ module.exports.load_planning_data = async (command, us) => {
 
     for(let i in applications) {
 
-        //Add in any pre-formatting here
-        let attributes  = {...applications[i], ...{ref: applications[i].uid, title: applications[i].address, description: {text: applications[i].description, type: applications[i].app_type}}}
+        try {
+            //Add in any pre-formatting here
+            let attributes  = {...applications[i], ...{ref: applications[i].uid, title: applications[i].address, description: {text: applications[i].description, type: applications[i].app_type}}}
 
-        await runQuery(command, [attributes, `SRID=4326;POINT(${applications[i].location_x} ${applications[i].location_y})`])
+            await runQuery(command, [attributes, `SRID=4326;POINT(${applications[i].location_x} ${applications[i].location_y})`])
+
+        } catch(e) {
+
+            us({message: 'Error in record load', error: e, e_message: e.message, data: applications[i]})
+        }
     }
 
 
