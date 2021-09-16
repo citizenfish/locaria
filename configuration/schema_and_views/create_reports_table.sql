@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS locus_core.reports;
 CREATE  TABLE locus_core.reports(
 
-    id                  BIGSERIAL,
+    id                  BIGSERIAL PRIMARY KEY,
     report_name         TEXT,
     report_parameters   JSONB,
     last_updated        TIMESTAMP DEFAULT NOW()
