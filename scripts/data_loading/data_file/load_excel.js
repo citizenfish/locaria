@@ -1,5 +1,6 @@
 const {runQuery,gets3File} = require('../load_utils')
 const XLSX = require('xlsx');
+const utils = require("../load_utils.js");
 
 module.exports.load_excel = async (command, us) => {
 
@@ -55,17 +56,18 @@ module.exports.load_excel = async (command, us) => {
 
             jsonData[j] = {...jsonData[j], ...JSON.parse(mask)}
 
-            let query = `INSERT INTO ${command.parameters.excel_table} (nid, attributes, wkb_geometry, category) 
+            let query = `INSERT INTO ${command.parameters.excel_table} (nid, attributes, wkb_geometry, category_id) 
                          VALUES(($1::JSONB->>'nid')::BIGINT, 
                                  $1::JSONB, 
                                  (locus_core.geocoder($1)->0->>'wkb_geometry')::GEOMETRY, 
-                                 ARRAY['${command.parameters.category}']::locus_core.search_category[]) 
+                                 (SELECT category_id FROM locus_core.categories WHERE category = $2)
+                                 ) 
                          ON CONFLICT(nid) DO NOTHING`
 
 
             command['query'] = query;
 
-            await runQuery(command, [jsonData[j]])
+            await runQuery(command, [jsonData[j],command.parameters.category])
 
 
         } catch(e){
@@ -75,6 +77,10 @@ module.exports.load_excel = async (command, us) => {
     }
 
     us({message: 'Data loaded, refreshing global_search_view'})
+
+    //post preocess
+    let ppSQL = command.sqlFile ? await utils.runQuery(command) : {message: 'No SQL File provided'}
+    us({message: "Post Process complete", details: ppSQL})
 
     //Refresh the materialized view
     command['query'] = 'REFRESH MATERIALIZED VIEW CONCURRENTLY locus_core.global_search_view'

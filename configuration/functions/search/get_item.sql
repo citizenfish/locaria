@@ -7,13 +7,12 @@ DECLARE
     geometry_var JSON;
 BEGIN
 
-        --TODO this needs a massive rewrite to pull from source table
        SELECT  jsonb_build_object(
                                 'type', 'FeatureCollection',
                                 'features', json_build_array(
                                     json_build_object(
                                             'type', 'Feature',
-                                            'properties', attributes || jsonb_build_object('category',category[1]::TEXT),
+                                            'properties', attributes,
                                             'geometry',   ST_ASGEOJSON(ST_TRANSFORM(wkb_geometry,4326))::JSON
                                     )
                                 )

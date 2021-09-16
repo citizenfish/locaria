@@ -63,6 +63,9 @@ BEGIN
 
 --This block will trap any errors and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
 EXCEPTION WHEN OTHERS THEN
+
+        RAISE NOTICE '%', SQLERRM;
+
         INSERT INTO locus_core.logs(log_type, log_message)
         SELECT search_parameters->>'method',
                jsonb_build_object('parameters', search_parameters, 'response', SQLERRM)

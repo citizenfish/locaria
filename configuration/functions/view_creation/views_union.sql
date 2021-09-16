@@ -13,14 +13,14 @@ BEGIN
     --This creates a new view consolidating all views in the schema that match our search requirements
   SELECT COALESCE (
       (
-      SELECT string_agg(' SELECT id::BIGINT,wkb_geometry::GEOMETRY,attributes::JSONB, COALESCE(date_added, now())::TIMESTAMP AS date_added, COALESCE(category, ''{General}'') AS category FROM locus_core'||'.'||table_name, ' UNION ALL')
+      SELECT string_agg(' SELECT id::BIGINT,wkb_geometry::GEOMETRY,attributes::JSONB, COALESCE(search_date, now())::TIMESTAMP AS search_date, category_id FROM locus_core'||'.'||table_name, ' UNION ALL')
 
         FROM INFORMATION_SCHEMA.views
         WHERE table_schema ='locus_core'
 		AND table_name NOT IN ('search_views_union', 'location_search_view', 'address_search_view')
         AND (exclude_list_var IS NULL OR NOT exclude_list_var ? table_name)
         ),
-      'SELECT NULL::BIGINT as id, NULL::GEOMETRY as wkb_geometry, NULL::JSONB as attributes, NULL::TIMESTAMP as date_added, NULL::locus_core.search_category[] as category'
+      'SELECT NULL::BIGINT AS id, NULL::GEOMETRY AS wkb_geometry, NULL::JSONB AS attributes, NULL::TIMESTAMP AS search_date, NULL AS category_id'
       ) INTO query_var;
 
 
