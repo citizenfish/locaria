@@ -7,8 +7,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom';
-import { channels ,useStyles} from "theme_locus";
+import {Link} from 'react-router-dom';
+import {channels, useStyles, configs} from "theme_locus";
 
 
 import Layout from './Layout';
@@ -26,38 +26,46 @@ const Home = () => {
 		<Layout map={true}>
 
 			<Paper elevation={3} className={classes.paperMargin}>
-				<Grid container className={classes.root} spacing={2}  justifyContent="center">
-						{channels.map(channel => (
-							<Grid item md={3} className={classes.channel}>
+				<Grid container className={classes.root} spacing={2} justifyContent="center">
+					{channels.listChannels().map(function (channel) {
+							const chan=channels.getChannelProperties(channel);
+							if(chan.display!==false) {
+								return (
+									<Grid item md={configs.homeGrid} className={classes.channel}>
 
 
-								<Card className={classes.root}>
+										<Card className={classes.root}>
 											<CardMedia
 												className={classes.media}
-												image={channel.image}
-												title={channel.name}
+												image={chan.image}
+												title={chan.name}
 											/>
 											<CardContent className={classes.channelPanel}>
-												<Typography gutterBottom variant="h5" component="h2">
-													{channel.name}
+												<Typography gutterBottom variant="h5" component="h2" style={{color: `${chan.color}`}} >
+													{chan.name}
 												</Typography>
 												<Typography variant="body2" color="textSecondary" component="p">
-													{channel.description}
+													{chan.description}
 												</Typography>
 											</CardContent>
-									<CardActions>
-										<Link to={`/${channel.type}/${channel.key}`}>
-											<Button size="small" color="primary">
-												View
-											</Button>
-										</Link>
-									</CardActions>
-								</Card>
+											<CardActions>
+												<Link to={`/${chan.type}/${channel}`}>
+													<Button size="small" color="primary">
+														View
+													</Button>
+												</Link>
+											</CardActions>
+										</Card>
 
 
-							</Grid>
+									</Grid>
 
-						))}
+								)
+							} else {
+								return '';
+							}
+						}
+					)}
 				</Grid>
 			</Paper>
 		</Layout>

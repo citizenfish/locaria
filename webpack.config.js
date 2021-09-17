@@ -62,7 +62,7 @@ module.exports = {
 	resolve: {
 		fallback: {
 			util: require.resolve('util/'),
-			theme_locus: require.resolve('./src/theme/default/locus.js')
+			theme_locus: require.resolve('./src/theme/london/locus.js')
 			}
 	},
 	devServer: {

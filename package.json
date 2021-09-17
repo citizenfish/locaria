@@ -13,6 +13,7 @@
 	"@nautoguide/aws-wsp": "^1.1.0",
 	"ol": "^6.5.0",
 	"proj4": "^2.5.0",
+	"ol-ext": "^3.2.6",
 	"react-router-dom": "5.2.0",
 	"react-cookie": "^4.1.1",
 	"console-badge": "^1.1.0",

@@ -34,7 +34,7 @@ const App = () => {
 				<Switch>
 					<Route exact path="/" component={Home} />
 					<Route path="/Report/:reportId" component={Report} />
-					<Route path="/Category/:category" component={Category} />
+					<Route path="/Category/:category/:searchLocation?/:searchRange?" component={Category} />
 					<Route path="/View/:category/:feature" component={View} />
 					<Route component={Error} />
 				</Switch>
