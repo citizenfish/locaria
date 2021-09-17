@@ -1,5 +1,6 @@
+DROP  FUNCTION locus_core.cluster(search_parameters JSONB);
 CREATE OR REPLACE FUNCTION locus_core.cluster(search_parameters JSONB)  RETURNS TABLE (
-    _fid BIGINT,
+    _fid TEXT,
     _search_rank DOUBLE PRECISION,
     _wkb_geometry GEOMETRY,
     _attributes JSONB
@@ -27,7 +28,7 @@ BEGIN
             --add in the cluster extent converted from box_2d to a json array
             FINAL._attributes || CASE WHEN FINAL._attributes->>'count' != '1' THEN jsonb_build_object('extent', box2json(FINAL._wkb_geometry)) ELSE jsonb_build_object() END  AS _attributes
     FROM (
-            SELECT c_id::BIGINT AS _fid,
+            SELECT c_id::TEXT AS _fid,
                    1::DOUBLE PRECISION as _search_rank,
                    ST_Collect(SEARCH_CLUSTER._wkb_geometry) AS _wkb_geometry,
                    jsonb_build_object('category', category,
