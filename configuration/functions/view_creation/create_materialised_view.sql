@@ -15,7 +15,7 @@ BEGIN
 
     CREATE  MATERIALIZED VIEW locus_core.global_search_view AS
 
-    SELECT row_number() OVER() AS fid,
+    SELECT distinct lower(MD5(concat(attributes#>>'{table}',':',id))) AS fid,
            wkb_geometry,
 	       jsonb_build_object(  'url',          COALESCE(attributes->>'url', ''),
                                 'tags',         COALESCE(attributes->'tags', jsonb_build_object()),
@@ -26,7 +26,8 @@ BEGIN
                                 'category',     category
                               ) AS attributes,
            search_date AS start_date,
-           COALESCE(to_timestamp(attributes->>'end_date', 'DD/MM/YYYY HH24:MI:SS')::TIMESTAMP ,search_date) AS end_date,
+           --not we default end date to the end of the day
+           COALESCE(to_timestamp(attributes->>'end_date', 'DD/MM/YYYY HH24:MI:SS')::TIMESTAMP ,search_date::DATE::TIMESTAMP + INTERVAL '23 HOURS 59 MINUTES') AS end_date,
            COALESCE(attributes->>'range_min','0')::FLOAT as range_min,
            COALESCE(attributes->>'range_max','0')::FLOAT AS range_max
 
@@ -64,8 +65,8 @@ BEGIN
     --Supporting free text searches
     CREATE INDEX search_view_jsonb_ts_vector  ON locus_core.global_search_view USING GIN (jsonb_to_tsvector('English'::regconfig, attributes->'description', '["string", "numeric"]'::jsonb));
 
-    --Supporting date range searches between on a single date
-    CREATE INDEX locus_core_global_search_date_idx ON locus_core.global_search_view (CAST((start_date) AS DATE),CAST((end_date) AS DATE) DESC);
+    --Supporting date range searches
+    CREATE INDEX locus_core_global_search_tsdate_idx ON locus_core.global_search_view USING btree ((start_date::timestamp) ASC NULLS LAST, (end_date::timestamp) DESC NULLS LAST);
 
     --Supporting a numeric range
     CREATE INDEX locus_core_global_range_idx ON locus_core.global_search_view (range_min, range_max DESC);

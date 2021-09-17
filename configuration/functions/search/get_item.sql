@@ -19,7 +19,7 @@ BEGIN
 
         ) INTO ret_var
           FROM locus_core.global_search_view
-          WHERE fid = item_id_parameter::BIGINT;
+          WHERE fid = item_id_parameter;
 
         RETURN ret_var;
 

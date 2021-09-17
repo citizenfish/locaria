@@ -7,21 +7,21 @@ BEGIN
 
 	CASE WHEN method_param = 'set' THEN
 
-			INSERT INTO locus_core.lex_sessions(id,json_data)
+			INSERT INTO locus_core.locus_sessions(id,json_data)
 			SELECT id_param, json_param::JSONB
 			ON CONFLICT(id) DO UPDATE SET json_data = json_param::JSONB;
 
 		WHEN method_param = 'get' THEN
 
 			SELECT json_data  INTO ret_var
-			FROM locus_core.lex_sessions
+			FROM locus_core.locus_sessions
 			WHERE id = id_param;
 
 
 
 		WHEN method_param = 'del' THEN
 
-			DELETE FROM locus_core.lex_sessions
+			DELETE FROM locus_core.locus_sessions
             WHERE id = id_param;
 
         ELSE
