@@ -19,15 +19,13 @@ BEGIN
          WHEN search_parameters->>'method' IN ('get_item') THEN
             ret_var = get_item(search_parameters->>'fid');
 
-         WHEN search_parameters->>'method' IN ('locate') THEN
-            ret_var = locate(search_parameters);
-
          WHEN search_parameters->>'method' IN ('list_categories') THEN
-
             ret_var = list_categories_with_data(search_parameters);
 
-         WHEN search_parameters->>'method' IN ('list_categories_with_data') THEN
+          WHEN search_parameters->>'method' IN ('list_tags') THEN
+            ret_var = list_tags(search_parameters);
 
+         WHEN search_parameters->>'method' IN ('list_categories_with_data') THEN
             ret_var = list_categories_with_data(search_parameters);
 
 	     WHEN search_parameters->>'method' IN ('address_search') THEN
@@ -63,8 +61,11 @@ BEGIN
 
     RETURN ret_var;
 
---This block will trap any errors occuring and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
+--This block will trap any errors and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
 EXCEPTION WHEN OTHERS THEN
+
+        RAISE NOTICE '%', SQLERRM;
+
         INSERT INTO locus_core.logs(log_type, log_message)
         SELECT search_parameters->>'method',
                jsonb_build_object('parameters', search_parameters, 'response', SQLERRM)
