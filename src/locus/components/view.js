@@ -73,14 +73,17 @@ const View = () => {
 							},
 							"type": "Feature",
 							"properties":{
-								"type":"location"
+								"category":"location",
+								"description": {
+									"type": "small"
+								}
 							}
 						}
 					]
 				}
 			});
 			ol.addGeojson({"layer": "data", "geojson": view.packet});
-			ol.zoomToLayerExtent({"layer": "data", "buffer": 50});
+			ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
 			console.log('Map');
 		}
 

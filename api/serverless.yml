@@ -358,7 +358,28 @@ resources:
           Ref: AuroraRDSInstanceParameter
         DBClusterIdentifier:
           Ref: AuroraRDSCluster
-
+    #User pools Cognito
+    CognitoUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        MfaConfiguration: OFF
+        UserPoolName: locus-pool
+        UsernameAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: False
+            RequireNumbers: True
+            RequireSymbols: False
+            RequireUppercase: True
+      CognitoUserPoolClient:
+        Type: "AWS::Cognito::UserPoolClient"
+        Properties:
+          ClientName: square-pool-client
+          GenerateSecret: False
+          UserPoolId:
+            Ref: CognitoUserPool
 
 functions:
   api:

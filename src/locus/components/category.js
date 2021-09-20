@@ -17,6 +17,7 @@ import Avatar from '@material-ui/core/Avatar';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import InputLabel from '@material-ui/core/InputLabel';
+import Chip from '@material-ui/core/Chip';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {useCookies} from "react-cookie";
@@ -28,7 +29,7 @@ const Category = () => {
 	const classes = useStyles();
 	const distance = new Distance();
 
-	let {category} = useParams();
+	let {category,searchLocation,searchRange} = useParams();
 
 	const [currentCategory, setCurrentCategory] = React.useState(category);
 
@@ -36,11 +37,8 @@ const Category = () => {
 	const [report, setReport] = React.useState(null);
 	const [location, setLocation] = useCookies(['location']);
 
-	let channel;
-	for (let c in channels) {
-		if (channels[c].key === category)
-			channel = channels[c];
-	}
+	let channel=channels.getChannelProperties(category);
+
 
 	React.useEffect(() => {
 
@@ -67,17 +65,26 @@ const Category = () => {
 
 	const forceUpdate = () => {
 		setReport(null);
-		window.websocket.send({
+		let actualRange=distance.distanceActual(location.range, location.distanceSelect);
+		let actualLocation=location.location;
+		if(searchLocation!==undefined) {
+			actualLocation = searchLocation.split(",");
+			actualRange=searchRange||1;
+		}
+		let packet={
 			"queue": "categoryLoader",
 			"api": "api",
 			"data": {
 				"method": "search",
-				"category": category,
+				"category": channel.category,
 				"limit": 100,
-				"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
-				"location_distance": distance.distanceActual(location.range, location.distanceSelect)
+				"location": `SRID=4326;POINT(${actualLocation[0]} ${actualLocation[1]})`,
+				"location_distance": actualRange
 			}
-		});
+		};
+		if(channel.filterTags)
+			packet.data.tags=channel.filterTags;
+		window.websocket.send(packet);
 	}
 
 	if (currentCategory !== category) {
@@ -93,15 +100,19 @@ const Category = () => {
 						<Card variant="outlined" className={classes.categoryResultsCard}>
 							<CardHeader
 								avatar={
-									<Avatar aria-label={feature.properties.description.type} className={classes.categoryAvatar}>
-										{feature.properties.description.type[0].toUpperCase()}
+									<Avatar aria-label={feature.properties.tags[0]} style={{"background-color": `${channels.getChannelColor(category,feature.properties.tags[0])}`}}>
+										{feature.properties.tags[0][0].toUpperCase()}
 									</Avatar>
 								}
 								title={feature.properties.title}
 								subheader={'Distance: ' + distance.distanceFormatNice(feature.properties.distance, location.distanceSelect)}
-							/>
+							>
+							</CardHeader>
 							<CardActionArea>
 								<CardContent>
+										{feature.properties.tags.map(tag => (
+											<Chip label={tag} variant="outlined" style={{"background-color": `${channels.getChannelColor(category,tag)}`}} className={classes.tags} />
+										))}
 									<Typography gutterBottom variant="h5" component="h2">
 										{feature.properties.title}
 									</Typography>

@@ -16,11 +16,7 @@ const ChannelCard = ({path}) => {
 
 	const classes = useStyles();
 	let {category} = useParams();
-	let channel;
-	for(let c in channels) {
-		if(channels[c].key===category)
-			channel=channels[c];
-	}
+	let channel=channels.getChannelProperties(category);
 
 	const historyBack = () => {
 		history.goBack();
