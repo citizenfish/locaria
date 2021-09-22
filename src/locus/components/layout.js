@@ -18,7 +18,7 @@ import {Link} from "react-router-dom";
 import Openlayers from "../libs/Openlayers";
 import Paper from "@material-ui/core/Paper";
 import { useCookies } from 'react-cookie';
-import {viewStyle} from "../../theme/default/mapStyles/view";
+import {viewStyle,locationStyle} from "../../theme/default/mapStyles/view";
 import Button from "@material-ui/core/Button";
 import { useHistory } from 'react-router-dom';
 
@@ -54,7 +54,35 @@ const Layout = ({ children,map,update }) => {
 	const handleFeatureSelected = function (features) {
 		console.log('selected');
 		console.log(features);
-		history.push(`/View/Events/${features[0].get('fid')}`)
+		if(features[0].get('geometry_type')==='cluster') {
+			ol.zoomToLayerExtent({"layer": "data", "buffer": 50,"extent":features[0].get('extent')});
+
+		} else {
+			console.log(`Features ${features.length}`);
+
+			if(features.length===1) {
+				history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`)
+			} else {
+				let searchLocation=ol.decodeCoords(features[0].getGeometry().flatCoordinates,'EPSG:3857','EPSG:4326');
+				history.push(`Category/${features[0].get('category')}/${searchLocation[0]},${searchLocation[1]}/1`)
+			}
+		}
+	}
+
+	const onZoomChange = (result) =>{
+		let resolutions=ol.updateResolution();
+		let packet={
+			"queue": "homeLoader",
+			"api": "api",
+			"data": {
+				"method": "search",
+				"category": configs.homeCategorySearch,
+				"bbox": `${result.extent4326[0]} ${result.extent4326[1]},${result.extent4326[2]} ${result.extent4326[3]}`,
+				"cluster":resolutions.resolution<configs.clusterCutOff? false:true,
+				"cluster_width":Math.floor(configs.clusterWidthMod*resolutions.resolution)
+			}
+		};
+		window.websocket.send(packet);
 	}
 
 	React.useEffect(() => {
@@ -74,19 +102,38 @@ const Layout = ({ children,map,update }) => {
 				"url": `https://api.os.uk/maps/raster/v1/zxy/${configs.OSLayer}/{z}/{x}/{y}.png?key=${configs.OSKey}`,
 				"active": true
 			});
-			ol.addLayer({
-				"name": "data",
-				"type": "vector",
-				"active": true,
-				"style": viewStyle
-			});
+
+				ol.addLayer({
+					"name": "data",
+					"type": "vector",
+					"active": true,
+					"style": viewStyle
+				});
+				if(configs.cluster===true) {
+					ol.addResolutionEvent({"changeFunction":onZoomChange});
+				} else {
+					window.websocket.send({
+						"queue": "homeLoader",
+						"api": "api",
+						"data": {
+							"method": "search",
+							"category": "Events",
+							"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
+							"location_distance": 5000000000,
+							"cluster":false
+						}
+					});
+				}
+
 			ol.addLayer({
 				"name": "location",
 				"type": "vector",
 				"active": true,
-				"style": viewStyle
+				"style": locationStyle
 			});
-			ol.makeControl({"layers":["data"],"selectedFunction":handleFeatureSelected});
+			ol.makeControl({"layers":["data"],"selectedFunction":handleFeatureSelected,"multi":true});
+
+
 
 			if(location.location) {
 				console.log(location);
@@ -103,23 +150,12 @@ const Layout = ({ children,map,update }) => {
 								},
 								"type": "Feature",
 								"properties":{
-									"type":"location_big"
 								}
 							}
 						]
 					}
 				});
-				window.websocket.send({
-					"queue": "homeLoader",
-					"api": "api",
-					"data": {
-						"method": "search",
-						"category": "Events",
-						"limit": 20,
-						"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
-						"location_distance": 5000000000
-					}
-				});
+
 			} else {
 				console.log('no location');
 			}
@@ -146,7 +182,6 @@ const Layout = ({ children,map,update }) => {
 									},
 									"type": "Feature",
 									"properties":{
-										"type":"location_big"
 									}
 								}
 							]
@@ -169,8 +204,10 @@ const Layout = ({ children,map,update }) => {
 		});
 
 		window.websocket.registerQueue("homeLoader", function (json) {
-			ol.addGeojson({"layer": "data", "geojson": json.packet});
+			if(map===true) {
 
+				ol.addGeojson({"layer": "data", "geojson": json.packet, "clear": true});
+			}
 		});
 
 
@@ -228,9 +265,10 @@ const Layout = ({ children,map,update }) => {
 			onClose={handleMenuClose}
 		>
 			<MenuItem component={Link} to={`/`}>Home</MenuItem>
-			{channels.map(channel => (
-				channelDisplay(channel)
-			))}
+			{channels.listChannels().map(function(channel) {
+				if(channels.displayChannel(channel))
+					return channelDisplay(channels.getChannelProperties(channel));
+			})}
 		</Menu>
 	);
 
@@ -301,7 +339,7 @@ const Layout = ({ children,map,update }) => {
 		if(map===true) {
 			return (
 				<Paper elevation={3} className={classes.paperMargin}>
-					<div className={classes.mapContainer + " no-controls"}>
+					<div className={classes.mapContainer}>
 						<div id="map" className={classes.map}>
 							<Button className={classes.mapResetButton} onClick={resetMap}>Reset map</Button>
 						</div>
