@@ -32,15 +32,16 @@ module.exports = function (grunt) {
 				},
 				tables: [
 					//'configuration/functions/view_creation/views_union.sql',
-					//'configuration/functions/view_creation/create_materialised_view.sql',
+					'configuration/functions/view_creation/create_materialised_view.sql',
 					//'configuration/schema_and_views/create_categories_table.sql'
 					//'configuration/functions/search/search_get_records.sql',
 					//'configuration/functions/locus_gateway.sql'
 					//'configuration/functions/search/get_item.sql',
 					//'configuration/functions/search/search_get_records.sql',
 					//'configuration/functions/search/cluster.sql'
-					'configuration/schema_and_views/create_sessions_table.sql',
-					'configuration/functions/sessions/sessions_api.sql'
+					//'configuration/schema_and_views/create_sessions_table.sql',
+					//'configuration/functions/sessions/sessions_api.sql'
+					'configuration/functions/search/list_tags.sql'
 				]
 			},
 			full: {

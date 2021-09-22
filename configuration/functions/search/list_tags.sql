@@ -4,15 +4,19 @@ CREATE OR REPLACE FUNCTION locus_core.list_tags(search_parameters JSONB DEFAULT 
 $$
 DECLARE
     ret_var JSONB;
-
+    filter_var JSONB DEFAULT jsonb_build_object();
 BEGIN
+
+    filter_var = COALESCE(search_parameters->'filter', filter_var);
 
     SELECT json_agg(tag)
     INTO ret_var
      FROM (
-        SELECT distinct jsonb_array_elements_text(attributes#>'{description,tags}') tag
+        SELECT distinct jsonb_array_elements_text(attributes#>'{tags}') tag
         FROM locus_core.global_search_view
-	) TAGS;
+        WHERE attributes @> filter_var
+	) TAGS
+	WHERE tag != '';
 
 	RETURN ret_var;
 
