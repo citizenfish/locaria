@@ -30,12 +30,13 @@ const View = () => {
 	const [view, setView] = React.useState(null);
 
 
+	const handleNewLocation = () => {
+		setView(null);
+	}
 
 	React.useEffect(() => {
 
 		if(view===null) {
-			console.log('NO MAP');
-
 			window.websocket.send({
 				"queue": "viewLoader",
 				"api": "api",
@@ -82,16 +83,16 @@ const View = () => {
 					]
 				}
 			});
-			ol.addGeojson({"layer": "data", "geojson": view.packet});
+			ol.addGeojson({"layer": "data", "geojson": view});
 			ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
-			console.log('Map');
 		}
+
+
 
 	} );
 
 	window.websocket.registerQueue("viewLoader", function (json) {
-		console.log('RENDER DATA');
-		setView(json);
+		setView(json.packet);
 	});
 
 	function resetMap() {
@@ -100,7 +101,7 @@ const View = () => {
 
 	if (view !== null) {
 		return (
-			<Layout>
+			<Layout update={handleNewLocation}>
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
@@ -114,21 +115,21 @@ const View = () => {
 
 									<CardMedia
 										className={classes.mediaMap}
-										title={view.packet.features[0].properties.title}
+										title={view.features[0].properties.description.title}
 									>
 										<div id="map" className={classes.mapView}>
 											<Button className={classes.mapResetButton} onClick={() => {resetMap()}}>Reset map</Button>
 										</div>
 									</CardMedia>
 									<Typography gutterBottom variant="h5" component="h2">
-										{view.packet.features[0].properties.title}
+										{view.features[0].properties.description.title}
 									</Typography>
 									<Typography variant="body2" color="textSecondary" component="p">
-										{view.packet.features[0].properties.description.text}
+										{view.features[0].properties.description.text}
 									</Typography>
 								</CardContent>
 								<CardActions>
-									<OutsideLink to={view.packet.features[0].properties.url}></OutsideLink>
+									<OutsideLink to={view.features[0].properties.description.url}></OutsideLink>
 									<Share></Share>
 								</CardActions>
 							</Card>
@@ -140,7 +141,7 @@ const View = () => {
 		);
 	} else {
 		return (
-			<Layout>
+			<Layout update={handleNewLocation}>
 				<LinearProgress/>
 			</Layout>
 		)

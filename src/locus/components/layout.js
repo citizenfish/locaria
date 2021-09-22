@@ -52,13 +52,10 @@ const Layout = ({ children,map,update }) => {
 	const menuId = 'primary-search-account-menu';
 
 	const handleFeatureSelected = function (features) {
-		console.log('selected');
-		console.log(features);
 		if(features[0].get('geometry_type')==='cluster') {
 			ol.zoomToLayerExtent({"layer": "data", "buffer": 50,"extent":features[0].get('extent')});
 
 		} else {
-			console.log(`Features ${features.length}`);
 
 			if(features.length===1) {
 				history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`)
@@ -136,7 +133,6 @@ const Layout = ({ children,map,update }) => {
 
 
 			if(location.location) {
-				console.log(location);
 				ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326"});
 				ol.addGeojson({
 					"layer": "location",
@@ -162,46 +158,7 @@ const Layout = ({ children,map,update }) => {
 
 		}
 
-		window.websocket.registerQueue("postcode", function (json) {
-			if(json.packet.features.length>0) {
-				let postcode = document.getElementById('myPostcode').value;
-				setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/',sameSite:true});
-				setLocation('postcode', postcode, {path: '/',sameSite:true});
 
-				if(map===true) {
-					ol.clearLayer({"layer":"location"});
-					ol.addGeojson({
-						"layer": "location",
-						"geojson": {
-							"type": "FeatureCollection",
-							"features": [
-								{
-									"geometry": {
-										"type": "Point",
-										"coordinates": json.packet.features[0].geometry.coordinates
-									},
-									"type": "Feature",
-									"properties":{
-									}
-								}
-							]
-						}
-					});
-					ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
-				} else {
-					if(update!==undefined)
-						update();
-				}
-				setOpenSuccess(true);
-
-				console.log(json.packet.features[0].geometry.coordinates);
-
-
-			} else {
-				setOpenError(true);
-				console.log(json);
-			}
-		});
 
 		window.websocket.registerQueue("homeLoader", function (json) {
 			if(map===true) {
@@ -214,7 +171,42 @@ const Layout = ({ children,map,update }) => {
 
 	}, []);
 
+	window.websocket.registerQueue("postcode", function (json) {
+		if(json.packet.features.length>0) {
+			let postcode = document.getElementById('myPostcode').value;
+			setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/',sameSite:true});
+			setLocation('postcode', postcode, {path: '/',sameSite:true});
 
+			if(map===true) {
+				ol.clearLayer({"layer":"location"});
+				ol.addGeojson({
+					"layer": "location",
+					"geojson": {
+						"type": "FeatureCollection",
+						"features": [
+							{
+								"geometry": {
+									"type": "Point",
+									"coordinates": json.packet.features[0].geometry.coordinates
+								},
+								"type": "Feature",
+								"properties":{
+								}
+							}
+						]
+					}
+				});
+				ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
+			}
+			setOpenSuccess(true);
+			if(update!==undefined)
+				update();
+
+
+		} else {
+			setOpenError(true);
+		}
+	});
 
 	function closeError() {
 		setOpenError(false);
@@ -246,7 +238,7 @@ const Layout = ({ children,map,update }) => {
 		if(channel.type==='Report')
 			return (<MenuItem component={Link} to={`/${channel.type}/${channel.report_name}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
 		else
-			return (<MenuItem component={Link} to={`/${channel.type}/${channel.category}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
+			return (<MenuItem component={Link} to={`/${channel.type}/${channel.key}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
 
 	}
 
