@@ -17,8 +17,8 @@ BEGIN
 
     SELECT distinct lower(MD5(concat(attributes#>>'{table}',':',id))) AS fid,
            wkb_geometry,
-	       jsonb_build_object(  'url',          COALESCE(attributes->>'url', ''),
-                                'tags',         COALESCE(attributes->'tags', jsonb_build_object()),
+	       jsonb_build_object(  --'url',          COALESCE(attributes->>'url', ''),
+                                'tags',         COALESCE(attributes->'tags', jsonb_build_array()),
                                 'description',  COALESCE(attributes->'description', jsonb_build_object()),
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),

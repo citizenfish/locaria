@@ -1,3 +1,8 @@
+--tags
+
+UPDATE locus_core.test_events
+SET attributes = attributes - 'tags' ||
+jsonb_build_object('tags', array_to_json(string_to_array(attributes#>>'{description,type}',','))::JSONB) - '{description,type}';
 
 
 UPDATE locus_core.test_events
@@ -25,13 +30,14 @@ jsonb_build_object(
                 '[^0-9]','','g'),
         ''),
              '18')::INTEGER
-)
+);
 
 --end dates
 
 UPDATE locus_core.test_events
 SET attributes = attributes || jsonb_build_object('end_date',
-CASE WHEN attributes#>>'{description,end_date}' ~ '/' THEN
-to_timestamp(attributes#>>'{description,end_date}', 'DD/MM/YYYY')
-ELSE NOW() + INTERVAL '10 days'
-END
+
+to_char(NOW() + INTERVAL '60 days', 'DD/MM/YYYY HH24:MI:SS')
+);
+
+REFRESH MATERIALIZED VIEW  locus_core.global_search_view;
