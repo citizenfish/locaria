@@ -100,7 +100,7 @@ const Category = () => {
 		if(channel.filterTags)
 			packet.data.tags=channel.filterTags;
 		// Tags filter override?
-		if(tags.length>0)
+		if(tags.length>0&&channel.search!==undefined&&channel.search.indexOf('SearchTags')!==-1)
 			packet.data.tags=tags;
 		window.websocket.send(packet);
 	}
