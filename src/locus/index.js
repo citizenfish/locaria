@@ -6,10 +6,11 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import { configs } from "../theme/default/locus";
+import { configs } from "theme_locus";
 
 import cssOL from './components/css/ol.css';
 
+document.title=configs.siteTitle;
 window.websocket=new Websockets();
 
 window.websocket.init({"url": configs.websocket},connected,closed,errored);

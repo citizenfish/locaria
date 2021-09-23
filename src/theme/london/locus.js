@@ -1,3 +1,4 @@
+import React from 'react';
 import {alpha, makeStyles, createTheme} from '@material-ui/core/styles';
 import Channels from './../../locus/libs/Channels'
 
@@ -200,6 +201,7 @@ const tags={
 };
 
 channels.addChannel('Events',{
+	"key":"Events",
 	"type": "Category",
 	"name": "Search",
 	"description": "Find all events in your local area.",
@@ -208,12 +210,14 @@ channels.addChannel('Events',{
 	"mapIcon": iconGeneral,
 	"color": "#4a94e9",
 	"display":true,
-	"tags":tags
+	"tags":tags,
+	"search":["SearchRange","SearchTags"]
 });
 
 
 
 channels.addChannel( 'Arts',{
+	"key":"Arts",
 	"type": "Category",
 	"name": "Art",
 	"description": "Find all Art events in your local area.",
@@ -226,6 +230,7 @@ channels.addChannel( 'Arts',{
 });
 
 channels.addChannel( 'Community',{
+	"key":"Community",
 	"type": "Category",
 	"name": "Community",
 	"description": "Find all Community events in your local area.",
@@ -238,6 +243,7 @@ channels.addChannel( 'Community',{
 });
 
 channels.addChannel( 'Dance',{
+	"key":"Dance",
 	"type": "Category",
 	"name": "Dance",
 	"description": "Find all Dance events in your local area.",
@@ -250,6 +256,7 @@ channels.addChannel( 'Dance',{
 });
 
 channels.addChannel( 'Educational',{
+	"key":"Educational",
 	"type": "Category",
 	"name": "Educational",
 	"description": "Find all Educational events in your local area.",
@@ -262,6 +269,7 @@ channels.addChannel( 'Educational',{
 });
 
 channels.addChannel( 'Music',{
+	"key":"Music",
 	"type": "Category",
 	"name": "Music",
 	"description": "Find all Music events in your local area.",
@@ -274,6 +282,7 @@ channels.addChannel( 'Music',{
 });
 
 channels.addChannel( 'Sport',{
+	"key":"Sport",
 	"type": "Category",
 	"name": "Sport",
 	"description": "Find all Sporting events in your local area.",
@@ -286,6 +295,7 @@ channels.addChannel( 'Sport',{
 })
 
 channels.addChannel( 'Tech',{
+	"key":"Tech",
 	"type": "Category",
 	"name": "Tech",
 	"description": "Find all Tech events in your local area.",

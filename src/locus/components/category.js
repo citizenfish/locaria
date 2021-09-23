@@ -24,6 +24,10 @@ import {useCookies} from "react-cookie";
 
 import Distance from "../libs/Distance";
 
+import SearchRange from "./search/SearchRange";
+import SearchAge from "./search/SearchAge";
+import SearchTags from "./search/SearchTags";
+
 const Category = () => {
 
 	const classes = useStyles();
@@ -35,6 +39,7 @@ const Category = () => {
 
 
 	const [report, setReport] = React.useState(null);
+	const [tags, setTags] = React.useState([]);
 	const [location, setLocation] = useCookies(['location']);
 
 	let channel=channels.getChannelProperties(category);
@@ -46,25 +51,35 @@ const Category = () => {
 			setReport(json);
 		});
 
-		forceUpdate();
+		if(report===null) {
+			forceUpdate();
+		}
 
 
-	}, []);
+	});
+
+	function handleLocationChange() {
+		setReport(null);
+
+	}
 
 	function handleChange(e) {
 		setLocation('distanceSelect', e.target.value, {path: '/', sameSite: true});
-
 	}
 
 	function handleFilterChange(e) {
-		setLocation('range', e.target.value, {path: '/', sameSite: true});
-		location.range = e.target.value;
-		console.log(location.range);
-		forceUpdate();
+		const range=document.getElementById('range-select').value;
+		setLocation('range',range , {path: '/', sameSite: true});
+		location.range = range;
+		setReport(null);
+	}
+
+	function handleTagChange(newTags) {
+		setTags(newTags);
+		setReport(null);
 	}
 
 	const forceUpdate = () => {
-		setReport(null);
 		let actualRange=distance.distanceActual(location.range, location.distanceSelect);
 		let actualLocation=location.location;
 		if(searchLocation!==undefined) {
@@ -84,6 +99,9 @@ const Category = () => {
 		};
 		if(channel.filterTags)
 			packet.data.tags=channel.filterTags;
+		// Tags filter override?
+		if(tags.length>0&&channel.search!==undefined&&channel.search.indexOf('SearchTags')!==-1)
+			packet.data.tags=tags;
 		window.websocket.send(packet);
 	}
 
@@ -104,7 +122,7 @@ const Category = () => {
 										{feature.properties.tags[0][0].toUpperCase()}
 									</Avatar>
 								}
-								title={feature.properties.title}
+								title={feature.properties.description.title}
 								subheader={'Distance: ' + distance.distanceFormatNice(feature.properties.distance, location.distanceSelect)}
 							>
 							</CardHeader>
@@ -114,7 +132,7 @@ const Category = () => {
 											<Chip label={tag} variant="outlined" style={{"background-color": `${channels.getChannelColor(category,tag)}`}} className={classes.tags} />
 										))}
 									<Typography gutterBottom variant="h5" component="h2">
-										{feature.properties.title}
+										{feature.properties.description.title}
 									</Typography>
 									<Typography variant="body2" color="textSecondary" component="p">
 										{feature.properties.description.text}
@@ -145,9 +163,34 @@ const Category = () => {
 		}
 	}
 
+	const showSearch = () => {
+		if(channel.search===undefined)
+			return (
+				<SearchRange changeFunction={handleFilterChange}
+				             currentValue={location.range}></SearchRange>
+			)
+		return (
+			channel.search.map(function(component) {
+				if (component === 'SearchRange') {
+					return (<SearchRange changeFunction={handleFilterChange}
+					                    currentValue={location.range}></SearchRange>)
+				}
+				if (component === 'SearchAge') {
+					return (<SearchAge changeFunction={handleFilterChange}
+					                     currentValue={location.range}></SearchAge>)
+				}
+				if (component === 'SearchTags') {
+					return (<SearchTags changeFunction={handleTagChange}
+					                   currentValue={tags}></SearchTags>)
+				}
+			})
+		)
+
+	}
+
 	if (report !== null) {
 		return (
-			<Layout update={forceUpdate}>
+			<Layout update={handleLocationChange}>
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
@@ -167,22 +210,7 @@ const Category = () => {
 											<option value="km">Kilometers</option>
 										</NativeSelect>
 									</FormControl>
-									<FormControl className={classes.formControl} fullWidth>
-
-										<InputLabel id="filter-range-select-label">Range</InputLabel>
-										<NativeSelect
-											labelId="filter-range-select-label"
-											id="range-select"
-											value={location.range}
-											onChange={handleFilterChange}
-										>
-											<option value="1">1</option>
-											<option value="3">3</option>
-											<option value="5">5</option>
-											<option value="10">10</option>
-											<option value="1000000000000">All</option>
-										</NativeSelect>
-									</FormControl>
+									{showSearch()}
 								</CardContent>
 							</Card>
 						</Paper>
