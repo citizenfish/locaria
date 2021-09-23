@@ -5,6 +5,8 @@ $$
 
 BEGIN
 
+    SET SEARCH_PATH = 'locus_core', 'public';
+
     RAISE NOTICE 'Creating locus search materialised view';
 
     DROP MATERIALIZED VIEW IF EXISTS  locus_core.global_search_view CASCADE;
@@ -17,8 +19,7 @@ BEGIN
 
     SELECT distinct lower(MD5(concat(attributes#>>'{table}',':',id))) AS fid,
            wkb_geometry,
-	       jsonb_build_object(  --'url',          COALESCE(attributes->>'url', ''),
-                                'tags',         COALESCE(attributes->'tags', jsonb_build_array()),
+	       jsonb_build_object(  'tags',         COALESCE(strip_array_blanks(attributes->'tags'), jsonb_build_array()),
                                 'description',  COALESCE(attributes->'description', jsonb_build_object()),
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),
