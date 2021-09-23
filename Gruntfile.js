@@ -41,7 +41,8 @@ module.exports = function (grunt) {
 					//'configuration/functions/search/cluster.sql'
 					//'configuration/schema_and_views/create_sessions_table.sql',
 					//'configuration/functions/sessions/sessions_api.sql'
-					'configuration/functions/search/list_tags.sql'
+					//'configuration/functions/search/list_tags.sql',
+					'configuration/functions/utility/strip_array_blanks.sql'
 				]
 			},
 			full: {
