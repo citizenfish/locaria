@@ -32,7 +32,7 @@ RUN osrm-customize gb-latest-bicycle.osrm
 RUN rm -rf gb-latest-bicycle.osm.pbf
 RUN rm -rf gb-latest.osm.pbf
 
-
+RUN chmod +x ./start_services.sh
 CMD ./start_services.sh
 
 #CMD ["osrm-routed", "--algorithm", "mld", "gb-latest.osrm", "--max-matching-size","50000"]
