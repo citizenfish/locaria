@@ -2,6 +2,7 @@ import React from 'react';
 
 import Layout from './Layout';
 import Share from './share';
+import Linker from './linker';
 import ChannelCard from './channelCard';
 
 import {Link, useParams, BrowserRouter} from "react-router-dom";
@@ -152,7 +153,7 @@ const View = () => {
 const OutsideLink = ({to}) => {
 	if(to!==undefined) {
 		return (
-			<Button size="small" color="primary" onClick={() => {window.location=to}}>External Link</Button>
+			<Linker location={to}></Linker>
 		)
 	} else {
 		return '';
