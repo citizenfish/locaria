@@ -39,7 +39,7 @@ const ChannelCard = ({path}) => {
 				</CardContent>
 			<CardActions>
 				<Share></Share>
-				<Button size="small" color="primary" onClick={historyBack}>
+				<Button size="small" color="secondary" onClick={historyBack} variant="outlined">
 						Back
 				</Button>
 

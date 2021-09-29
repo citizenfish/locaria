@@ -24,8 +24,8 @@ const App = () => {
 	if(location.distanceSelect===undefined) {
 		setLocation('distanceSelect', configs.defaultDistanceSelect, {path: '/', sameSite: true});
 	}
-	if(location.range===undefined) {
-		setLocation('range', configs.defaultRange, {path: '/',sameSite:true});
+	if(location.distance===undefined) {
+		setLocation('distance', configs.defaultDistance, {path: '/',sameSite:true});
 	}
 
 	return (
@@ -34,7 +34,7 @@ const App = () => {
 				<Switch>
 					<Route exact path="/" component={Home} />
 					<Route path="/Report/:reportId" component={Report} />
-					<Route path="/Category/:category/:searchLocation?/:searchRange?" component={Category} />
+					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category} />
 					<Route path="/View/:category/:feature" component={View} />
 					<Route component={Error} />
 				</Switch>

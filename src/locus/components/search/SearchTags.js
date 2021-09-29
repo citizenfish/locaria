@@ -11,7 +11,7 @@ import Input from "@material-ui/core/Input";
 import {useStyles} from "theme_locus";
 
 
-const SearchTags = ({changeFunction,currentValue}) => {
+const SearchTags = ({category,changeFunction,currentValue}) => {
 	const classes = useStyles();
 	const [tags, setTags] = React.useState([]);
 	const [selectedTags, setSelectTags] = React.useState(currentValue);
@@ -23,7 +23,7 @@ const SearchTags = ({changeFunction,currentValue}) => {
 			window.websocket.send({
 				"queue": "tagsLoader",
 				"api": "api",
-				"data": {"method": "list_tags","filter" : {"category" : "Events"}}
+				"data": {"method": "list_tags","filter" : {"category" : [category]}}
 			});
 		};
 

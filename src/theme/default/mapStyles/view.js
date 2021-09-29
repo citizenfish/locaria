@@ -5,7 +5,7 @@ import markerThing from '../images/marker-thing.svg';
 import markerTPO from '../images/marker-tpo.svg';
 import marker from '../images/marker.svg';
 
-import {channels} from "theme_locus";
+import {configs,channels} from "theme_locus";
 
 export function locationStyle(feature, resolution) {
 	return [
@@ -99,7 +99,8 @@ export function viewStyle(feature, resolution) {
 	let channel=channels.getChannelProperties(category);
 
 	let icon=channels.getChannelMapIcon(category,tags);
-
+	if(icon===undefined)
+		icon=configs.defaultMapIcon;
 	const geometry = feature.getGeometry();
 	if (geometry.getType() === 'Point') {
 

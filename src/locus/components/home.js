@@ -50,7 +50,7 @@ const Home = () => {
 											</CardContent>
 											<CardActions>
 												<Link to={`/${chan.type}/${channel}`}>
-													<Button size="small" color="primary">
+													<Button size="small" color="secondary" variant="outlined">
 														View
 													</Button>
 												</Link>

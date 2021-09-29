@@ -37,7 +37,7 @@ const Linker = ({location}) => {
 
 	return (
 		<div>
-			<Button size="small" color="primary" onClick={handleClickOpen}>
+			<Button size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
 				Visit
 			</Button>
 			<Dialog
@@ -63,10 +63,10 @@ const Linker = ({location}) => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleVisit} color="primary">
+					<Button onClick={handleVisit} color="secondary" variant="outlined">
 						Visit
 					</Button>
-					<Button onClick={handleClose} color="primary">
+					<Button onClick={handleClose} color="secondary" variant="outlined">
 						Cancel
 					</Button>
 				</DialogActions>

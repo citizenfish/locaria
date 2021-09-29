@@ -333,7 +333,7 @@ const Layout = ({ children,map,update }) => {
 				<Paper elevation={3} className={classes.paperMargin}>
 					<div className={classes.mapContainer}>
 						<div id="map" className={classes.map}>
-							<Button className={classes.mapResetButton} onClick={resetMap}>Reset map</Button>
+							<Button className={classes.mapResetButton} onClick={resetMap} color="secondary" variant="outlined">Reset map</Button>
 						</div>
 					</div>
 				</Paper>

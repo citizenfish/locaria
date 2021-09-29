@@ -24,8 +24,8 @@ import {useCookies} from "react-cookie";
 
 import Distance from "../libs/Distance";
 
+import SearchDistance from "./search/SearchDistance";
 import SearchRange from "./search/SearchRange";
-import SearchAge from "./search/SearchAge";
 import SearchTags from "./search/SearchTags";
 
 const Category = () => {
@@ -33,7 +33,7 @@ const Category = () => {
 	const classes = useStyles();
 	const distance = new Distance();
 
-	let {category,searchLocation,searchRange} = useParams();
+	let {category,searchLocation,searchDistance} = useParams();
 
 	const [currentCategory, setCurrentCategory] = React.useState(category);
 
@@ -68,9 +68,9 @@ const Category = () => {
 	}
 
 	function handleFilterChange(e) {
-		const range=document.getElementById('range-select').value;
-		setLocation('range',range , {path: '/', sameSite: true});
-		location.range = range;
+		const distance=document.getElementById('filter-distance-select').value;
+		setLocation('distance',distance , {path: '/', sameSite: true});
+		location.distance = distance;
 		setReport(null);
 	}
 
@@ -79,12 +79,20 @@ const Category = () => {
 		setReport(null);
 	}
 
+	function handleRangeChange(e,newValue) {
+
+		setLocation('rangeFrom',newValue[0] , {path: '/', sameSite: true});
+		setLocation('rangeTo',newValue[1] , {path: '/', sameSite: true});
+
+		setReport(null);
+	}
+
 	const forceUpdate = () => {
-		let actualRange=distance.distanceActual(location.range, location.distanceSelect);
+		let actualDistance=distance.distanceActual(location.distance, location.distanceSelect);
 		let actualLocation=location.location;
 		if(searchLocation!==undefined) {
 			actualLocation = searchLocation.split(",");
-			actualRange=searchRange||1;
+			actualDistance=searchDistance||1;
 		}
 		let packet={
 			"queue": "categoryLoader",
@@ -94,14 +102,18 @@ const Category = () => {
 				"category": channel.category,
 				"limit": 100,
 				"location": `SRID=4326;POINT(${actualLocation[0]} ${actualLocation[1]})`,
-				"location_distance": actualRange
+				"location_distance": actualDistance
 			}
 		};
 		if(channel.filterTags)
 			packet.data.tags=channel.filterTags;
 		// Tags filter override?
-		if(tags.length>0&&channel.search!==undefined&&channel.search.indexOf('SearchTags')!==-1)
+		if(tags.length>0&&channel.search!==undefined&&channels.getChannelProperties(category,'SearchTags')!==false)
 			packet.data.tags=tags;
+		if(location.rangeFrom&&channel.search!==undefined&&channels.getChannelProperties(category,'SearchRange')!==false) {
+			packet.data.min_range = location.rangeFrom;
+			packet.data.max_range = location.rangeTo;
+		}
 		window.websocket.send(packet);
 	}
 
@@ -110,22 +122,29 @@ const Category = () => {
 		forceUpdate();
 	}
 
+	const showHeader = (feature) => {
+		if(feature.properties.tags&&feature.properties.tags.length>0) {
+			return (<CardHeader
+				avatar={
+					<Avatar aria-label={feature.properties.tags[0]}
+					        style={{"background-color": `${channels.getChannelColor(category, feature.properties.tags[0])}`}}>
+						{feature.properties.tags[0][0].toUpperCase()}
+					</Avatar>
+				}
+				title={feature.properties.description.title}
+				subheader={'Distance: ' + distance.distanceFormatNice(feature.properties.distance, location.distanceSelect)}
+			>
+			</CardHeader>)
+		} return '';
+	}
+
 	const showReport = () => {
 
 		if(report.packet.features.length>0) {
 			return (report.packet.features
 					.map(feature => (
 						<Card variant="outlined" className={classes.categoryResultsCard}>
-							<CardHeader
-								avatar={
-									<Avatar aria-label={feature.properties.tags[0]} style={{"background-color": `${channels.getChannelColor(category,feature.properties.tags[0])}`}}>
-										{feature.properties.tags[0][0].toUpperCase()}
-									</Avatar>
-								}
-								title={feature.properties.description.title}
-								subheader={'Distance: ' + distance.distanceFormatNice(feature.properties.distance, location.distanceSelect)}
-							>
-							</CardHeader>
+							{showHeader(feature)}
 							<CardActionArea>
 								<CardContent>
 										{feature.properties.tags.map(tag => (
@@ -141,7 +160,7 @@ const Category = () => {
 							</CardActionArea>
 							<CardActions>
 								<Link to={`/View/${category}/${feature.properties.fid}`}>
-									<Button size="small" color="primary">
+									<Button size="small" color="secondary" variant="outlined">
 										View
 									</Button>
 								</Link>
@@ -153,10 +172,10 @@ const Category = () => {
 			return (
 				<Card className={classes.channelCardForm}>
 					<CardContent>
-						<Typography variant="h2" component="h2" gutterBottom>
+						<Typography variant="h4" component="h4" gutterBottom>
 							No results found
 						</Typography>
-						<p>Try adjusting the distance filters as your are currently limiting your results to {location.range} {distance.distanceLang(location.distanceSelect)}</p>
+						<p>Try adjusting the distance filters as your are currently limiting your results to {location.distance} {distance.distanceLang(location.distanceSelect)}</p>
 					</CardContent>
 				</Card>
 			)
@@ -166,21 +185,21 @@ const Category = () => {
 	const showSearch = () => {
 		if(channel.search===undefined)
 			return (
-				<SearchRange changeFunction={handleFilterChange}
-				             currentValue={location.range}></SearchRange>
+				<SearchDistance changeFunction={handleFilterChange}
+				                currentValue={location.distance}></SearchDistance>
 			)
 		return (
-			channel.search.map(function(component) {
-				if (component === 'SearchRange') {
-					return (<SearchRange changeFunction={handleFilterChange}
-					                    currentValue={location.range}></SearchRange>)
+			channel.search.map(function(item) {
+				if (item.component === 'SearchDistance') {
+					return (<SearchDistance changeFunction={handleFilterChange}
+					                        currentValue={location.distance}></SearchDistance>)
 				}
-				if (component === 'SearchAge') {
-					return (<SearchAge changeFunction={handleFilterChange}
-					                     currentValue={location.range}></SearchAge>)
+				if (item.component === 'SearchRange') {
+					return (<SearchRange changeFunction={handleRangeChange}
+					                     currentValueFrom={location.rangeFrom||0} currentValueTo={location.rangeTo||25}></SearchRange>)
 				}
-				if (component === 'SearchTags') {
-					return (<SearchTags changeFunction={handleTagChange}
+				if (item.component === 'SearchTags') {
+					return (<SearchTags category={category} changeFunction={handleTagChange}
 					                   currentValue={tags}></SearchTags>)
 				}
 			})
@@ -192,7 +211,7 @@ const Category = () => {
 		return (
 			<Layout update={handleLocationChange}>
 				<Grid container className={classes.root} spacing={6}>
-					<Grid item md={4}>
+					<Grid item md={4} className={classes.gridFull}>
 						<Paper elevation={3} className={classes.paperMargin}>
 							<ChannelCard path={'/'}></ChannelCard>
 
