@@ -14,11 +14,10 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					//'tests/integration_tests/check_core_tables.sql',
-					//'tests/integration_tests/load_test_data.sql',
-					//'tests/unit_tests/check_api_functions.sql'
-					'tests/unit_tests/search_get_records.sql',
-
+					//'tests/unit_tests/internal_api/get_tables.sql',
+					//'tests/unit_tests/internal_api/add_item.sql'
+					//'tests/unit_tests/internal_api/delete_item.sql'
+					'tests/unit_tests/internal_api/update_item.sql'
 
 				]
 			},
@@ -32,17 +31,22 @@ module.exports = function (grunt) {
 				},
 				tables: [
 					//'configuration/functions/view_creation/views_union.sql',
-					'configuration/functions/view_creation/create_materialised_view.sql',
+					//'configuration/functions/view_creation/create_materialised_view.sql',
 					//'configuration/schema_and_views/create_categories_table.sql'
 					//'configuration/functions/search/search_get_records.sql',
-					//'configuration/functions/locus_gateway.sql'
+					//'configuration/functions/locus_gateway.sql',
+					'configuration/functions/locus_internal_gateway.sql',
+					//'configuration/functions/internal/get_tables.sql',
+					'configuration/functions/internal/add_item.sql',
+					'configuration/functions/internal/delete_item.sql',
+					'configuration/functions/internal/update_item.sql'
 					//'configuration/functions/search/get_item.sql',
-					//'configuration/functions/search/search_get_records.sql',
+					//'configuration/functions/search/search_get_records.sql'
 					//'configuration/functions/search/cluster.sql'
 					//'configuration/schema_and_views/create_sessions_table.sql',
 					//'configuration/functions/sessions/sessions_api.sql'
 					//'configuration/functions/search/list_tags.sql',
-					'configuration/functions/utility/strip_array_blanks.sql'
+					//'configuration/functions/utility/strip_array_blanks.sql'
 				]
 			},
 			full: {

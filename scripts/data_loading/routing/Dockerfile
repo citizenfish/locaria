@@ -6,7 +6,8 @@ COPY . .
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl
 
-RUN curl http://download.geofabrik.de/europe/great-britain-latest.osm.pbf --output gb-latest.osm.pbf
+#RUN curl http://download.geofabrik.de/europe/great-britain-latest.osm.pbf --output gb-latest.osm.pbf
+RUN curl http://download.geofabrik.de/europe/great-britain/england/greater-london-latest.osm.pbf --output gb-latest.osm.pbf
 
 #CAR
 RUN cp gb-latest.osm.pbf gb-latest-car.osm.pbf
