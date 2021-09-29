@@ -31,15 +31,16 @@ module.exports = function (grunt) {
 				},
 				tables: [
 					//'configuration/functions/view_creation/views_union.sql',
-					//'configuration/functions/view_creation/create_materialised_view.sql',
+					'configuration/functions/view_creation/create_materialised_view.sql',
 					//'configuration/schema_and_views/create_categories_table.sql'
-					//'configuration/functions/search/search_get_records.sql',
+					'configuration/functions/search/search_get_records.sql',
+					'configuration/functions/utility/json2text.sql'
 					//'configuration/functions/locus_gateway.sql',
-					'configuration/functions/locus_internal_gateway.sql',
+					//'configuration/functions/locus_internal_gateway.sql',
 					//'configuration/functions/internal/get_tables.sql',
-					'configuration/functions/internal/add_item.sql',
-					'configuration/functions/internal/delete_item.sql',
-					'configuration/functions/internal/update_item.sql'
+					//'configuration/functions/internal/add_item.sql',
+					//'configuration/functions/internal/delete_item.sql',
+					//'configuration/functions/internal/update_item.sql'
 					//'configuration/functions/search/get_item.sql',
 					//'configuration/functions/search/search_get_records.sql'
 					//'configuration/functions/search/cluster.sql'

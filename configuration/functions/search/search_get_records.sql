@@ -46,11 +46,6 @@ BEGIN
        END IF;
     END IF;
 
-    IF COALESCE(NULLIF(search_parameters->>'category', ''), '*') != '*' THEN
-        json_filter = jsonb_build_object('category', search_parameters->>'category');
-        filter_var = TRUE;
-    END IF;
-
     IF COALESCE(search_parameters->>'reference', '') != '' THEN
         json_filter = json_filter || jsonb_build_object('ref', search_parameters->>'reference');
         filter_var = TRUE;
@@ -61,6 +56,13 @@ BEGIN
 		filter_var = TRUE;
 	END IF;
 
+    IF COALESCE(search_parameters->>'category', '*') != '*' THEN
+        IF jsonb_typeof(search_parameters->'category') = 'string' THEN
+            search_parameters = search_parameters || jsonb_build_object('category', jsonb_build_array(search_parameters->'category'));
+        END IF;
+    ELSE
+        search_parameters = search_parameters - 'category';
+    END IF;
 
     --Requires BBOX as 'xmax ymax, xmin ymin'
     IF COALESCE(search_parameters->>'bbox','') ~ '^[0-9 ,\-.%C]+$' THEN
@@ -83,7 +85,6 @@ BEGIN
         END IF;
 
     END IF;
-
 
     --range searches
 
@@ -142,6 +143,8 @@ BEGIN
                 AND (start_date_var IS NULL OR (start_date >= start_date_var AND end_date <= end_date_var))
                 --for tags
                 AND ( (search_parameters->'tags') IS NULL OR attributes->'tags' ?| json2text(search_parameters->'tags') )
+                --for categories
+                 AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
                 --range query
                 AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
                 OFFSET default_offset
