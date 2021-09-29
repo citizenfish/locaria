@@ -8,7 +8,7 @@ import ChannelCard from './channelCard';
 import {Link, useParams, BrowserRouter} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {configs, useStyles} from "theme_locus";
+import {channels,configs, useStyles} from "theme_locus";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -19,6 +19,7 @@ import Openlayers from "../libs/Openlayers";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {viewStyle} from "../../theme/default/mapStyles/view"
 import {useCookies} from "react-cookie";
+import Chip from "@material-ui/core/Chip";
 
 const View = () => {
 	let {feature} = useParams();
@@ -97,7 +98,7 @@ const View = () => {
 	});
 
 	function resetMap() {
-		ol.zoomToLayerExtent({"layer": "data", "buffer": 50});
+		ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
 	}
 
 	if (view !== null) {
@@ -119,15 +120,65 @@ const View = () => {
 										title={view.features[0].properties.description.title}
 									>
 										<div id="map" className={classes.mapView}>
-											<Button className={classes.mapResetButton} onClick={() => {resetMap()}}>Reset map</Button>
+											<Button className={classes.mapResetButton} onClick={() => {resetMap()}} color="secondary" variant="outlined">Reset map</Button>
 										</div>
 									</CardMedia>
-									<Typography gutterBottom variant="h5" component="h2">
+
+									<Typography variant="h5" component="h2" className={classes.viewTitle}>
 										{view.features[0].properties.description.title}
+									</Typography>
+
+									{view.features[0].properties.tags.map(tag => (
+										<Chip label={tag} variant="outlined" style={{"background-color": `${channels.getChannelColor(category,tag)}`}} className={classes.tags} />
+									))}
+
+									<Typography variant="h5" component="h2" className={classes.viewSection}>
+										What it is:
 									</Typography>
 									<Typography variant="body2" color="textSecondary" component="p">
 										{view.features[0].properties.description.text}
 									</Typography>
+
+									{view.features[0].properties.description.primary_age_group? (
+										<div>
+											<Typography variant="h5" component="h2" className={classes.viewSection}>
+												Who it's for:
+											</Typography>
+											<Typography variant="body2" color="textSecondary" component="p">
+												{view.features[0].properties.description.primary_age_group}
+											</Typography>
+										</div>
+									):''}
+
+									{view.features[0].properties.description.street||view.features[0].properties.description.borough||view.features[0].properties.description.postcode? (
+										<div>
+											<Typography variant="h5" component="h2" className={classes.viewSection}>
+												Where you can find it:
+											</Typography>
+											<Typography variant="body2" color="textSecondary" component="p">
+												{view.features[0].properties.description.street}
+											</Typography>
+											<Typography variant="body2" color="textSecondary" component="p">
+												{view.features[0].properties.description.borough}
+											</Typography>
+											<Typography variant="body2" color="textSecondary" component="p">
+												{view.features[0].properties.description.postcode}
+											</Typography>
+										</div>
+									):''}
+
+									{view.features[0].properties.description.email? (
+										<div>
+										<Typography variant="h5" component="h2" className={classes.viewSection}>
+											Who to contact:
+										</Typography>
+										<Typography variant="body2" color="textSecondary" component="p">
+											{view.features[0].properties.description.email}
+										</Typography>
+										</div>
+									):''}
+
+
 								</CardContent>
 								<CardActions>
 									<OutsideLink to={view.features[0].properties.description.url}></OutsideLink>

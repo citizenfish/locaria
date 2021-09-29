@@ -35,7 +35,7 @@ const Share = () => {
 
 	return (
 		<div>
-			<Button size="small" color="primary" onClick={handleClickOpen}>
+			<Button size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
 				Share
 			</Button>
 			<Dialog
@@ -74,7 +74,7 @@ const Share = () => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose} color="primary">
+					<Button onClick={handleClose} color="secondary" variant="outlined">
 						Dismiss
 					</Button>
 				</DialogActions>

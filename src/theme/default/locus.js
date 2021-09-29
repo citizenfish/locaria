@@ -125,20 +125,20 @@ const useStyles = makeStyles((theme) => ({
 		},
 		channelPanel: {
 			"min-width": '200px',
-			"height": '150px'
+			"min-height": '150px'
 		},
 		channel: {
 			width: '100%'
 		},
 		media: {
 			height: '220px',
-			backgroundSize: '220px 220px'
+			backgroundSize: 'cover'
 		},
 		categoryAvatar: {
 			backgroundColor: alpha(theme.palette.secondary.main, 1) + " !important"
 		},
 		formControl: {
-			margin: theme.spacing(1),
+			marginBottom: '10px !important',
 			minWidth: 220,
 		},
 		selectEmpty: {
@@ -150,10 +150,28 @@ const useStyles = makeStyles((theme) => ({
 		},
 		categoryResultsCard: {
 			margin: '5px'
+		},
+		tags: {
+			margin: theme.spacing(0, 2),
+			padding: theme.spacing(0, 2),
+		},
+		viewTitle: {
+			paddingTop: '10px',
+			paddingBottom: '10px',
+		},
+		viewSection: {
+			paddingTop: '10px',
+			paddingBottom: '10px',
+			fontSize: 16,
+			color: alpha(theme.palette.secondary.dark, 1)
+		},
+		gridFull: {
+			width: '100%'
 		}
 	})
 );
 const channels=new Channels();
+
 channels.addChannel('Planning',{
 	"type": "Category",
 	"name": "Planning",
@@ -161,7 +179,9 @@ channels.addChannel('Planning',{
 	"category": "Planning",
 	"image": `${channelPlanning}`,
 	"mapIcon": iconPlanning,
-	"color": "#4a94e9"
+	"color": "#4a94e9",
+	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}]
+
 });
 channels.addChannel('Events',{
 	"type": "Category",
@@ -169,7 +189,7 @@ channels.addChannel('Events',{
 	"description": "A list of events and happenings running in your area",
 	"category": "Events",
 	"image": `${channelEvents}`,
-	"mapIcon": `${iconEvents}`,
+	"mapIcon": iconEvents,
 	"color": "#df7f2b",
 	"tags":{
 		"Arts":{
@@ -185,7 +205,7 @@ channels.addChannel('Crime',{
 	"description": "View Crime data, accessed via the Police Crime Data API. The data does not show cases within the last three months. Figures obtained from Police.UK.",
 	"category": "Crime",
 	"image": `${channelReported}`,
-	"mapIcon": `${iconCrime}`,
+	"mapIcon": iconCrime,
 	"color": "#c31d49",
 
 });
@@ -195,7 +215,7 @@ channels.addChannel('Democracy',{
 	"description": "Find information about wards, parishes, councillors, MPs, polling stations and council tax in your selected location.",
 	"report_name": "democracy_location",
 	"image": `${channelDemocracy}`,
-	"mapIcon": `${iconDefault}`,
+	"mapIcon": iconDefault,
 	"color": "#000000",
 
 });
@@ -206,7 +226,7 @@ channels.addChannel('All',{
 	"category": "*",
 	"image": `${channelReported}`,
 	"display": false,
-	"mapIcon": `${iconDefault}`
+	"mapIcon": iconDefault
 });
 
 
@@ -218,12 +238,13 @@ const configs = {
 	clusterWidthMod: 50,
 	siteTitle: "Locus - My council",
 	homeGrid: 3,
-	homeCategorySearch: "*",
+	homeCategorySearch: ["Planning","Events","Crime"],
 	defaultZoom: 12,
 	defaultPostcode: "TQ1 4TN",
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
 	defaultRange: 10, // km|mile
+	defaultMapIcon: iconDefault,
 	websocket: "wss://cp90vff2qi.execute-api.eu-west-1.amazonaws.com/new"
 }
 

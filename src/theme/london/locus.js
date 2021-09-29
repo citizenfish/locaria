@@ -26,7 +26,6 @@ import iconTech from './images/icons/marker-tech-selected.svg';
 import iconGeneral from './images/icons/marker-general-selected.svg';
 
 
-
 //https://next.material-ui.com/customization/palette/
 const theme = createTheme({
 	palette: {
@@ -34,9 +33,15 @@ const theme = createTheme({
 			main: '#353d42',
 		},
 		secondary: {
-			main: '#238328',
+			main: '#e7236e',
+			dark: '#831239'
 		},
 	},
+	typography: {
+		fontFamily: [
+			'Arial'
+		].join(','),
+	}
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -134,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		channelPanel: {
 			"min-width": '200px',
-			"min-height": '150px'
+			"min-height": '100px'
 		},
 		channel: {
 			width: '100%'
@@ -144,10 +149,10 @@ const useStyles = makeStyles((theme) => ({
 			backgroundSize: 'cover'
 		},
 		categoryAvatar: {
-			backgroundColor: alpha(theme.palette.secondary.main,1)+" !important"
+			backgroundColor: alpha(theme.palette.secondary.main, 1) + " !important"
 		},
 		formControl: {
-			margin: theme.spacing(1),
+			marginBottom: '10px !important',
 			minWidth: 220,
 		},
 		selectEmpty: {
@@ -161,47 +166,60 @@ const useStyles = makeStyles((theme) => ({
 			margin: '5px'
 		},
 		tags: {
-			margin:theme.spacing(0, 2),
+			margin: theme.spacing(0, 2),
 			padding: theme.spacing(0, 2),
+		},
+		viewTitle: {
+			paddingTop: '10px',
+			paddingBottom: '10px',
+		},
+		viewSection: {
+			paddingTop: '10px',
+			paddingBottom: '10px',
+			fontSize: 16,
+			color: alpha(theme.palette.secondary.dark, 1)
+		},
+		gridFull: {
+			width: '100%'
 		}
 	})
 );
 
-const channels=new Channels();
+const channels = new Channels();
 
-const tags={
-	"Arts":{
+const tags = {
+	"Arts": {
 		"mapIcon": `${iconArts}`,
 		"color": "#df7f2b"
 	},
-	"Community":{
+	"Community": {
 		"mapIcon": `${iconCommunity}`,
 		"color": "#e95814"
 	},
-	"Dance":{
+	"Dance": {
 		"mapIcon": `${iconDance}`,
 		"color": "#792d89"
 	},
-	"Educational":{
+	"Educational": {
 		"mapIcon": `${iconEducational}`,
 		"color": "#14587e"
 	},
-	"Music":{
+	"Music": {
 		"mapIcon": `${iconMusic}`,
 		"color": "#9e125b"
 	},
-	"Sport":{
+	"Sport": {
 		"mapIcon": `${iconSport}`,
 		"color": "#0f8e47"
 	},
-	"Tech":{
+	"Tech": {
 		"mapIcon": `${iconTech}`,
 		"color": "#1aabe3"
 	}
 };
 
-channels.addChannel('Events',{
-	"key":"Events",
+channels.addChannel('Events', {
+	"key": "Events",
 	"type": "Category",
 	"name": "Search",
 	"description": "Find all events in your local area.",
@@ -209,15 +227,14 @@ channels.addChannel('Events',{
 	"image": `${channelGeneral}`,
 	"mapIcon": iconGeneral,
 	"color": "#4a94e9",
-	"display":true,
-	"tags":tags,
-	"search":["SearchRange","SearchTags"]
+	"display": true,
+	"tags": tags,
+	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}, {"component": "SearchRange"}]
 });
 
 
-
-channels.addChannel( 'Arts',{
-	"key":"Arts",
+channels.addChannel('Arts', {
+	"key": "Arts",
 	"type": "Category",
 	"name": "Art",
 	"description": "Find all Art events in your local area.",
@@ -226,11 +243,11 @@ channels.addChannel( 'Arts',{
 	"image": `${channelArt}`,
 	"mapIcon": iconArts,
 	"color": "#dca000",
-	"tags":tags
+	"tags": tags
 });
 
-channels.addChannel( 'Community',{
-	"key":"Community",
+channels.addChannel('Community', {
+	"key": "Community",
 	"type": "Category",
 	"name": "Community",
 	"description": "Find all Community events in your local area.",
@@ -239,11 +256,11 @@ channels.addChannel( 'Community',{
 	"image": `${channelCommunity}`,
 	"mapIcon": iconCommunity,
 	"color": "#e95814",
-	"tags":tags
+	"tags": tags
 });
 
-channels.addChannel( 'Dance',{
-	"key":"Dance",
+channels.addChannel('Dance', {
+	"key": "Dance",
 	"type": "Category",
 	"name": "Dance",
 	"description": "Find all Dance events in your local area.",
@@ -252,11 +269,11 @@ channels.addChannel( 'Dance',{
 	"image": `${channelDance}`,
 	"mapIcon": iconDance,
 	"color": "#792d89",
-	"tags":tags
+	"tags": tags
 });
 
-channels.addChannel( 'Educational',{
-	"key":"Educational",
+channels.addChannel('Educational', {
+	"key": "Educational",
 	"type": "Category",
 	"name": "Educational",
 	"description": "Find all Educational events in your local area.",
@@ -265,11 +282,11 @@ channels.addChannel( 'Educational',{
 	"image": `${channelEducational}`,
 	"mapIcon": iconEducational,
 	"color": "#14587e",
-	"tags":tags
+	"tags": tags
 });
 
-channels.addChannel( 'Music',{
-	"key":"Music",
+channels.addChannel('Music', {
+	"key": "Music",
 	"type": "Category",
 	"name": "Music",
 	"description": "Find all Music events in your local area.",
@@ -278,11 +295,11 @@ channels.addChannel( 'Music',{
 	"image": `${channelMusic}`,
 	"mapIcon": iconMusic,
 	"color": "#9e125b",
-	"tags":tags
+	"tags": tags
 });
 
-channels.addChannel( 'Sport',{
-	"key":"Sport",
+channels.addChannel('Sport', {
+	"key": "Sport",
 	"type": "Category",
 	"name": "Sport",
 	"description": "Find all Sporting events in your local area.",
@@ -291,11 +308,11 @@ channels.addChannel( 'Sport',{
 	"image": `${channelSport}`,
 	"mapIcon": iconSport,
 	"color": "#0f8e47",
-	"tags":tags
+	"tags": tags
 })
 
-channels.addChannel( 'Tech',{
-	"key":"Tech",
+channels.addChannel('Tech', {
+	"key": "Tech",
 	"type": "Category",
 	"name": "Tech",
 	"description": "Find all Tech events in your local area.",
@@ -304,9 +321,8 @@ channels.addChannel( 'Tech',{
 	"image": `${channelTech}`,
 	"mapIcon": iconTech,
 	"color": "#1aabe3",
-	"tags":tags
+	"tags": tags
 });
-
 
 
 const configs = {
@@ -320,9 +336,10 @@ const configs = {
 	homeCategorySearch: "Events",
 	defaultZoom: 12,
 	defaultPostcode: "E1",
-	defaultLocation: [0.046499885910004,51.5153355320004], // EPSG:3857
+	defaultLocation: [0.046499885910004, 51.5153355320004], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
-	defaultRange: 10, // km|mile
+	defaultDistance: 10, // km|mile
+	defaultMapIcon: iconDefault,
 	websocket: "wss://cp90vff2qi.execute-api.eu-west-1.amazonaws.com/new"
 }
 
