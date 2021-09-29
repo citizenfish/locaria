@@ -24,7 +24,7 @@ BEGIN
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),
                                 'ofid',         id,
-                                'category',     category
+                                'category',     json_build_array(category)
                               ) AS attributes,
            search_date AS start_date,
            --not we default end date to the end of the day
@@ -76,11 +76,13 @@ BEGIN
     CREATE INDEX locus_core_global_range_idx ON locus_core.global_search_view (range_min, range_max DESC);
 
     --tags
-    CREATE INDEX locus_core_global_search_view_jsonb_ops_idx ON locus_core.global_search_view USING GIN((attributes#>'{tags}'));
+    CREATE INDEX locus_core_global_search_view_tags_idx ON locus_core.global_search_view USING GIN((attributes#>'{tags}'));
 
     --jsonb_path operations
     CREATE INDEX locus_core_global_search_view_jsonb_path_ops_idx ON locus_core.global_search_view USING GIN(attributes jsonb_path_ops);
 
+    --categories
+    CREATE INDEX locus_core_global_search_view_category_idx on locus_core.global_search_view USING GIN((attributes->'category'));
 
     --TODO range indexes for date and min/max
 
