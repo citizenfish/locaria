@@ -16,6 +16,8 @@ provider:
     auroraMasterUser: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterPass}
     cfdist: !Ref WebsiteDistribution
+    fargateRouterHost: internal-locus-margate-125434216.eu-west-1.elb.amazonaws.com
+    fargateRouterPort: 5000
   region: ${file(../../locus-custom.yml):${self:custom.stage}.region}
   websocketsApiName: locus-websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action
@@ -291,7 +293,45 @@ resources:
           - "Fn::GetAtt": ServerlessStorageSecurityGroup.GroupId
         CacheSubnetGroupName:
           Ref: ServerlessCacheSubnetGroup
+    FarGateSecurityGroup:
+      DependsOn: VPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for fargate
+        VpcId:
+          Ref: VPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '0'
+            ToPort: '5000'
+            CidrIp: 10.0.0.0/16
+          - IpProtocol: tcp
+            FromPort: '0'
+            ToPort: '5000'
+            CidrIp: 10.1.0.0/22
     # Aurora
+    # 'lambda:InvokeFunction'
+    AuroraLambdaRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - rds.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: "lambda:InvokeFunction"
+                  Resource: '*'
+        Path: "/"
     AuroraStorageSecurityGroup:
       DependsOn: VPC
       Type: AWS::EC2::SecurityGroup
@@ -319,14 +359,14 @@ resources:
       Type: AWS::RDS::DBClusterParameterGroup
       Properties:
         Description: Parameter group for the Serverless Aurora RDS DB.
-        Family: aurora-postgresql11
+        Family: aurora-postgresql12
         Parameters:
           max_connections: 5000
     AuroraRDSInstanceParameter:
       Type: AWS::RDS::DBParameterGroup
       Properties:
         Description: Parameter group for the Serverless Aurora RDS DB.
-        Family: aurora-postgresql11
+        Family: aurora-postgresql12
         Parameters:
           max_connections: 5000
     AuroraRDSCluster:
@@ -338,7 +378,7 @@ resources:
           Ref: AuroraSubnetGroup
         Engine: aurora-postgresql
         EngineMode: provisioned
-        EngineVersion: "11.9"
+        EngineVersion: "12.7"
         DatabaseName: ${file(../../locus-custom.yml):${self:custom.stage}.auroraDatabaseName}
         BackupRetentionPeriod: 3
         DBClusterParameterGroupName:
@@ -351,7 +391,7 @@ resources:
         DBSubnetGroupName:
           Ref: AuroraSubnetGroup
         Engine: aurora-postgresql
-        EngineVersion: "11.9"
+        EngineVersion: "12.7"
         DBInstanceClass: "db.r5.large"
         PubliclyAccessible: false
         DBParameterGroupName:
@@ -359,27 +399,27 @@ resources:
         DBClusterIdentifier:
           Ref: AuroraRDSCluster
     #User pools Cognito
-    CognitoUserPool:
-      Type: "AWS::Cognito::UserPool"
-      Properties:
-        MfaConfiguration: OFF
-        UserPoolName: locus-pool
-        UsernameAttributes:
-          - email
-        Policies:
-          PasswordPolicy:
-            MinimumLength: 6
-            RequireLowercase: False
-            RequireNumbers: True
-            RequireSymbols: False
-            RequireUppercase: True
-      CognitoUserPoolClient:
-        Type: "AWS::Cognito::UserPoolClient"
-        Properties:
-          ClientName: square-pool-client
-          GenerateSecret: False
-          UserPoolId:
-            Ref: CognitoUserPool
+    #CognitoUserPool:
+    #  Type: "AWS::Cognito::UserPool"
+    #  Properties:
+    #    MfaConfiguration: OFF
+    #    UserPoolName: locus-pool
+    #    UsernameAttributes:
+    #      - email
+    #    Policies:
+    #      PasswordPolicy:
+    #        MinimumLength: 6
+    #        RequireLowercase: False
+    #        RequireNumbers: True
+    #        RequireSymbols: False
+    #        RequireUppercase: True
+    #  CognitoUserPoolClient:
+    #    Type: "AWS::Cognito::UserPoolClient"
+    #    Properties:
+    #      ClientName: square-pool-client
+    #      GenerateSecret: False
+    #      UserPoolId:
+    #        Ref: CognitoUserPool
 
 functions:
   api:
@@ -801,6 +841,8 @@ functions:
     events:
       - websocket:
           route: $default
+  router:
+    handler: functions/router.run
 plugins:
   - serverless-domain-manager
   - serverless-export-env
