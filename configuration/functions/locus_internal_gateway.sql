@@ -1,5 +1,5 @@
---Single gateway for all Public API calls to locus_core
-CREATE OR REPLACE FUNCTION locus_core.locus_gateway(parameters JSONB) RETURNS JSONB AS
+--Single gateway for all Internal API calls to locus_core
+CREATE OR REPLACE FUNCTION locus_core.locus_internal_gateway(parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
@@ -13,35 +13,25 @@ BEGIN
     SET SEARCH_PATH = 'locus_core', 'public';
 
     --From the incoming JSON select the method and run it
-    CASE WHEN parameters->>'method' IN ('search','bboxsearch', 'refsearch', 'pointsearch', 'datesearch', 'filtersearch') THEN
-            ret_var = search(parameters);
+    CASE WHEN parameters->>'method' IN ('get_tables') THEN
+            ret_var = get_tables(parameters);
 
-         WHEN parameters->>'method' IN ('get_item') THEN
-            ret_var = get_item(parameters->>'fid');
+         WHEN parameters->>'method' IN ('add_item') THEN
+                     ret_var = add_item(parameters);
 
-         WHEN parameters->>'method' IN ('list_categories') THEN
-            ret_var = list_categories_with_data(parameters);
+         WHEN parameters->>'method' IN ('delete_item') THEN
+                     ret_var = delete_item(parameters);
 
-          WHEN parameters->>'method' IN ('list_tags') THEN
-            ret_var = list_tags(parameters);
+         WHEN parameters->>'method' IN ('update_item') THEN
+                     ret_var = update_item(parameters);
 
-         WHEN parameters->>'method' IN ('list_categories_with_data') THEN
-            ret_var = list_categories_with_data(parameters);
+         WHEN parameters->>'method' IN ('refresh_search_view') THEN
 
-	     WHEN parameters->>'method' IN ('address_search') THEN
-	     	 ret_var = address_search(parameters);
-
-         WHEN parameters->>'method' IN ('version') THEN
-            ret_var = json_build_object('version', version_var);
-
-         WHEN parameters->>'method' IN ('revgeocoder') THEN
-            ret_var = reverse_geocoder(parameters);
-
-         WHEN parameters->>'method' IN ('report') THEN
-            ret_var = run_report(parameters);
+            REFRESH MATERIALIZED VIEW CONCURRENTLY locus_core.global_search_view WITH data;
+            RETURN jsonb_build_object('message', 'view refreshed');
 
          ELSE
-            RETURN json_build_object('error', 'unsupported method');
+            RETURN json_build_object('error', 'unsupported method', 'method', parameters->>'method');
     END CASE;
 
     --If debug_var is set then the API will return the calling parameters in a debug object. NOTE WELL this will break GeoJSON returned
@@ -49,7 +39,7 @@ BEGIN
         ret_var = ret_var || jsonb_build_object('debug', parameters);
     END IF;
 
-    -- Searches can be logged to the logs table. This is set on by default but can be switched off with a parameter
+    -- Operations can be logged to the logs table. This is set on by default but can be switched off with a parameter
     log_var = COALESCE((SELECT (parameter->>'log_searches')::BOOLEAN FROM locus_core.parameters WHERE parameter_name = 'log_configuration'), log_var);
 
     IF log_var THEN
@@ -68,7 +58,7 @@ EXCEPTION WHEN OTHERS THEN
 
         INSERT INTO locus_core.logs(log_type, log_message)
         SELECT parameters->>'method',
-               jsonb_build_object('path', 'public','parameters', parameters, 'response', SQLERRM)
+               jsonb_build_object('path', 'internal', 'parameters', parameters, 'response', SQLERRM)
         RETURNING id INTO logid_var;
 
     RETURN json_build_object('error', 'request could not be completed','system_log_id', logid_var);

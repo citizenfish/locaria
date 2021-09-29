@@ -90,7 +90,7 @@ BEGIN
     IF COALESCE(search_parameters->>'min_range', '') != '' THEN
 
         min_range_var = (search_parameters->>'min_range')::FLOAT;
-        max_range_var = COALESCE(search_parameters->>'min_range', min_range_var::TEXT)::FLOAT;
+        max_range_var = COALESCE(search_parameters->>'max_range', min_range_var::TEXT)::FLOAT;
 
     END IF;
 
@@ -124,7 +124,7 @@ BEGIN
 			            wkb_geometry,
 			            (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
 			            COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance,
-                        jsonb_build_object('metadata', jsonb_build_object('sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max)) AS metadata
+                        jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max)) AS metadata
 
                 FROM global_search_view
                 WHERE wkb_geometry IS NOT NULL
