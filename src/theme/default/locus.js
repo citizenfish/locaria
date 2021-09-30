@@ -15,6 +15,13 @@ import iconPlanning from './images/marker-planning.svg';
 import iconEvents from './images/marker-events.svg';
 import iconCrime from './images/marker-crime.svg';
 import Channels from "../../locus/libs/Channels";
+import iconArts from "../london/images/icons/marker-arts-selected.svg";
+import iconCommunity from "../london/images/icons/marker-community-selected.svg";
+import iconDance from "../london/images/icons/marker-dance-selected.svg";
+import iconEducational from "../london/images/icons/marker-educational-selected.svg";
+import iconMusic from "../london/images/icons/marker-music-selected.svg";
+import iconSport from "../london/images/icons/marker-sport-selected.svg";
+import iconTech from "../london/images/icons/marker-tech-selected.svg";
 
 
 //https://next.material-ui.com/customization/palette/
@@ -154,6 +161,7 @@ const useStyles = makeStyles((theme) => ({
 		tags: {
 			margin: theme.spacing(0, 2),
 			padding: theme.spacing(0, 2),
+			color: alpha(theme.palette.common.white, 1)+ '!important'
 		},
 		viewTitle: {
 			paddingTop: '10px',
@@ -170,9 +178,43 @@ const useStyles = makeStyles((theme) => ({
 		}
 	})
 );
+
+const tags = {
+	"Full": {
+		"mapIcon": `${iconArts}`,
+		"color": "#df7f2b"
+	},
+	"Conditions": {
+		"mapIcon": `${iconCommunity}`,
+		"color": "#e95814"
+	},
+	"Outline": {
+		"mapIcon": `${iconDance}`,
+		"color": "#792d89"
+	},
+	"Heritage": {
+		"mapIcon": `${iconEducational}`,
+		"color": "#14587e"
+	},
+	"Amendment": {
+		"mapIcon": `${iconMusic}`,
+		"color": "#9e125b"
+	},
+	"Trees": {
+		"mapIcon": `${iconSport}`,
+		"color": "#0f8e47"
+	},
+	"Other": {
+		"mapIcon": `${iconTech}`,
+		"color": "#1aabe3"
+	}
+};
+
+
 const channels=new Channels();
 
 channels.addChannel('Planning',{
+	"key":"Planning",
 	"type": "Category",
 	"name": "Planning",
 	"description": "Find all Conservation Areas, Tree Preservation Orders, Listed Buildings and view Planning Applications received within the last 30 days.",
@@ -180,10 +222,12 @@ channels.addChannel('Planning',{
 	"image": `${channelPlanning}`,
 	"mapIcon": iconPlanning,
 	"color": "#4a94e9",
-	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}]
+	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}],
+	"tags":tags
 
 });
 channels.addChannel('Events',{
+	"key":"Events",
 	"type": "Category",
 	"name": "Events",
 	"description": "A list of events and happenings running in your area",
@@ -200,6 +244,7 @@ channels.addChannel('Events',{
 
 });
 channels.addChannel('Crime',{
+	"key":"Crime",
 	"type": "Category",
 	"name": "Crime",
 	"description": "View Crime data, accessed via the Police Crime Data API. The data does not show cases within the last three months. Figures obtained from Police.UK.",
@@ -210,6 +255,7 @@ channels.addChannel('Crime',{
 
 });
 channels.addChannel('Democracy',{
+	"key":"Democracy",
 	"type": "Report",
 	"name": "Democracy",
 	"description": "Find information about wards, parishes, councillors, MPs, polling stations and council tax in your selected location.",
@@ -220,6 +266,7 @@ channels.addChannel('Democracy',{
 
 });
 channels.addChannel('All',{
+	"key":"All",
 	"type": "Category",
 	"name": "All",
 	"description": "View all categories",

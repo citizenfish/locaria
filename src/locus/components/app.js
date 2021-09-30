@@ -7,7 +7,7 @@ import Category from './category';
 import View from './view';
 import Error from './error';
 import {useCookies} from "react-cookie";
-import {configs} from "theme_locus";
+import {configs} from "themeLocus";
 
 
 const App = () => {

@@ -1,4 +1,5 @@
 const path = require('path');
+const theme = 'london';
 
 module.exports = {
 	mode: 'development',
@@ -61,9 +62,18 @@ module.exports = {
 	},
 	resolve: {
 		fallback: {
-			util: require.resolve('util/'),
-			theme_locus: require.resolve('./src/theme/default/locus.js')
-			}
+			util: require.resolve('util/')
+			},
+		alias: {
+			libs: path.resolve(__dirname, 'src/locus/libs'),
+			themeLocus: path.resolve(`./src/theme/${theme}/locus.js`),
+			themeDefault: path.resolve(`./src/theme/default`),
+			mapStyle: [
+				path.resolve(`src/theme/${theme}/view.js`),
+				path.resolve(`src/locus/components/mapStyles/view.js`)
+			]
+
+		}
 	},
 	devServer: {
 		contentBase: path.join(__dirname, 'site'),

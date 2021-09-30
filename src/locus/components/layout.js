@@ -10,15 +10,15 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import {channels, useStyles,theme,configs} from "theme_locus";
+import {channels, useStyles,theme,configs} from "themeLocus";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import {Link} from "react-router-dom";
-import Openlayers from "../libs/Openlayers";
+import Openlayers from "libs/Openlayers";
 import Paper from "@material-ui/core/Paper";
 import { useCookies } from 'react-cookie';
-import {viewStyle,locationStyle} from "../../theme/default/mapStyles/view";
+import {viewStyle,locationStyle} from "mapStyle";
 import Button from "@material-ui/core/Button";
 import { useHistory } from 'react-router-dom';
 
@@ -53,7 +53,7 @@ const Layout = ({ children,map,update }) => {
 
 	const handleFeatureSelected = function (features) {
 		if(features[0].get('geometry_type')==='cluster') {
-			ol.zoomToLayerExtent({"layer": "data", "buffer": 50,"extent":features[0].get('extent')});
+			ol.zoomToLayerExtent({"layer": "data", "buffer": 50000,"extent":features[0].get('extent')});
 
 		} else {
 

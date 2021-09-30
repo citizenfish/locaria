@@ -1,11 +1,8 @@
 import {Circle, Text, RegularShape, Fill, Stroke, Style, Icon} from 'ol/style.js';
-import markerHome from '../images/marker-home.svg';
-import markerPolling from '../images/marker-polling.svg';
-import markerThing from '../images/marker-thing.svg';
-import markerTPO from '../images/marker-tpo.svg';
-import marker from '../images/marker.svg';
+import markerHome from 'themeDefault/images/marker-home.svg';
+import marker from 'themeDefault/images/marker.svg';
 
-import {configs,channels} from "theme_locus";
+import {configs,channels} from "themeLocus";
 
 export function locationStyle(feature, resolution) {
 	return [

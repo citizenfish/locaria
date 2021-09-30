@@ -8,7 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import {Link} from 'react-router-dom';
-import {channels, useStyles, configs} from "theme_locus";
+import {channels, useStyles, configs} from 'themeLocus';
 
 
 import Layout from './Layout';

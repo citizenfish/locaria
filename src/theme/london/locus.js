@@ -1,6 +1,6 @@
 import React from 'react';
 import {alpha, makeStyles, createTheme} from '@material-ui/core/styles';
-import Channels from './../../locus/libs/Channels'
+import Channels from 'libs/Channels'
 
 // Channel Images
 
@@ -168,6 +168,8 @@ const useStyles = makeStyles((theme) => ({
 		tags: {
 			margin: theme.spacing(0, 2),
 			padding: theme.spacing(0, 2),
+			color: alpha(theme.palette.common.white, 1)+ '!important'
+
 		},
 		viewTitle: {
 			paddingTop: '10px',
@@ -229,7 +231,7 @@ channels.addChannel('Events', {
 	"color": "#4a94e9",
 	"display": true,
 	"tags": tags,
-	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}, {"component": "SearchRange"}]
+	"search": [{"component": "SearchDistance","max":50}, {"component": "SearchTags"}, {"component": "SearchRange","title":"Age","min":0,"max":25}]
 });
 
 
@@ -331,7 +333,7 @@ const configs = {
 	cluster: true, // true|false
 	clusterCutOff: 8,
 	clusterWidthMod: 25,
-	siteTitle: "LONDON",
+	siteTitle: "OUR LONDON",
 	homeGrid: 3,
 	homeCategorySearch: "Events",
 	defaultZoom: 12,
