@@ -5,7 +5,7 @@ import Layout from './Layout';
 import ChannelCard from './channelCard';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {channels, useStyles} from "theme_locus";
+import {channels, useStyles} from "themeLocus";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -22,7 +22,7 @@ import Chip from '@material-ui/core/Chip';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {useCookies} from "react-cookie";
 
-import Distance from "../libs/Distance";
+import Distance from "libs/Distance";
 
 import SearchDistance from "./search/SearchDistance";
 import SearchRange from "./search/SearchRange";
@@ -67,8 +67,8 @@ const Category = () => {
 		setLocation('distanceSelect', e.target.value, {path: '/', sameSite: true});
 	}
 
-	function handleFilterChange(e) {
-		const distance=document.getElementById('filter-distance-select').value;
+	function handleFilterChange(e,newValue) {
+		const distance=newValue;
 		setLocation('distance',distance , {path: '/', sameSite: true});
 		location.distance = distance;
 		setReport(null);
@@ -191,12 +191,12 @@ const Category = () => {
 		return (
 			channel.search.map(function(item) {
 				if (item.component === 'SearchDistance') {
-					return (<SearchDistance changeFunction={handleFilterChange}
+					return (<SearchDistance changeFunction={handleFilterChange} min={item.min} max={item.max}
 					                        currentValue={location.distance}></SearchDistance>)
 				}
 				if (item.component === 'SearchRange') {
-					return (<SearchRange changeFunction={handleRangeChange}
-					                     currentValueFrom={location.rangeFrom||0} currentValueTo={location.rangeTo||25}></SearchRange>)
+					return (<SearchRange changeFunction={handleRangeChange} title={item.title} min={item.min} max={item.max}
+					                     currentValueFrom={location.rangeFrom||item.min} currentValueTo={location.rangeTo||item.max}></SearchRange>)
 				}
 				if (item.component === 'SearchTags') {
 					return (<SearchTags category={category} changeFunction={handleTagChange}
