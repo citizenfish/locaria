@@ -108,9 +108,9 @@ const Category = () => {
 		if(channel.filterTags)
 			packet.data.tags=channel.filterTags;
 		// Tags filter override?
-		if(tags.length>0&&channel.search!==undefined&&channels.getChannelProperties(category,'SearchTags')!==false)
+		if(tags.length>0&&channel.search!==undefined&&channels.getChannelSearchItem(category,'SearchTags')!==false)
 			packet.data.tags=tags;
-		if(location.rangeFrom&&channel.search!==undefined&&channels.getChannelProperties(category,'SearchRange')!==false) {
+		if(location.rangeFrom&&channel.search!==undefined&&channels.getChannelSearchItem(category,'SearchRange')!==false) {
 			packet.data.min_range = location.rangeFrom;
 			packet.data.max_range = location.rangeTo;
 		}
