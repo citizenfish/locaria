@@ -10,6 +10,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import AccountCircle  from "@material-ui/icons/AccountCircle";
 import {channels, useStyles,theme,configs} from "themeLocus";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -21,13 +22,16 @@ import { useCookies } from 'react-cookie';
 import {viewStyle,locationStyle} from "mapStyle";
 import Button from "@material-ui/core/Button";
 import { useHistory } from 'react-router-dom';
+import Box from '@material-ui/core/Box';
 
 
 const Layout = ({ children,map,update }) => {
 	const history = useHistory();
 
 	const classes = useStyles();
+
 	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [anchorProfileEl, setAnchorProfileEl] = React.useState(null);
 
 	const [openError, setOpenError] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
@@ -39,15 +43,22 @@ const Layout = ({ children,map,update }) => {
 	const ol=new Openlayers();
 
 	const isMenuOpen = Boolean(anchorEl);
+	const isProfileMenuOpen = Boolean(anchorProfileEl);
 
-	const handleMenuOpen = (event) => {
-		setAnchorEl(event.currentTarget);
+	const handleMenuOpen = (e) => {
+		setAnchorEl(e.currentTarget);
 	};
 
 
 	const handleMenuClose = () => {
 		setAnchorEl(null);
+		setAnchorProfileEl(null);
 	};
+
+	const handleProfileMenuOpen = (e) => {
+		setAnchorProfileEl(e.currentTarget);
+
+	}
 
 	const menuId = 'primary-search-account-menu';
 
@@ -263,6 +274,26 @@ const Layout = ({ children,map,update }) => {
 			})}
 		</Menu>
 	);
+	const renderProfileMenu = (
+		<Menu
+			anchorEl={anchorProfileEl}
+			anchorOrigin={{
+				vertical: 'top',
+				horizontal: 'right',
+			}}
+			id={menuId}
+			keepMounted
+			transformOrigin={{
+				vertical: 'top',
+				horizontal: 'right',
+			}}
+			open={isProfileMenuOpen}
+			onClose={handleMenuClose}
+		>
+			<MenuItem onClick={handleMenuClose}>Login</MenuItem>
+		</Menu>
+	);
+
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -310,9 +341,24 @@ const Layout = ({ children,map,update }) => {
 							id="myPostcode"
 						/>
 					</div>
+					<Box sx={{ flexGrow: 1 }} />
+					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+						<IconButton
+							size="large"
+							edge="end"
+							aria-label="account of current user"
+							aria-controls={menuId}
+							aria-haspopup="true"
+							onClick={handleProfileMenuOpen}
+							color="inherit"
+						>
+							<AccountCircle />
+						</IconButton>
+					</Box>
 				</Toolbar>
 			</AppBar>
 			{renderMenu}
+			{renderProfileMenu}
 		</div>
 		<div>
 			{displayMap()}
