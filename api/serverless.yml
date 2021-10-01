@@ -18,6 +18,8 @@ provider:
     cfdist: !Ref WebsiteDistribution
     fargateRouterHost: internal-locus-margate-125434216.eu-west-1.elb.amazonaws.com
     fargateRouterPort: 5000
+    poolClient: !Ref CognitoUserPoolClient
+    pool: !Ref CognitoUserPool
   region: ${file(../../locus-custom.yml):${self:custom.stage}.region}
   websocketsApiName: locus-websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action
@@ -399,27 +401,27 @@ resources:
         DBClusterIdentifier:
           Ref: AuroraRDSCluster
     #User pools Cognito
-    #CognitoUserPool:
-    #  Type: "AWS::Cognito::UserPool"
-    #  Properties:
-    #    MfaConfiguration: OFF
-    #    UserPoolName: locus-pool
-    #    UsernameAttributes:
-    #      - email
-    #    Policies:
-    #      PasswordPolicy:
-    #        MinimumLength: 6
-    #        RequireLowercase: False
-    #        RequireNumbers: True
-    #        RequireSymbols: False
-    #        RequireUppercase: True
-    #  CognitoUserPoolClient:
-    #    Type: "AWS::Cognito::UserPoolClient"
-    #    Properties:
-    #      ClientName: square-pool-client
-    #      GenerateSecret: False
-    #      UserPoolId:
-    #        Ref: CognitoUserPool
+    CognitoUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        MfaConfiguration: OFF
+        UserPoolName: locus-pool
+        UsernameAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: False
+            RequireNumbers: True
+            RequireSymbols: False
+            RequireUppercase: True
+    CognitoUserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: locus-pool-client
+        GenerateSecret: False
+        UserPoolId:
+          Ref: CognitoUserPool
 
 functions:
   api:
