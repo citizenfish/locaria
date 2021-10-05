@@ -1,4 +1,3 @@
-
 import Websockets from "./libs/Websockets";
 /*
  * Add react
@@ -6,14 +5,16 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import { configs } from "themeLocus";
+import {configs} from "themeLocus";
 
 import cssOL from './components/css/ol.css';
 
-document.title=configs.siteTitle;
-window.websocket=new Websockets();
+let tries = 0;
 
-window.websocket.init({"url": configs.websocket},connected,closed,errored);
+document.title = configs.siteTitle;
+window.websocket = new Websockets();
+
+window.websocket.init({"url": configs.websocket}, connected, closed, errored);
 
 
 function connected() {
@@ -22,13 +23,18 @@ function connected() {
 }
 
 function closed(event) {
-	console.log(`websock closed: ${event}`);
+	if (tries)
+		console.log(`websock closed: ${event}`);
 	window.websocket.connect();
 }
 
 function errored(event) {
+	tries++;
 	console.log(`websock errored: ${event}`);
-
+	if (tries > 2) {
+		ReactDOM.render(<App/>, document.getElementById('root'));
+	}
+	debugger;
 }
 
 

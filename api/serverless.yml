@@ -139,17 +139,17 @@ resources:
               DomainName: { 'Fn::GetAtt': [ StaticSite, DomainName ] }
               S3OriginConfig:
                 OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
-#    WebsiteDNSName:
-#      Type: AWS::Route53::RecordSetGroup
-#      Properties:
-#        HostedZoneId: 'Z06171983OLSUA1GYRUP4'
-#        RecordSets:
-#          - Name: ${file(../../locus-custom.yml):${self:custom.stage}.domain}
-#            Type: A
-#            AliasTarget:
-#              HostedZoneId: Z2FDTNDATAQYW2
-#              DNSName: !GetAtt [ WebsiteDistribution, DomainName ]
-#              EvaluateTargetHealth: false
+    #    WebsiteDNSName:
+    #      Type: AWS::Route53::RecordSetGroup
+    #      Properties:
+    #        HostedZoneId: 'Z06171983OLSUA1GYRUP4'
+    #        RecordSets:
+    #          - Name: ${file(../../locus-custom.yml):${self:custom.stage}.domain}
+    #            Type: A
+    #            AliasTarget:
+    #              HostedZoneId: Z2FDTNDATAQYW2
+    #              DNSName: !GetAtt [ WebsiteDistribution, DomainName ]
+    #              EvaluateTargetHealth: false
     # VPC
     VPC:
       Type: AWS::EC2::VPC
@@ -277,6 +277,19 @@ resources:
             ToPort: '6379'
             SourceSecurityGroupId:
               Ref: ServerlessSecurityGroup
+    # Make some security for VPN
+    VPNSecurityGroup:
+      DependsOn: VPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for VPN
+        VpcId:
+          Ref: VPC
+        SecurityGroupIngress:
+          - IpProtocol: UDP
+            FromPort: '443'
+            ToPort: '443'
+            CidrIp: 0.0.0.0/0
     ServerlessCacheSubnetGroup:
       Type: AWS::ElastiCache::SubnetGroup
       Properties:
@@ -422,13 +435,34 @@ resources:
         GenerateSecret: False
         UserPoolId:
           Ref: CognitoUserPool
-
+        CallbackURLs:
+          - http://localhost:8080/index.html
+        AllowedOAuthFlows:
+          - code
+          - implicit
+        SupportedIdentityProviders:
+          - COGNITO
+        AllowedOAuthScopes:
+          - openid
+          - email
+          - phone
+          - profile
+          - aws.cognito.signin.user.admin
+        AllowedOAuthFlowsUserPoolClient: true
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        CustomDomainConfig:
+          CertificateArn: ${file(../../locus-custom.yml):${self:custom.stage}.cognitoCertARN}
+        Domain: ${file(../../locus-custom.yml):${self:custom.stage}.cognitoDomainName}
+        UserPoolId:
+          Ref: CognitoUserPool
 functions:
   api:
     handler: functions/api.run
     vpc:
       securityGroupIds:
-        - Fn::GetAtt: [ServerlessSecurityGroup,GroupId]
+        - Fn::GetAtt: [ ServerlessSecurityGroup,GroupId ]
       subnetIds:
         - Ref: PrivateSubnetA
         - Ref: PrivateSubnetB
@@ -798,7 +832,7 @@ functions:
             parameters:
               paths:
                 lon: true
-                lat : true
+                lat: true
       - http:
           path: /report/{report_name}/{location}
           method: GET
@@ -807,7 +841,7 @@ functions:
             parameters:
               paths:
                 report_name: true
-                location : true
+                location: true
       - http:
           path: /report/{report_name}/{location}/{report_parameters}
           method: GET
