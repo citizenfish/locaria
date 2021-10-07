@@ -1,5 +1,4 @@
 import {alpha, makeStyles, createTheme} from '@material-ui/core/styles';
-import {green, purple} from '@material-ui/core/colors';
 
 
 // Channel Images
@@ -161,7 +160,7 @@ const useStyles = makeStyles((theme) => ({
 		tags: {
 			margin: theme.spacing(0, 2),
 			padding: theme.spacing(0, 2),
-			color: alpha(theme.palette.common.white, 1)+ '!important'
+			color: alpha(theme.palette.common.white, 1) + '!important'
 		},
 		viewTitle: {
 			paddingTop: '10px',
@@ -211,10 +210,10 @@ const tags = {
 };
 
 
-const channels=new Channels();
+const channels = new Channels();
 
-channels.addChannel('Planning',{
-	"key":"Planning",
+channels.addChannel('Planning', {
+	"key": "Planning",
 	"type": "Category",
 	"name": "Planning",
 	"description": "Find all Conservation Areas, Tree Preservation Orders, Listed Buildings and view Planning Applications received within the last 30 days.",
@@ -223,11 +222,11 @@ channels.addChannel('Planning',{
 	"mapIcon": iconPlanning,
 	"color": "#4a94e9",
 	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}],
-	"tags":tags
+	"tags": tags
 
 });
-channels.addChannel('Events',{
-	"key":"Events",
+channels.addChannel('Events', {
+	"key": "Events",
 	"type": "Category",
 	"name": "Events",
 	"description": "A list of events and happenings running in your area",
@@ -235,16 +234,16 @@ channels.addChannel('Events',{
 	"image": `${channelEvents}`,
 	"mapIcon": iconEvents,
 	"color": "#df7f2b",
-	"tags":{
-		"Arts":{
+	"tags": {
+		"Arts": {
 			"mapIcon": `${iconEvents}`,
 			"color": "#df7f2b"
 		}
 	}
 
 });
-channels.addChannel('Crime',{
-	"key":"Crime",
+channels.addChannel('Crime', {
+	"key": "Crime",
 	"type": "Category",
 	"name": "Crime",
 	"description": "View Crime data, accessed via the Police Crime Data API. The data does not show cases within the last three months. Figures obtained from Police.UK.",
@@ -254,8 +253,8 @@ channels.addChannel('Crime',{
 	"color": "#c31d49",
 
 });
-channels.addChannel('Democracy',{
-	"key":"Democracy",
+channels.addChannel('Democracy', {
+	"key": "Democracy",
 	"type": "Report",
 	"name": "Democracy",
 	"description": "Find information about wards, parishes, councillors, MPs, polling stations and council tax in your selected location.",
@@ -265,8 +264,8 @@ channels.addChannel('Democracy',{
 	"color": "#000000",
 
 });
-channels.addChannel('All',{
-	"key":"All",
+channels.addChannel('All', {
+	"key": "All",
 	"type": "Category",
 	"name": "All",
 	"description": "View all categories",
@@ -285,14 +284,16 @@ const configs = {
 	clusterWidthMod: 50,
 	siteTitle: "Locus - My council",
 	homeGrid: 3,
-	homeCategorySearch: ["Planning","Events","Crime"],
+	homeCategorySearch: ["Planning", "Events", "Crime"],
 	defaultZoom: 12,
 	defaultPostcode: "TQ1 4TN",
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
-	defaultRange: 10, // km|mile
+	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,
-	websocket: "wss://cp90vff2qi.execute-api.eu-west-1.amazonaws.com/new"
+	websocket: "wss://mpk9us5un9.execute-api.eu-west-1.amazonaws.com/new", // Get his this from your locus-custom.yml - wsdomain
+	cognitoURL: "locusauth.nautoguide.com", // Get his this from your locus-custom.yml - cognitoDomainName
+	cognitoPoolId: "6jbgpggjvqonk7p55m51rql445" // Get from you api/.env
 }
 
 export {useStyles, channels, theme, configs};

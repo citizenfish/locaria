@@ -10,22 +10,22 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import AccountCircle  from "@material-ui/icons/AccountCircle";
-import {channels, useStyles,theme,configs} from "themeLocus";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import {channels, useStyles, theme, configs} from "themeLocus";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import {Link} from "react-router-dom";
 import Openlayers from "libs/Openlayers";
 import Paper from "@material-ui/core/Paper";
-import { useCookies } from 'react-cookie';
-import {viewStyle,locationStyle} from "mapStyle";
+import {useCookies} from 'react-cookie';
+import {viewStyle, locationStyle} from "mapStyle";
 import Button from "@material-ui/core/Button";
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 
 
-const Layout = ({ children,map,update }) => {
+const Layout = ({children, map, update}) => {
 	const history = useHistory();
 
 	const classes = useStyles();
@@ -37,10 +37,10 @@ const Layout = ({ children,map,update }) => {
 	const [openSuccess, setOpenSuccess] = React.useState(false);
 
 
-	const [location, setLocation] = useCookies(['location']);
+	const [cookies, setCookies] = useCookies(['location']);
 
 
-	const ol=new Openlayers();
+	const ol = new Openlayers();
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isProfileMenuOpen = Boolean(anchorProfileEl);
@@ -63,31 +63,31 @@ const Layout = ({ children,map,update }) => {
 	const menuId = 'primary-search-account-menu';
 
 	const handleFeatureSelected = function (features) {
-		if(features[0].get('geometry_type')==='cluster') {
-			ol.zoomToLayerExtent({"layer": "data", "buffer": 50000,"extent":features[0].get('extent')});
+		if (features[0].get('geometry_type') === 'cluster') {
+			ol.zoomToLayerExtent({"layer": "data", "buffer": 50000, "extent": features[0].get('extent')});
 
 		} else {
 
-			if(features.length===1) {
+			if (features.length === 1) {
 				history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`)
 			} else {
-				let searchLocation=ol.decodeCoords(features[0].getGeometry().flatCoordinates,'EPSG:3857','EPSG:4326');
+				let searchLocation = ol.decodeCoords(features[0].getGeometry().flatCoordinates, 'EPSG:3857', 'EPSG:4326');
 				history.push(`Category/${features[0].get('category')}/${searchLocation[0]},${searchLocation[1]}/1`)
 			}
 		}
 	}
 
-	const onZoomChange = (result) =>{
-		let resolutions=ol.updateResolution();
-		let packet={
+	const onZoomChange = (result) => {
+		let resolutions = ol.updateResolution();
+		let packet = {
 			"queue": "homeLoader",
 			"api": "api",
 			"data": {
 				"method": "search",
 				"category": configs.homeCategorySearch,
 				"bbox": `${result.extent4326[0]} ${result.extent4326[1]},${result.extent4326[2]} ${result.extent4326[3]}`,
-				"cluster":resolutions.resolution<configs.clusterCutOff? false:true,
-				"cluster_width":Math.floor(configs.clusterWidthMod*resolutions.resolution)
+				"cluster": resolutions.resolution < configs.clusterCutOff ? false : true,
+				"cluster_width": Math.floor(configs.clusterWidthMod * resolutions.resolution)
 			}
 		};
 		window.websocket.send(packet);
@@ -95,7 +95,7 @@ const Layout = ({ children,map,update }) => {
 
 	React.useEffect(() => {
 
-		if(map===true) {
+		if (map === true) {
 
 			ol.addMap({
 				"target": "map",
@@ -111,27 +111,27 @@ const Layout = ({ children,map,update }) => {
 				"active": true
 			});
 
-				ol.addLayer({
-					"name": "data",
-					"type": "vector",
-					"active": true,
-					"style": viewStyle
+			ol.addLayer({
+				"name": "data",
+				"type": "vector",
+				"active": true,
+				"style": viewStyle
+			});
+			if (configs.cluster === true) {
+				ol.addResolutionEvent({"changeFunction": onZoomChange});
+			} else {
+				window.websocket.send({
+					"queue": "homeLoader",
+					"api": "api",
+					"data": {
+						"method": "search",
+						"category": "Events",
+						"location": `SRID=4326;POINT(${cookies.location[0]} ${cookies.location[1]})`,
+						"location_distance": 5000000000,
+						"cluster": false
+					}
 				});
-				if(configs.cluster===true) {
-					ol.addResolutionEvent({"changeFunction":onZoomChange});
-				} else {
-					window.websocket.send({
-						"queue": "homeLoader",
-						"api": "api",
-						"data": {
-							"method": "search",
-							"category": "Events",
-							"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
-							"location_distance": 5000000000,
-							"cluster":false
-						}
-					});
-				}
+			}
 
 			ol.addLayer({
 				"name": "location",
@@ -139,12 +139,11 @@ const Layout = ({ children,map,update }) => {
 				"active": true,
 				"style": locationStyle
 			});
-			ol.makeControl({"layers":["data"],"selectedFunction":handleFeatureSelected,"multi":true});
+			ol.makeControl({"layers": ["data"], "selectedFunction": handleFeatureSelected, "multi": true});
 
 
-
-			if(location.location) {
-				ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326"});
+			if (cookies.location) {
+				ol.flyTo({"coordinate": cookies.location, "projection": "EPSG:4326"});
 				ol.addGeojson({
 					"layer": "location",
 					"geojson": {
@@ -153,11 +152,10 @@ const Layout = ({ children,map,update }) => {
 							{
 								"geometry": {
 									"type": "Point",
-									"coordinates": location.location
+									"coordinates": cookies.location
 								},
 								"type": "Feature",
-								"properties":{
-								}
+								"properties": {}
 							}
 						]
 					}
@@ -170,26 +168,24 @@ const Layout = ({ children,map,update }) => {
 		}
 
 
-
 		window.websocket.registerQueue("homeLoader", function (json) {
-			if(map===true) {
+			if (map === true) {
 
 				ol.addGeojson({"layer": "data", "geojson": json.packet, "clear": true});
 			}
 		});
 
 
-
 	}, []);
 
 	window.websocket.registerQueue("postcode", function (json) {
-		if(json.packet.features.length>0) {
+		if (json.packet.features.length > 0) {
 			let postcode = document.getElementById('myPostcode').value;
-			setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/',sameSite:true});
-			setLocation('postcode', postcode, {path: '/',sameSite:true});
+			setCookies('location', json.packet.features[0].geometry.coordinates, {path: '/', sameSite: true});
+			setCookies('postcode', postcode, {path: '/', sameSite: true});
 
-			if(map===true) {
-				ol.clearLayer({"layer":"location"});
+			if (map === true) {
+				ol.clearLayer({"layer": "location"});
 				ol.addGeojson({
 					"layer": "location",
 					"geojson": {
@@ -201,8 +197,7 @@ const Layout = ({ children,map,update }) => {
 									"coordinates": json.packet.features[0].geometry.coordinates
 								},
 								"type": "Feature",
-								"properties":{
-								}
+								"properties": {}
 							}
 						]
 					}
@@ -210,7 +205,7 @@ const Layout = ({ children,map,update }) => {
 				ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
 			}
 			setOpenSuccess(true);
-			if(update!==undefined)
+			if (update !== undefined)
 				update();
 
 
@@ -226,11 +221,12 @@ const Layout = ({ children,map,update }) => {
 	function closeSuccess() {
 		setOpenSuccess(false);
 	}
+
 	function handleKeyDown(e) {
-		if( e.key === 'Enter') {
+		if (e.key === 'Enter') {
 			let postcode = document.getElementById('myPostcode').value;
-			postcode=postcode.toUpperCase();
-			document.getElementById('myPostcode').value=postcode;
+			postcode = postcode.toUpperCase();
+			document.getElementById('myPostcode').value = postcode;
 
 			window.websocket.send({
 				"queue": "postcode",
@@ -246,140 +242,194 @@ const Layout = ({ children,map,update }) => {
 	}
 
 	function channelDisplay(channel) {
-		if(channel.type==='Report')
-			return (<MenuItem component={Link} to={`/${channel.type}/${channel.report_name}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
+		if (channel.type === 'Report')
+			return (<MenuItem component={Link} to={`/${channel.type}/${channel.report_name}`} key={channel.key}
+			                  content={channel.name}>{channel.name}</MenuItem>)
 		else
-			return (<MenuItem component={Link} to={`/${channel.type}/${channel.key}`} key={channel.key} content={channel.name}>{channel.name}</MenuItem>)
+			return (<MenuItem component={Link} to={`/${channel.type}/${channel.key}`} key={channel.key}
+			                  content={channel.name}>{channel.name}</MenuItem>)
 
 	}
 
 	function resetMap() {
-		ol.flyTo({"coordinate":location.location,"projection":"EPSG:4326","zoom":configs.defaultZoom});
+		ol.flyTo({"coordinate": cookies.location, "projection": "EPSG:4326", "zoom": configs.defaultZoom});
 	}
 
 	const renderMenu = (
 		<Menu
 			anchorEl={anchorEl}
-			anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
 			id={menuId}
 			keepMounted
-			transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+			transformOrigin={{vertical: 'top', horizontal: 'right'}}
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
 			<MenuItem component={Link} to={`/`}>Home</MenuItem>
-			{channels.listChannels().map(function(channel) {
-				if(channels.displayChannel(channel))
+			{channels.listChannels().map(function (channel) {
+				if (channels.displayChannel(channel))
 					return channelDisplay(channels.getChannelProperties(channel));
 			})}
 		</Menu>
 	);
-	const renderProfileMenu = (
-		<Menu
-			anchorEl={anchorProfileEl}
-			anchorOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
-			id={menuId}
-			keepMounted
-			transformOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
-			open={isProfileMenuOpen}
-			onClose={handleMenuClose}
-		>
-			<MenuItem onClick={handleMenuClose}>Login</MenuItem>
-		</Menu>
-	);
+
+	const handleLogin = function () {
+		handleMenuClose();
+		window.location = `https://${configs.cognitoURL}/login?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+	}
+
+	const handleSignup = function () {
+		handleMenuClose();
+		window.location = `https://${configs.cognitoURL}/signup?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+	}
+
+	const handleLogout = function () {
+		handleMenuClose();
+		setCookies('id_token', "null", {path: '/', sameSite: true});
+		window.location = `/`;
+	}
+
+	const handleAdmin = function () {
+		handleMenuClose();
+		window.location = `/Admin/`;
+
+	}
+
+	function renderProfileMenu() {
+		console.log(cookies);
+		if (cookies['id_token'] === undefined || cookies['id_token'] === "null") {
+			return (
+				<Menu
+					anchorEl={anchorProfileEl}
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					id={menuId}
+					keepMounted
+					transformOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					open={isProfileMenuOpen}
+					onClose={handleMenuClose}
+				>
+					<MenuItem onClick={handleLogin}>Login</MenuItem>
+					<MenuItem onClick={handleSignup}>Signup</MenuItem>
+				</Menu>
+			)
+		} else {
+			return (
+				<Menu
+					anchorEl={anchorProfileEl}
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					id={menuId}
+					keepMounted
+					transformOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					open={isProfileMenuOpen}
+					onClose={handleMenuClose}
+				>
+					<MenuItem onClick={handleLogout}>Logout</MenuItem>
+					{cookies.groups.indexOf('Admins') !== -1 ? < MenuItem onClick={handleAdmin}>Admin</MenuItem> : ''}
+				</Menu>
+			)
+		}
+	};
 
 
 	return (
 		<ThemeProvider theme={theme}>
-			<Snackbar open={openError} autoHideDuration={3000} onClose={closeError} anchorOrigin={{vertical: 'top',horizontal: 'center'}}>
+			<Snackbar open={openError} autoHideDuration={3000} onClose={closeError}
+			          anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
 				<Alert severity="error">
 					Postcode not found — <strong>try another!</strong>
 				</Alert>
 			</Snackbar>
 
-			<Snackbar open={openSuccess} autoHideDuration={2000} onClose={closeSuccess} anchorOrigin={{vertical: 'top',horizontal: 'center'}}>
+			<Snackbar open={openSuccess} autoHideDuration={2000} onClose={closeSuccess}
+			          anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
 				<Alert severity="success">
 					Found your location
 				</Alert>
 			</Snackbar>
-		<Container>
+			<Container>
 
-		<div className={classes.grow}>
-			<AppBar position="static">
-				<Toolbar>
-					<IconButton
-						edge="start"
-						className={classes.menuButton}
-						color="inherit"
-						aria-label="open drawer"
-						onClick={handleMenuOpen}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography className={classes.title} variant="h6" noWrap>
-						{configs.siteTitle}
-					</Typography>
-					<div className={classes.search}>
-						<div className={classes.searchIcon}>
-							<SearchIcon />
-						</div>
-						<InputBase
-							placeholder="Postcode…"
-							classes={{
-								root: classes.inputRoot,
-								input: classes.inputInput,
-							}}
-							inputProps={{ 'aria-label': 'search' }}
-							defaultValue={location.postcode? location.postcode:configs.defaultPostcode}
-							onKeyPress={handleKeyDown}
-							id="myPostcode"
-						/>
-					</div>
-					<Box sx={{ flexGrow: 1 }} />
-					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-						<IconButton
-							size="large"
-							edge="end"
-							aria-label="account of current user"
-							aria-controls={menuId}
-							aria-haspopup="true"
-							onClick={handleProfileMenuOpen}
-							color="inherit"
-						>
-							<AccountCircle />
-						</IconButton>
-					</Box>
-				</Toolbar>
-			</AppBar>
-			{renderMenu}
-			{renderProfileMenu}
-		</div>
-		<div>
-			{displayMap()}
+				<div className={classes.grow}>
+					<AppBar position="static">
+						<Toolbar>
+							<IconButton
+								edge="start"
+								className={classes.menuButton}
+								color="inherit"
+								aria-label="open drawer"
+								onClick={handleMenuOpen}
+							>
+								<MenuIcon/>
+							</IconButton>
+							<Typography className={classes.title} variant="h6" noWrap>
+								{configs.siteTitle}
+							</Typography>
+							<div className={classes.search}>
+								<div className={classes.searchIcon}>
+									<SearchIcon/>
+								</div>
+								<InputBase
+									placeholder="Postcode…"
+									classes={{
+										root: classes.inputRoot,
+										input: classes.inputInput,
+									}}
+									inputProps={{'aria-label': 'search'}}
+									defaultValue={cookies.postcode ? cookies.postcode : configs.defaultPostcode}
+									onKeyPress={handleKeyDown}
+									id="myPostcode"
+								/>
+							</div>
+							<Box sx={{flexGrow: 1}}/>
+							<Box sx={{display: {xs: 'none', md: 'flex'}}}>
+								<IconButton
+									size="large"
+									edge="end"
+									aria-label="account of current user"
+									aria-controls={menuId}
+									aria-haspopup="true"
+									onClick={handleProfileMenuOpen}
+									color="inherit"
+								>
+									<AccountCircle/>
+								</IconButton>
+							</Box>
+						</Toolbar>
+					</AppBar>
+					{renderMenu}
+					{renderProfileMenu()}
+				</div>
+				<div>
+					{displayMap()}
 
-			{children}
+					{children}
 
 
+				</div>
 
-		</div>
-
-		</Container>
+			</Container>
 		</ThemeProvider>
 	);
 
 	function displayMap() {
-		if(map===true) {
+		if (map === true) {
 			return (
 				<Paper elevation={3} className={classes.paperMargin}>
 					<div className={classes.mapContainer}>
 						<div id="map" className={classes.map}>
-							<Button className={classes.mapResetButton} onClick={resetMap} color="secondary" variant="outlined">Reset map</Button>
+							<Button className={classes.mapResetButton} onClick={resetMap} color="secondary"
+							        variant="outlined">Reset map</Button>
 						</div>
 					</div>
 				</Paper>
