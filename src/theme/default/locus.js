@@ -289,9 +289,9 @@ const configs = {
 	defaultPostcode: "TQ1 4TN",
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
-	defaultRange: 10, // km|mile
+	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,
-	websocket: "wss://locus1ws.nautoguide.com/new", // Get his this from your locus-custom.yml - wsdomain
+	websocket: "wss://mpk9us5un9.execute-api.eu-west-1.amazonaws.com/new", // Get his this from your locus-custom.yml - wsdomain
 	cognitoURL: "locusauth.nautoguide.com", // Get his this from your locus-custom.yml - cognitoDomainName
 	cognitoPoolId: "6jbgpggjvqonk7p55m51rql445" // Get from you api/.env
 }

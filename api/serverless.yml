@@ -421,6 +421,8 @@ resources:
         UserPoolName: locus-pool
         UsernameAttributes:
           - email
+        AutoVerifiedAttributes:
+          - email
         Policies:
           PasswordPolicy:
             MinimumLength: 6
@@ -436,7 +438,7 @@ resources:
         UserPoolId:
           Ref: CognitoUserPool
         CallbackURLs:
-          - http://localhost:8080/index.html
+          - http://localhost:8080/
         AllowedOAuthFlows:
           - code
           - implicit
@@ -455,6 +457,14 @@ resources:
         CustomDomainConfig:
           CertificateArn: ${file(../../locus-custom.yml):${self:custom.stage}.cognitoCertARN}
         Domain: ${file(../../locus-custom.yml):${self:custom.stage}.cognitoDomainName}
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoUserGroupAdmin:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Admins
+        GroupName: Admins
+        Precedence: 0
         UserPoolId:
           Ref: CognitoUserPool
 functions:

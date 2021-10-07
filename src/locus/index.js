@@ -23,9 +23,10 @@ function connected() {
 }
 
 function closed(event) {
-	if (tries)
-		console.log(`websock closed: ${event}`);
-	window.websocket.connect();
+
+	console.log(`websock closed: ${event}`);
+	if (tries <= 3)
+		window.websocket.connect();
 }
 
 function errored(event) {
@@ -34,7 +35,6 @@ function errored(event) {
 	if (tries > 2) {
 		ReactDOM.render(<App/>, document.getElementById('root'));
 	}
-	debugger;
 }
 
 

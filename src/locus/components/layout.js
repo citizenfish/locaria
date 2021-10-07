@@ -37,7 +37,7 @@ const Layout = ({children, map, update}) => {
 	const [openSuccess, setOpenSuccess] = React.useState(false);
 
 
-	const [location, setLocation] = useCookies(['location']);
+	const [cookies, setCookies] = useCookies(['location']);
 
 
 	const ol = new Openlayers();
@@ -126,7 +126,7 @@ const Layout = ({children, map, update}) => {
 					"data": {
 						"method": "search",
 						"category": "Events",
-						"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
+						"location": `SRID=4326;POINT(${cookies.location[0]} ${cookies.location[1]})`,
 						"location_distance": 5000000000,
 						"cluster": false
 					}
@@ -142,8 +142,8 @@ const Layout = ({children, map, update}) => {
 			ol.makeControl({"layers": ["data"], "selectedFunction": handleFeatureSelected, "multi": true});
 
 
-			if (location.location) {
-				ol.flyTo({"coordinate": location.location, "projection": "EPSG:4326"});
+			if (cookies.location) {
+				ol.flyTo({"coordinate": cookies.location, "projection": "EPSG:4326"});
 				ol.addGeojson({
 					"layer": "location",
 					"geojson": {
@@ -152,7 +152,7 @@ const Layout = ({children, map, update}) => {
 							{
 								"geometry": {
 									"type": "Point",
-									"coordinates": location.location
+									"coordinates": cookies.location
 								},
 								"type": "Feature",
 								"properties": {}
@@ -181,8 +181,8 @@ const Layout = ({children, map, update}) => {
 	window.websocket.registerQueue("postcode", function (json) {
 		if (json.packet.features.length > 0) {
 			let postcode = document.getElementById('myPostcode').value;
-			setLocation('location', json.packet.features[0].geometry.coordinates, {path: '/', sameSite: true});
-			setLocation('postcode', postcode, {path: '/', sameSite: true});
+			setCookies('location', json.packet.features[0].geometry.coordinates, {path: '/', sameSite: true});
+			setCookies('postcode', postcode, {path: '/', sameSite: true});
 
 			if (map === true) {
 				ol.clearLayer({"layer": "location"});
@@ -252,7 +252,7 @@ const Layout = ({children, map, update}) => {
 	}
 
 	function resetMap() {
-		ol.flyTo({"coordinate": location.location, "projection": "EPSG:4326", "zoom": configs.defaultZoom});
+		ol.flyTo({"coordinate": cookies.location, "projection": "EPSG:4326", "zoom": configs.defaultZoom});
 	}
 
 	const renderMenu = (
@@ -275,27 +275,72 @@ const Layout = ({children, map, update}) => {
 
 	const handleLogin = function () {
 		handleMenuClose();
-		window.location = `https://${configs.cognitoURL}/login?response_type=code&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:808/index.html`;
+		window.location = `https://${configs.cognitoURL}/login?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
 	}
-	const renderProfileMenu = (
-		<Menu
-			anchorEl={anchorProfileEl}
-			anchorOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
-			id={menuId}
-			keepMounted
-			transformOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
-			open={isProfileMenuOpen}
-			onClose={handleMenuClose}
-		>
-			<MenuItem onClick={handleLogin}>Login</MenuItem>
-		</Menu>
-	);
+
+	const handleSignup = function () {
+		handleMenuClose();
+		window.location = `https://${configs.cognitoURL}/signup?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+	}
+
+	const handleLogout = function () {
+		handleMenuClose();
+		setCookies('id_token', "null", {path: '/', sameSite: true});
+		window.location = `/`;
+	}
+
+	const handleAdmin = function () {
+		handleMenuClose();
+		window.location = `/Admin/`;
+
+	}
+
+	function renderProfileMenu() {
+		console.log(cookies);
+		if (cookies['id_token'] === undefined || cookies['id_token'] === "null") {
+			return (
+				<Menu
+					anchorEl={anchorProfileEl}
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					id={menuId}
+					keepMounted
+					transformOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					open={isProfileMenuOpen}
+					onClose={handleMenuClose}
+				>
+					<MenuItem onClick={handleLogin}>Login</MenuItem>
+					<MenuItem onClick={handleSignup}>Signup</MenuItem>
+				</Menu>
+			)
+		} else {
+			return (
+				<Menu
+					anchorEl={anchorProfileEl}
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					id={menuId}
+					keepMounted
+					transformOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					open={isProfileMenuOpen}
+					onClose={handleMenuClose}
+				>
+					<MenuItem onClick={handleLogout}>Logout</MenuItem>
+					{cookies.groups.indexOf('Admins') !== -1 ? < MenuItem onClick={handleAdmin}>Admin</MenuItem> : ''}
+				</Menu>
+			)
+		}
+	};
 
 
 	return (
@@ -341,7 +386,7 @@ const Layout = ({children, map, update}) => {
 										input: classes.inputInput,
 									}}
 									inputProps={{'aria-label': 'search'}}
-									defaultValue={location.postcode ? location.postcode : configs.defaultPostcode}
+									defaultValue={cookies.postcode ? cookies.postcode : configs.defaultPostcode}
 									onKeyPress={handleKeyDown}
 									id="myPostcode"
 								/>
@@ -363,7 +408,7 @@ const Layout = ({children, map, update}) => {
 						</Toolbar>
 					</AppBar>
 					{renderMenu}
-					{renderProfileMenu}
+					{renderProfileMenu()}
 				</div>
 				<div>
 					{displayMap()}

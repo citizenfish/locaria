@@ -5,7 +5,7 @@ import Layout from './Layout';
 const Error = () => {
 	return (
 		<Layout>
-			<p>Errors</p>
+			<p>This is not the page your looking for</p>
 		</Layout>
 	);
 };
