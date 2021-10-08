@@ -11,7 +11,7 @@ import {Link, useParams, useLocation} from 'react-router-dom';
 import {channels, useStyles, configs} from 'themeLocus';
 
 
-import Layout from '../Layout';
+import AdminLayout from './adminLayout';
 import {useCookies} from "react-cookie";
 
 const AdminHome = () => {
@@ -20,13 +20,13 @@ const AdminHome = () => {
 
 
 	return (
-		<Layout map={false}>
+		<AdminLayout>
 			<Paper elevation={3} className={classes.paperMargin}>
 				<Grid container className={classes.root} spacing={2} justifyContent="center">
 					<h1>Admin home</h1>
 				</Grid>
 			</Paper>
-		</Layout>
+		</AdminLayout>
 	);
 };
 

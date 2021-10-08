@@ -19,11 +19,9 @@ window.websocket.init({"url": configs.websocket}, connected, closed, errored);
 
 function connected() {
 	ReactDOM.render(<App/>, document.getElementById('root'));
-
 }
 
 function closed(event) {
-
 	console.log(`websock closed: ${event}`);
 	if (tries <= 3)
 		window.websocket.connect();
