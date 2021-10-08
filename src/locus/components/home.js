@@ -16,39 +16,6 @@ import {useCookies} from "react-cookie";
 
 const Home = () => {
 	const classes = useStyles();
-	//let {id_token} = useParams();
-
-	const [cookies, setCookies] = useCookies(['location']);
-
-
-	let {hash} = useLocation();
-	if (hash) {
-		hash = hash.replace(/#id_token=/, '');
-		hash = hash.replace(/\&.*/, '');
-	}
-	React.useEffect(() => {
-
-		window.websocket.registerQueue("tokenCheck", function (json) {
-			console.log(json);
-			if (json.packet.email) {
-				setCookies('id_token', hash, {path: '/', sameSite: true});
-				setCookies('groups', json.packet['cognito:groups'], {path: '/', sameSite: true});
-			} else {
-				setCookies('id_token', null, {path: '/', sameSite: true});
-				setCookies('groups', [], {path: '/', sameSite: true});
-			}
-		});
-
-		if (hash) {
-			console.log(`Incoming ${hash}`);
-			window.websocket.send({
-				"queue": "tokenCheck",
-				"api": "token",
-				"data": {"id_token": hash}
-			});
-		}
-	}, []);
-
 
 	return (
 		<Layout map={true}>

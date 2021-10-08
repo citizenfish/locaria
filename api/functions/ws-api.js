@@ -101,12 +101,13 @@ module.exports.run = (event, context, callback) => {
 		const packet = body;
 
 
-		let payload = {"queue": packet.queue, "packet": {}};
+		let payload = {"queue": packet.queue, "packet": {}, "code": 200};
 		switch (packet.api) {
 			case 'session':
 				payload.packet.id = connectionId;
 				sendToClient(payload);
 				break;
+			// Public API
 			case 'api':
 				client = database.getClient();
 				let querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
@@ -116,8 +117,8 @@ module.exports.run = (event, context, callback) => {
 				client.query(querysql, qarguments, function (err, result) {
 					if (err) {
 						console.log(err);
-						callback(null, {statusCode: 500});
-						client.end();
+						payload.code = 310;
+						sendToClient(payload);
 
 					} else {
 						payload.packet = result.rows[0]['locus_gateway'];
@@ -126,23 +127,59 @@ module.exports.run = (event, context, callback) => {
 					}
 				});
 				break;
+			// Secure API
+			case 'sapi':
+				validateToken(packet, function (tokenPacket) {
+						client = database.getClient();
+						let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB)';
+						let qarguments = [packet.data];
+						console.log(querysql);
+						console.log(qarguments);
+						client.query(querysql, qarguments, function (err, result) {
+							if (err) {
+								console.log(err);
+								payload.code = 311;
+								sendToClient(payload);
+
+							} else {
+								payload.packet = result.rows[0]['locus_gateway'];
+								payload.method = packet.data.method;
+								sendToClient(payload);
+							}
+						});
+					},
+					function (tokenPacket) {
+						payload.code = 300;
+						payload.packet = tokenPacket;
+						sendToClient(payload);
+					});
+				break;
 			case 'token':
 				validateToken(packet, function (tokenPacket) {
 						payload.packet = tokenPacket;
 						sendToClient(payload);
 					},
 					function (tokenPacket) {
+						payload.code = 300;
 						payload.packet = tokenPacket;
 						sendToClient(payload);
 
 					});
 				break;
+			default:
+				payload.code = 201;
+				sendToClient(payload);
+				break;
+
 
 		}
 	}
 
 	function validateToken(packet, success, fail) {
-		// We checked this existed before we got here
+		if (packet.data.id_token === undefined) {
+			fail({"message": "No id_token provided"});
+			return;
+		}
 		const token = packet.data.id_token;
 		console.log(token);
 		const url = `https://cognito-idp.eu-west-1.amazonaws.com/${process.env.pool}/.well-known/jwks.json`;
@@ -184,7 +221,7 @@ module.exports.run = (event, context, callback) => {
 						jwt.verify(token, pem, function (err, tokenPayload) {
 							if (err) {
 								console.log("Invalid Token.");
-								fail({"message": "Invalid token"});
+								fail({"message": `Invalid token ${err}`});
 							} else {
 								console.log("Valid Token.");
 								console.log(tokenPayload);
