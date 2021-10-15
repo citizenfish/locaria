@@ -21,6 +21,7 @@ import Chip from "@material-ui/core/Chip";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import AdminCard from "./adminCard";
+import SearchTags from "../search/SearchTags";
 
 const AdminView = () => {
 	let {feature} = useParams();
@@ -40,11 +41,7 @@ const AdminView = () => {
 	React.useEffect(() => {
 
 		if (view === null) {
-			window.websocket.send({
-				"queue": "viewLoader",
-				"api": "api",
-				"data": {"method": "get_item", "fid": feature}
-			});
+			reload();
 		} else {
 			ol.addMap({
 				"target": "map",
@@ -97,6 +94,44 @@ const AdminView = () => {
 		setView(json.packet);
 	});
 
+	window.websocket.registerQueue("saveFeature", function (json) {
+		window.websocket.send({
+			"queue": "refreshView",
+			"api": "sapi",
+			"data": {
+				"method": "refresh_search_view",
+				"id_token": cookies['id_token']
+			}
+		});
+	});
+
+	window.websocket.registerQueue("deleteFeature", function (json) {
+		window.websocket.send({
+			"queue": "homeView",
+			"api": "sapi",
+			"data": {
+				"method": "refresh_search_view",
+				"id_token": cookies['id_token']
+			}
+		});
+	});
+
+	window.websocket.registerQueue("refreshView", function (json) {
+		setView(null);
+	});
+
+	window.websocket.registerQueue("homeView", function (json) {
+		history.push("/Admin");
+	});
+
+	function reload() {
+		window.websocket.send({
+			"queue": "viewLoader",
+			"api": "api",
+			"data": {"method": "get_item", "fid": feature}
+		});
+	}
+
 	function resetMap() {
 		ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
 	}
@@ -107,8 +142,21 @@ const AdminView = () => {
 			"api": "sapi",
 			"data": {
 				"method": "update_item", "fid": feature, "attributes": {
-					"foo": "baa"
+					"description": view.features[0].properties.description,
+					"tags": view.features[0].properties.tags
 				},
+				"id_token": cookies['id_token']
+			}
+		});
+
+	}
+
+	function deleteFeature() {
+		window.websocket.send({
+			"queue": "deleteFeature",
+			"api": "sapi",
+			"data": {
+				"method": "delete_item", "fid": feature,
 				"id_token": cookies['id_token']
 			}
 		});
@@ -117,6 +165,16 @@ const AdminView = () => {
 
 	const historyBack = () => {
 		history.goBack();
+	}
+
+	function onChange(e) {
+		view.features[0].properties.description[e.target.name] = e.target.value;
+	}
+
+	function onChangeTags(newTags) {
+		//debugger;
+		console.log(newTags);
+		view.features[0].properties.tags = newTags;
 	}
 
 	if (view !== null) {
@@ -144,11 +202,16 @@ const AdminView = () => {
 										</div>
 									</CardMedia>
 
+									<SearchTags category={view.features[0].properties.category[0]}
+									            changeFunction={onChangeTags}
+									            currentValue={view.features[0].properties.tags}></SearchTags>
 
-									{Object.keys(view.features[0].properties).map(prop => (
+									{Object.keys(view.features[0].properties.description).map(prop => (
 										<FormControl className={classes.formControl} fullWidth>
-											<InputLabel id="{prop}-label">{prop}</InputLabel>
-											<Input value={view.features[0].properties[prop]}/>
+											<InputLabel id={prop + '-label'}>{prop}</InputLabel>
+											<Input type="text" labelId={prop + '-label'} id={prop + '-id'}
+											       defaultValue={view.features[0].properties.description[prop]}
+											       onChange={onChange} name={prop}/>
 										</FormControl>
 									))}
 
@@ -158,7 +221,9 @@ const AdminView = () => {
 									<Button size="small" color="secondary" onClick={saveFeature} variant="outlined">
 										Save
 									</Button>
-
+									<Button size="small" color="secondary" onClick={deleteFeature} variant="outlined">
+										Delete
+									</Button>
 									<Button size="small" color="secondary" onClick={historyBack} variant="outlined">
 										Back
 									</Button>

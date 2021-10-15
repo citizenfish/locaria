@@ -18,6 +18,7 @@ window.websocket.init({"url": configs.websocket}, connected, closed, errored);
 
 
 function connected() {
+
 	ReactDOM.render(<App/>, document.getElementById('root'));
 }
 

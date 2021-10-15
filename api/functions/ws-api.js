@@ -130,23 +130,28 @@ module.exports.run = (event, context, callback) => {
 			// Secure API
 			case 'sapi':
 				validateToken(packet, function (tokenPacket) {
-						client = database.getClient();
-						let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB)';
-						let qarguments = [packet.data];
-						console.log(querysql);
-						console.log(qarguments);
-						client.query(querysql, qarguments, function (err, result) {
-							if (err) {
-								console.log(err);
-								payload.code = 311;
-								sendToClient(payload);
+						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
+							client = database.getClient();
+							let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB)';
+							let qarguments = [packet.data];
+							console.log(querysql);
+							console.log(qarguments);
+							client.query(querysql, qarguments, function (err, result) {
+								if (err) {
+									console.log(err);
+									payload.code = 311;
+									sendToClient(payload);
 
-							} else {
-								payload.packet = result.rows[0]['locus_gateway'];
-								payload.method = packet.data.method;
-								sendToClient(payload);
-							}
-						});
+								} else {
+									payload.packet = result.rows[0]['locus_internal_gateway'];
+									payload.method = packet.data.method;
+									sendToClient(payload);
+								}
+							});
+						} else {
+							payload.code = 312;
+							sendToClient(payload);
+						}
 					},
 					function (tokenPacket) {
 						payload.code = 300;

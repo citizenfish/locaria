@@ -8,16 +8,24 @@ import View from './view';
 import Error from './error';
 import AdminHome from "./admin/adminHome";
 import AdminView from "./admin/AdminView";
+import AdminData from "./admin/AdminData";
 import {useCookies} from "react-cookie";
 import {configs} from "themeLocus";
-import ReactDOM from "react-dom";
+
+import AdminRoute from "./adminRoute";
+import AWS from "aws-sdk";
 
 
 const App = () => {
 
 	// fix our cookie defaults
 
+	const cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
+
 	const [cookies, setCookies] = useCookies(['location']);
+
+	const [user, setUser] = React.useState(false);
+
 	if (cookies.location === undefined) {
 		setCookies('location', configs.defaultLocation, {path: '/', sameSite: true});
 	}
@@ -43,23 +51,31 @@ const App = () => {
 		}
 
 		window.websocket.registerQueue("tokenCheck", function (json) {
-			console.log(json);
 			if (json.packet.email) {
 				// if its has its new, if not just keep the old one
+				setUser(true);
 				if (hash) {
 					setCookies('id_token', hash, {path: '/', sameSite: true});
 					setCookies('groups', json.packet['cognito:groups'], {path: '/', sameSite: true});
+					const start = Date.now();
+					const exp = (parseInt(json.packet.exp) * 1000)
+					const diff = exp - (start + 60000);
+					console.log(`Expires ${diff / 60000}`);
+					setTimeout(function () {
+						window.location = `https://${configs.cognitoURL}/login?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+					}, diff);
 				}
 
 			} else {
 				setCookies('id_token', null, {path: '/', sameSite: true});
 				setCookies('groups', [], {path: '/', sameSite: true});
+				// This is bad token so lets go home
+				setUser(false);
 
 			}
 		});
 
 		if (hash) {
-			console.log(`Incoming ${hash}`);
 			window.websocket.send({
 				"queue": "tokenCheck",
 				"api": "token",
@@ -67,7 +83,6 @@ const App = () => {
 			});
 		} else {
 			if (cookies['id_token'] !== 'null') {
-				console.log('check id_token');
 				window.websocket.send({
 					"queue": "tokenCheck",
 					"api": "token",
@@ -76,8 +91,7 @@ const App = () => {
 					}
 				});
 			} else {
-				console.log('id_token null');
-
+				setUser(false);
 			}
 		}
 	}, []);
@@ -87,10 +101,12 @@ const App = () => {
 		<Router>
 			<div>
 				<Switch>
-					<Route path="/Admin/" component={AdminHome}/>
+					<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
+					<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
+					<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
+
 					<Route path="/Report/:reportId" component={Report}/>
 					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
-					<Route path="/AdminView/:feature" component={AdminView}/>
 					<Route path="/View/:category/:feature" component={View}/>
 					<Route exact path="/:id_token?" component={Home}/>
 
