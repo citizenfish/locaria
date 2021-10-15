@@ -296,7 +296,6 @@ const Layout = ({children, map, update}) => {
 	}
 
 	function renderProfileMenu() {
-		console.log(cookies);
 		if (cookies['id_token'] === undefined || cookies['id_token'] === "null") {
 			return (
 				<Menu
@@ -336,7 +335,8 @@ const Layout = ({children, map, update}) => {
 					onClose={handleMenuClose}
 				>
 					<MenuItem onClick={handleLogout}>Logout</MenuItem>
-					{cookies.groups.indexOf('Admins') !== -1 ? < MenuItem onClick={handleAdmin}>Admin</MenuItem> : ''}
+					{cookies.groups.indexOf('Admins') !== -1 ?
+						<MenuItem component={Link} to={`/Admin/`} key="adminLink">Admin</MenuItem> : ''}
 				</Menu>
 			)
 		}

@@ -47,6 +47,7 @@ const AdminLayout = ({children}) => {
 			onClose={handleMenuClose}
 		>
 			<MenuItem component={Link} to={`/`}>Exit Admin</MenuItem>
+			<MenuItem component={Link} to={`/AdminData/`}>Data Manager</MenuItem>
 		</Menu>
 	);
 

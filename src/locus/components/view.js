@@ -192,8 +192,9 @@ const View = () => {
 									<OutsideLink to={view.features[0].properties.description.url}></OutsideLink>
 									<Share></Share>
 									{cookies.groups.indexOf('Admins') !== -1 ?
-										<Button size="small" onClick={handleAdminView} color="secondary"
-										        variant="outlined">Edit</Button> : ''}
+										<Link to={`/AdminView/${feature}`}>
+											<Button size="small" color="secondary"
+											        variant="outlined">Edit</Button></Link> : ''}
 								</CardActions>
 							</Card>
 

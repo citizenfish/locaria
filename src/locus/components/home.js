@@ -7,12 +7,11 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import {Link, useParams, useLocation} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {channels, useStyles, configs} from 'themeLocus';
 
 
 import Layout from './Layout';
-import {useCookies} from "react-cookie";
 
 const Home = () => {
 	const classes = useStyles();
