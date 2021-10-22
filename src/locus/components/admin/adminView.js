@@ -5,7 +5,6 @@ import AdminLayout from './adminLayout';
 import {Link, useParams, BrowserRouter, useHistory} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {channels, configs, useStyles} from "themeLocus";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -22,6 +21,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import AdminCard from "./adminCard";
 import SearchTags from "../search/SearchTags";
+import {channels, configs, useStyles} from "themeLocus";
+
 
 const AdminView = () => {
 	let {feature} = useParams();
@@ -91,34 +92,21 @@ const AdminView = () => {
 	});
 
 	window.websocket.registerQueue("viewLoader", function (json) {
-		setView(json.packet);
+		if (json.code !== 200) {
+			setView({});
+		} else {
+			setView(json.packet);
+		}
 	});
 
 	window.websocket.registerQueue("saveFeature", function (json) {
-		window.websocket.send({
-			"queue": "refreshView",
-			"api": "sapi",
-			"data": {
-				"method": "refresh_search_view",
-				"id_token": cookies['id_token']
-			}
-		});
+		setView(null);
 	});
 
 	window.websocket.registerQueue("deleteFeature", function (json) {
-		window.websocket.send({
-			"queue": "homeView",
-			"api": "sapi",
-			"data": {
-				"method": "refresh_search_view",
-				"id_token": cookies['id_token']
-			}
-		});
+		history.push("/Admin");
 	});
 
-	window.websocket.registerQueue("refreshView", function (json) {
-		setView(null);
-	});
 
 	window.websocket.registerQueue("homeView", function (json) {
 		history.push("/Admin");
@@ -128,7 +116,7 @@ const AdminView = () => {
 		window.websocket.send({
 			"queue": "viewLoader",
 			"api": "api",
-			"data": {"method": "get_item", "fid": feature}
+			"data": {"method": "get_item", "fid": feature, "live": true}
 		});
 	}
 
@@ -177,64 +165,122 @@ const AdminView = () => {
 		view.features[0].properties.tags = newTags;
 	}
 
+
+	function editFields() {
+		let channel = channels.getChannelProperties(view.features[0].properties.category);
+		if (channel.fields) {
+			return (
+				channel.fields.map(prop => (
+					<FormControl className={classes.formControl} fullWidth>
+						<InputLabel id={prop.key + '-label'}>{prop.name}</InputLabel>
+						<Input type="text" labelId={prop.key + '-label'} id={prop.key + '-id'}
+						       defaultValue={view.features[0].properties.description[prop.key]}
+						       onChange={onChange} name={prop.key}/>
+					</FormControl>
+				))
+			)
+		} else {
+			// No channel config so we just display what we got
+			return (
+				Object.keys(view.features[0].properties.description).map(prop => (
+					<FormControl className={classes.formControl} fullWidth>
+						<InputLabel id={prop + '-label'}>{prop}</InputLabel>
+						<Input type="text" labelId={prop + '-label'} id={prop + '-id'}
+						       defaultValue={view.features[0].properties.description[prop]}
+						       onChange={onChange} name={prop}/>
+					</FormControl>
+				))
+			)
+		}
+
+	}
+
 	if (view !== null) {
-		return (
-			<AdminLayout>
-				<Grid container className={classes.root} spacing={6}>
-					<Grid item md={4}>
-						<Paper elevation={3} className={classes.paperMargin}>
-							<AdminCard></AdminCard>
-						</Paper>
+		if (view.features === undefined) {
+			return (
+				<AdminLayout>
+					<Grid container className={classes.root} spacing={6}>
+						<Grid item md={4}>
+							<Paper elevation={3} className={classes.paperMargin}>
+								<AdminCard></AdminCard>
+							</Paper>
+						</Grid>
+						<Grid item md={8}>
+							<Paper elevation={3} className={classes.paperMargin}>
+								<Card className={classes.root}>
+									<CardContent>
+										<Typography variant="h5" component="h2" className={classes.viewTitle}>
+											Feature not found
+										</Typography>
+										<Typography variant="body2" color="textSecondary" component="p">
+											It may have been deleted but the view has not been
+											refreshed
+										</Typography>
+									</CardContent>
+									<CardActions>
+										<Button size="small" color="secondary" onClick={historyBack} variant="outlined">
+											Back
+										</Button>
+									</CardActions>
+								</Card>
+
+							</Paper>
+						</Grid>
 					</Grid>
-					<Grid item md={8}>
-						<Paper elevation={3} className={classes.paperMargin}>
-							<Card className={classes.root}>
-								<CardContent>
+				</AdminLayout>)
+		} else {
+			return (
+				<AdminLayout>
+					<Grid container className={classes.root} spacing={6}>
+						<Grid item md={4}>
+							<Paper elevation={3} className={classes.paperMargin}>
+								<AdminCard></AdminCard>
+							</Paper>
+						</Grid>
+						<Grid item md={8}>
+							<Paper elevation={3} className={classes.paperMargin}>
+								<Card className={classes.root}>
+									<CardContent>
 
-									<CardMedia
-										className={classes.mediaMap}
-										title={view.features[0].properties.description.title}
-									>
-										<div id="map" className={classes.mapView}>
-											<Button className={classes.mapResetButton} onClick={() => {
-												resetMap()
-											}} color="secondary" variant="outlined">Reset map</Button>
-										</div>
-									</CardMedia>
+										<CardMedia
+											className={classes.mediaMap}
+											title={view.features[0].properties.description.title}
+										>
+											<div id="map" className={classes.mapView}>
+												<Button className={classes.mapResetButton} onClick={() => {
+													resetMap()
+												}} color="secondary" variant="outlined">Reset map</Button>
+											</div>
+										</CardMedia>
 
-									<SearchTags category={view.features[0].properties.category[0]}
-									            changeFunction={onChangeTags}
-									            currentValue={view.features[0].properties.tags}></SearchTags>
-
-									{Object.keys(view.features[0].properties.description).map(prop => (
-										<FormControl className={classes.formControl} fullWidth>
-											<InputLabel id={prop + '-label'}>{prop}</InputLabel>
-											<Input type="text" labelId={prop + '-label'} id={prop + '-id'}
-											       defaultValue={view.features[0].properties.description[prop]}
-											       onChange={onChange} name={prop}/>
-										</FormControl>
-									))}
+										<SearchTags category={view.features[0].properties.category[0]}
+										            changeFunction={onChangeTags}
+										            currentValue={view.features[0].properties.tags}></SearchTags>
 
 
-								</CardContent>
-								<CardActions>
-									<Button size="small" color="secondary" onClick={saveFeature} variant="outlined">
-										Save
-									</Button>
-									<Button size="small" color="secondary" onClick={deleteFeature} variant="outlined">
-										Delete
-									</Button>
-									<Button size="small" color="secondary" onClick={historyBack} variant="outlined">
-										Back
-									</Button>
-								</CardActions>
-							</Card>
+										{editFields()}
 
-						</Paper>
+									</CardContent>
+									<CardActions>
+										<Button size="small" color="secondary" onClick={saveFeature} variant="outlined">
+											Save
+										</Button>
+										<Button size="small" color="secondary" onClick={deleteFeature}
+										        variant="outlined">
+											Delete
+										</Button>
+										<Button size="small" color="secondary" onClick={historyBack} variant="outlined">
+											Back
+										</Button>
+									</CardActions>
+								</Card>
+
+							</Paper>
+						</Grid>
 					</Grid>
-				</Grid>
-			</AdminLayout>
-		);
+				</AdminLayout>
+			);
+		}
 	} else {
 		return (
 			<AdminLayout>
