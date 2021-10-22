@@ -222,7 +222,19 @@ channels.addChannel('Planning', {
 	"mapIcon": iconPlanning,
 	"color": "#4a94e9",
 	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}],
-	"tags": tags
+	"tags": tags,
+	"fields": [
+		{
+			"type": "text",
+			"name": "Title",
+			"key": "title"
+		},
+		{
+			"type": "text",
+			"name": "Description of application",
+			"key": "text"
+		}
+	]
 
 });
 channels.addChannel('Events', {
@@ -286,8 +298,8 @@ const configs = {
 	homeGrid: 3,
 	homeCategorySearch: ["Planning", "Events", "Crime"],
 	defaultZoom: 12,
-	defaultPostcode: "TQ1 4TN",
-	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
+	defaultPostcode: "E1",
+	defaultLocation: [5176.36, 6712961.88], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
 	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,

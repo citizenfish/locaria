@@ -121,9 +121,14 @@ module.exports.run = (event, context, callback) => {
 						sendToClient(payload);
 
 					} else {
-						payload.packet = result.rows[0]['locus_gateway'];
-						payload.method = packet.data.method;
-						sendToClient(payload);
+						if (result.rows[0]['locus_gateway'] === null) {
+							payload.code = 500;
+							sendToClient(payload);
+						} else {
+							payload.packet = result.rows[0]['locus_gateway'];
+							payload.method = packet.data.method;
+							sendToClient(payload);
+						}
 					}
 				});
 				break;
@@ -143,9 +148,14 @@ module.exports.run = (event, context, callback) => {
 									sendToClient(payload);
 
 								} else {
-									payload.packet = result.rows[0]['locus_internal_gateway'];
-									payload.method = packet.data.method;
-									sendToClient(payload);
+									if (result.rows[0]['locus_internal_gateway'] === null) {
+										payload.code = 500;
+										sendToClient(payload);
+									} else {
+										payload.packet = result.rows[0]['locus_internal_gateway'];
+										payload.method = packet.data.method;
+										sendToClient(payload);
+									}
 								}
 							});
 						} else {

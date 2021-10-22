@@ -11,6 +11,7 @@ import AdminView from "./admin/AdminView";
 import AdminData from "./admin/AdminData";
 import {useCookies} from "react-cookie";
 import {configs} from "themeLocus";
+import Openlayers from "libs/Openlayers";
 
 import AdminRoute from "./adminRoute";
 import AWS from "aws-sdk";
@@ -27,7 +28,12 @@ const App = () => {
 	const [user, setUser] = React.useState(false);
 
 	if (cookies.location === undefined) {
-		setCookies('location', configs.defaultLocation, {path: '/', sameSite: true});
+		const ol = new Openlayers();
+
+		setCookies('location', ol.decodeCoords(configs.defaultLocation, "EPSG:3857", "EPSG:4326"), {
+			path: '/',
+			sameSite: true
+		});
 	}
 	if (cookies.postcode === undefined) {
 		setCookies('postcode', configs.defaultPostcode, {path: '/', sameSite: true});
