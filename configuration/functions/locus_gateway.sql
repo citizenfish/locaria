@@ -17,10 +17,10 @@ BEGIN
             ret_var = search(parameters);
 
          WHEN parameters->>'method' IN ('get_item') THEN
-            ret_var = get_item(parameters->>'fid');
+            ret_var = get_item(parameters);
 
          WHEN parameters->>'method' IN ('list_categories') THEN
-            ret_var = list_categories_with_data(parameters);
+            ret_var = list_categories(parameters);
 
           WHEN parameters->>'method' IN ('list_tags') THEN
             ret_var = list_tags(parameters);
@@ -59,18 +59,18 @@ BEGIN
     END IF;
 
 
-    RETURN ret_var;
+    RETURN jsonb_build_object('response_code', 200) ||ret_var;
 
 --This block will trap any errors and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
+
 EXCEPTION WHEN OTHERS THEN
 
-        RAISE NOTICE '%', SQLERRM;
 
         INSERT INTO locus_core.logs(log_type, log_message)
         SELECT parameters->>'method',
                jsonb_build_object('path', 'public','parameters', parameters, 'response', SQLERRM)
         RETURNING id INTO logid_var;
 
-    RETURN json_build_object('error', 'request could not be completed','system_log_id', logid_var);
+    RETURN json_build_object('error', 'request could not be completed','system_log_id', logid_var, 'response_code', 500);
 END;
 $$ LANGUAGE PLPGSQL;

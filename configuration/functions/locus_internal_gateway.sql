@@ -49,7 +49,7 @@ BEGIN
     END IF;
 
 
-    RETURN ret_var;
+    RETURN jsonb_build_object('response_code', 200) ||ret_var;
 
 --This block will trap any errors and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
 EXCEPTION WHEN OTHERS THEN
@@ -61,6 +61,6 @@ EXCEPTION WHEN OTHERS THEN
                jsonb_build_object('path', 'internal', 'parameters', parameters, 'response', SQLERRM)
         RETURNING id INTO logid_var;
 
-    RETURN json_build_object('error', 'request could not be completed','system_log_id', logid_var);
+    RETURN json_build_object('error', 'request could not be completed','system_log_id', logid_var, 'response_code', 600);
 END;
 $$ LANGUAGE PLPGSQL;

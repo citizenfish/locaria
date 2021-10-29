@@ -9,6 +9,8 @@ DECLARE
                                               'search_date', now()::TEXT
                                                );
     item_id TEXT;
+    acl_var JSONB;
+    update_fid TEXT;
 BEGIN
 
     --Add an item
@@ -32,10 +34,12 @@ BEGIN
         RAISE EXCEPTION 'Test step 3 fail %', ret_var;
     END IF;
 
+    update_fid = ret_var->'features'->0->'properties'->>'fid';
    --Now update it
    SELECT locus_core.locus_internal_gateway(jsonb_build_object('method',        'update_item',
-                                                               'fid',           ret_var->'features'->0->'properties'->>'fid',
-                                                               'attributes',    jsonb_build_object('foo','baa'),
+                                                               'fid',           update_fid,
+                                                               --we update the acl and should not be able to update again
+                                                               'attributes',    jsonb_build_object('foo','baa', 'acl', jsonb_build_object('update', jsonb_build_array('100'))),
                                                                'category',      'Events',
                                                                'geometry',      'SRID=4326;POINT(1.2 54.1)',
                                                                'search_date',   NOW()::TEXT)) INTO ret_var;
@@ -44,7 +48,27 @@ BEGIN
        RAISE EXCEPTION 'Test step 4 fail %', ret_var;
    END IF;
 
-   RAISE NOTICE 'TEST PASS %',ret_var;
+   RAISE NOTICE 'TEST Step 4 PASS %',ret_var;
+
+   --Refresh the view
+   SELECT locus_core.locus_internal_gateway(jsonb_build_object('method','refresh_search_view')) INTO ret_var;
+
+  --Finally attempt to update an item that has an ACL
+  SELECT locus_core.locus_internal_gateway(jsonb_build_object('method',        'update_item',
+                                                              'fid',           update_fid,
+                                                              --we previously update the acl and should not be able to update again
+                                                              'attributes',    jsonb_build_object('foo','baa2'),
+                                                              'category',      'Events',
+                                                              'geometry',      'SRID=4326;POINT(1.2 54.1)',
+                                                              'search_date',   NOW()::TEXT)) INTO ret_var;
+
+  IF COALESCE(ret_var->>'id','') = item_var->'features'->0->'properties'->>'fid' THEN
+      RAISE EXCEPTION 'Test step 5 fail %', ret_var;
+  END IF;
+
+ RAISE NOTICE 'TEST Step 5 (ACL UPDATE) PASS %',ret_var;
+
+
 EXCEPTION WHEN OTHERS THEN
 
     RAISE NOTICE 'TEST FAILED %', SQLERRM;

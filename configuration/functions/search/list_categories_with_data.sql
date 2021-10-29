@@ -7,19 +7,15 @@ DECLARE
 
 BEGIN
 
-    SELECT jsonb_agg(json) INTO ret_var FROM (
-							SELECT distinct ON (category)
-								jsonb_build_object('category',	  category,
-												  'sub_category', COALESCE(json_agg(sub_category) FILTER (WHERE sub_category IS NOT NULL) OVER (partition by category), json_build_array())
-												  ) as json
-							FROM (
-								SELECT distinct on( category[1], attributes#>'{description,type}')
-										category[1] as category,
-										attributes#>'{description,type}' as sub_category
-								FROM locus_core.global_search_view
-								WHERE search_parameters->>'category' IS NULL OR (category[1])::TEXT = search_parameters->>'category'
-								) FOO
-	) BAA;
+    SELECT jsonb_agg(category)
+    INTO ret_var
+    FROM (
+          SELECT
+                distinct category
+          FROM	locus_core.categories
+          INNER JOIN locus_core.global_search_view GSV
+          ON GSV.attributes->'category'->>0 = category
+          ORDER BY 1 ASC) c;
 
 	RETURN ret_var;
 

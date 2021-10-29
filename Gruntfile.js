@@ -14,10 +14,19 @@ module.exports = function (grunt) {
 				},
 				tables: [
 
-					//'tests/unit_tests/internal_api/get_tables.sql',
-					//'tests/unit_tests/internal_api/add_item.sql'
-					//'tests/unit_tests/internal_api/delete_item.sql'
-					'tests/unit_tests/internal_api/update_item.sql'
+					// Internal API tests
+					//'tests/integration_tests/acl_test_data.sql',
+					//'tests/unit_tests/internal_api/add_item.sql',
+					//'tests/unit_tests/internal_api/update_item.sql',
+					//'tests/unit_tests/internal_api/delete_item.sql',
+
+					//Public API tests
+
+					//'tests/unit_tests/public_api/check_api_functions.sql',
+					//'tests/unit_tests/public_api/get_item.sql',
+					//'tests/unit_tests/public_api/list_categories.sql',
+					//'tests/unit_tests/public_api/list_categories_with_data.sql'
+					'tests/unit_tests/public_api/search.sql'
 
 				]
 			},
@@ -30,24 +39,16 @@ module.exports = function (grunt) {
 
 				},
 				tables: [
-					//'configuration/functions/view_creation/views_union.sql',
+					'configuration/functions/internal/add_item.sql',
+					'configuration/functions/internal/get_tables.sql',
+					'configuration/functions/internal/update_item.sql',
+					'configuration/functions/internal/delete_item.sql',
+					'configuration/functions/locus_gateway.sql',
+					'configuration/functions/locus_internal_gateway.sql',
 					'configuration/functions/view_creation/create_materialised_view.sql',
-					//'configuration/schema_and_views/create_categories_table.sql'
+					'configuration/functions/view_creation/views_union.sql',
 					'configuration/functions/search/search_get_records.sql',
-					'configuration/functions/utility/json2text.sql'
-					//'configuration/functions/locus_gateway.sql',
-					//'configuration/functions/locus_internal_gateway.sql',
-					//'configuration/functions/internal/get_tables.sql',
-					//'configuration/functions/internal/add_item.sql',
-					//'configuration/functions/internal/delete_item.sql',
-					//'configuration/functions/internal/update_item.sql'
-					//'configuration/functions/search/get_item.sql',
-					//'configuration/functions/search/search_get_records.sql'
-					//'configuration/functions/search/cluster.sql'
-					//'configuration/schema_and_views/create_sessions_table.sql',
-					//'configuration/functions/sessions/sessions_api.sql'
-					//'configuration/functions/search/list_tags.sql',
-					//'configuration/functions/utility/strip_array_blanks.sql'
+					'configuration/functions/utility/table_name.sql'
 				]
 			},
 			full: {

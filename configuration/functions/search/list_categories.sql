@@ -7,9 +7,14 @@ DECLARE
 
 BEGIN
 
-    SELECT json_agg(CAT.unnest) INTO ret_var FROM (
-                    select * FROM unnest(enum_range(enum_first(null::locus_core.search_category)))
-	        ) CAT;
+    SELECT json_agg(category)
+    INTO ret_var
+    FROM (
+        SELECT category
+        FROM   locus_core.categories
+        GROUP BY category
+        ORDER BY category ASC
+        ) C;
 
 	RETURN ret_var;
 

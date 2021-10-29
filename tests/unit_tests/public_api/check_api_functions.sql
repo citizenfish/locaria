@@ -60,14 +60,6 @@ BEGIN
         RAISE EXCEPTION 'get_item method fail % ', ret_var;
     END IF;
 
-    --LOCATE
-    SELECT locus_core.locus_gateway(jsonb_build_object('method', 'locate'))
-    INTO ret_var;
-
-    IF COALESCE(ret_var->>'error', '') != 'Missing location search view table' THEN
-        RAISE EXCEPTION 'locate method fail % ', ret_var;
-    END IF;
-
     --LIST_CATEGORIES
     SELECT locus_core.locus_gateway(jsonb_build_object('method', 'list_categories'))
     INTO ret_var;
@@ -96,6 +88,6 @@ BEGIN
 
 EXCEPTION WHEN OTHERS THEN
 
-    RAISE EXCEPTION 'check_api_functions TEST FAILED [%]', SQLERRM;
+    RAISE NOTICE 'check_api_functions TEST FAILED [%]', SQLERRM;
 END;
 $$ LANGUAGE PLPGSQL;

@@ -17,6 +17,10 @@ BEGIN
         RETURN jsonb_build_object('error', concat_ws(' ', 'fid not found or cannot be updated:', parameters->>'fid'));
      END IF;
 
+    IF (item_var#>'{acl,update}') IS NOT NULL AND NOT item_var#>'{acl,update}' ?| json2text(parameters->'_group') THEN
+        RETURN jsonb_build_object('error', 'acl_failure', 'response_code', 601);
+    END IF;
+
     EXECUTE format($SQL$
                 UPDATE %1$s
                 SET attributes = attributes || COALESCE($1, jsonb_build_object()),

@@ -1,5 +1,4 @@
 --The main search query engine
-DROP FUNCTION locus_core.search_get_records(search_parameters JSONB, default_limit INTEGER );
 CREATE OR REPLACE FUNCTION locus_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 1000) RETURNS TABLE (
     _fid TEXT,
     _search_rank DOUBLE PRECISION,
@@ -118,14 +117,16 @@ BEGIN
                    wkb_geometry,
                    attributes || CASE WHEN distance >= 0 THEN jsonb_build_object('distance', distance) ELSE jsonb_build_object() END
                               || CASE WHEN metadata_var THEN metadata ELSE jsonb_build_object() END
+                              - 'acl'
                    as attributes
+
             FROM (
                 SELECT  distinct ON(fid) fid,
 			            CASE WHEN search_ts_query = '_IGNORE' tHEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
 			            wkb_geometry,
 			            (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
 			            COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance,
-                        jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max)) AS metadata
+                        jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max, 'acl', attributes->'acl')) AS metadata
 
                 FROM global_search_view
                 WHERE wkb_geometry IS NOT NULL
@@ -149,6 +150,8 @@ BEGIN
                 AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
                 OFFSET default_offset
             ) INNER_SUB
+             --restrict to only allowed groups
+            WHERE attributes#>'{acl,view}' IS NULL OR attributes#>'{acl,view}' ?| json2text(search_parameters->'_group')
             ORDER by distance ASC, search_rank DESC
             LIMIT default_limit;
 
