@@ -649,7 +649,7 @@ export default class Openlayers {
 			"function": "init",
 			"prefix": "",
 			"style": "",
-			"multi":false
+			"multi": false
 		}, json);
 
 
@@ -903,26 +903,23 @@ export default class Openlayers {
 	 *
 	 * @description This select control uses the default openlayers model. Useful for applications with no overlapping features. It does not support selecting hidden features
 	 */
-	simpleClick(pid, json) {
+	simpleClick(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
 			"mode": "on",
-			"prefix": ""
-		}, json);
+			"clickFunction": undefined
+		}, options);
 		let map = self.maps[options.map].object;
 		if (options.mode === "on") {
-			self.maps[options.map].clickTag = map.on('click', clickfunction);
+			self.maps[options.map].clickTag = map.on('click', clickFunction);
 		} else {
 			unByKey(self.maps[options.map].clickTag);
 		}
 
-		function clickfunction(e) {
-			self.queue.setMemory(options.prefix + 'simpleClick', e, "Session");
-			self.queue.execute(options.prefix + "simpleClick");
+		function clickFunction(e) {
+			options.clickFunction(e);
 		}
-
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
 	}
 
 
@@ -1475,9 +1472,9 @@ export default class Openlayers {
 			}
 		}
 
-		let dist1= featuresBbox[2]-featuresBbox[0];
-		let dist2= featuresBbox[3]-featuresBbox[1];
-		let aDist=(((dist1+dist2)/2)*options.buffer)+1;
+		let dist1 = featuresBbox[2] - featuresBbox[0];
+		let dist2 = featuresBbox[3] - featuresBbox[1];
+		let aDist = (((dist1 + dist2) / 2) * options.buffer) + 1;
 
 		//console.log(`dists: ${dist1} - ${dist2} = ${aDist}`);
 
@@ -1505,11 +1502,11 @@ export default class Openlayers {
 	 * @example
 	 * openlayers.updateSize({"map":"map_1"});
 	 */
-	updateSize(pid, json) {
+	updateSize(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
-		}, json);
+		}, options);
 		/*
 		 * Pull all our resources
 		 */
@@ -1522,8 +1519,6 @@ export default class Openlayers {
 			let map = self.maps[options.map].object;
 			map.updateSize();
 		}
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-
 	}
 
 

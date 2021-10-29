@@ -8,10 +8,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
 import FormControl from "@material-ui/core/FormControl";
 import Input from "@material-ui/core/Input";
-import {useStyles} from "theme_locus";
+import {useStyles} from "themeLocus";
 
 
-const SearchTags = ({changeFunction,currentValue}) => {
+const SearchTags = ({category,changeFunction,currentValue}) => {
 	const classes = useStyles();
 	const [tags, setTags] = React.useState([]);
 	const [selectedTags, setSelectTags] = React.useState(currentValue);
@@ -23,7 +23,7 @@ const SearchTags = ({changeFunction,currentValue}) => {
 			window.websocket.send({
 				"queue": "tagsLoader",
 				"api": "api",
-				"data": {"method": "list_tags","filter" : {"category" : "Events"}}
+				"data": {"method": "list_tags","filter" : {"category" : [category]}}
 			});
 		};
 

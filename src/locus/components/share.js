@@ -14,7 +14,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
-import { useStyles} from "theme_locus";
+import { useStyles} from "themeLocus";
 import Grid from "@material-ui/core/Grid";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -35,7 +35,7 @@ const Share = () => {
 
 	return (
 		<div>
-			<Button size="small" color="primary" onClick={handleClickOpen}>
+			<Button size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
 				Share
 			</Button>
 			<Dialog
@@ -74,7 +74,7 @@ const Share = () => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose} color="primary">
+					<Button onClick={handleClose} color="secondary" variant="outlined">
 						Dismiss
 					</Button>
 				</DialogActions>

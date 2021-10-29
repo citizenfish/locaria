@@ -1,42 +1,122 @@
 import React from 'react';
-import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
+import {Switch, BrowserRouter as Router, Route, useLocation} from 'react-router-dom';
 
 import Home from './home';
 import Report from './report';
 import Category from './category';
 import View from './view';
 import Error from './error';
+import AdminHome from "./admin/adminHome";
+import AdminView from "./admin/AdminView";
+import AdminData from "./admin/AdminData";
 import {useCookies} from "react-cookie";
-import {configs} from "theme_locus";
+import {configs} from "themeLocus";
+import Openlayers from "libs/Openlayers";
+
+import AdminRoute from "./adminRoute";
+import AWS from "aws-sdk";
 
 
 const App = () => {
 
 	// fix our cookie defaults
 
-	const [location, setLocation] = useCookies(['location']);
-	if(location.location===undefined) {
-		setLocation('location', configs.defaultLocation, {path: '/', sameSite: true});
+	const cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
+
+	const [cookies, setCookies] = useCookies(['location']);
+
+	const [user, setUser] = React.useState(false);
+
+	if (cookies.location === undefined) {
+		const ol = new Openlayers();
+
+		setCookies('location', ol.decodeCoords(configs.defaultLocation, "EPSG:3857", "EPSG:4326"), {
+			path: '/',
+			sameSite: true
+		});
 	}
-	if(location.postcode===undefined) {
-		setLocation('postcode', configs.defaultPostcode, {path: '/', sameSite: true});
+	if (cookies.postcode === undefined) {
+		setCookies('postcode', configs.defaultPostcode, {path: '/', sameSite: true});
 	}
-	if(location.distanceSelect===undefined) {
-		setLocation('distanceSelect', configs.defaultDistanceSelect, {path: '/', sameSite: true});
+	if (cookies.distanceSelect === undefined) {
+		setCookies('distanceSelect', configs.defaultDistanceSelect, {path: '/', sameSite: true});
 	}
-	if(location.range===undefined) {
-		setLocation('range', configs.defaultRange, {path: '/',sameSite:true});
+	if (cookies.distance === undefined) {
+		setCookies('distance', configs.defaultDistance, {path: '/', sameSite: true});
 	}
+	React.useEffect(() => {
+
+
+		//let {hash} = useLocation();
+		let hash = window.location.hash;
+		if (hash.match(/#id_token/)) {
+			hash = hash.replace(/#id_token=/, '');
+			hash = hash.replace(/\&.*/, '');
+		} else {
+			hash = undefined;
+		}
+
+		window.websocket.registerQueue("tokenCheck", function (json) {
+			if (json.packet.email) {
+				// if its has its new, if not just keep the old one
+				setUser(true);
+				if (hash) {
+					setCookies('id_token', hash, {path: '/', sameSite: true});
+					setCookies('groups', json.packet['cognito:groups'], {path: '/', sameSite: true});
+					const start = Date.now();
+					const exp = (parseInt(json.packet.exp) * 1000)
+					const diff = exp - (start + 60000);
+					console.log(`Expires ${diff / 60000}`);
+					setTimeout(function () {
+						window.location = `https://${configs.cognitoURL}/login?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+					}, diff);
+				}
+
+			} else {
+				setCookies('id_token', null, {path: '/', sameSite: true});
+				setCookies('groups', [], {path: '/', sameSite: true});
+				// This is bad token so lets go home
+				setUser(false);
+
+			}
+		});
+
+		if (hash) {
+			window.websocket.send({
+				"queue": "tokenCheck",
+				"api": "token",
+				"data": {"id_token": hash}
+			});
+		} else {
+			if (cookies['id_token'] !== 'null') {
+				window.websocket.send({
+					"queue": "tokenCheck",
+					"api": "token",
+					"data": {
+						"id_token": cookies['id_token']
+					}
+				});
+			} else {
+				setUser(false);
+			}
+		}
+	}, []);
+
 
 	return (
 		<Router>
 			<div>
 				<Switch>
-					<Route exact path="/" component={Home} />
-					<Route path="/Report/:reportId" component={Report} />
-					<Route path="/Category/:category/:searchLocation?/:searchRange?" component={Category} />
-					<Route path="/View/:category/:feature" component={View} />
-					<Route component={Error} />
+					<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
+					<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
+					<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
+
+					<Route path="/Report/:reportId" component={Report}/>
+					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
+					<Route path="/View/:category/:feature" component={View}/>
+					<Route exact path="/:id_token?" component={Home}/>
+
+					<Route component={Error}/>
 				</Switch>
 			</div>
 		</Router>

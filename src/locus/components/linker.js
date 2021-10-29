@@ -11,7 +11,7 @@ import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 
-import { useStyles} from "theme_locus";
+import { useStyles} from "themeLocus";
 import Grid from "@material-ui/core/Grid";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -37,7 +37,7 @@ const Linker = ({location}) => {
 
 	return (
 		<div>
-			<Button size="small" color="primary" onClick={handleClickOpen}>
+			<Button size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
 				Visit
 			</Button>
 			<Dialog
@@ -63,10 +63,10 @@ const Linker = ({location}) => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleVisit} color="primary">
+					<Button onClick={handleVisit} color="secondary" variant="outlined">
 						Visit
 					</Button>
-					<Button onClick={handleClose} color="primary">
+					<Button onClick={handleClose} color="secondary" variant="outlined">
 						Cancel
 					</Button>
 				</DialogActions>

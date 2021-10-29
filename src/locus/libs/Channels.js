@@ -30,6 +30,8 @@ export default class Channels {
 
 	getChannelMapIcon(channel,tags) {
 		let chan=this.getChannelProperties(channel);
+		if(chan===undefined)
+			return undefined;
 		let icon=chan.mapIcon;
 		if(tags[0]!==undefined) {
 			for(let tag in chan.tags) {
@@ -52,6 +54,15 @@ export default class Channels {
 			}
 		}
 		return color;
+	}
+
+	getChannelSearchItem(channel,search) {
+		let chan=this.getChannelProperties(channel);
+		for(let s in chan.search) {
+			if(chan.search[s].component===search)
+				return chan.search[s];
+		}
+		return false;
 	}
 
 
