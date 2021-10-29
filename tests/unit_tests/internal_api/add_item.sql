@@ -5,7 +5,7 @@ DECLARE
     item_var JSONB DEFAULT jsonb_build_object(
                                               'attributes', jsonb_build_object('description', jsonb_build_object('title', 'TEST TITLE', 'text', RANDOM()::TEXT)),
                                               'geometry', 'SRID=4326;POINT(-1.1 53.1)',
-                                              'category', 'Events',
+                                              'category', 'acl_test',
                                               'search_date', now()::TEXT
                                                );
     item_id TEXT;
@@ -19,9 +19,9 @@ BEGIN
     END IF;
 
     --Add an item
-    SELECT locus_core.locus_internal_gateway(jsonb_build_object('method','add_item', 'table', 'test_events') || item_var) INTO ret_var;
+    SELECT locus_core.locus_internal_gateway(jsonb_build_object('method','add_item', 'table', 'test_acl') || item_var) INTO ret_var;
 
-    IF (ret_var->>'id') IS NULL THEN
+    IF ret_var->>'response_code' != '200' THEN
         RAISE EXCEPTION 'Test step 2 fail %', ret_var;
     END IF;
 

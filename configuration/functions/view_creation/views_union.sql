@@ -17,7 +17,7 @@ BEGIN
 
         FROM INFORMATION_SCHEMA.views
         WHERE table_schema ='locus_core'
-		AND table_name NOT IN ('search_views_union', 'location_search_view', 'address_search_view')
+		AND table_name NOT IN ('search_views_union', 'location_search_view', 'address_search_view', 'global_search_view_live')
         AND (exclude_list_var IS NULL OR NOT exclude_list_var ? table_name)
         ),
       'SELECT NULL::BIGINT AS id, NULL::GEOMETRY AS wkb_geometry, NULL::JSONB AS attributes, NULL::TIMESTAMP AS search_date, NULL AS category_id'

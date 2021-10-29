@@ -11,20 +11,22 @@ BEGIN
 
     DROP MATERIALIZED VIEW IF EXISTS  locus_core.global_search_view CASCADE;
 
-    --This creates a view of views to simplify the SQL below
+    --This creates a view live view which we then materialize and index to get the performance
 
     PERFORM locus_core.views_union();
 
-    CREATE  MATERIALIZED VIEW locus_core.global_search_view AS
+    CREATE OR REPLACE VIEW locus_core.global_search_view_live AS
 
     SELECT distinct lower(MD5(concat(attributes#>>'{table}',':',id))) AS fid,
            wkb_geometry,
+           --note dependency on get_item here
 	       jsonb_build_object(  'tags',         COALESCE(strip_array_blanks(attributes->'tags'), jsonb_build_array()),
                                 'description',  COALESCE(attributes->'description', jsonb_build_object()),
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),
                                 'ofid',         id,
-                                'category',     json_build_array(category)
+                                'category',     json_build_array(category),
+                                'acl',          attributes->'acl'
                               ) AS attributes,
            search_date AS start_date,
            --not we default end date to the end of the day
@@ -39,7 +41,7 @@ BEGIN
         SELECT  id,
                 wkb_geometry,
                 category,
-                B.tableoid::regclass::text AS table_location,
+                locus_core.table_name(B.tableoid) AS table_location,
                 B.attributes,
                 search_date,
                 TRUE AS edit
@@ -59,6 +61,9 @@ BEGIN
         INNER JOIN locus_core.categories C USING (category_id)
 
     ) SEARCH_TABLES;
+
+    --Materialize the live view for performance
+    CREATE  MATERIALIZED VIEW locus_core.global_search_view AS SELECT * FROM locus_core.global_search_view_live;
 
     --This unique index is important so that we can refresh the view concurrently which in turn prevents downtime
     CREATE UNIQUE INDEX locus_core_global_search_view_u_idx  ON locus_core.global_search_view (fid);
