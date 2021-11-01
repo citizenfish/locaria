@@ -18,7 +18,7 @@ BEGIN
 	) TAGS
 	WHERE tag != '';
 
-	RETURN ret_var;
+	RETURN jsonb_build_object('tags',ret_var);
 
 END;
 $$

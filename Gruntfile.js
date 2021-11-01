@@ -25,8 +25,9 @@ module.exports = function (grunt) {
 					//'tests/unit_tests/public_api/check_api_functions.sql',
 					//'tests/unit_tests/public_api/get_item.sql',
 					//'tests/unit_tests/public_api/list_categories.sql',
-					//'tests/unit_tests/public_api/list_categories_with_data.sql'
-					'tests/unit_tests/public_api/search.sql'
+					//'tests/unit_tests/public_api/list_categories_with_data.sql',
+					'tests/unit_tests/public_api/list_tags.sql'
+					//'tests/unit_tests/public_api/search.sql'
 
 				]
 			},
@@ -39,7 +40,7 @@ module.exports = function (grunt) {
 
 				},
 				tables: [
-					'configuration/functions/internal/add_item.sql',
+					/*'configuration/functions/internal/add_item.sql',
 					'configuration/functions/internal/get_tables.sql',
 					'configuration/functions/internal/update_item.sql',
 					'configuration/functions/internal/delete_item.sql',
@@ -48,7 +49,10 @@ module.exports = function (grunt) {
 					'configuration/functions/view_creation/create_materialised_view.sql',
 					'configuration/functions/view_creation/views_union.sql',
 					'configuration/functions/search/search_get_records.sql',
-					'configuration/functions/utility/table_name.sql'
+					'configuration/functions/utility/table_name.sql',*/
+					'configuration/functions/search/list_categories.sql',
+					'configuration/functions/search/list_categories_with_data.sql',
+					'configuration/functions/search/list_tags.sql'
 				]
 			},
 			full: {
