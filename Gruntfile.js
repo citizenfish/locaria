@@ -49,10 +49,11 @@ module.exports = function (grunt) {
 					'configuration/functions/view_creation/create_materialised_view.sql',
 					'configuration/functions/view_creation/views_union.sql',
 					'configuration/functions/search/search_get_records.sql',
-					'configuration/functions/utility/table_name.sql',*/
+					'configuration/functions/utility/table_name.sql',
 					'configuration/functions/search/list_categories.sql',
 					'configuration/functions/search/list_categories_with_data.sql',
-					'configuration/functions/search/list_tags.sql'
+					'configuration/functions/search/list_tags.sql' */
+					'configuration/functions/utility/polygon_divider.sql'
 				]
 			},
 			full: {
