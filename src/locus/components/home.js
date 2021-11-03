@@ -7,7 +7,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {channels, useStyles, configs} from 'themeLocus';
 
 
@@ -15,6 +15,7 @@ import Layout from './Layout';
 
 const Home = () => {
 	const classes = useStyles();
+	const history = useHistory();
 
 	return (
 		<Layout map={true}>
@@ -44,11 +45,11 @@ const Home = () => {
 												</Typography>
 											</CardContent>
 											<CardActions>
-												<Link to={`/${chan.type}/${channel}`}>
-													<Button size="small" color="secondary" variant="outlined">
-														View
-													</Button>
-												</Link>
+												<Button size="small" color="secondary" variant="outlined" onClick={() => {
+													history.push(`/${chan.type}/${channel}`)
+												}}>
+													View
+												</Button>
 											</CardActions>
 										</Card>
 

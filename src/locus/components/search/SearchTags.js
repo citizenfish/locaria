@@ -11,27 +11,28 @@ import Input from "@material-ui/core/Input";
 import {useStyles} from "themeLocus";
 
 
-const SearchTags = ({category,changeFunction,currentValue}) => {
+const SearchTags = ({category, changeFunction, currentValue}) => {
 	const classes = useStyles();
 	const [tags, setTags] = React.useState([]);
 	const [selectedTags, setSelectTags] = React.useState(currentValue);
 
 	React.useEffect(() => {
 
-		if(tags.length===0) {
+		if (tags.length === 0) {
 
 			window.websocket.send({
 				"queue": "tagsLoader",
 				"api": "api",
-				"data": {"method": "list_tags","filter" : {"category" : [category]}}
+				"data": {"method": "list_tags", "filter": {"category": [category]}}
 			});
-		};
+		}
+		;
 
 
 	});
 
 	window.websocket.registerQueue("tagsLoader", function (json) {
-		setTags(json.packet);
+		setTags(json.packet.tags);
 	});
 
 	function handleChange(e) {
@@ -43,7 +44,7 @@ const SearchTags = ({category,changeFunction,currentValue}) => {
 	}
 
 
-	if(tags.length>0) {
+	if (tags.length > 0) {
 		return (
 			<FormControl className={classes.formControl} fullWidth>
 

@@ -12,24 +12,26 @@ let client = null;
 
 module.exports.run = (event, context, callback) => {
 
-	const conn=`pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
-	console.log(conn);
+	const conn = `pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
+
 	//let conn = process.env.postgres;
 
 	/**
 	 *  We support POST and GET, process the packet body based on method
 	 * @type {any}
 	 */
-	let packet = JSON.parse(event['body']);
+	let packet = {};
 	if (event.httpMethod === 'GET') {
-		packet = event.pathParameters;
+		packet.method = event.pathParameters.proxy;
+		for (let i in event.queryStringParameters) {
+			packet[i] = event.queryStringParameters[i];
+		}
+	} else {
+		packet = JSON.parse(event['body']);
+
 	}
 
-	if (packet === null)
-		packet = {};
-
-
-	packet.method = event.resource.match(/^\/([a-z_]*)/)[1];
+	//packet.method = event.resource.match(/^\/([a-z_]*)/)[1];
 
 	/**
 	 *  Decode any URI encoding if this was a GET request
@@ -41,6 +43,7 @@ module.exports.run = (event, context, callback) => {
 
 	context.callbackWaitsForEmptyEventLoop = false;
 
+	console.log(packet);
 	/**
 	 *  Connect to the database
 	 * @type {Database}
@@ -58,6 +61,8 @@ module.exports.run = (event, context, callback) => {
 
 		let querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
 		let qarguments = [packet];
+		console.log(querysql);
+		console.log(qarguments);
 		client.query(querysql, qarguments, function (err, result) {
 			/**
 			 *  SQL ERROR

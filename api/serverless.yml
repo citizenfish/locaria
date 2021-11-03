@@ -478,14 +478,14 @@ functions:
         - Ref: PrivateSubnetB
     events:
       - http:
-          path: /{proxy+}
+          path: /
           method: POST
           cors: ${self:custom.cors}
       - http:
           path: /{proxy+}
           method: GET
           cors: ${self:custom.cors}
-      
+
   connectionHandler:
     handler: functions/ws-api.run
     vpc:
