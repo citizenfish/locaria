@@ -467,6 +467,14 @@ resources:
         Precedence: 0
         UserPoolId:
           Ref: CognitoUserPool
+    CognitoUserGroupLoader:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Loader
+        GroupName: Loader
+        Precedence: 1
+        UserPoolId:
+          Ref: CognitoUserPool
 functions:
   api:
     handler: functions/api.run
@@ -478,14 +486,14 @@ functions:
         - Ref: PrivateSubnetB
     events:
       - http:
-          path: /{proxy+}
+          path: /
           method: POST
           cors: ${self:custom.cors}
       - http:
           path: /{proxy+}
           method: GET
           cors: ${self:custom.cors}
-      
+
   connectionHandler:
     handler: functions/ws-api.run
     vpc:

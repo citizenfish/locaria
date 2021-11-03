@@ -94,7 +94,7 @@ const View = () => {
 	});
 
 	window.websocket.registerQueue("viewLoader", function (json) {
-		if (json.code !== 200) {
+		if (json.packet.response_code !== 200) {
 			setView({});
 		} else {
 			setView(json.packet);
@@ -224,9 +224,10 @@ const View = () => {
 										<OutsideLink to={view.features[0].properties.description.url}></OutsideLink>
 										<Share></Share>
 										{cookies.groups.indexOf('Admins') !== -1 ?
-											<Link to={`/AdminView/${feature}`}>
-												<Button size="small" color="secondary"
-												        variant="outlined">Edit</Button></Link> : ''}
+											<Button size="small" color="secondary"
+											        variant="outlined" onClick={() => {
+												history.push(`/AdminView/${feature}`)
+											}}>Edit</Button> : ''}
 									</CardActions>
 								</Card>
 

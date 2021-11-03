@@ -9,6 +9,7 @@ import Error from './error';
 import AdminHome from "./admin/adminHome";
 import AdminView from "./admin/AdminView";
 import AdminData from "./admin/AdminData";
+import AdminLoader from "./admin/AdminLoader";
 import {useCookies} from "react-cookie";
 import {configs} from "themeLocus";
 import Openlayers from "libs/Openlayers";
@@ -110,6 +111,7 @@ const App = () => {
 					<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
 					<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
 					<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
+					<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
 					<Route path="/Report/:reportId" component={Report}/>
 					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>

@@ -92,7 +92,7 @@ const AdminView = () => {
 	});
 
 	window.websocket.registerQueue("viewLoader", function (json) {
-		if (json.code !== 200) {
+		if (json.packet.response_code !== 200) {
 			setView({});
 		} else {
 			setView(json.packet);

@@ -101,7 +101,7 @@ module.exports.run = (event, context, callback) => {
 		const packet = body;
 
 
-		let payload = {"queue": packet.queue, "packet": {}, "code": 200};
+		let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
 		switch (packet.api) {
 			case 'session':
 				payload.packet.id = connectionId;
@@ -117,12 +117,12 @@ module.exports.run = (event, context, callback) => {
 				client.query(querysql, qarguments, function (err, result) {
 					if (err) {
 						console.log(err);
-						payload.code = 310;
+						payload.packet['response_code'] = 310;
 						sendToClient(payload);
 
 					} else {
 						if (result.rows[0]['locus_gateway'] === null) {
-							payload.code = 500;
+							payload.packet['response_code'] = 500;
 							sendToClient(payload);
 						} else {
 							payload.packet = result.rows[0]['locus_gateway'];
@@ -144,12 +144,12 @@ module.exports.run = (event, context, callback) => {
 							client.query(querysql, qarguments, function (err, result) {
 								if (err) {
 									console.log(err);
-									payload.code = 311;
+									payload.packet['response_code'] = 311;
 									sendToClient(payload);
 
 								} else {
 									if (result.rows[0]['locus_internal_gateway'] === null) {
-										payload.code = 500;
+										payload.packet['response_code'] = 500;
 										sendToClient(payload);
 									} else {
 										payload.packet = result.rows[0]['locus_internal_gateway'];
@@ -159,12 +159,44 @@ module.exports.run = (event, context, callback) => {
 								}
 							});
 						} else {
-							payload.code = 312;
+							payload.packet['response_code'] = 312;
 							sendToClient(payload);
 						}
 					},
 					function (tokenPacket) {
-						payload.code = 300;
+						payload.packet['response_code'] = 300;
+						payload.packet = tokenPacket;
+						sendToClient(payload);
+					});
+				break;
+
+			/// New loader API
+			case 'lapi':
+				validateToken(packet, function (tokenPacket) {
+						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
+
+							// Valid user with loader token
+
+							switch (packet.method) {
+								case 'start':
+									//do something
+
+									//reply
+									payload.packet['response_code'] = 999; // change code
+									sendToClient(payload);
+									break;
+								default:
+									payload.packet['response_code'] = 401;
+									sendToClient(payload);
+									break;
+							}
+						} else {
+							payload.packet['response_code'] = 313;
+							sendToClient(payload);
+						}
+					},
+					function (tokenPacket) {
+						payload.packet['response_code'] = 300;
 						payload.packet = tokenPacket;
 						sendToClient(payload);
 					});
@@ -175,14 +207,14 @@ module.exports.run = (event, context, callback) => {
 						sendToClient(payload);
 					},
 					function (tokenPacket) {
-						payload.code = 300;
+						payload.packet['response_code'] = 300;
 						payload.packet = tokenPacket;
 						sendToClient(payload);
 
 					});
 				break;
 			default:
-				payload.code = 201;
+				payload.packet['response_code'] = 201;
 				sendToClient(payload);
 				break;
 
