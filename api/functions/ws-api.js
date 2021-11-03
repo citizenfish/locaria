@@ -169,6 +169,38 @@ module.exports.run = (event, context, callback) => {
 						sendToClient(payload);
 					});
 				break;
+
+			/// New loader API
+			case 'lapi':
+				validateToken(packet, function (tokenPacket) {
+						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
+
+							// Valid user with loader token
+
+							switch (packet.method) {
+								case 'start':
+									//do something
+
+									//reply
+									payload.packet['response_code'] = 999; // change code
+									sendToClient(payload);
+									break;
+								default:
+									payload.packet['response_code'] = 401;
+									sendToClient(payload);
+									break;
+							}
+						} else {
+							payload.packet['response_code'] = 313;
+							sendToClient(payload);
+						}
+					},
+					function (tokenPacket) {
+						payload.packet['response_code'] = 300;
+						payload.packet = tokenPacket;
+						sendToClient(payload);
+					});
+				break;
 			case 'token':
 				validateToken(packet, function (tokenPacket) {
 						payload.packet = tokenPacket;
