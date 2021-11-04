@@ -117,6 +117,8 @@ BEGIN
                    wkb_geometry,
                    attributes || CASE WHEN distance >= 0 THEN jsonb_build_object('distance', distance) ELSE jsonb_build_object() END
                               || CASE WHEN metadata_var THEN metadata ELSE jsonb_build_object() END
+                              --return category as a string not array
+                              || jsonb_build_object('category', attributes->'category'->0)
                               - 'acl'
                    as attributes
 

@@ -12,7 +12,10 @@ BEGIN
     --This keeps us within our search schema when running code
     SET SEARCH_PATH = 'locus_core', 'public';
 
-     parameters = parameters - 'acl' || jsonb_build_object('acl',acl);
+    IF acl IS NOT NULL THEN
+     parameters = jsonb_insert(parameters #- '{attributes,acl}', '{attributes,acl}', acl);
+    END IF;
+
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('get_tables') THEN
             ret_var = get_tables(parameters);
@@ -28,14 +31,19 @@ BEGIN
 
          WHEN parameters->>'method' IN ('refresh_search_view') THEN
 
+            ret_var = update_history(jsonb_build_object('refresh_view',true));
             REFRESH MATERIALIZED VIEW CONCURRENTLY locus_core.global_search_view WITH data;
-            RETURN jsonb_build_object('message', 'view refreshed');
+            RETURN jsonb_build_object('message', 'view refreshed', 'refresh', ret_var);
 
          WHEN parameters->>'method' IN ('get_containers') THEN
                     ret_var = get_containers(parameters);
 
          WHEN parameters->>'method' IN ('initialise_container') THEN
                     ret_var = initialise_container(parameters);
+
+         WHEN parameters->>'method' IN ('view_report') THEN
+                    ret_var = view_report(parameters);
+
          ELSE
             RETURN json_build_object('error', 'unsupported method', 'method', parameters->>'method');
     END CASE;

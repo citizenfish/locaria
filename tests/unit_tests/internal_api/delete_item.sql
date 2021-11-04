@@ -41,11 +41,11 @@ BEGIN
    END IF;
 
    --Add an item with an acl
-   item_var = item_var || jsonb_build_object('attributes', jsonb_build_object('description', jsonb_build_object('title', 'TEST TITLE', 'text', RANDOM()::TEXT),'acl', jsonb_build_object('delete', jsonb_build_array('100'))));
+   item_var = item_var || jsonb_build_object('attributes', jsonb_build_object('description', jsonb_build_object('title', 'TEST TITLE', 'text', RANDOM()::TEXT)));
 
 
    --Add an item
-       SELECT locus_core.locus_internal_gateway(jsonb_build_object('method','add_item', 'table', 'test_acl') || item_var) INTO ret_var;
+       SELECT locus_core.locus_internal_gateway(jsonb_build_object('method','add_item', 'table', 'test_acl') || item_var, jsonb_build_object('delete', jsonb_build_array('100'))) INTO ret_var;
 
        IF (ret_var->>'error') IS NOT NULL THEN
            RAISE EXCEPTION 'Test step 5 fail %', ret_var;

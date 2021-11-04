@@ -29,7 +29,7 @@ BEGIN
     GET DIAGNOSTICS delete_count = ROW_COUNT;
 
     IF delete_count = 1 THEN
-        RETURN jsonb_build_object('message', concat_ws(' ', 'delete success:', parameters->>'fid'));
+        RETURN jsonb_build_object('message', concat_ws(' ', 'delete success:', parameters->>'fid'),'history', add_history(parameters));
     END IF;
 
 
