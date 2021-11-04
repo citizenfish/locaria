@@ -26,8 +26,9 @@ module.exports = function (grunt) {
 					//'tests/unit_tests/public_api/get_item.sql',
 					//'tests/unit_tests/public_api/list_categories.sql',
 					//'tests/unit_tests/public_api/list_categories_with_data.sql',
-					'tests/unit_tests/public_api/list_tags.sql'
+					//'tests/unit_tests/public_api/list_tags.sql'
 					//'tests/unit_tests/public_api/search.sql'
+					'tests/unit_tests/internal_api/get_containers.sql'
 
 				]
 			},
@@ -53,7 +54,11 @@ module.exports = function (grunt) {
 					'configuration/functions/search/list_categories.sql',
 					'configuration/functions/search/list_categories_with_data.sql',
 					'configuration/functions/search/list_tags.sql' */
-					'configuration/functions/utility/polygon_divider.sql'
+					//'configuration/functions/utility/polygon_divider.sql'
+					'configuration/functions/locus_internal_gateway.sql',
+					'configuration/functions/internal/get_containers.sql',
+					'configuration/functions/locus_gateway.sql',
+					'configuration/functions/internal/initialise_container.sql'
 				]
 			},
 			full: {

@@ -21,6 +21,8 @@ The websockets api will provide the following set of methods:-
 
 This will provide a list of available data load containers along with their capabilities and required parameters.
 
+It works by calling the locus_internal_gateway api with the method 
+
 ### request
 ```json
 {
@@ -129,7 +131,7 @@ The request is given the container_id of a container that has previously been **
 
 ```json
 {
-  "code" : 200,
+  "response_code" : 200,
   "message" : "Text message",
   "attributes" : {
     "log_messages" : [
@@ -149,12 +151,14 @@ The request is given the container_id of a container that has previously been **
 
 A status code from the following list:-
 
-- **300** container is being instantiated
-- **301** [loader] container has run successfully and exited
-- **302** [listener] container has run successfully and is listening on configured port
-- **303** [loader] container has run successfully and is executing a command
-- **304** container has run with errors and exited
-- **399** container status has 
+- **1000** container is being instantiated
+- **1001** [loader] container has run successfully and exited
+- **1002** [listener] container has run successfully and is listening on configured port
+- **1003** [loader] container has run successfully and is executing a command
+- **1004** container has run with errors and exited
+- **1099** container status has not been updated in last hour
+- **1098** non containers configured
+- **1097** get_containers sql error
 
 #### message 
 
