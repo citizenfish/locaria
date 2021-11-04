@@ -22,7 +22,7 @@ BEGIN
            (SELECT category_id FROM categories WHERE category = parameters->>'category'),
            COALESCE (parameters->>'search_date', NOW()::TEXT)::TIMESTAMP;
 
-
-     RETURN ret_var;
+     --Add a history item and return
+     RETURN ret_var || jsonb_build_object('history', add_history(parameters));
 END;
 $$ LANGUAGE PLPGSQL;

@@ -16,9 +16,14 @@ module.exports = function (grunt) {
 
 					// Internal API tests
 					//'tests/integration_tests/acl_test_data.sql',
-					//'tests/unit_tests/internal_api/add_item.sql',
-					//'tests/unit_tests/internal_api/update_item.sql',
+					//'tests/unit_tests/internal_api/add_item.sql'
+					'tests/unit_tests/internal_api/update_item.sql',
 					//'tests/unit_tests/internal_api/delete_item.sql',
+					//'tests/unit_tests/internal_api/get_containers.sql',
+					//'tests/unit_tests/internal_api/add_history.sql',
+					//'tests/unit_tests/internal_api/update_history.sql'
+					//'tests/unit_tests/internal_api/refresh_view.sql',
+					//'tests/unit_tests/internal_api/view_report.sql'
 
 					//Public API tests
 
@@ -28,7 +33,7 @@ module.exports = function (grunt) {
 					//'tests/unit_tests/public_api/list_categories_with_data.sql',
 					//'tests/unit_tests/public_api/list_tags.sql'
 					//'tests/unit_tests/public_api/search.sql'
-					'tests/unit_tests/internal_api/get_containers.sql'
+
 
 				]
 			},
@@ -41,13 +46,13 @@ module.exports = function (grunt) {
 
 				},
 				tables: [
-					/*'configuration/functions/internal/add_item.sql',
-					'configuration/functions/internal/get_tables.sql',
-					'configuration/functions/internal/update_item.sql',
-					'configuration/functions/internal/delete_item.sql',
-					'configuration/functions/locus_gateway.sql',
+					//'configuration/functions/internal/add_item.sql',
+					//'configuration/functions/internal/get_tables.sql',
+					//'configuration/functions/internal/update_item.sql',
+					//'configuration/functions/internal/delete_item.sql',
+					//'configuration/functions/locus_gateway.sql',
 					'configuration/functions/locus_internal_gateway.sql',
-					'configuration/functions/view_creation/create_materialised_view.sql',
+					/*'configuration/functions/view_creation/create_materialised_view.sql',
 					'configuration/functions/view_creation/views_union.sql',
 					'configuration/functions/search/search_get_records.sql',
 					'configuration/functions/utility/table_name.sql',
@@ -55,10 +60,17 @@ module.exports = function (grunt) {
 					'configuration/functions/search/list_categories_with_data.sql',
 					'configuration/functions/search/list_tags.sql' */
 					//'configuration/functions/utility/polygon_divider.sql'
-					'configuration/functions/locus_internal_gateway.sql',
-					'configuration/functions/internal/get_containers.sql',
-					'configuration/functions/locus_gateway.sql',
-					'configuration/functions/internal/initialise_container.sql'
+
+					//'configuration/functions/search/search_get_records.sql',
+					//'configuration/functions/locus_internal_gateway.sql',
+					//'configuration/functions/internal/get_containers.sql',
+					//'configuration/functions/locus_gateway.sql',
+					//'configuration/functions/internal/initialise_container.sql',
+					//'configuration/functions/search/get_item.sql',
+					//'configuration/schema_and_views/create_history_table.sql',
+					//'configuration/functions/internal/add_history.sql',
+					//'configuration/functions/internal/update_history.sql',
+					//'configuration/functions/internal/view_report.sql'
 				]
 			},
 			full: {

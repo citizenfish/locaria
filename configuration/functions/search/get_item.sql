@@ -14,7 +14,7 @@ BEGIN
                                     'features', json_build_array(
                                         json_build_object(
                                                 'type', 'Feature',
-                                                'properties', attributes || jsonb_build_object('_live', $2),
+                                                'properties', attributes || jsonb_build_object('category', attributes->'category'->0) || jsonb_build_object('_live', $2),
                                                 'geometry',   ST_ASGEOJSON(ST_TRANSFORM(wkb_geometry,4326))::JSON
                                         )
                                     )

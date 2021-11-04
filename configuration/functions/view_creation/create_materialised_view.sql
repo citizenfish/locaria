@@ -25,6 +25,7 @@ BEGIN
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),
                                 'ofid',         id,
+                                --stored as array to future proof but we only use single categories at present
                                 'category',     json_build_array(category),
                                 'acl',          attributes->'acl'
                               ) AS attributes,
