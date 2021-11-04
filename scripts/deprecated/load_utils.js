@@ -223,18 +223,14 @@ module.exports.runQuery =  async(parameters, values=[]) => {
                 let query = fileStream === '' ? parameters.query : await streamToString(fileStream)
 
 
-                const client = new Client({
-                        user: parameters.credentials.auroraMasterUser,
-                        host: parameters.credentials.auroraHost,
-                        database: parameters.credentials.auroraDatabaseName,
-                        password: parameters.credentials.auroraMasterPass,
-                        port: parameters.credentials.auroraPort,
-                });
-
+                const client = new Client(parameters.connectionString);
 
                 let finish = await new Promise((resolve, reject) => {
 
-                        client.connect().catch(e => {reject(err.stack)})
+                        client.connect().catch(e => {
+                                console.log(e.stack)
+                                reject(e.stack)
+                        })
 
 
                                 client.query(query, values, (err, res) => {

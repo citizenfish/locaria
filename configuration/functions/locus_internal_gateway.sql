@@ -1,5 +1,5 @@
 --Single gateway for all Internal API calls to locus_core
-CREATE OR REPLACE FUNCTION locus_core.locus_internal_gateway(parameters JSONB) RETURNS JSONB AS
+CREATE OR REPLACE FUNCTION locus_core.locus_internal_gateway(parameters JSONB, acl JSONB DEFAULT jsonb_build_object()) RETURNS JSONB AS
 $$
 DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
@@ -12,6 +12,7 @@ BEGIN
     --This keeps us within our search schema when running code
     SET SEARCH_PATH = 'locus_core', 'public';
 
+     parameters = parameters - 'acl' || jsonb_build_object('acl',acl);
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('get_tables') THEN
             ret_var = get_tables(parameters);
@@ -30,6 +31,11 @@ BEGIN
             REFRESH MATERIALIZED VIEW CONCURRENTLY locus_core.global_search_view WITH data;
             RETURN jsonb_build_object('message', 'view refreshed');
 
+         WHEN parameters->>'method' IN ('get_containers') THEN
+                    ret_var = get_containers(parameters);
+
+         WHEN parameters->>'method' IN ('initialise_container') THEN
+                    ret_var = initialise_container(parameters);
          ELSE
             RETURN json_build_object('error', 'unsupported method', 'method', parameters->>'method');
     END CASE;

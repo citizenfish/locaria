@@ -13,7 +13,10 @@ const jwkToPem = require('jwk-to-pem');
 const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
 
+//data load api
 
+const {get_containers,instantiate_container,get_container_status} =  require('./data_loader/load_methods.js');
+const {send} = require("serverless/lib/utils/telemetry");
 const MAX_BYTES = 50000;
 
 
@@ -175,15 +178,18 @@ module.exports.run = (event, context, callback) => {
 				validateToken(packet, function (tokenPacket) {
 						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
 
+							let client = database.getClient();
 							// Valid user with loader token
-
+							let cb = (result) => {sendToClient(result)}
 							switch (packet.method) {
-								case 'start':
-									//do something
-
-									//reply
-									payload.packet['response_code'] = 999; // change code
-									sendToClient(payload);
+								case 'get_containers':
+									get_containers(packet,client, cb);
+									break;
+								case 'instantiate_container':
+									instantiate_container(packet,client,cb);
+									break;
+								case 'get_container_status':
+									get_container_status(packet,client),cb);
 									break;
 								default:
 									payload.packet['response_code'] = 401;

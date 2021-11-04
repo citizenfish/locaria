@@ -16,7 +16,7 @@ BEGIN
         ORDER BY category ASC
         ) C;
 
-	RETURN ret_var;
+	RETURN jsonb_build_object('categories',ret_var);
 
 END;
 $$

@@ -17,7 +17,7 @@ BEGIN
           ON GSV.attributes->'category'->>0 = category
           ORDER BY 1 ASC) c;
 
-	RETURN ret_var;
+	RETURN jsonb_build_object('categories',ret_var);
 
 END;
 $$

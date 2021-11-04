@@ -1,5 +1,5 @@
 --Single gateway for all Public API calls to locus_core
-CREATE OR REPLACE FUNCTION locus_core.locus_gateway(parameters JSONB) RETURNS JSONB AS
+CREATE OR REPLACE FUNCTION locus_core.locus_gateway(parameters JSONB, acl JSONB DEFAULT jsonb_build_object()) RETURNS JSONB AS
 $$
 DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
@@ -11,6 +11,9 @@ BEGIN
 
     --This keeps us within our search schema when running code
     SET SEARCH_PATH = 'locus_core', 'public';
+
+    --delete any user sent acl and add in api one
+    parameters = parameters - 'acl' || jsonb_build_object('acl',acl);
 
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('search','bboxsearch', 'refsearch', 'pointsearch', 'datesearch', 'filtersearch') THEN
