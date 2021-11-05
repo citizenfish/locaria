@@ -27,6 +27,7 @@
 * 600 - SQL Exception
 * 601 - Update acl error
 * 602 - Delete acl error
+* 650 - Duplicate group name
 
 # Codes
 

@@ -134,6 +134,6 @@ aws logs create-log-group --profile locus --log-group-name testloader --region e
 aws ecs run-task --profile locus --region $REGION \
 --cluster "$DOCKERNAME_cluster" \
 --launch-type FARGATE \
---network-configuration "awsvpcConfiguration={subnets=["$SUBNET1","$SUBNET2"],securityGroups=["$SEC/uRITYGROUP"],assignPublicIp=ENABLED}" \
+--network-configuration "awsvpcConfiguration={subnets=["$SUBNET1","$SUBNET2"],securityGroups=["$SECURITYGROUP"],assignPublicIp=ENABLED}" \
 --task-definition $DOCKERNAME
  

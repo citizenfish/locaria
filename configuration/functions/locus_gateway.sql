@@ -69,11 +69,10 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
 
 
-        INSERT INTO locus_core.logs(log_type, log_message)
-        SELECT parameters->>'method',
-               jsonb_build_object('path', 'public','parameters', parameters, 'response', SQLERRM)
-        RETURNING id INTO logid_var;
+    RETURN json_build_object('route',           'public_api',
+                             'error',           'request could not be completed',
+                             'system_log_id',   log(parameters,SQLERRM),
+                             'response_code',   600);
 
-    RETURN json_build_object('error', 'request could not be completed','system_log_id', logid_var, 'response_code', 500);
 END;
 $$ LANGUAGE PLPGSQL;
