@@ -3,7 +3,7 @@
  *
  */
 
-const { Client } = require('pg')
+const {Client} = require('pg')
 
 const queryRunner = async (parameters, values = [], callback) => {
 
@@ -19,8 +19,8 @@ const queryRunner = async (parameters, values = [], callback) => {
     client.query(query, values, (err, res) => {
 
         if (err) {
-            console.log(e.stack)
-            callback({error: e.stack})
+            console.log(err.stack)
+            callback({error: err.stack})
         }
 
         client.end()
@@ -29,8 +29,10 @@ const queryRunner = async (parameters, values = [], callback) => {
 }
 
 queryRunner({
-    connectionString : process.env.DBCONNECTION,
-    query : 'SELECT locus_core.locus_internal_gateway($1::JSONB)'
-},
-    [{method : "initialise_container", type: "test_loader"}],
-    (ret) => {console.log(ret.rows)})
+        connectionString: process.env.DBCONNECTION,
+        query: 'SELECT locus_core.locus_internal_gateway($1::JSONB)'
+    },
+    [{method: "initialise_container", type: "test_loader"}],
+    (ret) => {
+        console.log(ret)
+    })
