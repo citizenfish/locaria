@@ -8,4 +8,4 @@ RUN npm install
 RUN apt-get --assume-yes update
 COPY .. .
 
-CMD [ "node", "load_wrapper.js" ]
+CMD [ "node", "loader_wrapper.js" ]
