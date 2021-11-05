@@ -252,8 +252,8 @@ const AdminView = () => {
 												}} color="secondary" variant="outlined">Reset map</Button>
 											</div>
 										</CardMedia>
-
-										<SearchTags category={view.features[0].properties.category[0]}
+										<p>Owner: {view.features[0].properties.acl ? view.features[0].properties.acl.email : 'No acl'}</p>
+										<SearchTags category={view.features[0].properties.category}
 										            changeFunction={onChangeTags}
 										            currentValue={view.features[0].properties.tags}></SearchTags>
 

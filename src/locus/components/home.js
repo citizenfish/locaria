@@ -11,7 +11,7 @@ import {Link, useHistory} from 'react-router-dom';
 import {channels, useStyles, configs} from 'themeLocus';
 
 
-import Layout from './Layout';
+import Layout from './widgets/layout';
 
 const Home = () => {
 	const classes = useStyles();

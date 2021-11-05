@@ -234,7 +234,8 @@ channels.addChannel('Planning', {
 			"name": "Description of application",
 			"key": "text"
 		}
-	]
+	],
+	"submit": "planning_applications"
 
 });
 channels.addChannel('Events', {

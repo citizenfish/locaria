@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Layout from './Layout';
-import Share from './share';
-import Linker from './linker';
-import ChannelCard from './channelCard';
+import Layout from './widgets/layout';
+import Share from './widgets/share';
+import Linker from './widgets/linker';
+import ChannelCard from './widgets/channelCard';
 
-import {Link, useParams, BrowserRouter} from "react-router-dom";
+import {Link, useParams, BrowserRouter, useHistory} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {channels, configs, useStyles} from "themeLocus";
@@ -29,6 +29,7 @@ const View = () => {
 	const ol = new Openlayers();
 	const [cookies, setCookies] = useCookies(['location']);
 
+	const history = useHistory();
 
 	const [view, setView] = React.useState(null);
 
@@ -91,7 +92,7 @@ const View = () => {
 		}
 
 
-	});
+	}, [view]);
 
 	window.websocket.registerQueue("viewLoader", function (json) {
 		if (json.packet.response_code !== 200) {

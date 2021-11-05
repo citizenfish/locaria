@@ -13,6 +13,7 @@ import Openlayers from "libs/Openlayers";
 
 
 import AdminLayout from './adminLayout';
+import Map from '../widgets/map';
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
@@ -23,8 +24,9 @@ import FormControl from "@material-ui/core/FormControl";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {useCookies} from "react-cookie";
 import AdminCard from "./adminCard";
-import AutoForm from "../autoForm"
+import AutoForm from "../widgets/autoForm"
 import {viewStyle} from "../mapStyles/view";
+import SearchTags from "../search/SearchTags";
 
 const AdminData = () => {
 	const classes = useStyles();
@@ -32,7 +34,7 @@ const AdminData = () => {
 	const [tables, setTables] = React.useState(null);
 	const [cookies, setCookies] = useCookies(['location']);
 	const [category, setCategory] = React.useState(null);
-	const [properties, setProperties] = React.useState({});
+	const [properties, setProperties] = React.useState({description: {}, tags: []});
 
 	const ol = new Openlayers();
 
@@ -41,42 +43,20 @@ const AdminData = () => {
 		setTables(json.packet.tables);
 	});
 
+	window.websocket.registerQueue("saveFeature", function (json) {
+		setCategory(null);
+	});
 
-	React.useEffect(() => {
-
-		if (tables !== null) {
-			ol.addMap({
-				"target": "map",
-				"projection": "EPSG:3857",
-				"renderer": ["canvas"],
-				"zoom": configs.defaultZoom,
-				"center": configs.defaultLocation
-			});
-			ol.addLayer({
-				"name": "xyz",
-				"type": "xyz",
-				"url": `https://api.os.uk/maps/raster/v1/zxy/${configs.OSLayer}/{z}/{x}/{y}.png?key=${configs.OSKey}`,
-				"active": true
-			});
-			ol.addLayer({
-				"name": "data",
-				"type": "vector",
-				"active": true,
-				"style": viewStyle
-			});
-			ol.simpleClick({"clickFunction": handleMapClick});
-
-		}
-
-
-	}, [tables]);
 
 	function handleClose() {
 
 	}
 
 	function handleMapClick(e) {
-		console.log(e);
+		const coordinate = e.coordinate;
+		const wktCoordinate = 'SRID=3857;' + ol.coordinatesToWKT({"coordinate": coordinate});
+		console.log(wktCoordinate);
+		document.getElementById('geo-id').value = wktCoordinate;
 	}
 
 	function handleChange(e) {
@@ -97,20 +77,27 @@ const AdminData = () => {
 		setCategory(null);
 	}
 
+	function onChangeTags(newTags) {
+		//debugger;
+		console.log(newTags);
+		properties.tags = newTags;
+	}
+
 	function addFeature() {
+		const geometry = document.getElementById('geo-id').value;
 		window.websocket.send({
 			"queue": "saveFeature",
 			"api": "sapi",
 			"data": {
-				"method": "add_item", "attributes": {
-					"description": properties,
-				},
+				"method": "add_item",
+				"attributes": properties,
 				"table": tables[0],
 				"category": category,
-
+				"geometry": geometry,
 				"id_token": cookies['id_token']
 			}
-		});
+		})
+		;
 
 	}
 
@@ -132,20 +119,13 @@ const AdminData = () => {
 											className={classes.mediaMap}
 											title="map"
 										>
-											<div id="map" className={classes.mapView}>
-												<Button onClick={() => {
-													ol.updateSize();
-												}} className={classes.mapResetButton} color="secondary"
-												        variant="outlined">Reset map</Button>
-											</div>
+											<Map ol={ol} handleMapClick={handleMapClick}></Map>
 
 										</CardMedia>
-										<FormControl className={classes.formControl} fullWidth>
-											<InputLabel id={'geo-label'}>Location</InputLabel>
-											<Input type="text" labelId={'geo-label'} id={'geo-id'}
-											       name="geo"/>
-										</FormControl>
-										<AutoForm category={category} properties={properties}></AutoForm>
+										<SearchTags category={category}
+										            changeFunction={onChangeTags}
+										            currentValue={properties.tags}></SearchTags>
+										<AutoForm category={category} properties={properties.description}></AutoForm>
 									</CardContent>
 									<CardActions>
 										<Button size="small" color="secondary" onClick={cancel} variant="outlined">

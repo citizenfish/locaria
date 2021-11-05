@@ -475,6 +475,14 @@ resources:
         Precedence: 1
         UserPoolId:
           Ref: CognitoUserPool
+    CognitoUserGroupModerator:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Moderator
+        GroupName: Moderator
+        Precedence: 2
+        UserPoolId:
+          Ref: CognitoUserPool
 functions:
   api:
     handler: functions/api.run

@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link, useHistory, useParams} from 'react-router-dom';
 
-import Layout from './Layout';
-import ChannelCard from './channelCard';
+import Layout from './widgets/layout';
+import ChannelCard from './widgets/channelCard';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {channels, useStyles} from "themeLocus";

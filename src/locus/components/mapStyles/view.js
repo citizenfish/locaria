@@ -2,7 +2,7 @@ import {Circle, Text, RegularShape, Fill, Stroke, Style, Icon} from 'ol/style.js
 import markerHome from 'themeDefault/images/marker-home.svg';
 import marker from 'themeDefault/images/marker.svg';
 
-import {configs,channels} from "themeLocus";
+import {configs, channels} from "themeLocus";
 
 export function locationStyle(feature, resolution) {
 	return [
@@ -30,8 +30,8 @@ export function viewStyle(feature, resolution) {
 	let category = feature.get('category');
 	let tags = feature.get('tags');
 
-	let cluster=feature.get('geometry_type');
-	if(cluster==="cluster") {
+	let cluster = feature.get('geometry_type');
+	if (cluster === "cluster") {
 		let size = feature.get('count');
 		let color = size > 25 ? "192,0,0" : size > 8 ? "255,128,0" : "0,128,0";
 		let radius = Math.max(8, Math.min(size * 0.75, 20));
@@ -62,7 +62,7 @@ export function viewStyle(feature, resolution) {
 		return style;
 	}
 
-	if(category==='location') {
+	if (category === 'location') {
 		return [
 			new Style({
 				image: new Icon({
@@ -93,40 +93,42 @@ export function viewStyle(feature, resolution) {
 		]
 	}
 
-	let channel=channels.getChannelProperties(category);
+	let channel = channels.getChannelProperties(category);
 
-	let icon=channels.getChannelMapIcon(category,tags);
-	if(icon===undefined)
-		icon=configs.defaultMapIcon;
+	let icon = channels.getChannelMapIcon(category, tags);
+	if (icon === undefined)
+		icon = configs.defaultMapIcon;
 	const geometry = feature.getGeometry();
 	if (geometry.getType() === 'Point') {
-
-	return [
-		new Style({
-			image: new Icon({
-				src: icon,
-				size: [40, 70],
-				zIndex: 100,
-				anchorOrigin: 'top-left',
-				anchor: [0.5, 0.5],
-				anchorXUnits: 'fraction',
-				anchorYUnits: 'fraction',
-			}),
-			text: new Text({
-				text: tags[0]? tags[0]:category,
-				font: 'bold 11px "Soleil"',
-				textBaseline: 'bottom',
-				offsetY: 15,
-				fill: new Fill({
-					color: '#000000'
+		let label = category;
+		if (tags && tags[0])
+			label = tags[0];
+		return [
+			new Style({
+				image: new Icon({
+					src: icon,
+					size: [40, 70],
+					zIndex: 100,
+					anchorOrigin: 'top-left',
+					anchor: [0.5, 0.5],
+					anchorXUnits: 'fraction',
+					anchorYUnits: 'fraction',
 				}),
-				stroke: new Stroke({
-					color: '#FFFFFF',
-					width: 3.5
+				text: new Text({
+					text: label,
+					font: 'bold 11px "Soleil"',
+					textBaseline: 'bottom',
+					offsetY: 15,
+					fill: new Fill({
+						color: '#000000'
+					}),
+					stroke: new Stroke({
+						color: '#FFFFFF',
+						width: 3.5
+					})
 				})
 			})
-		})
-	]
+		]
 	} else {
 		let fill = [255, 0, 0, 0.3];
 		if (type === '|')

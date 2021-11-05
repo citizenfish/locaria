@@ -930,17 +930,14 @@ export default class Openlayers {
 	 *
 	 * @description Convert a coordinate to WKT
 	 */
-	coordinatesToWKT(pid, json) {
-		let self = this;
-		let options = Object.assign({
+	coordinatesToWKT(options) {
+		options = Object.assign({
 			"map": "default",
-		}, json);
+		}, options);
 		let olGeom = new Point(options.coordinate);
 		let format = new WKT();
 		let wktRepresenation = format.writeGeometry(olGeom);
-		self.set(pid, {"wkt": wktRepresenation});
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-
+		return wktRepresenation;
 	}
 
 	/**

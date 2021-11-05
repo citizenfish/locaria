@@ -8,9 +8,9 @@ import {useStyles} from "themeLocus";
 import Slider from "@material-ui/core/Slider";
 
 
-const SearchDistance = ({changeFunction,currentValue,min,max}) => {
-	min=min||0;
-	max=max||100;
+const SearchDistance = ({changeFunction, currentValue, min, max}) => {
+	min = min || 0;
+	max = max || 100;
 	const classes = useStyles();
 	const [value, setValue] = React.useState(parseInt(currentValue));
 
@@ -35,6 +35,7 @@ const SearchDistance = ({changeFunction,currentValue,min,max}) => {
 				disableSwap
 				min={min}
 				max={max}
+				key={'distanceSlider'}
 			/>
 		</FormControl>
 	)

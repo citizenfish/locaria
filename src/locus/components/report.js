@@ -1,11 +1,11 @@
 import React from 'react';
 import {Link, useParams} from 'react-router-dom';
 import Grid from "@material-ui/core/Grid";
-import ChannelCard from './channelCard';
+import ChannelCard from './widgets/channelCard';
 import Paper from "@material-ui/core/Paper";
 
 
-import Layout from './Layout';
+import Layout from './widgets/layout';
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -50,7 +50,7 @@ const Report = () => {
 
 	const showReport = () => {
 
-		if(report.packet.features.length>0) {
+		if (report.packet.features.length > 0) {
 			return (report.packet.features
 					.map(feature => (
 						<Card variant="outlined" className={classes.categoryResultsCard}>
@@ -119,7 +119,6 @@ const Report = () => {
 	}
 
 };
-
 
 
 export default Report;

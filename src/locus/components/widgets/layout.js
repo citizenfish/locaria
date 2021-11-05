@@ -394,7 +394,7 @@ const Layout = ({children, map, update}) => {
 							<Box sx={{flexGrow: 1}}/>
 							<Box sx={{display: {xs: 'none', md: 'flex'}}}>
 								<IconButton
-									size="large"
+									size="medium"
 									edge="end"
 									aria-label="account of current user"
 									aria-controls={menuId}
