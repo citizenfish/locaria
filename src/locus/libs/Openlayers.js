@@ -241,7 +241,8 @@ export default class Openlayers {
 			"transparent": false,
 			"active": true,
 			"loadIgnore": false,
-			"debug": false
+			"debug": false,
+			"attributions": []
 		}, options);
 		let map = self.maps[options.map].object;
 		let olLayer = null;
@@ -400,7 +401,8 @@ export default class Openlayers {
 		let self = this;
 		let source = new XYZ({
 			url: options.url,
-			crossOrigin: 'Anonymous'
+			crossOrigin: 'Anonymous',
+			attributions: options.attributions
 		});
 		let olLayer = new TileLayer({
 			extent: options.extent,

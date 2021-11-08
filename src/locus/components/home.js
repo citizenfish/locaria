@@ -26,9 +26,7 @@ const Home = () => {
 							const chan = channels.getChannelProperties(channel);
 							if (chan.display !== false) {
 								return (
-									<Grid item md={configs.homeGrid} className={classes.channel}>
-
-
+									<Grid item md={configs.homeGrid} className={classes.channel} key={chan.key}>
 										<Card className={classes.root}>
 											<CardMedia
 												className={classes.media}
@@ -52,8 +50,6 @@ const Home = () => {
 												</Button>
 											</CardActions>
 										</Card>
-
-
 									</Grid>
 
 								)

@@ -128,7 +128,7 @@ const Category = () => {
 			return (<CardHeader
 				avatar={
 					<Avatar aria-label={feature.properties.tags[0]}
-					        style={{"background-color": `${channels.getChannelColor(category, feature.properties.tags[0])}`}}>
+					        style={{"backgroundColor": `${channels.getChannelColor(category, feature.properties.tags[0])}`}}>
 						{feature.properties.tags[0][0].toUpperCase()}
 					</Avatar>
 				}
@@ -145,13 +145,15 @@ const Category = () => {
 		if (report.packet.features.length > 0) {
 			return (report.packet.features
 					.map(feature => (
-						<Card variant="outlined" className={classes.categoryResultsCard}>
+						<Card component="div" variant="outlined" className={classes.categoryResultsCard}
+						      key={feature.properties.fid}>
 							{showHeader(feature)}
-							<CardActionArea>
-								<CardContent>
+							<CardActionArea key={'caa-' + feature.properties.fid}>
+								<CardContent key={'cc-' + feature.properties.fid}>
 									{feature.properties.tags.map(tag => (
-										<Chip label={tag} variant="outlined"
-										      style={{"background-color": `${channels.getChannelColor(category, tag)}`}}
+										<Chip component="div" label={tag} variant="outlined"
+										      key={`chip-${tag}-${feature.properties.fid}`}
+										      style={{"backgroundColor": `${channels.getChannelColor(category, tag)}`}}
 										      className={classes.tags}/>
 									))}
 									<Typography gutterBottom variant="h5" component="h2">
@@ -180,8 +182,9 @@ const Category = () => {
 						<Typography variant="h4" component="h4" gutterBottom>
 							No results found
 						</Typography>
-						<p>Try adjusting the distance filters as your are currently limiting your results
-							to {location.distance} {distance.distanceLang(location.distanceSelect)}</p>
+						<Typography variant="body2" color="textSecondary" component="p">Try adjusting the distance
+							filters as your are currently limiting your results
+							to {location.distance} {distance.distanceLang(location.distanceSelect)}</Typography>
 					</CardContent>
 				</Card>
 			)
@@ -219,24 +222,12 @@ const Category = () => {
 		return (
 			<Layout update={handleLocationChange}>
 				<Grid container className={classes.root} spacing={6}>
-					<Grid item md={4} className={classes.gridFull}>
+					<Grid item md={4} className={classes.gridFull} key={"category"}>
 						<Paper elevation={3} className={classes.paperMargin}>
 							<ChannelCard path={'/'}></ChannelCard>
 
 							<Card className={classes.channelCardForm}>
 								<CardContent>
-									<FormControl className={classes.formControl} fullWidth>
-										<InputLabel id="distance-select-label">Distance</InputLabel>
-										<NativeSelect
-											labelId="distance-select-label"
-											id="distance-select"
-											value={location.distanceSelect}
-											onChange={handleChange}
-										>
-											<option value="mile">Miles</option>
-											<option value="km">Kilometers</option>
-										</NativeSelect>
-									</FormControl>
 									{showSearch()}
 								</CardContent>
 							</Card>

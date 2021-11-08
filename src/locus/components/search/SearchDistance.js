@@ -23,16 +23,15 @@ const SearchDistance = ({changeFunction, currentValue, min, max}) => {
 	};
 	return (
 		<FormControl className={classes.formControl} fullWidth>
-			<InputLabel id="filter-distance-select-label">Distance</InputLabel>
+			<InputLabel htmlFor="distance-select">Distance</InputLabel>
 			<Slider
-				labelId="filter-distance-select-label"
+				id={"distance-select"}
 				getAriaLabel={() => 'Distance'}
 				value={value}
 				valueLabelDisplay="auto"
 				getAriaValueText={valuetext}
 				onChange={handleChange}
 				onChangeCommitted={changeFunction}
-				disableSwap
 				min={min}
 				max={max}
 				key={'distanceSlider'}

@@ -141,7 +141,7 @@ const View = () => {
 		} else {
 			return (
 				<Layout update={handleNewLocation}>
-					<Grid container className={classes.root} spacing={6}>
+					<Grid container className={classes.root} spacing={6} component="div">
 						<Grid item md={4}>
 							<Paper elevation={3} className={classes.paperMargin}>
 								<ChannelCard path={'/Category/' + category}></ChannelCard>
@@ -168,8 +168,8 @@ const View = () => {
 										</Typography>
 
 										{view.features[0].properties.tags.map(tag => (
-											<Chip label={tag} variant="outlined"
-											      style={{"background-color": `${channels.getChannelColor(category, tag)}`}}
+											<Chip component="div" label={tag} variant="outlined" key={tag}
+											      style={{"backgroundColor": `${channels.getChannelColor(category, tag)}`}}
 											      className={classes.tags}/>
 										))}
 

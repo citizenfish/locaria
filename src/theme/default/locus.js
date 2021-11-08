@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		mapResetButton: {
 			position: "absolute",
-			bottom: "10px",
+			top: "10px",
 			right: "10px",
 			zIndex: 100,
 			background: alpha(theme.palette.common.white, 0.25)
@@ -292,6 +292,7 @@ channels.addChannel('All', {
 const configs = {
 	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
 	OSLayer: "Road_3857",
+	OSAttribution: "© Crown copyright and database rights 2021 OS 123456",
 	cluster: true, // true|false
 	clusterCutOff: 1.5,
 	clusterWidthMod: 50,
