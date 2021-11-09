@@ -40,6 +40,9 @@ BEGIN
         WHEN parameters ->> 'method' IN ('initialise_container') THEN
             ret_var = initialise_container(parameters);
 
+        WHEN parameters ->> 'method' IN ('update_container') THEN
+            ret_var = update_container(parameters);
+
         WHEN parameters ->> 'method' IN ('view_report') THEN
             ret_var = view_report(parameters);
 

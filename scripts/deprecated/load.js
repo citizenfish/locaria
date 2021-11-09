@@ -2,7 +2,7 @@
 const {load_os_opendata} = require('./os_opendata/load_os_opendata.js')
 const {load_planning_data} = require('./planning/load_planning_data.js')
 const {load_crime_data} = require('./crime/load_crime_data')
-const {load_excel} = require('./data_file/load_excel.js')
+const {load_excel} = require('../data_loading/data_file/load_excel.js')
 
 const {gets3File,puts3File,deletes3File} = require('./load_utils.js')
 

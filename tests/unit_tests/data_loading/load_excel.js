@@ -1,4 +1,4 @@
-const {load_excel} = require('../../../scripts/deprecated/data_file/load_excel.js')
+const {load_excel} = require('../../../scripts/data_loading/data_file/load_excel.js')
 const fs = require('fs')
 const command = JSON.parse(fs.readFileSync('./../../../../command_gla.json', 'utf8'))
 

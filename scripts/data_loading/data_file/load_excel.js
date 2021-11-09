@@ -1,23 +1,53 @@
-const {runQuery, gets3File} = require('../load_utils')
+const {runQuery, gets3File} = require('../loader_utils')
 const XLSX = require('xlsx');
-const utils = require("../load_utils.js");
 
-module.exports.load_excel = async (command, us) => {
+module.exports.load_excel = async (parameters, us) => {
 
     let jsonData = []
-    if (!command.parameters.file_path) {
-        throw {error: 'Missing Excel file'}
+    if (!parameters.file_path) {
+        us({id: parameters.id, status : 'ERROR', errorMessage: 'Missing file name'})
+        return {error: 'Missing Excel file name'}
     }
 
-    //read file from S3
-    const file_contents = await gets3File(command.region, command.bucket, command.parameters.file_path, false)
+    us({id : parameters.id, statusMessage: `Reading file ${parameters.file_path} from s3`})
 
+    //return {message : "File Loaded"}
+
+
+    try {
+
+        const file_contents = await gets3File(parameters.region, parameters.bucket, parameters.file_path, false)
+        let workbook = XLSX.read(file_contents, {type: "buffer"});
+
+        for (let s in workbook.SheetNames) {
+
+            us({id: parameters.id, message: `Loading worksheet ${workbook.SheetNames[s]}`});
+            let sheet_json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[s]]);
+
+            sheet_json.map(function (row) {
+                row._xls_sheet_name = workbook.SheetNames[s];
+                return row;
+            });
+
+            if (workbook.SheetNames[s] === parameters.sheet_name) {
+                jsonData = jsonData.concat(sheet_json);
+            }
+        }
+        console.log(jsonData)
+        return {message : "File Loaded"}
+
+    } catch (e) {
+        return {error: e}
+    }
+
+
+/*
 
     //Convert into JSON format
-    let workbook = XLSX.read(file_contents, {type: "buffer"});
-    for (let s in workbook.SheetNames) {
-        us({message: `Loading worksheet ${workbook.SheetNames[s]}`});
 
+    for (let s in workbook.SheetNames) {
+
+        us({message: `Loading worksheet ${workbook.SheetNames[s]}`});
 
         let sheet_json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[s]]);
 
@@ -31,7 +61,9 @@ module.exports.load_excel = async (command, us) => {
             jsonData = jsonData.concat(sheet_json);
         }
     }
-
+    console.log(jsonData)
+    return {message : "File Loaded"}
+    /*
     //Map data and load
     let count = 0
 
@@ -102,11 +134,13 @@ module.exports.load_excel = async (command, us) => {
 
     us({message: 'Data loaded, refreshing global_search_view', records_loaded: count})
 
-    //post preocess
+    //post process
     let ppSQL = command.sqlFile ? await utils.runQuery(command) : {message: 'No SQL File provided'}
     us({message: "Post Process complete", details: ppSQL})
 
     //Refresh the materialized view
     command['query'] = 'REFRESH MATERIALIZED VIEW CONCURRENTLY locus_core.global_search_view'
     return await runQuery(command)
+
+ */
 }
