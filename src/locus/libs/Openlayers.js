@@ -241,7 +241,8 @@ export default class Openlayers {
 			"transparent": false,
 			"active": true,
 			"loadIgnore": false,
-			"debug": false
+			"debug": false,
+			"attributions": []
 		}, options);
 		let map = self.maps[options.map].object;
 		let olLayer = null;
@@ -400,7 +401,8 @@ export default class Openlayers {
 		let self = this;
 		let source = new XYZ({
 			url: options.url,
-			crossOrigin: 'Anonymous'
+			crossOrigin: 'Anonymous',
+			attributions: options.attributions
 		});
 		let olLayer = new TileLayer({
 			extent: options.extent,
@@ -930,17 +932,14 @@ export default class Openlayers {
 	 *
 	 * @description Convert a coordinate to WKT
 	 */
-	coordinatesToWKT(pid, json) {
-		let self = this;
-		let options = Object.assign({
+	coordinatesToWKT(options) {
+		options = Object.assign({
 			"map": "default",
-		}, json);
+		}, options);
 		let olGeom = new Point(options.coordinate);
 		let format = new WKT();
 		let wktRepresenation = format.writeGeometry(olGeom);
-		self.set(pid, {"wkt": wktRepresenation});
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-
+		return wktRepresenation;
 	}
 
 	/**

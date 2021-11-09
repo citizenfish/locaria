@@ -5,6 +5,7 @@ import Home from './home';
 import Report from './report';
 import Category from './category';
 import View from './view';
+import Submit from './submit';
 import Error from './error';
 import AdminHome from "./admin/adminHome";
 import AdminView from "./admin/AdminView";
@@ -22,7 +23,7 @@ const App = () => {
 
 	// fix our cookie defaults
 
-	const cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
+	//const cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
 
 	const [cookies, setCookies] = useCookies(['location']);
 
@@ -116,6 +117,7 @@ const App = () => {
 					<Route path="/Report/:reportId" component={Report}/>
 					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
 					<Route path="/View/:category/:feature" component={View}/>
+					<Route path="/Submit/:category" component={Submit}/>
 					<Route exact path="/:id_token?" component={Home}/>
 
 					<Route component={Error}/>

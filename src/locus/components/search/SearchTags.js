@@ -43,27 +43,26 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 		changeFunction(selectedTags);
 	}
 
-
 	if (tags.length > 0) {
 		return (
 			<FormControl className={classes.formControl} fullWidth>
 
-				<InputLabel id="filter-tag-select-label">Tags</InputLabel>
+				<InputLabel htmlFor="tag-select">Tags</InputLabel>
 				<Select
-					labelId="filter-tag-select-label"
 					id="tag-select"
 					value={selectedTags}
 					onChange={handleChange}
 					onClose={handleClose}
 					multiple
 					input={<Input/>}
+					key={`tss-control`}
 					renderValue={(selected) => selected.join(', ')}
 				>
 					{tags.map(function (tag) {
 						return (
-							<MenuItem key={tag} value={tag}>
-								<Checkbox checked={selectedTags.indexOf(tag) > -1}/><ListItemText
-								primary={tag}></ListItemText>
+							<MenuItem key={`tsmi-${tag}`} value={tag}>
+								<Checkbox checked={selectedTags.indexOf(tag) > -1} key={`tscb-${tag}`}/>
+								<ListItemText key={`tsli-${tag}`} primary={tag}></ListItemText>
 							</MenuItem>)
 					})}
 

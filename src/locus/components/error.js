@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Layout from './Layout';
+import Layout from './widgets/layout';
 
 const Error = () => {
 	return (

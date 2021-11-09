@@ -21,14 +21,21 @@ const autoForm = ({category, properties}) => {
 	}
 
 	return (
-		channel.fields.map(prop => (
+		<div>
 			<FormControl className={classes.formControl} fullWidth>
-				<InputLabel id={prop.key + '-label'}>{prop.name}</InputLabel>
-				<Input type="text" labelId={prop.key + '-label'} id={prop.key + '-id'}
-				       defaultValue={properties[prop.key]}
-				       onChange={onChange} name={prop.key}/>
+				<InputLabel id={'geo-label'}>Location</InputLabel>
+				<Input type="text" labelId={'geo-label'} id={'geo-id'}
+				       name="geo"/>
 			</FormControl>
-		))
+			{channel.fields.map(prop => (
+				<FormControl className={classes.formControl} fullWidth>
+					<InputLabel id={prop.key + '-label'}>{prop.name}</InputLabel>
+					<Input type="text" labelId={prop.key + '-label'} id={prop.key + '-id'}
+					       defaultValue={properties[prop.key]}
+					       onChange={onChange} name={prop.key}/>
+				</FormControl>
+			))}
+		</div>
 	)
 }
 

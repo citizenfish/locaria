@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Layout from './Layout';
-import Share from './share';
-import Linker from './linker';
-import ChannelCard from './channelCard';
+import Layout from './widgets/layout';
+import Share from './widgets/share';
+import Linker from './widgets/linker';
+import ChannelCard from './widgets/channelCard';
 
-import {Link, useParams, BrowserRouter} from "react-router-dom";
+import {Link, useParams, BrowserRouter, useHistory} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {channels, configs, useStyles} from "themeLocus";
@@ -29,6 +29,7 @@ const View = () => {
 	const ol = new Openlayers();
 	const [cookies, setCookies] = useCookies(['location']);
 
+	const history = useHistory();
 
 	const [view, setView] = React.useState(null);
 
@@ -91,7 +92,7 @@ const View = () => {
 		}
 
 
-	});
+	}, [view]);
 
 	window.websocket.registerQueue("viewLoader", function (json) {
 		if (json.packet.response_code !== 200) {
@@ -140,7 +141,7 @@ const View = () => {
 		} else {
 			return (
 				<Layout update={handleNewLocation}>
-					<Grid container className={classes.root} spacing={6}>
+					<Grid container className={classes.root} spacing={6} component="div">
 						<Grid item md={4}>
 							<Paper elevation={3} className={classes.paperMargin}>
 								<ChannelCard path={'/Category/' + category}></ChannelCard>
@@ -167,8 +168,8 @@ const View = () => {
 										</Typography>
 
 										{view.features[0].properties.tags.map(tag => (
-											<Chip label={tag} variant="outlined"
-											      style={{"background-color": `${channels.getChannelColor(category, tag)}`}}
+											<Chip component="div" label={tag} variant="outlined" key={tag}
+											      style={{"backgroundColor": `${channels.getChannelColor(category, tag)}`}}
 											      className={classes.tags}/>
 										))}
 
