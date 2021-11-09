@@ -136,6 +136,7 @@ resources:
             SslSupportMethod: sni-only
           Origins:
             - Id: 'WebsiteBucketOrigin'
+              OriginPath: /main
               DomainName: { 'Fn::GetAtt': [ StaticSite, DomainName ] }
               S3OriginConfig:
                 OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
