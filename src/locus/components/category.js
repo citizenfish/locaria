@@ -192,29 +192,32 @@ const Category = () => {
 	}
 
 	const showSearch = () => {
-		if (channel.search === undefined)
+		if (channel.search === undefined) {
 			return (
 				<SearchDistance changeFunction={handleFilterChange}
-				                currentValue={location.distance}></SearchDistance>
+				                currentValue={location.distance} min={1} max={1000}></SearchDistance>
 			)
-		return (
-			channel.search.map(function (item) {
-				if (item.component === 'SearchDistance') {
-					return (<SearchDistance changeFunction={handleFilterChange} min={item.min} max={item.max}
-					                        currentValue={location.distance}></SearchDistance>)
-				}
-				if (item.component === 'SearchRange') {
-					return (
-						<SearchRange changeFunction={handleRangeChange} title={item.title} min={item.min} max={item.max}
-						             currentValueFrom={location.rangeFrom || item.min}
-						             currentValueTo={location.rangeTo || item.max}></SearchRange>)
-				}
-				if (item.component === 'SearchTags') {
-					return (<SearchTags category={category} changeFunction={handleTagChange}
-					                    currentValue={tags}></SearchTags>)
-				}
-			})
-		)
+		} else {
+			return (
+				channel.search.map(function (item) {
+					if (item.component === 'SearchDistance') {
+						return (<SearchDistance changeFunction={handleFilterChange} min={item.min} max={item.max}
+						                        currentValue={location.distance}></SearchDistance>)
+					}
+					if (item.component === 'SearchRange') {
+						return (
+							<SearchRange changeFunction={handleRangeChange} title={item.title} min={item.min}
+							             max={item.max}
+							             currentValueFrom={location.rangeFrom || item.min}
+							             currentValueTo={location.rangeTo || item.max}></SearchRange>)
+					}
+					if (item.component === 'SearchTags') {
+						return (<SearchTags category={category} changeFunction={handleTagChange}
+						                    currentValue={tags}></SearchTags>)
+					}
+				})
+			)
+		}
 
 	}
 
