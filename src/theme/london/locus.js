@@ -335,6 +335,7 @@ channels.addChannel('Tech', {
 const configs = {
 	OSKey: "vmRzM4mAA1Ag0hkjGh1fhA2hNLEM6PYP",
 	OSLayer: "Light_3857",
+	OSAttribution: "© Crown copyright and database rights 2021 OS 123456",
 	cluster: true, // true|false
 	clusterCutOff: 8,
 	clusterWidthMod: 25,
@@ -347,7 +348,9 @@ const configs = {
 	defaultDistanceSelect: 'km', // km|mile
 	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,
-	websocket: "wss://locus1ws.nautoguide.com/new"
+	websocket: "wss://mpk9us5un9.execute-api.eu-west-1.amazonaws.com/new", // Get his this from your locus-custom.yml - wsdomain
+	cognitoURL: "locusauth.nautoguide.com", // Get his this from your locus-custom.yml - cognitoDomainName
+	cognitoPoolId: "6jbgpggjvqonk7p55m51rql445" // Get from you api/.env
 }
 
 export {useStyles, channels, theme, configs};

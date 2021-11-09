@@ -3,7 +3,7 @@
  * @type {string}
  */
 
-const customFile='../locus-custom.yml';
+const customFile = '../locus-custom.yml';
 
 
 /**
@@ -11,7 +11,7 @@ const customFile='../locus-custom.yml';
  */
 const fs = require('fs')
 const YAML = require('yaml');
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 const dotenv = require('dotenv')
 
 
@@ -21,8 +21,8 @@ const readline = require('readline').createInterface({
 });
 
 
-let configNew=true;
-let configs={};
+let configNew = true;
+let configs = {};
 
 //let OSOpenData = require('./docker/load_os_opendata');
 /**
@@ -44,11 +44,11 @@ function checkEnvironment() {
 			//console.log(`stdout: ${stdout}`);
 			if (fs.existsSync(customFile)) {
 				console.log('Existing config found');
-				configs.custom=YAML.parse(fs.readFileSync(customFile, 'utf8'));
-				configNew=false;
+				configs.custom = YAML.parse(fs.readFileSync(customFile, 'utf8'));
+				configNew = false;
 				listConfig();
 			} else {
-				configs.custom={};
+				configs.custom = {};
 				console.log('No existing config found');
 			}
 			commandLoop();
@@ -59,7 +59,7 @@ function checkEnvironment() {
 
 function commandLoop() {
 	readline.question(`Command[h for help]?`, (cmd) => {
-		switch(cmd) {
+		switch (cmd) {
 			case 'h':
 				console.log('l - List current config sections');
 				console.log('a - Add new config section');
@@ -96,16 +96,16 @@ function commandLoop() {
 	})
 }
 
-async function loadData(){
+async function loadData() {
 
-	let stage='test';
+	let stage = Object.keys(configs.custom)[0];
 
 
 	let cmd = await new Promise(resolve => {
-		readline.question("Stage to deploy [test]?", resolve);
+		readline.question(`Stage to use [${stage}]?`, resolve);
 	});
 
-	if(cmd) {
+	if (cmd) {
 		stage = cmd;
 	}
 
@@ -117,24 +117,23 @@ async function loadData(){
 	process.env["AWS_PROFILE"] = configs.custom[stage].profile;
 
 
-
 	commandLoop();
 
 }
 
 
 function deploySystem() {
-	let stage='test';
-	readline.question(`Stage to deploy [test]?`, (cmd) => {
-		if(cmd)
-			stage=cmd;
+	let stage = Object.keys(configs.custom)[0];
+	readline.question(`Stage to deploy [${stage}]?`, (cmd) => {
+		if (cmd)
+			stage = cmd;
 		deploySystemMain(stage);
 	});
 }
 
 function deploySystemMain(stage) {
 	readline.question(`Deploy command for stage ${stage} [h for help]?`, (cmd) => {
-		switch(cmd) {
+		switch (cmd) {
 			case 'h':
 				console.log('api - Deploy API');
 				console.log('sql - Deploy SQL');
@@ -180,13 +179,11 @@ function deploySystemMain(stage) {
 }
 
 
-
- function runTests(stage) {
-	const options={
-	};
-	const cmdLine=`grunt runTests --stage=${stage}`;
+function runTests(stage) {
+	const options = {};
+	const cmdLine = `grunt runTests --stage=${stage}`;
 	console.log(`#${cmdLine}`);
-	exec( cmdLine,options, (err, stdout, stderr) => {
+	exec(cmdLine, options, (err, stdout, stderr) => {
 		console.log(stdout);
 		console.log(err);
 		console.log(stderr);
@@ -195,21 +192,21 @@ function deploySystemMain(stage) {
 }
 
 function deployScrape(stage) {
-	const options={
+	const options = {
 		cwd: "scrape/"
 	};
 	console.log('#npm install')
-	exec(`npm install` ,options, (err, stdout, stderr) => {
-		if(err) {
+	exec(`npm install`, options, (err, stdout, stderr) => {
+		if (err) {
 			console.log('npm install FAILED!');
 			console.log(stderr);
 			deploySystemMain(stage);
 
 		} else {
 			console.log(stdout);
-			const cmdLine=`serverless deploy --stage ${stage}`;
+			const cmdLine = `serverless deploy --stage ${stage}`;
 			console.log(`#${cmdLine}`);
-			exec( cmdLine,options, (err, stdout, stderr) => {
+			exec(cmdLine, options, (err, stdout, stderr) => {
 				console.log(stdout);
 				deploySystemMain(stage);
 			});
@@ -246,21 +243,21 @@ function deployWS(stage) {
 }
 
 function deployAPI(stage) {
-	const options={
+	const options = {
 		cwd: "api/"
 	};
 	console.log('#npm install')
-	exec(`npm install` ,options, (err, stdout, stderr) => {
-		if(err) {
+	exec(`npm install`, options, (err, stdout, stderr) => {
+		if (err) {
 			console.log('npm install FAILED!');
 			console.log(stderr);
 			deploySystemMain(stage);
 
 		} else {
 			console.log(stdout);
-			const cmdLine=`sls create_domain --stage ${stage}`;
+			const cmdLine = `sls create_domain --stage ${stage}`;
 			console.log(`#${cmdLine}`);
-			exec( cmdLine,options, (err, stdout, stderr) => {
+			exec(cmdLine, options, (err, stdout, stderr) => {
 				console.log(stdout);
 				const cmdLine = `serverless deploy --stage ${stage}`;
 				console.log(`#${cmdLine}`);
@@ -279,38 +276,44 @@ function deployAPI(stage) {
 }
 
 function deployWEB(stage) {
-	const options={
+	const options = {
 		cwd: "./"
 	};
 
 	const buf = fs.readFileSync('api/.env');
 	const config = dotenv.parse(buf)
 
+	let path = 'main';
+	readline.question(`Path to use [${path}]?`, (cmd) => {
+		if (cmd)
+			path = cmd;
 
-	const cmdLine=`grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${config.cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region}`;
-	console.log(`#${cmdLine}`);
+		const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${config.cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
+		console.log(`#${cmdLine}`);
 
-	exec(cmdLine ,options, (err, stdout, stderr) => {
-		if(err) {
-			console.log('grunt FAILED!');
-			console.log(stderr);
-			deploySystemMain(stage);
+		exec(cmdLine, options, (err, stdout, stderr) => {
+			if (err) {
+				console.log('grunt FAILED!');
+				console.log(stderr);
+				deploySystemMain(stage);
 
 
-		} else {
-			console.log(stdout);
-			deploySystemMain(stage);
+			} else {
+				console.log(stdout);
+				deploySystemMain(stage);
 
-		}
+			}
+		});
 	});
+
+
 }
 
 function deploySQL(stage) {
-	const options={
-	};
-	const cmdLine=`grunt deploySQLFull --stage=${stage}`;
+	const options = {};
+	const cmdLine = `grunt deploySQLFull --stage=${stage}`;
 	console.log(`#${cmdLine}`);
-	exec( cmdLine,options, (err, stdout, stderr) => {
+	exec(cmdLine, options, (err, stdout, stderr) => {
 		console.log(stdout);
 		console.log(err);
 		console.log(stderr);
@@ -319,11 +322,10 @@ function deploySQL(stage) {
 }
 
 function upgradeSQL(stage) {
-	const options={
-	};
-	const cmdLine=`grunt deploySQLupgrade --stage=${stage}`;
+	const options = {};
+	const cmdLine = `grunt deploySQLupgrade --stage=${stage}`;
 	console.log(`#${cmdLine}`);
-	exec( cmdLine,options, (err, stdout, stderr) => {
+	exec(cmdLine, options, (err, stdout, stderr) => {
 		console.log(stdout);
 		console.log(err);
 		console.log(stderr);
@@ -332,41 +334,60 @@ function upgradeSQL(stage) {
 }
 
 function deleteConfig() {
-	let stage='dev';
+	let stage = 'dev';
 	readline.question(`system stage [${stage}]?`, (cmd) => {
-		if(cmd.length>0)
-			stage=cmd;
-			delete configs.custom[stage];
-			commandLoop();
+		if (cmd.length > 0)
+			stage = cmd;
+		delete configs.custom[stage];
+		commandLoop();
 	});
 }
 
 const configQuestions = [
-	{details:"Give the deployment stage a name, EG dev|test|live. This is used to reference this profile in the future",name:"stage",text:"Stage name",default:"dev",config:"custom",stage:true},
-	{details:"You need aws cli install and configured to access your account, enter the profile used here",name:"profile",text:"AWS profile to use",default:"default",config:"custom"},
+	{
+		details: "Give the deployment stage a name, EG dev|test|live. This is used to reference this profile in the future",
+		name: "stage",
+		text: "Stage name",
+		default: "dev",
+		config: "custom",
+		stage: true
+	},
+	{
+		details: "You need aws cli install and configured to access your account, enter the profile used here",
+		name: "profile",
+		text: "AWS profile to use",
+		default: "default",
+		config: "custom"
+	},
 
-	{name:"region",text:"AWS region",default:"eu-west-1",config:"custom"},
-	{name:"cron",text:"Cron string to use for scraper",default:"cron(0/10 * ? * MON-FRI *)",config:"custom"},
-	{name:"domain",text:"Domain name to use for website",default:"api.vialocus.co.uk",config:"custom"},
-	{name:"restdomain",text:"Domain name to use for rest api",default:"api.vialocus.co.uk",config:"custom"},
-	{name:"wsdomain",text:"Domain name to use for websocket",default:"ws.vialocus.co.uk",config:"custom"},
-	{name:"certARN",text:"AWS cert ARN",default:"arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx",config:"custom"},
-	{name:"auroraDatabaseName",text:"Aurora database name",default:"locus",config:"custom"},
-	{name:"auroraMasterUser",text:"Aurora master user",default:"locus",config:"custom"},
-	{name:"auroraMasterPass",text:"Aurora master password",default:"CHANGEME",config:"custom"},
-	{name:"osDataHubProductURL", text:"OS Data Hub Product URL (Data Downloads)", default:"https://api.os.uk/downloads/v1/products", config:"custom"},
-	{name:"tmp", text:"Temporary local storage for downloads", default:"/tmp", config:"custom"}
+	{name: "region", text: "AWS region", default: "eu-west-1", config: "custom"},
+	{name: "cron", text: "Cron string to use for scraper", default: "cron(0/10 * ? * MON-FRI *)", config: "custom"},
+	{name: "domain", text: "Domain name to use for website", default: "api.vialocus.co.uk", config: "custom"},
+	{name: "restdomain", text: "Domain name to use for rest api", default: "api.vialocus.co.uk", config: "custom"},
+	{name: "wsdomain", text: "Domain name to use for websocket", default: "ws.vialocus.co.uk", config: "custom"},
+	{name: "certARN", text: "AWS cert ARN", default: "arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx", config: "custom"},
+	{name: "auroraDatabaseName", text: "Aurora database name", default: "locus", config: "custom"},
+	{name: "auroraMasterUser", text: "Aurora master user", default: "locus", config: "custom"},
+	{name: "auroraMasterPass", text: "Aurora master password", default: "CHANGEME", config: "custom"},
+	{
+		name: "osDataHubProductURL",
+		text: "OS Data Hub Product URL (Data Downloads)",
+		default: "https://api.os.uk/downloads/v1/products",
+		config: "custom"
+	},
+	{name: "tmp", text: "Temporary local storage for downloads", default: "/tmp", config: "custom"}
 ];
 
 function addConfig() {
 
-	let index=0;
-	let stage='dev';
+	let index = 0;
+	let stage = 'dev';
 
 	askQuextion();
+
 	function askQuextion() {
-		if(index<configQuestions.length) {
-			if(configQuestions[index].details)
+		if (index < configQuestions.length) {
+			if (configQuestions[index].details)
 				console.log(configQuestions[index].details);
 			readline.question(`${configQuestions[index].text} [${configQuestions[index].default}]?`, (cmd) => {
 				if (cmd.length === 0)
@@ -387,14 +408,14 @@ function addConfig() {
 }
 
 function writeConfig() {
-	fs.writeFileSync(customFile,YAML.stringify(configs.custom) );
+	fs.writeFileSync(customFile, YAML.stringify(configs.custom));
 	console.log('Config files written');
 	commandLoop();
 
 }
 
 function listConfig() {
-	for(let i in configs.custom) {
+	for (let i in configs.custom) {
 		console.log(`[${i}]`);
 	}
 	commandLoop();

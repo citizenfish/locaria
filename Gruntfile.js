@@ -140,13 +140,7 @@ module.exports = function (grunt) {
 					params: {}
 				},
 				files: [
-					{expand: true, cwd: 'site/', src: ['**'], dest: '/'},
-					{
-						expand: false,
-						src: ['site/config/config.gen.js'],
-						dest: 'config/config.js'
-					},
-					{dest: 'config/config.gen.js', 'action': 'delete'}
+					{expand: true, cwd: 'site/', src: ['**'], dest: '/' + grunt.option('path')}
 				]
 			}
 		},
@@ -184,7 +178,7 @@ module.exports = function (grunt) {
 					url: grunt.option('url') + '/search',
 					method: 'POST',
 					json: true,
-					body: { "category":"*", "search_text":"Frimley" }
+					body: {"category": "*", "search_text": "Frimley"}
 				},
 				dest: 'api_response.json'
 			},
@@ -193,7 +187,7 @@ module.exports = function (grunt) {
 					url: grunt.option('url') + '/search',
 					method: 'POST',
 					json: true,
-					body: { "bbox": "-0.8 51.3,-0.7 51.4", "category":"*", "search_text":"Frimley" }
+					body: {"bbox": "-0.8 51.3,-0.7 51.4", "category": "*", "search_text": "Frimley"}
 				},
 				dest: 'api_response.json'
 			}
@@ -205,7 +199,7 @@ module.exports = function (grunt) {
 				stderr: false
 			},
 			invalidate: {
-				command: 'aws cloudfront create-invalidation --distribution-id='+grunt.option('distribution')+' --paths "/*" --profile '+grunt.option('profile')
+				command: 'aws cloudfront create-invalidation --distribution-id=' + grunt.option('distribution') + ' --paths "/*" --profile ' + grunt.option('profile')
 			}
 		},
 	});
@@ -216,10 +210,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-http');
 
 
-
 	grunt.registerTask('runTests', ['pgsql:tests']);
 	grunt.registerTask('deploySQLFull', ['pgsql:full']);
 	grunt.registerTask('deploySQLupgrade', ['pgsql:upgrade']);
-	grunt.registerTask('deploySite', ['aws_s3:site','shell:invalidate']);
-	grunt.registerTask('apiTest', ['http:version','http:list_categories','http:get_item','http:search','http:bboxsearch']);
+	grunt.registerTask('deploySite', ['aws_s3:site', 'shell:invalidate']);
+	grunt.registerTask('apiTest', ['http:version', 'http:list_categories', 'http:get_item', 'http:search', 'http:bboxsearch']);
 };
