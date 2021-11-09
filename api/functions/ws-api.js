@@ -139,9 +139,23 @@ module.exports.run = (event, context, callback) => {
 			case 'sapi':
 				validateToken(packet, function (tokenPacket) {
 						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
+							// inject groups / user from token
+							packet.data["_user"] = tokenPacket['cognito:username'];
+							packet.data["_group"] = tokenPacket['cognito:groups'];
+							packet.data["_email"] = tokenPacket['email'];
 							client = database.getClient();
-							let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB)';
-							let qarguments = [packet.data];
+							let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB,$2::JSONB)';
+							/* For non admins
+														let qarguments = [packet.data, {
+															"owner": tokenPacket['cognito:username'],
+															"view": ["Moderator"]
+
+														}];
+							*/
+							let qarguments = [packet.data, {
+								"owner": tokenPacket['cognito:username'],
+								"email": tokenPacket['email']
+							}];
 							console.log(querysql);
 							console.log(qarguments);
 							client.query(querysql, qarguments, function (err, result) {

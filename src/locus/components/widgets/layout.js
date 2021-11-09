@@ -108,7 +108,8 @@ const Layout = ({children, map, update}) => {
 				"name": "xyz",
 				"type": "xyz",
 				"url": `https://api.os.uk/maps/raster/v1/zxy/${configs.OSLayer}/{z}/{x}/{y}.png?key=${configs.OSKey}`,
-				"active": true
+				"active": true,
+				"attributions": configs.OSAttribution
 			});
 
 			ol.addLayer({
@@ -265,7 +266,7 @@ const Layout = ({children, map, update}) => {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<MenuItem component={Link} to={`/`}>Home</MenuItem>
+			<MenuItem key={'Home'} component={Link} to={`/`}>Home</MenuItem>
 			{channels.listChannels().map(function (channel) {
 				if (channels.displayChannel(channel))
 					return channelDisplay(channels.getChannelProperties(channel));
@@ -313,8 +314,8 @@ const Layout = ({children, map, update}) => {
 					open={isProfileMenuOpen}
 					onClose={handleMenuClose}
 				>
-					<MenuItem onClick={handleLogin}>Login</MenuItem>
-					<MenuItem onClick={handleSignup}>Signup</MenuItem>
+					<MenuItem key={"Login"} onClick={handleLogin}>Login</MenuItem>
+					<MenuItem key={"Signup"} onClick={handleSignup}>Signup</MenuItem>
 				</Menu>
 			)
 		} else {
@@ -334,9 +335,9 @@ const Layout = ({children, map, update}) => {
 					open={isProfileMenuOpen}
 					onClose={handleMenuClose}
 				>
-					<MenuItem onClick={handleLogout}>Logout</MenuItem>
+					<MenuItem key={"Logout"} onClick={handleLogout}>Logout</MenuItem>
 					{cookies.groups.indexOf('Admins') !== -1 ?
-						<MenuItem component={Link} to={`/Admin/`} key="adminLink">Admin</MenuItem> : ''}
+						<MenuItem component={Link} to={`/Admin/`} key={"adminLink"}>Admin</MenuItem> : ''}
 				</Menu>
 			)
 		}
@@ -394,7 +395,7 @@ const Layout = ({children, map, update}) => {
 							<Box sx={{flexGrow: 1}}/>
 							<Box sx={{display: {xs: 'none', md: 'flex'}}}>
 								<IconButton
-									size="large"
+									size="medium"
 									edge="end"
 									aria-label="account of current user"
 									aria-controls={menuId}
