@@ -2,8 +2,9 @@
  * This script runs in a docker container and acts as the controller for the data load process
  *
  */
+const {load_excel} = require('./load_excel.js')
 
-const {registerContainer, updateContainerStatus} = require('./loader_utils.js')
+const {registerContainer, updateContainerStatus} = require('../loader_utils.js')
 let containerId
 /**
  * This function carries out the data load
@@ -12,15 +13,23 @@ let containerId
  */
 
 const loadFunction = async (parameters) => {
-    console.log(`Loading ${parameters.id}`)
+    let result = await load_excel(parameters, updateContainerStatus)
+
+    if(result.error) {
+        throw({error :result.error})
+    }
+    return result
 }
+
+//TESTING TODO REMOVE
+
+process.env.CONTAINERID = 1
 
 /**
  * We need to register our container, get an id and use this id for status updating
  */
-updateContainerStatus({id: process.env.CONTAINERID, type: "<LOADER NAME>"})
+updateContainerStatus({id: process.env.CONTAINERID, type: "data_file_loader"})
     .then(parameters => {
-        //get the parameters and id back from the database
         containerId = parameters.id
         console.log(`Container initialised with id ${containerId}`)
         /* Call the loader */
@@ -30,8 +39,11 @@ updateContainerStatus({id: process.env.CONTAINERID, type: "<LOADER NAME>"})
                         .then(result => console.log(`Load process has completed`))
                 }
             ).catch(error => {
-            updateContainerStatus({id: containerId, errorMessage: error, status : 'ERROR'})
-                .then(result => console.log(`Load process has errored`))
+                updateContainerStatus({id: containerId, errorMessage: error, status : 'ERROR'})
+                    .then(result => {
+                        console.log(`Load process has errored`)
+                        console.log(error)
+                    })
         })
         /* This is how you update status */
 
@@ -45,6 +57,7 @@ updateContainerStatus({id: process.env.CONTAINERID, type: "<LOADER NAME>"})
             console.log(` Something bad happened ${error}`)
         }
     })
+
 
 
 

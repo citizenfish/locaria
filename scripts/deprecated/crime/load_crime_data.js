@@ -1,22 +1,22 @@
 const {runQuery,fetch_sync} = require('../load_utils')
 const crimeURL = 'https://data.police.uk/api/crimes-street/all-crime'
 
-const crime_table_sql = './crime/crime_table.sql'
+const crime_table_sql = './data_file/crime_table.sql'
 const default_table = 'locus_core.all_crime'
 
 module.exports.load_crime_data = async (command, us) => {
 
     if(!command.parameters.la_polygon) {
-        throw {error : 'Local authority polygon required to load crime data'}
+        throw {error : 'Local authority polygon required to load data_file data'}
     }
 
     us({message: `Running ${crime_table_sql}`})
     command['sqlFile'] = crime_table_sql
     let sql = await runQuery(command)
     delete command['sqlFile']
-    us({message : 'crime SQL run', detail :sql})
+    us({message : 'data_file SQL run', detail :sql})
 
-    //Retrieve crime data for polygon provided
+    //Retrieve data_file data for polygon provided
 
     let url = `${crimeURL}?poly=${command.parameters.la_polygon}`
     let crimes = await fetch_sync(url)
