@@ -15,51 +15,26 @@ let containerId
 const loadFunction = async (parameters) => {
     let result = await load_excel(parameters, updateContainerStatus)
 
-    if(result.error) {
-        throw({error :result.error})
+    if (result.error) {
+        throw({error: result.error})
     }
     return result
 }
 
 //TESTING TODO REMOVE
-
 process.env.CONTAINERID = 1
 
 /**
  * We need to register our container, get an id and use this id for status updating
  */
-updateContainerStatus({id: process.env.CONTAINERID, type: "data_file_loader"})
-    .then(parameters => {
-        containerId = parameters.id
-        console.log(`Container initialised with id ${containerId}`)
-        /* Call the loader */
-        loadFunction(parameters)
-            .then(result => {
-                    updateContainerStatus({id: containerId, statusMessage: result, status: 'COMPLETED'})
-                        .then(result => console.log(`Load process has completed`))
-                }
-            ).catch(error => {
-                updateContainerStatus({id: containerId, errorMessage: error, status : 'ERROR'})
-                    .then(result => {
-                        console.log(`Load process has errored`)
-                        console.log(error)
-                    })
-        })
-        /* This is how you update status */
 
-    })
-    .catch(error => {
-        // If the container has been created we move it into error status
-        if (containerId !== undefined) {
-            updateContainerStatus({id: containerId, errorMessage: error.message, status: 'ERROR'})
-                .then(result => console.log(`Container ERROR status updated with id ${result}`))
-        } else {
-            console.log(` Something bad happened ${error}`)
-        }
-    })
+let loader_wrapper = async() => {
 
+    let init = await updateContainerStatus({id: process.env.CONTAINERID, type: "data_file_loader", status: 'FARGATE_RUNNING'})
+    let load = await loadFunction(init)
+    let finish = updateContainerStatus({id: init.id, statusMessage: load, status: 'COMPLETED'})
+    process.exit(1)
 
+}
 
-
-
-
+loader_wrapper()
