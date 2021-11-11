@@ -195,15 +195,15 @@ module.exports.run = (event, context, callback) => {
 							let client = database.getClient();
 							// Valid user with loader token
 							let cb = (result) => {sendToClient(result)}
-							switch (packet.method) {
+							switch (packet.data.method) {
 								case 'get_containers':
-									get_containers(packet,client, cb);
+									get_containers(packet.data,client, cb);
 									break;
 								case 'instantiate_container':
-									instantiate_container(packet,client,cb);
+									instantiate_container(packet.data,client,cb);
 									break;
 								case 'get_container_status':
-									get_container_status(packet,client),cb);
+									get_container_status(packet.data,client),cb);
 									break;
 								default:
 									payload.packet['response_code'] = 401;

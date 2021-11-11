@@ -13,6 +13,11 @@ The architecture works as follows:-
   - report data load process
   - listen on ports for commands (if staying active)
 
+# Process
+
+STEP 1 - Make an API call to get_containers which will return a list of containers that can be instantiated
+
+
 # websockets API
 
 The websockets api will provide the following set of methods:-
