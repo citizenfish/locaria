@@ -284,6 +284,7 @@ function executeWithCatch(cmd, success, fail, options) {
 		if (err) {
 			console.log('command FAILED!');
 			console.log(stderr);
+			console.log(err);
 			fail();
 		} else {
 			console.log(stdout);
@@ -329,13 +330,10 @@ function deploySQL(stage) {
 }
 
 function upgradeSQL(stage) {
-	const options = {};
-	const cmdLine = `grunt deploySQLupgrade --stage=${stage}`;
-	console.log(`#${cmdLine}`);
-	exec(cmdLine, options, (err, stdout, stderr) => {
-		console.log(stdout);
-		console.log(err);
-		console.log(stderr);
+	executeWithCatch(`grunt deploySQLupgrade --stage=${stage}`, () => {
+		deploySystemMain(stage);
+
+	}, () => {
 		deploySystemMain(stage);
 	});
 }

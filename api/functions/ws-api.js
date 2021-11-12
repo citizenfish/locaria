@@ -15,7 +15,7 @@ const fetch = require('node-fetch');
 
 //data load api
 
-const {get_containers,instantiate_container,get_container_status} =  require('./data_loader/load_methods.js');
+const {get_containers, instantiate_container, get_container_status} = require('./data_loader/load_methods.js');
 const {send} = require("serverless/lib/utils/telemetry");
 const MAX_BYTES = 50000;
 
@@ -194,16 +194,18 @@ module.exports.run = (event, context, callback) => {
 
 							let client = database.getClient();
 							// Valid user with loader token
-							let cb = (result) => {sendToClient(result)}
-							switch (packet.method) {
+							let cb = (result) => {
+								sendToClient(result)
+							}
+							switch (packet.data.method) {
 								case 'get_containers':
-									get_containers(packet,client, cb);
+									get_containers(packet, client, cb);
 									break;
 								case 'instantiate_container':
-									instantiate_container(packet,client,cb);
+									instantiate_container(packet, client, cb);
 									break;
 								case 'get_container_status':
-									get_container_status(packet,client),cb);
+									get_container_status(packet, client, cb);
 									break;
 								default:
 									payload.packet['response_code'] = 401;
