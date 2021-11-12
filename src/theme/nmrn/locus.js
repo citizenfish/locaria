@@ -1,48 +1,40 @@
-import React from 'react';
 import {alpha, makeStyles, createTheme} from '@material-ui/core/styles';
-import Channels from 'libs/Channels'
+
 
 // Channel Images
+import channelPlanning from '../default/images/channel-planning.jpg';
+import channelDemocracy from '../default/images/channel-democracy.jpg';
+import channelEvents from '../default/images/channel-events.jpg';
+import channelReported from '../default/images/channel-reported.jpg';
 
-import channelArt from './images/arts.png';
-import channelCommunity from './images/community.png';
-import channelMusic from './images/music.png';
-import channelSport from './images/sport.png';
-import channelDance from './images/dance.png';
-import channelEducational from './images/educational.png';
-import channelTech from './images/tech.png';
-import channelGeneral from './images/general.png';
+// Channel icons
 
-// map icons
-
-import iconDefault from './images/icons/marker-unknown.svg';
-import iconArts from './images/icons/marker-arts-selected.svg';
-import iconCommunity from './images/icons/marker-community-selected.svg';
-import iconMusic from './images/icons/marker-music-selected.svg';
-import iconSport from './images/icons/marker-sport-selected.svg';
-import iconDance from './images/icons/marker-dance-selected.svg';
-import iconEducational from './images/icons/marker-educational-selected.svg';
-import iconTech from './images/icons/marker-tech-selected.svg';
-import iconGeneral from './images/icons/marker-general-selected.svg';
+import iconDefault from '../default/images/marker.svg';
+import iconPlanning from '../default/images/marker-planning.svg';
+import iconEvents from '../default/images/marker-events.svg';
+import iconCrime from '../default/images/marker-crime.svg';
+import Channels from "../../locus/libs/Channels";
+import iconArts from "../london/images/icons/marker-arts-selected.svg";
+import iconCommunity from "../london/images/icons/marker-community-selected.svg";
+import iconDance from "../london/images/icons/marker-dance-selected.svg";
+import iconEducational from "../london/images/icons/marker-educational-selected.svg";
+import iconMusic from "../london/images/icons/marker-music-selected.svg";
+import iconSport from "../london/images/icons/marker-sport-selected.svg";
+import iconTech from "../london/images/icons/marker-tech-selected.svg";
 
 
 //https://next.material-ui.com/customization/palette/
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: '#353d42',
+			main: '#1c1c34',
 		},
 		secondary: {
-			main: '#e7236e',
-			dark: '#831239'
-		},
-	},
-	typography: {
-		fontFamily: [
-			'Arial'
-		].join(','),
+			main: '#145062',
+		}
 	}
 });
+
 
 const useStyles = makeStyles((theme) => ({
 
@@ -186,161 +178,127 @@ const useStyles = makeStyles((theme) => ({
 	})
 );
 
-const channels = new Channels();
-
 const tags = {
-	"Arts": {
+	"Full": {
 		"mapIcon": `${iconArts}`,
 		"color": "#df7f2b"
 	},
-	"Community": {
+	"Conditions": {
 		"mapIcon": `${iconCommunity}`,
 		"color": "#e95814"
 	},
-	"Dance": {
+	"Outline": {
 		"mapIcon": `${iconDance}`,
 		"color": "#792d89"
 	},
-	"Educational": {
+	"Heritage": {
 		"mapIcon": `${iconEducational}`,
 		"color": "#14587e"
 	},
-	"Music": {
+	"Amendment": {
 		"mapIcon": `${iconMusic}`,
 		"color": "#9e125b"
 	},
-	"Sport": {
+	"Trees": {
 		"mapIcon": `${iconSport}`,
 		"color": "#0f8e47"
 	},
-	"Tech": {
+	"Other": {
 		"mapIcon": `${iconTech}`,
 		"color": "#1aabe3"
 	}
 };
 
+
+const channels = new Channels();
+
+channels.addChannel('Planning', {
+	"key": "Planning",
+	"type": "Category",
+	"name": "Planning",
+	"description": "Find all Conservation Areas, Tree Preservation Orders, Listed Buildings and view Planning Applications received within the last 30 days.",
+	"category": "Planning",
+	"image": `${channelPlanning}`,
+	"mapIcon": iconPlanning,
+	"color": "#4a94e9",
+	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}],
+	"tags": tags,
+	"fields": [
+		{
+			"type": "text",
+			"name": "Title",
+			"key": "title"
+		},
+		{
+			"type": "text",
+			"name": "Description of application",
+			"key": "text"
+		}
+	],
+	"submit": "planning_applications"
+
+});
 channels.addChannel('Events', {
 	"key": "Events",
 	"type": "Category",
-	"name": "Search",
-	"description": "Find all events in your local area.",
+	"name": "Events",
+	"description": "A list of events and happenings running in your area",
 	"category": "Events",
-	"image": `${channelGeneral}`,
-	"mapIcon": iconGeneral,
-	"color": "#4a94e9",
-	"display": true,
-	"tags": tags,
-	"search": [{"component": "SearchDistance", "max": 50}, {"component": "SearchTags"}, {
-		"component": "SearchRange",
-		"title": "Age",
-		"min": 0,
-		"max": 25
-	}]
+	"image": `${channelEvents}`,
+	"mapIcon": iconEvents,
+	"color": "#df7f2b",
+	"tags": {
+		"Arts": {
+			"mapIcon": `${iconEvents}`,
+			"color": "#df7f2b"
+		}
+	}
+
 });
-
-
-channels.addChannel('Arts', {
-	"key": "Arts",
+channels.addChannel('Crime', {
+	"key": "Crime",
 	"type": "Category",
-	"name": "Art",
-	"description": "Find all Art events in your local area.",
-	"category": "Events",
-	"filterTags": ["Arts"],
-	"image": `${channelArt}`,
-	"mapIcon": iconArts,
-	"color": "#dca000",
-	"tags": tags
+	"name": "Crime",
+	"description": "View Crime data, accessed via the Police Crime Data API. The data does not show cases within the last three months. Figures obtained from Police.UK.",
+	"category": "Crime",
+	"image": `${channelReported}`,
+	"mapIcon": iconCrime,
+	"color": "#c31d49",
+
 });
+channels.addChannel('Democracy', {
+	"key": "Democracy",
+	"type": "Report",
+	"name": "Democracy",
+	"description": "Find information about wards, parishes, councillors, MPs, polling stations and council tax in your selected location.",
+	"report_name": "democracy_location",
+	"image": `${channelDemocracy}`,
+	"mapIcon": iconDefault,
+	"color": "#000000",
 
-channels.addChannel('Community', {
-	"key": "Community",
-	"type": "Category",
-	"name": "Community",
-	"description": "Find all Community events in your local area.",
-	"category": "Events",
-	"filterTags": ["Community"],
-	"image": `${channelCommunity}`,
-	"mapIcon": iconCommunity,
-	"color": "#e95814",
-	"tags": tags
 });
-
-channels.addChannel('Dance', {
-	"key": "Dance",
+channels.addChannel('All', {
+	"key": "All",
 	"type": "Category",
-	"name": "Dance",
-	"description": "Find all Dance events in your local area.",
-	"category": "Events",
-	"filterTags": ["Dance"],
-	"image": `${channelDance}`,
-	"mapIcon": iconDance,
-	"color": "#792d89",
-	"tags": tags
-});
-
-channels.addChannel('Educational', {
-	"key": "Educational",
-	"type": "Category",
-	"name": "Educational",
-	"description": "Find all Educational events in your local area.",
-	"category": "Events",
-	"filterTags": ["Educational"],
-	"image": `${channelEducational}`,
-	"mapIcon": iconEducational,
-	"color": "#14587e",
-	"tags": tags
-});
-
-channels.addChannel('Music', {
-	"key": "Music",
-	"type": "Category",
-	"name": "Music",
-	"description": "Find all Music events in your local area.",
-	"category": "Events",
-	"filterTags": ["Music"],
-	"image": `${channelMusic}`,
-	"mapIcon": iconMusic,
-	"color": "#9e125b",
-	"tags": tags
-});
-
-channels.addChannel('Sport', {
-	"key": "Sport",
-	"type": "Category",
-	"name": "Sport",
-	"description": "Find all Sporting events in your local area.",
-	"category": "Events",
-	"filterTags": ["Sport"],
-	"image": `${channelSport}`,
-	"mapIcon": iconSport,
-	"color": "#0f8e47",
-	"tags": tags
-})
-
-channels.addChannel('Tech', {
-	"key": "Tech",
-	"type": "Category",
-	"name": "Tech",
-	"description": "Find all Tech events in your local area.",
-	"category": "Events",
-	"filterTags": ["Tech"],
-	"image": `${channelTech}`,
-	"mapIcon": iconTech,
-	"color": "#1aabe3",
-	"tags": tags
+	"name": "All",
+	"description": "View all categories",
+	"category": "*",
+	"image": `${channelReported}`,
+	"display": false,
+	"mapIcon": iconDefault
 });
 
 
 const configs = {
-	OSKey: "vmRzM4mAA1Ag0hkjGh1fhA2hNLEM6PYP",
-	OSLayer: "Light_3857",
+	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
+	OSLayer: "Road_3857",
 	OSAttribution: "© Crown copyright and database rights 2021 OS 123456",
 	cluster: true, // true|false
-	clusterCutOff: 8,
-	clusterWidthMod: 25,
-	siteTitle: "OUR LONDON",
+	clusterCutOff: 1.5,
+	clusterWidthMod: 50,
+	siteTitle: "The National Museum of the Royal Navy",
 	homeGrid: 3,
-	homeCategorySearch: "Events",
+	homeCategorySearch: ["Sailors"],
 	defaultZoom: 12,
 	defaultPostcode: "E1",
 	defaultLocation: [5176.36, 6712961.88], // EPSG:3857

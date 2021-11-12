@@ -275,35 +275,43 @@ function deployAPI(stage) {
 	});
 }
 
-function deployWEB(stage) {
-	const options = {
+function executeWithCatch(cmd, success, fail, options) {
+	options = Object.assign({
 		cwd: "./"
-	};
+	}, options);
+	console.log(`#${cmd}`);
+	exec(cmd, options, (err, stdout, stderr) => {
+		if (err) {
+			console.log('command FAILED!');
+			console.log(stderr);
+			console.log(err);
+			fail();
+		} else {
+			console.log(stdout);
+			success();
+		}
+	});
+}
+
+function deployWEB(stage) {
 
 	const buf = fs.readFileSync('api/.env');
 	const config = dotenv.parse(buf)
-
 	let path = 'main';
 	readline.question(`Path to use [${path}]?`, (cmd) => {
 		if (cmd)
 			path = cmd;
-
-		const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${config.cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
-		console.log(`#${cmdLine}`);
-
-		exec(cmdLine, options, (err, stdout, stderr) => {
-			if (err) {
-				console.log('grunt FAILED!');
-				console.log(stderr);
+		executeWithCatch('webpack --config webpack.config.js', () => {
+			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${config.cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
+			executeWithCatch(cmdLine, () => {
 				deploySystemMain(stage);
-
-
-			} else {
-				console.log(stdout);
+			}, () => {
 				deploySystemMain(stage);
-
-			}
+			})
+		}, () => {
+			deploySystemMain(stage);
 		});
+
 	});
 
 
@@ -322,13 +330,10 @@ function deploySQL(stage) {
 }
 
 function upgradeSQL(stage) {
-	const options = {};
-	const cmdLine = `grunt deploySQLupgrade --stage=${stage}`;
-	console.log(`#${cmdLine}`);
-	exec(cmdLine, options, (err, stdout, stderr) => {
-		console.log(stdout);
-		console.log(err);
-		console.log(stderr);
+	executeWithCatch(`grunt deploySQLupgrade --stage=${stage}`, () => {
+		deploySystemMain(stage);
+
+	}, () => {
 		deploySystemMain(stage);
 	});
 }

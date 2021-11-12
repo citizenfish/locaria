@@ -9,10 +9,10 @@ import {useStyles} from "themeLocus";
 import InputLabel from "@material-ui/core/InputLabel";
 
 
-const SearchRange = ({changeFunction,currentValueFrom,currentValueTo,title,min,max}) => {
-	min=min||0;
-	max=max||100;
-	title=title||'Age';
+const SearchRange = ({changeFunction, currentValueFrom, currentValueTo, title, min, max}) => {
+	min = min || 0;
+	max = max || 100;
+	title = title || 'Age';
 	const classes = useStyles();
 	const [value, setValue] = React.useState([parseInt(currentValueFrom), parseInt(currentValueTo)]);
 
@@ -27,18 +27,17 @@ const SearchRange = ({changeFunction,currentValueFrom,currentValueTo,title,min,m
 	return (
 		<FormControl className={classes.formControl} fullWidth>
 			<InputLabel id="filter-range-select-label">{title}</InputLabel>
-				<Slider
-					labelId="filter-range-select-label"
-					getAriaLabel={() => 'Range'}
-					value={value}
-					valueLabelDisplay="auto"
-					getAriaValueText={valuetext}
-					onChange={handleChange}
-					onChangeCommitted={changeFunction}
-					disableSwap
-					min={min}
-					max={max}
-					/>
+			<Slider
+				labelId="filter-range-select-label"
+				getAriaLabel={() => 'Range'}
+				value={value}
+				valueLabelDisplay="auto"
+				getAriaValueText={valuetext}
+				onChange={handleChange}
+				onChangeCommitted={changeFunction}
+				min={min}
+				max={max}
+			/>
 		</FormControl>
 	)
 }
