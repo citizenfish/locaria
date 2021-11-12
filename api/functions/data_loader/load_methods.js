@@ -6,8 +6,8 @@ module.exports.get_containers =  (packet, client, callback) => {
 
     console.log("get_containers")
     let ret = {}
-    let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB)';
-    let qarguments= [{method: "get_containers"}];
+    let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB)'
+    let qarguments= [{method: "get_containers"}]
 
     client.query(querysql, qarguments,  (err, result) => {
 

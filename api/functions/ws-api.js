@@ -197,13 +197,13 @@ module.exports.run = (event, context, callback) => {
 							let cb = (result) => {sendToClient(result)}
 							switch (packet.data.method) {
 								case 'get_containers':
-									get_containers(packet.data,client, cb);
+									get_containers(packet,client, cb);
 									break;
 								case 'instantiate_container':
-									instantiate_container(packet.data,client,cb);
+									instantiate_container(packet,client,cb);
 									break;
 								case 'get_container_status':
-									get_container_status(packet.data,client),cb);
+									get_container_status(packet,client,cb);
 									break;
 								default:
 									payload.packet['response_code'] = 401;

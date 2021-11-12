@@ -88,7 +88,7 @@ module.exports.gets3File  = async (region,bucket,path, toString = true)  => {
         return fileContents
 
     } catch(e){
-        throw ({message: 'gets3File error', error: e})
+        return ({message: 'gets3File error', error: e})
     }
 
 }

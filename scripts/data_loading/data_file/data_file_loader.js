@@ -22,7 +22,7 @@ const loadFunction = async (parameters) => {
 }
 
 //TESTING TODO REMOVE
-process.env.CONTAINERID = 1
+//process.env.CONTAINERID = 1
 
 /**
  * We need to register our container, get an id and use this id for status updating
@@ -30,11 +30,24 @@ process.env.CONTAINERID = 1
 
 let loader_wrapper = async() => {
 
-    let init = await updateContainerStatus({id: process.env.CONTAINERID, type: "data_file_loader", status: 'FARGATE_RUNNING'})
-    let load = await loadFunction(init)
-    let finish = updateContainerStatus({id: init.id, statusMessage: load, status: 'COMPLETED'})
-    process.exit(1)
-
+    try {
+        let init = await updateContainerStatus({
+            id: parseInt(process.env.CONTAINERID),
+            type: "data_file_loader",
+            status: 'FARGATE_RUNNING'
+        })
+        let load = await loadFunction(init)
+        let finish = updateContainerStatus({id: init.id, statusMessage: load, status: 'COMPLETED'})
+        process.exit(1)
+    } catch(e) {
+        console.log(e)
+        updateContainerStatus({
+            id: process.env.CONTAINERID,
+            type: "data_file_loader",
+            status: 'FARGATE_FAILED',
+            errorMessage : e
+        })
+    }
 }
 
 loader_wrapper()
