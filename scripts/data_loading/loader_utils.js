@@ -3,6 +3,9 @@ const fs = require("fs")
 const {S3Client, GetObjectCommand} = require("@aws-sdk/client-s3")
 const fastcsv = require('fast-csv')
 const tmp = require('temporary')
+const fetch = require("node-fetch");
+const yauzl = require("yauzl");
+const {execFile} = require("child_process");
 const copyFrom = require('pg-copy-streams').from
 
 const streamToString = (stream, toString = true) =>
@@ -160,5 +163,166 @@ module.exports.updateContainerStatus = async (parameters) => {
     let result = await  containerAPI(parameters)
     if(!result.id) throw({result})
     return result
+
+}
+
+module.exports.downloadFileFromURL = async (parameters) => {
+
+    let status = []
+    let tmp_file = new tmp.File().path
+
+    try {
+
+        status.push({message: 'Begin download', data: parameters})
+        const file = fs.createWriteStream(tmp_file)
+        await new Promise(resolve => {
+
+            fetch(parameters.url)
+                .then(
+                    res => new Promise((resolve) => {
+                            res.body.pipe(file)
+                            res.body.on('end', () => resolve())
+                        }
+                    ))
+            file.on('finish', resolve);
+        });
+
+        status.push({message : `Downloaded ${parameters.url} to ${tmp_file}`})
+
+        return({file_name : tmp_file, status : status})
+
+    } catch (e) {
+        return ({message: 'downloadFileFromURL', error: e})
+    }
+}
+
+module.exports.unzipFile = async(parameters) => {
+
+    let returnValue = {processedFiles :[], input: parameters.input, output: parameters.output}
+
+    try {
+        await new Promise((resolve, reject) => {
+            yauzl.open(parameters.input, {
+                    lazyEntries: true,
+                    autoClose: true
+                },  (err, zipfile) => {
+
+                    if (err) {
+                        console.log(err.message);
+                        reject(err.message);
+                    }
+
+                    let gpkg = false;
+                    let finishedZip =false;
+
+                    //make sure we have finished writing before we close the process
+                    const checkFinished = () => {
+                        if(gpkg && finishedZip) {
+                            resolve()
+                        }
+                    }
+                    zipfile.readEntry()
+
+                    zipfile.on('entry', (entry) =>{
+
+                        if(/gpkg|csv/.test(entry.fileName)){
+                            returnValue.processedFiles.push(entry.fileName)
+                            zipfile.openReadStream(entry,  (err, readStream) => {
+
+                                if (err) {
+                                    console.log(err.message)
+                                    reject(err);
+                                }
+
+                                //ensure we finish writing before closing zip
+                                gpkg = false;
+                                const outFile = fs.createWriteStream(parameters.output)
+                                    .on('finish', () => {
+                                        gpkg = true;
+                                        checkFinished()
+                                    })
+
+                                readStream.pipe(outFile)
+
+                                readStream.on('end', ()=>{
+                                    zipfile.readEntry()
+                                })
+
+
+                            })
+                        } else {
+                            zipfile.readEntry()
+                        }
+                    })
+
+                    zipfile.once('close', async function () {
+                        finishedZip = true
+                        checkFinished()
+
+                    });
+
+                }
+            )
+
+        })
+
+        return returnValue
+
+    } catch(e){
+
+        throw ({message: 'unzipFile error', error: e})
+    }
+}
+
+module.exports.loadGeopackage = async(parameters) => {
+
+    let status = []
+
+    const db = `${process.env.DBCONNECTION} active_schema=${parameters.schema}`
+
+    //`PG:dbname=${parameters.credentials.auroraDatabaseName} active_schema=${command.parameters.schema || 'locus_data'} user=${command.credentials.auroraMasterUser} password=${command.credentials.auroraMasterPass} port=${command.credentials.auroraPort} host=${command.credentials.auroraHost}`;
+
+    let args = ['-f',     'PostgreSQL',
+        '-oo',    'LIST_ALL_TABLES=NO',
+        '--config',   'PG_USE_COPY YES',
+        '--config',   'OGR_TRUNCATE YES',
+        '-lco',   'GEOMETRY_NAME=wkb_geometry',
+        '-t_srs', 'EPSG:4326',
+        '-skipfailures',
+        db,
+        output
+    ];
+
+    //Allow layers to be specified
+    if(parameters.layers) {
+        args = args.concat(parameters.layers)
+    }
+
+    status.push(args)
+
+    try {
+        let res  = await new Promise((resolve,reject) => {
+
+            execFile('ogr2ogr', args, (error, stdout, stderr) => {
+                if (error) {
+                    status.push({errorMessage : 'ogr2ogr error',data: stderr})
+                    reject(status)
+                }
+                status.push({statusMessage : 'ogr2ogr run',data: stdout})
+                resolve(status)
+            });
+        });
+
+        return status
+
+    } catch(e){
+        throw ({message: 'loadGeopackage error', error: e})
+    }
+
+
+}
+
+module.exports.loadCSV = async(command) => {
+
 
 }
