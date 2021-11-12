@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		mapResetButton: {
 			position: "absolute",
-			bottom: "10px",
+			top: "10px",
 			right: "10px",
 			zIndex: 100,
 			background: alpha(theme.palette.common.white, 0.25)
@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		channelPanel: {
 			"min-width": '200px',
-			"min-height": '100px'
+			"min-height": '150px'
 		},
 		channel: {
 			width: '100%'
@@ -169,7 +169,6 @@ const useStyles = makeStyles((theme) => ({
 			margin: theme.spacing(0, 2),
 			padding: theme.spacing(0, 2),
 			color: alpha(theme.palette.common.white, 1) + '!important'
-
 		},
 		viewTitle: {
 			paddingTop: '10px',
@@ -344,7 +343,7 @@ const configs = {
 	homeCategorySearch: "Events",
 	defaultZoom: 12,
 	defaultPostcode: "E1",
-	defaultLocation: [0.046499885910004, 51.5153355320004], // EPSG:3857
+	defaultLocation: [5176.36, 6712961.88], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
 	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,
