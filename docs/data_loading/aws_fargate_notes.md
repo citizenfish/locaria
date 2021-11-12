@@ -74,7 +74,7 @@ aws ecs create-cluster --profile locus --cluster-name "$DOCKERNAME_cluster" --re
 ## Building the docker image locally
 
 ```shell
-docker buildx build --platform=linux/amd64 -t $DOCKERNAME:latest .
+docker buildx build --platform=linux/amd64 -f <DOCKERFILE> -t $DOCKERNAME:latest .
 ```
 
 ## Tagging the docker image
