@@ -10,7 +10,7 @@ BEGIN
     parameters = parameters || jsonb_build_object('timestamp', to_char(current_timestamp, 'DD/MM/YYYY HH24:MI:SS'));
 
     UPDATE locus_core.containers
-    SET attributes = attributes ||  jsonb_build_object('log_messages', attributes->'log_messages' || jsonb_build_array(parameters - 'status')),
+    SET attributes = attributes  ||  jsonb_build_object('log_messages', COALESCE(attributes->'log_messages', jsonb_build_array()) || jsonb_build_array(parameters - 'status' - 'id')),
         status = COALESCE(parameters->>'status',status),
         last_update = current_timestamp
     WHERE id = (parameters->>'id')::BIGINT

@@ -1,6 +1,9 @@
 const {Client} = require('pg')
-const fs = require("fs");
-const {S3Client, GetObjectCommand} = require("@aws-sdk/client-s3");
+const fs = require("fs")
+const {S3Client, GetObjectCommand} = require("@aws-sdk/client-s3")
+const fastcsv = require('fast-csv')
+const tmp = require('temporary')
+const copyFrom = require('pg-copy-streams').from
 
 const streamToString = (stream, toString = true) =>
     new Promise((resolve, reject) => {
@@ -9,6 +12,60 @@ const streamToString = (stream, toString = true) =>
         stream.on("error", reject)
         stream.on("end", () => resolve(toString? Buffer.concat(chunks).toString("utf8") : Buffer.concat(chunks)))
     })
+
+module.exports.streamLoader = async (parameters) => {
+
+    const client = new Client(process.env.DBCONNECTION);
+    let errors = 0
+    let ret = await new Promise((resolve,reject) => {
+
+        client.connect().catch(e => {
+            console.log(e.stack)
+            resolve({error: e.stack})
+        })
+
+        let stream = client.query(copyFrom(`COPY ${parameters.table}(category_id,attributes) FROM STDIN WITH CSV`))
+        console.log('STREAM')
+        stream.on('error', () => errors++)
+        stream.on('end', () => {
+            resolve({load_errors : errors})
+        })
+        console.log('CSV')
+        fastcsv.writeToStream(stream, parameters.data)
+            .on('error', (err) => {
+                console.log(err)
+                resolve({error: err})
+
+            })
+            .on('finish', () => {
+                console.log('FINISH')
+                resolve({load_errors : errors})
+            })
+
+    })
+
+    return ret
+}
+
+module.exports.writeCSV = async (parameters) => {
+
+    if(parameters.file_path === undefined){
+        let file = new tmp.File()
+        parameters["file_path"] = file.path
+    }
+
+    let errors = 0
+    let ret = await new Promise((resolve,reject) => {
+
+        fastcsv.writeToPath(parameters.file_path, parameters.data)
+            .on('error', (err) => {errors++})
+            .on('finish', () => {
+                resolve({file_path : parameters.file_path, errors : 0})
+            })
+    })
+
+    return ret
+}
 
 module.exports.gets3File  = async (region,bucket,path, toString = true)  => {
 
@@ -43,7 +100,8 @@ module.exports.runQuery =  async(parameters, values=[]) => {
         let fileStream = parameters.sqlFile ? fs.createReadStream(parameters.sqlFile) : ''
         let query = fileStream === '' ? parameters.query : await streamToString(fileStream)
 
-        const client = new Client(parameters.connectionString);
+        //Connection string must be passed in from environment
+        const client = new Client(process.env.DBCONNECTION);
 
         return( await new Promise((resolve, reject) => {
 
@@ -80,7 +138,6 @@ const containerAPI =  async (parameters) => {
 
 
     let result =  await module.exports.runQuery({
-            connectionString: process.env.DBCONNECTION,
             query: 'SELECT locus_core.locus_internal_gateway($1::JSONB) AS container'
         },
         [parameters])
