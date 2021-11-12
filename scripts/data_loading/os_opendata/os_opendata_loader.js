@@ -2,7 +2,7 @@
  * This script runs in a docker container and acts as the controller for the data load process
  *
  */
-const {load_excel} = require('./load_excel.js')
+const {load_os_opendata} = require('./load_os_opendata.js')
 
 const {updateContainerStatus} = require('../loader_utils.js')
 
@@ -13,16 +13,17 @@ const {updateContainerStatus} = require('../loader_utils.js')
  */
 
 const loadFunction = async (parameters) => {
-    let result = await load_excel(parameters, updateContainerStatus)
+    let result = await load_os_opendata(parameters, updateContainerStatus)
 
     if (result.error) {
         throw({error: result.error})
     }
+    console.log(result)
     return result
 }
 
 //TESTING TODO REMOVE
-//process.env.CONTAINERID = 1
+process.env.CONTAINERID = 2
 
 /**
  * We need to register our container, get an id and use this id for status updating
@@ -33,7 +34,7 @@ let loader_wrapper = async() => {
     try {
         let init = await updateContainerStatus({
             id: parseInt(process.env.CONTAINERID),
-            type: "data_file_loader",
+            type: "os_opendata_loader",
             status: 'FARGATE_RUNNING'
         })
         let load = await loadFunction(init)
