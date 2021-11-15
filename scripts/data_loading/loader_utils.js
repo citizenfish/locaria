@@ -7,6 +7,7 @@ const fetch = require("node-fetch");
 const yauzl = require("yauzl");
 const {execFile} = require("child_process");
 const copyFrom = require('pg-copy-streams').from
+const DBparse = require('pg-connection-string').parse;
 
 const streamToString = (stream, toString = true) =>
     new Promise((resolve, reject) => {
@@ -174,6 +175,7 @@ module.exports.downloadFileFromURL = async (parameters) => {
     try {
 
         status.push({message: 'Begin download', data: parameters})
+
         const file = fs.createWriteStream(tmp_file)
         await new Promise(resolve => {
 
@@ -278,20 +280,21 @@ module.exports.loadGeopackage = async(parameters) => {
 
     let status = []
 
-    const db = `${process.env.DBCONNECTION} active_schema=${parameters.schema}`
-
     //`PG:dbname=${parameters.credentials.auroraDatabaseName} active_schema=${command.parameters.schema || 'locus_data'} user=${command.credentials.auroraMasterUser} password=${command.credentials.auroraMasterPass} port=${command.credentials.auroraPort} host=${command.credentials.auroraHost}`;
+    let config = DBparse(process.env.DBCONNECTION)
+    const db = `PG:dbname=${config.database} active_schema=${parameters.schema} user=${config.user} password=${config.password} port=${config.port} host=${config.host}`;
 
     let args = ['-f',     'PostgreSQL',
-        '-oo',    'LIST_ALL_TABLES=NO',
-        '--config',   'PG_USE_COPY YES',
-        '--config',   'OGR_TRUNCATE YES',
         '-lco',   'GEOMETRY_NAME=wkb_geometry',
         '-t_srs', 'EPSG:4326',
         '-skipfailures',
         db,
-        output
+        parameters.file
     ];
+
+    //Pass these config options via environment
+    process.env.PG_USE_COPY='YES'
+    process.env.OGR_TRUNCATE='YES'
 
     //Allow layers to be specified
     if(parameters.layers) {
