@@ -56,8 +56,23 @@ module.exports.load_os_opendata = async (parameters, us) => {
 
     let dbLoad = products[parameters.product].format === 'GeoPackage' ? await loadGeopackage(parameters) : await loadCSV(parameters)
 
-    us({id: parameters.id, statusMessage: `Data loaded via ${products[parameters.product].format}`, data: dbLoad, currentStep:'Post Load SQL'})
+    us({id: parameters.id, statusMessage: `Data loaded via ${products[parameters.product].format}`, data: dbLoad, currentStep:'Post Load SQL File'})
 
+    //Finally run any SQL post import
+
+    if(parameters.sqlFile != undefined){
+
+        let queryRes = runQuery({sqlFile: parameters.sqlFile})
+        us({id: parameters.id, statusMessage: `SQL ${parameters.sqlFile} actioned`, data: queryRes, currentStep:'Post Load SQL Query'})
+    }
+
+    if(parameters.sqlQuery != undefined){
+
+        let queryRes = runQuery({sqlFile: parameters.sqlQuery})
+        us({id: parameters.id, statusMessage: `SQL ${parameters.sqlQuery} actioned`, data: queryRes, currentStep:'Completion'})
+    }
+
+    us({id: parameters.id, statusMessage: `Data load Complete`, data: dbLoad, currentStep:'End'})
     return dbLoad
 
     /*
