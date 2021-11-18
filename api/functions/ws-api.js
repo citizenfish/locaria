@@ -16,7 +16,6 @@ const fetch = require('node-fetch');
 //data load api
 
 const {get_containers, instantiate_container, get_container_status} = require('./data_loader/load_methods.js');
-const {send} = require("serverless/lib/utils/telemetry");
 const MAX_BYTES = 50000;
 
 
