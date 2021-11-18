@@ -26,7 +26,7 @@ const View = () => {
 	let {feature} = useParams();
 	let {category} = useParams();
 	const classes = useStyles();
-	const ol = new Openlayers();
+	const [ol, setOl] = React.useState(new Openlayers());
 	const [cookies, setCookies] = useCookies(['location']);
 
 	const history = useHistory();
@@ -91,16 +91,21 @@ const View = () => {
 			ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
 		}
 
+		window.websocket.registerQueue("viewLoader", function (json) {
+			if (json.packet.response_code !== 200) {
+				setView({});
+			} else {
+				setView(json.packet);
+			}
+		});
+
+		return () => {
+			window.websocket.clearQueues();
+		}
+
 
 	}, [view]);
 
-	window.websocket.registerQueue("viewLoader", function (json) {
-		if (json.packet.response_code !== 200) {
-			setView({});
-		} else {
-			setView(json.packet);
-		}
-	});
 
 	function resetMap() {
 		ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
@@ -223,7 +228,7 @@ const View = () => {
 									</CardContent>
 									<CardActions>
 										<OutsideLink to={view.features[0].properties.description.url}></OutsideLink>
-										<Share></Share>
+										<Share/>
 										{cookies.groups.indexOf('Admins') !== -1 ?
 											<Button size="small" color="secondary"
 											        variant="outlined" onClick={() => {

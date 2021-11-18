@@ -53,8 +53,6 @@ const Home = () => {
 									</Grid>
 
 								)
-							} else {
-								return '';
 							}
 						}
 					)}

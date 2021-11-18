@@ -9,10 +9,7 @@ import {useStyles} from "themeLocus";
 import InputLabel from "@material-ui/core/InputLabel";
 
 
-const SearchRange = ({changeFunction, currentValueFrom, currentValueTo, title, min, max}) => {
-	min = min || 0;
-	max = max || 100;
-	title = title || 'Age';
+const SearchRange = ({changeFunction, currentValueFrom, currentValueTo, title = 'Age', min = 0, max = 100}) => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState([parseInt(currentValueFrom), parseInt(currentValueTo)]);
 

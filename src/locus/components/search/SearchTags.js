@@ -18,6 +18,10 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 
 	React.useEffect(() => {
 
+		window.websocket.registerQueue("tagsLoader", function (json) {
+			setTags(json.packet.tags);
+		});
+
 		if (tags.length === 0) {
 
 			window.websocket.send({
@@ -26,14 +30,12 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 				"data": {"method": "list_tags", "filter": {"category": [category]}}
 			});
 		}
-		;
+		return () => {
+			window.websocket.clearQueues();
+		}
 
+	}, [tags]);
 
-	});
-
-	window.websocket.registerQueue("tagsLoader", function (json) {
-		setTags(json.packet.tags);
-	});
 
 	function handleChange(e) {
 		setSelectTags(e.target.value);
@@ -58,12 +60,13 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 					key={`tss-control`}
 					renderValue={(selected) => selected.join(', ')}
 				>
-					{tags.map(function (tag) {
+					{tags.map(function (tag, index) {
 						return (
-							<MenuItem key={`tsmi-${tag}`} value={tag}>
-								<Checkbox checked={selectedTags.indexOf(tag) > -1} key={`tscb-${tag}`}/>
-								<ListItemText key={`tsli-${tag}`} primary={tag}></ListItemText>
-							</MenuItem>)
+							<MenuItem key={`tsmi-${index}`} value={tag}>
+								<Checkbox checked={selectedTags.indexOf(tag) > -1}/>
+								<ListItemText primary={tag}></ListItemText>
+							</MenuItem>
+						)
 					})}
 
 				</Select>

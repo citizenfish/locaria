@@ -235,7 +235,8 @@ channels.addChannel('Planning', {
 			"key": "text"
 		}
 	],
-	"submit": "planning_applications"
+	"submit": "planning_applications",
+	"display": true
 
 });
 channels.addChannel('Events', {
