@@ -11,4 +11,4 @@ RUN apt-get --assume-yes install gdal-bin
 COPY .. .
 COPY ../os_opendata ./os_opendata
 
-CMD [ "node", "./data_file/os_opendata_loader.js" ]
+CMD [ "node", "./os_opendata/os_opendata_loader.js" ]
