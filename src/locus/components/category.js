@@ -56,8 +56,12 @@ const Category = () => {
 			forceUpdate();
 		}
 
+		return () => {
+			window.websocket.clearQueues();
+		}
 
-	});
+
+	}, [report]);
 
 	function handleLocationChange() {
 		setReport(null);
@@ -137,7 +141,7 @@ const Category = () => {
 			>
 			</CardHeader>)
 		}
-		return '';
+		return <CardHeader/>;
 	}
 
 	const showReport = () => {
@@ -195,25 +199,27 @@ const Category = () => {
 		if (channel.search === undefined) {
 			return (
 				<SearchDistance changeFunction={handleFilterChange}
-				                currentValue={location.distance} min={1} max={1000}></SearchDistance>
+				                currentValue={location.distance} min={1} max={1000}/>
 			)
 		} else {
 			return (
-				channel.search.map(function (item) {
+				channel.search.map(function (item, index) {
 					if (item.component === 'SearchDistance') {
-						return (<SearchDistance changeFunction={handleFilterChange} min={item.min} max={item.max}
-						                        currentValue={location.distance}></SearchDistance>)
+						return (<SearchDistance key={index} changeFunction={handleFilterChange} min={item.min}
+						                        max={item.max}
+						                        currentValue={location.distance}/>)
 					}
 					if (item.component === 'SearchRange') {
 						return (
-							<SearchRange changeFunction={handleRangeChange} title={item.title} min={item.min}
+							<SearchRange key={index} changeFunction={handleRangeChange} title={item.title}
+							             min={item.min}
 							             max={item.max}
 							             currentValueFrom={location.rangeFrom || item.min}
-							             currentValueTo={location.rangeTo || item.max}></SearchRange>)
+							             currentValueTo={location.rangeTo || item.max}/>)
 					}
 					if (item.component === 'SearchTags') {
-						return (<SearchTags category={category} changeFunction={handleTagChange}
-						                    currentValue={tags}></SearchTags>)
+						return (<SearchTags key={index} category={category} changeFunction={handleTagChange}
+						                    currentValue={tags}/>)
 					}
 				})
 			)
@@ -227,7 +233,7 @@ const Category = () => {
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4} className={classes.gridFull} key={"category"}>
 						<Paper elevation={3} className={classes.paperMargin}>
-							<ChannelCard path={'/'}></ChannelCard>
+							<ChannelCard path={'/'}/>
 
 							<Card className={classes.channelCardForm}>
 								<CardContent>

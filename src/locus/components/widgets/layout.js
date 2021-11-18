@@ -40,7 +40,7 @@ const Layout = ({children, map, update}) => {
 	const [cookies, setCookies] = useCookies(['location']);
 
 
-	const ol = new Openlayers();
+	const [ol, setOl] = React.useState(new Openlayers());
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isProfileMenuOpen = Boolean(anchorProfileEl);
@@ -96,7 +96,6 @@ const Layout = ({children, map, update}) => {
 	React.useEffect(() => {
 
 		if (map === true) {
-
 			ol.addMap({
 				"target": "map",
 				"projection": "EPSG:3857",
@@ -171,49 +170,52 @@ const Layout = ({children, map, update}) => {
 
 		window.websocket.registerQueue("homeLoader", function (json) {
 			if (map === true) {
-
 				ol.addGeojson({"layer": "data", "geojson": json.packet, "clear": true});
 			}
 		});
 
+		window.websocket.registerQueue("postcode", function (json) {
+			if (json.packet.features.length > 0) {
+				let postcode = document.getElementById('myPostcode').value;
+				setCookies('location', json.packet.features[0].geometry.coordinates, {path: '/', sameSite: true});
+				setCookies('postcode', postcode, {path: '/', sameSite: true});
 
-	}, []);
+				if (map === true) {
+					ol.clearLayer({"layer": "location"});
+					ol.addGeojson({
+						"layer": "location",
+						"geojson": {
+							"type": "FeatureCollection",
+							"features": [
+								{
+									"geometry": {
+										"type": "Point",
+										"coordinates": json.packet.features[0].geometry.coordinates
+									},
+									"type": "Feature",
+									"properties": {}
+								}
+							]
+						}
+					});
+					ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
+				}
+				setOpenSuccess(true);
+				if (update !== undefined)
+					update();
 
-	window.websocket.registerQueue("postcode", function (json) {
-		if (json.packet.features.length > 0) {
-			let postcode = document.getElementById('myPostcode').value;
-			setCookies('location', json.packet.features[0].geometry.coordinates, {path: '/', sameSite: true});
-			setCookies('postcode', postcode, {path: '/', sameSite: true});
 
-			if (map === true) {
-				ol.clearLayer({"layer": "location"});
-				ol.addGeojson({
-					"layer": "location",
-					"geojson": {
-						"type": "FeatureCollection",
-						"features": [
-							{
-								"geometry": {
-									"type": "Point",
-									"coordinates": json.packet.features[0].geometry.coordinates
-								},
-								"type": "Feature",
-								"properties": {}
-							}
-						]
-					}
-				});
-				ol.flyTo({"coordinate": json.packet.features[0].geometry.coordinates, "projection": "EPSG:4326"});
+			} else {
+				setOpenError(true);
 			}
-			setOpenSuccess(true);
-			if (update !== undefined)
-				update();
-
-
-		} else {
-			setOpenError(true);
+		});
+		
+		return () => {
+			window.websocket.clearQueues();
 		}
-	});
+
+	}, [map]);
+
 
 	function closeError() {
 		setOpenError(false);

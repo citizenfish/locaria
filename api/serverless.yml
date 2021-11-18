@@ -20,6 +20,8 @@ provider:
     fargateRouterPort: 5000
     poolClient: !Ref CognitoUserPoolClient
     pool: !Ref CognitoUserPool
+    ecrRepoARN: !GetAtt ECRLocusRepo.Arn
+    ecrRepoURI: !GetAtt ECRLocusRepo.RepositoryUri
   region: ${file(../../locus-custom.yml):${self:custom.stage}.region}
   websocketsApiName: locus-websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action
@@ -484,6 +486,16 @@ resources:
         Precedence: 2
         UserPoolId:
           Ref: CognitoUserPool
+    ECRLocusRepo:
+      Type: AWS::ECR::Repository
+      Properties:
+        RepositoryName: "locus-repo"
+        ImageScanningConfiguration:
+          ScanOnPush: "true"
+    ECSLocusCluster:
+      Type: 'AWS::ECS::Cluster'
+      Properties:
+        ClusterName: "locus-cluster"
 functions:
   api:
     handler: functions/api.run

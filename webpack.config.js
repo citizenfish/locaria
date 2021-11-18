@@ -1,5 +1,5 @@
 const path = require('path');
-const theme = 'nmrn';
+const theme = 'default';
 
 module.exports = {
 	mode: 'development',
