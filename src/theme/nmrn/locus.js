@@ -151,15 +151,15 @@ channels.addChannel('All', {
 
 
 const configs = {
-	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
-	OSLayer: "Road_3857",
-	OSAttribution: "© Crown copyright and database rights 2021 OS 123456",
+	mapXYZ: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv',
+	mapAttribution: "© Crown copyright and database rights 2021 OS 123456",
+	mapBuffer: 50000,
 	cluster: true, // true|false
 	clusterCutOff: 1.5,
 	clusterWidthMod: 50,
 	siteTitle: "The National Museum of the Royal Navy",
 	homeGrid: 3,
-	homeCategorySearch: ["Sailors"],
+	homeCategorySearch: ["Ship", "Sailor", "Submarine", "Graveyard", "Homeport", "Memorial"],
 	defaultZoom: 12,
 	defaultPostcode: "E1",
 	defaultLocation: [5176.36, 6712961.88], // EPSG:3857

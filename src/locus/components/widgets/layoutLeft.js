@@ -18,11 +18,10 @@ import Alert from '@material-ui/lab/Alert';
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import {useCookies} from 'react-cookie';
-import {viewStyle, locationStyle} from "mapStyle";
 import Button from "@material-ui/core/Button";
 import {useHistory} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
-import Map from "./map";
+import Map from '../widgets/map';
 
 
 const Layout = ({children, map, update}) => {
@@ -39,6 +38,7 @@ const Layout = ({children, map, update}) => {
 
 
 	const [cookies, setCookies] = useCookies(['location']);
+
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isProfileMenuOpen = Boolean(anchorProfileEl);
@@ -183,6 +183,9 @@ const Layout = ({children, map, update}) => {
 
 	}
 
+	function resetMap() {
+		ol.flyTo({"coordinate": cookies.location, "projection": "EPSG:4326", "zoom": configs.defaultZoom});
+	}
 
 	const renderMenu = (
 		<Menu

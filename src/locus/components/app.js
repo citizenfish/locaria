@@ -1,7 +1,7 @@
 import React from 'react';
 import {Switch, BrowserRouter as Router, Route, useLocation} from 'react-router-dom';
 
-import Home from './home';
+import Home from "home";
 import Report from './report';
 import Category from './category';
 import View from './view';
