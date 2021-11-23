@@ -2,25 +2,23 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
-import {useHistory} from 'react-router-dom';
 import {useStyles} from 'themeLocus';
 
 
-import LayoutLeft from '../../../locus/components/widgets/layoutLeft';
+import Layout from '../../../locus/components/widgets/layout';
+import ChannelSelect from "../../../locus/components/widgets/channelSelect";
 
 const Home = () => {
 	const classes = useStyles();
-	const history = useHistory();
 
 	return (
-		<LayoutLeft map={true}>
-
+		<Layout map={true}>
 			<Paper elevation={3} className={classes.paperMargin}>
 				<Grid container className={classes.root} spacing={2} justifyContent="center">
-					<h1>Bazinga</h1>
+					<ChannelSelect></ChannelSelect>
 				</Grid>
 			</Paper>
-		</LayoutLeft>
+		</Layout>
 	);
 };
 

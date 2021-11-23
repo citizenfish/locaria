@@ -73,7 +73,7 @@ const tags = {
 
 const channels = new Channels();
 
-channels.addChannel('Planning', {
+channels.addChannel('Sailor', {
 	"key": "Planning",
 	"type": "Category",
 	"name": "Planning",
@@ -152,7 +152,7 @@ channels.addChannel('All', {
 
 const configs = {
 	mapXYZ: 'https://cartodb-basemaps-{a-d}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
-	mapAttribution: "© Crown copyright and database rights 2021 OS 123456",
+	mapAttribution: "© OpenStreetMap contributors ©CARTO",
 	mapBuffer: 50000,
 	cluster: true, // true|false
 	clusterCutOff: 1.5,

@@ -90,7 +90,7 @@ export default class UseStyles {
 					position: "relative"
 				},
 				mapResetButton: {
-					position: "absolute",
+					position: "absolute !important",
 					top: "10px",
 					right: "10px",
 					zIndex: 100,
