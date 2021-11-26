@@ -60,11 +60,11 @@ const TopNav = () => {
 	}
 
 	function channelDisplay(channel) {
-		if (channel.type === 'Report')
-			return (<MenuItem component={Link} to={`/${channel.type}/${channel.report_name}`} key={channel.key}
+		if (channel.type === 'Report' && channel.noCategory !== undefined && channel.noCategory === true)
+			return (<MenuItem component={Link} to={`/Report/${channel.report_name}`} key={channel.key}
 			                  content={channel.name}>{channel.name}</MenuItem>)
 		else
-			return (<MenuItem component={Link} to={`/${channel.type}/${channel.key}`} key={channel.key}
+			return (<MenuItem component={Link} to={`/Category/${channel.key}`} key={channel.key}
 			                  content={channel.name}>{channel.name}</MenuItem>)
 
 	}

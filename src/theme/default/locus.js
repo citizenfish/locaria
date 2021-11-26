@@ -135,6 +135,7 @@ channels.addChannel('Democracy', {
 	"image": `${channelDemocracy}`,
 	"mapIcon": iconDefault,
 	"color": "#000000",
+	"noCategory": true
 
 });
 channels.addChannel('All', {
@@ -167,7 +168,8 @@ const configs = {
 	defaultMapIcon: iconDefault,
 	websocket: "wss://mpk9us5un9.execute-api.eu-west-1.amazonaws.com/new", // Get his this from your locus-custom.yml - wsdomain
 	cognitoURL: "locusauth.nautoguide.com", // Get his this from your locus-custom.yml - cognitoDomainName
-	cognitoPoolId: "6jbgpggjvqonk7p55m51rql445" // Get from you api/.env
+	cognitoPoolId: "6jbgpggjvqonk7p55m51rql445", // Get from you api/.env
+	searchIcon: iconPlanning
 }
 
 export {useStyles, channels, theme, configs};

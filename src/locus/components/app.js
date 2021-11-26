@@ -114,7 +114,7 @@ const App = () => {
 					<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
 					<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
-					<Route path="/Report/:reportId" component={Report}/>
+					<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
 					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
 					<Route path="/View/:category/:feature" component={View}/>
 					<Route path="/Submit/:category" component={Submit}/>

@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 
 import Container from '@material-ui/core/Container';
-import {useStyles, theme, configs} from "themeLocus";
+import {useStyles, theme, configs, channels} from "themeLocus";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
@@ -30,11 +30,17 @@ const Layout = ({children, map, update}) => {
 		if (features[0].get('geometry_type') === 'cluster') {
 			mapRef.current.zoomToExtent(features[0].get('extent'));
 		} else {
-			if (features.length === 1) {
-				history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`)
+			let channel = channels.getChannelProperties(features[0].get('category'));
+			if (channel.type === "Report") {
+				// can only handle one feature
+				history.push(`/Report/${features[0].get('category')}/${channel.reportId}/${features[0].get('fid')}`);
 			} else {
-				let searchLocation = mapRef.current.decodeCoords(features[0].getGeometry().flatCoordinates);
-				history.push(`Category/${features[0].get('category')}/${searchLocation[0]},${searchLocation[1]}/1`)
+				if (features.length === 1) {
+					history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`)
+				} else {
+					let searchLocation = mapRef.current.decodeCoords(features[0].getGeometry().flatCoordinates);
+					history.push(`Category/${features[0].get('category')}/${searchLocation[0]},${searchLocation[1]}/1`)
+				}
 			}
 		}
 	}

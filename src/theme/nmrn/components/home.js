@@ -1,12 +1,11 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 
 import {useStyles} from 'themeLocus';
 
 
 import Layout from '../../../locus/components/widgets/layout';
-import ChannelSelect from "../../../locus/components/widgets/channelSelect";
+import ChannelSearch from "../../../locus/components/widgets/channelSearch";
 
 const Home = () => {
 	const classes = useStyles();
@@ -14,12 +13,11 @@ const Home = () => {
 	return (
 		<Layout map={true}>
 			<Paper elevation={3} className={classes.paperMargin}>
-				<Grid container className={classes.root} spacing={2} justifyContent="center">
-					<ChannelSelect></ChannelSelect>
-				</Grid>
+				<ChannelSearch/>
 			</Paper>
 		</Layout>
-	);
+	)
+		;
 };
 
 

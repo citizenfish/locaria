@@ -44,8 +44,13 @@ const Map = forwardRef((props, ref) => {
 		// optionals
 		if (props.handleMapClick !== undefined)
 			ol.simpleClick({"clickFunction": props.handleMapClick});
-		if (props.onZoomChange !== undefined)
+		if (props.onZoomChange !== undefined) {
 			ol.addResolutionEvent({"changeFunction": props.onZoomChange});
+			const resolution = ol.updateResolution();
+			// Force a zoom change
+			props.onZoomChange(resolution);
+
+		}
 		if (props.onFeatureSeleted !== undefined)
 			ol.makeControl({"layers": ["data"], "selectedFunction": props.onFeatureSeleted, "multi": true});
 
@@ -71,7 +76,7 @@ const Map = forwardRef((props, ref) => {
 			markHome(location, layer = "location") {
 				setLocation(location);
 				ol.clearLayer({"layer": "location"});
-				ol.flyTo({"coordinate": location, "projection": "EPSG:4326"});
+				//ol.flyTo({"coordinate": location, "projection": "EPSG:4326"});
 				ol.addGeojson({
 					"layer": layer,
 					"geojson": {

@@ -107,6 +107,10 @@ export default class UseStyles {
 				channel: {
 					width: '100%'
 				},
+				searchResults: {
+					width: '100%',
+					height: '100%'
+				},
 				media: {
 					height: '220px',
 					backgroundSize: 'cover'
