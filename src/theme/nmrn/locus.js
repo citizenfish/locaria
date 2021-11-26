@@ -28,7 +28,14 @@ const theme = createTheme({
 });
 
 
-const useStyles = new UseStyles(theme).get();
+const useStyles = new UseStyles(theme, {
+	nmrnBannerImage: {
+		backgroundColor: "rgba(24, 80, 89,.5)",
+		backgroundBlendMode: "multiply",
+		height: '220px',
+		backgroundSize: 'cover'
+	}
+}).get();
 
 const channels = new Channels();
 
@@ -45,7 +52,30 @@ channels.addChannel('Sailor', {
 	"search": [],
 });
 
-
+channels.addChannel('Ship', {
+	"key": "Ship",
+	"type": "Report",
+	"reportId": "get_nmrn_links",
+	"name": "Ships",
+	"description": "Ships",
+	"category": "Ships",
+	"image": `${channelSailor}`,
+	"mapIcon": iconPlanning,
+	"color": "#4a94e9",
+	"search": [],
+});
+channels.addChannel('Memorial', {
+	"key": "Memorial",
+	"type": "Report",
+	"reportId": "get_nmrn_links",
+	"name": "Memorials",
+	"description": "Memorials",
+	"category": "Memorials",
+	"image": `${channelSailor}`,
+	"mapIcon": iconPlanning,
+	"color": "#4a94e9",
+	"search": [],
+});
 const configs = {
 	mapXYZ: 'https://cartodb-basemaps-{a-d}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
 	mapAttribution: "© OpenStreetMap contributors ©CARTO",

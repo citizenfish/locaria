@@ -12,7 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import {useHistory} from "react-router-dom";
 import InputBase from "@material-ui/core/InputBase";
 import {useCookies} from "react-cookie";
-import SearchBanner from "../defaults/searchBanner";
+import SearchBanner from "defaults/searchBanner";
 
 const ChannelSearch = () => {
 	const classes = useStyles();
