@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useRef} from 'react';
 
 import Layout from './widgets/layout';
 import Share from './widgets/share';
 import Linker from './widgets/linker';
 import ChannelCard from './widgets/channelCard';
 
-import {Link, useParams, BrowserRouter, useHistory} from "react-router-dom";
+import {useParams, useHistory} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {channels, configs, useStyles} from "themeLocus";
@@ -15,19 +15,17 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import Openlayers from "libs/Openlayers";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import {viewStyle} from "./mapStyles/view"
 import {useCookies} from "react-cookie";
 import Chip from "@material-ui/core/Chip";
-import MenuItem from "@material-ui/core/MenuItem";
+import Map from "./widgets/map";
 
 const View = () => {
 	let {feature} = useParams();
 	let {category} = useParams();
 	const classes = useStyles();
-	const [ol, setOl] = React.useState(new Openlayers());
 	const [cookies, setCookies] = useCookies(['location']);
+	const mapRef = useRef();
 
 	const history = useHistory();
 
@@ -47,48 +45,26 @@ const View = () => {
 				"data": {"method": "get_item", "fid": feature}
 			});
 		} else {
-			ol.addMap({
-				"target": "map",
-				"projection": "EPSG:3857",
-				"renderer": ["canvas"],
-				"zoom": 10,
-				center: configs.defaultLocation
-			});
-			ol.addLayer({
-				"name": "xyz",
-				"type": "xyz",
-				"url": `https://api.os.uk/maps/raster/v1/zxy/${configs.OSLayer}/{z}/{x}/{y}.png?key=${configs.OSKey}`,
-				"active": true
-			});
-			ol.addLayer({
-				"name": "data",
-				"type": "vector",
-				"active": true,
-				"style": viewStyle
-			});
-			ol.addGeojson({
-				"layer": "data",
-				"geojson": {
-					"type": "FeatureCollection",
-					"features": [
-						{
-							"geometry": {
-								"type": "Point",
-								"coordinates": cookies.location
-							},
-							"type": "Feature",
-							"properties": {
-								"category": "location",
-								"description": {
-									"type": "small"
-								}
+			mapRef.current.addGeojson({
+				"type": "FeatureCollection",
+				"features": [
+					{
+						"geometry": {
+							"type": "Point",
+							"coordinates": cookies.location
+						},
+						"type": "Feature",
+						"properties": {
+							"category": "location",
+							"description": {
+								"type": "small"
 							}
 						}
-					]
-				}
+					}
+				]
 			});
-			ol.addGeojson({"layer": "data", "geojson": view});
-			ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
+			mapRef.current.addGeojson(view, "data", false)
+			mapRef.current.zoomToLayerExtent("data");
 		}
 
 		window.websocket.registerQueue("viewLoader", function (json) {
@@ -106,10 +82,6 @@ const View = () => {
 
 	}, [view]);
 
-
-	function resetMap() {
-		ol.zoomToLayerExtent({"layer": "data", "buffer": 50000});
-	}
 
 	const handleAdminView = function () {
 		window.location = `/AdminView/${feature}`;
@@ -161,11 +133,7 @@ const View = () => {
 											className={classes.mediaMap}
 											title={view.features[0].properties.description.title}
 										>
-											<div id="map" className={classes.mapView}>
-												<Button className={classes.mapResetButton} onClick={() => {
-													resetMap()
-												}} color="secondary" variant="outlined">Reset map</Button>
-											</div>
+											<Map ref={mapRef}/>
 										</CardMedia>
 
 										<Typography variant="h5" component="h2" className={classes.viewTitle}>

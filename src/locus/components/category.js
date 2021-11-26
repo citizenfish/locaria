@@ -106,10 +106,13 @@ const Category = () => {
 				"method": "search",
 				"category": channel.category,
 				"limit": 100,
-				"location": `SRID=4326;POINT(${actualLocation[0]} ${actualLocation[1]})`,
-				"location_distance": actualDistance
+				"location": `SRID=4326;POINT(${actualLocation[0]} ${actualLocation[1]})`
 			}
 		};
+		if (channel.search === undefined || channels.getChannelSearchItem(category, 'SearchDistance') !== false) {
+			packet.data.location_distance = actualDistance;
+		}
+
 		if (channel.filterTags)
 			packet.data.tags = channel.filterTags;
 		// Tags filter override?

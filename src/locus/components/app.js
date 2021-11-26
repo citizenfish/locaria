@@ -1,16 +1,16 @@
 import React from 'react';
 import {Switch, BrowserRouter as Router, Route, useLocation} from 'react-router-dom';
 
-import Home from './home';
-import Report from './report';
-import Category from './category';
-import View from './view';
-import Submit from './submit';
-import Error from './error';
-import AdminHome from "./admin/adminHome";
-import AdminView from "./admin/AdminView";
-import AdminData from "./admin/AdminData";
-import AdminLoader from "./admin/AdminLoader";
+import Home from "components/home";
+import Report from 'components/report';
+import Category from 'components/category';
+import View from 'components/view';
+import Submit from 'components/submit';
+import Error from 'components/error';
+import AdminHome from "components/admin/adminHome";
+import AdminView from "components/admin/AdminView";
+import AdminData from "components/admin/AdminData";
+import AdminLoader from "components/admin/AdminLoader";
 import {useCookies} from "react-cookie";
 import {configs} from "themeLocus";
 import Openlayers from "libs/Openlayers";
@@ -114,7 +114,7 @@ const App = () => {
 					<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
 					<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
-					<Route path="/Report/:reportId" component={Report}/>
+					<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
 					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
 					<Route path="/View/:category/:feature" component={View}/>
 					<Route path="/Submit/:category" component={Submit}/>
