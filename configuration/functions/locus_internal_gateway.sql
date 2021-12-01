@@ -52,7 +52,13 @@ BEGIN
         WHEN parameters ->> 'method' IN ('get_group') THEN
             ret_var = get_group(parameters);
 
-        ELSE
+        WHEN parameters->>'method' IN ('get_moderation_items') THEN
+            ret_var = get_moderation_items(parameters);
+
+        WHEN parameters->>'method' IN ('update_moderation_status') THEN
+            ret_var = update_moderation_status(parameters);
+
+            ELSE
             RETURN json_build_object('error', 'unsupported method', 'method', parameters ->> 'method');
         END CASE;
 

@@ -3,12 +3,15 @@ $$
 DECLARE
     item_var JSONB;
     ret_var JSONB;
+    moderated_update_var BOOLEAN;
 BEGIN
 
      SET SEARCH_PATH = 'locus_core', 'public';
 
-     SELECT attributes
-     INTO item_var
+     SELECT attributes,
+            moderated_update
+     INTO item_var,
+          moderated_update_var
      FROM global_search_view
      --Only allow editables to be updated
      WHERE fid = parameters->>'fid' AND edit;
@@ -18,7 +21,13 @@ BEGIN
      END IF;
 
     IF (item_var#>'{acl,update}') IS NOT NULL AND NOT item_var#>'{acl,update}' ?| json2text(parameters->'_group') THEN
-        RETURN jsonb_build_object('error', 'acl_failure', 'response_code', 601);
+
+        --Categories can be marked to allow moderated updates, we check and if so put in moderation queue
+        IF moderated_update_var THEN
+            RETURN add_to_moderation_queue(parameters);
+        END IF;
+
+        RETURN jsonb_build_object('error', 'acl_failure or category does not allow moderated updates', 'response_code', 601);
     END IF;
 
     EXECUTE format($SQL$
@@ -36,6 +45,13 @@ BEGIN
                 (SELECT category_id FROM categories WHERE category = parameters->>'category'),
                 (parameters->>'search_date')::TIMESTAMP,
                 item_var->>'ofid';
+
+    --If this was a moderation then update its status
+
+     UPDATE moderation_queue
+         SET status = 'ACCEPTED'
+     WHERE (update_item.parameters->>'moderation_id') IS NOT NULL
+     AND id = (update_item.parameters->>'moderation_id')::BIGINT;
 
     RETURN ret_var || jsonb_build_object('history', add_history(parameters));
 
