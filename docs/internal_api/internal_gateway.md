@@ -91,7 +91,21 @@ Returns:-
 
 ## update_item
 
-The **update_item** method will update an item in a table. It requires the following parameters:-
+The **update_item** method will update an item in a table. 
+
+Items are updated directly if the user has the same group as that stored in the items acl.
+
+If not the updates are added to a moderation queue if the category for the item has the attribute 
+
+```json
+{
+  "moderated_update" : true
+}
+
+```
+These updates are returned to an admin in a separate structure when using the get_item call.
+
+It requires the following parameters:-
 
 - fid - the fid from the global_search view
 - geometry - (optional) a geometry in EWKT format

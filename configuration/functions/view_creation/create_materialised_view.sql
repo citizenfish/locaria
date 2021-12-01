@@ -34,7 +34,8 @@ BEGIN
            COALESCE(to_timestamp(attributes->>'end_date', 'DD/MM/YYYY HH24:MI:SS')::TIMESTAMP ,search_date::DATE::TIMESTAMP + INTERVAL '23 HOURS 59 MINUTES') AS end_date,
            COALESCE(attributes->>'range_min','0')::FLOAT as range_min,
            COALESCE(attributes->>'range_max','0')::FLOAT AS range_max,
-           edit
+           edit,
+           moderated_update
 
 
     FROM (
@@ -45,7 +46,8 @@ BEGIN
                 locus_core.table_name(B.tableoid) AS table_location,
                 B.attributes,
                 search_date,
-                TRUE AS edit
+                TRUE AS edit,
+                COALESCE(C.attributes->>'moderated_update', 'false')::BOOLEAN AS moderated_update
         FROM locus_core.base_table B
         INNER JOIN locus_core.categories C USING (category_id)
 
@@ -57,7 +59,8 @@ BEGIN
                 COALESCE(B.attributes->>'table', B.attributes->>'table', 'locus_core.search_views_union') AS table_location,
                 B.attributes,
                 search_date,
-                false AS edit
+                false AS edit,
+                false AS moderated_update
         FROM locus_core.search_views_union B
         INNER JOIN locus_core.categories C USING (category_id)
 

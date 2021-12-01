@@ -16,6 +16,7 @@ BEGIN
 
     --Create required extensions if not installed already
 
+    CREATE EXTENSION IF NOT EXISTS plv8;
     CREATE EXTENSION IF NOT EXISTS postgis;
     CREATE EXTENSION IF NOT EXISTS pg_trgm;
     CREATE EXTENSION aws_s3 CASCADE;
