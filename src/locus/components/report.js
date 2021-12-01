@@ -15,13 +15,13 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import {useStyles} from "themeLocus";
+import {useStyles} from 'themeLocus';
 import {useCookies} from "react-cookie";
 
 const Report = () => {
 	const classes = useStyles();
 
-	let {reportId} = useParams();
+	let {reportId, feature} = useParams();
 	const [report, setReport] = React.useState(null);
 	const [location, setLocation] = useCookies(['location']);
 
@@ -31,9 +31,14 @@ const Report = () => {
 			setReport(json);
 		});
 
-		forceUpdate();
+		if (report === null)
+			forceUpdate();
 
-	}, []);
+		return () => {
+			window.websocket.clearQueues();
+		}
+
+	}, [report]);
 
 	const forceUpdate = () => {
 		setReport(null);
@@ -43,12 +48,13 @@ const Report = () => {
 			"data": {
 				"method": "report",
 				"report_name": reportId,
-				"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`
+				"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
+				"fid": feature
 			}
 		});
 	}
 
-	const showReport = () => {
+	const ShowReport = () => {
 
 		if (report.packet.features.length > 0) {
 			return (report.packet.features
@@ -83,7 +89,7 @@ const Report = () => {
 						<Typography variant="h2" component="h2" gutterBottom>
 							No results found
 						</Typography>
-						<p>Try adjusting your location}</p>
+						<p>Try adjusting your location</p>
 					</CardContent>
 				</Card>
 			)
@@ -102,9 +108,7 @@ const Report = () => {
 					</Grid>
 					<Grid item md={8}>
 						<Paper elevation={3} className={classes.paperMargin}>
-
-							{showReport()}
-
+							<ShowReport/>
 						</Paper>
 					</Grid>
 				</Grid>

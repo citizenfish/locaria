@@ -4,8 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import {useStyles} from 'themeLocus';
 
 
-import Layout from './widgets/layout';
-import ChannelSelect from "./widgets/channelSelect";
+import Layout from '../../../locus/components/widgets/layout';
+import ChannelSearch from "../../../locus/components/widgets/channelSearch";
 
 const Home = () => {
 	const classes = useStyles();
@@ -13,10 +13,11 @@ const Home = () => {
 	return (
 		<Layout map={true}>
 			<Paper elevation={3} className={classes.paperMargin}>
-				<ChannelSelect/>
+				<ChannelSearch/>
 			</Paper>
 		</Layout>
-	);
+	)
+		;
 };
 
 

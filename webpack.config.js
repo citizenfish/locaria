@@ -1,5 +1,5 @@
 const path = require('path');
-const theme = 'default';
+const theme = 'nmrn';
 
 module.exports = {
 	mode: 'development',
@@ -71,6 +71,14 @@ module.exports = {
 			mapStyle: [
 				path.resolve(`src/theme/${theme}/view.js`),
 				path.resolve(`src/locus/components/mapStyles/view.js`)
+			],
+			components: [
+				path.resolve(`src/theme/${theme}/components`),
+				path.resolve(`src/locus/components`)
+			],
+			defaults: [
+				path.resolve(__dirname, `src/theme/${theme}/components/defaults`),
+				path.resolve(__dirname, `src/locus/components/defaults`)
 			]
 
 		}
