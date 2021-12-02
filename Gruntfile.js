@@ -6,126 +6,81 @@ module.exports = function (grunt) {
 		pgsql: {
 			tests: {
 				options: {
-					configFile: '../locus-env.yml',
-					configSection: grunt.option('stage') || 'test',
+					configFile: '../locaria-env.yml',
+					configSection: grunt.option('stage') || 'dev',
 					configType: 'yaml',
 					configObjectName: 'postgres'
 
 				},
 				tables: [
+					//** Check schema and add test data **/
+					//'tests/integration_tests/core_schema_test.sql',
+					//'tests/integration_tests/add_test_data.sql',
 
-					// Internal API tests
-					//'tests/integration_tests/acl_test_data.sql',
-					//'tests/unit_tests/internal_api/add_item.sql'
-					'tests/unit_tests/internal_api/update_item.sql',
-					//'tests/unit_tests/internal_api/delete_item.sql',
-					//'tests/unit_tests/internal_api/get_containers.sql',
-					//'tests/unit_tests/internal_api/add_history.sql',
-					//'tests/unit_tests/internal_api/update_history.sql'
-					//'tests/unit_tests/internal_api/refresh_view.sql',
-					//'tests/unit_tests/internal_api/view_report.sql'
-
-					//Public API tests
-
-					//'tests/unit_tests/public_api/check_api_functions.sql',
-					//'tests/unit_tests/public_api/get_item.sql',
-					//'tests/unit_tests/public_api/list_categories.sql',
-					//'tests/unit_tests/public_api/list_categories_with_data.sql',
-					//'tests/unit_tests/public_api/list_tags.sql'
-					//'tests/unit_tests/public_api/search.sql'
-
-
+					/** SEARCH FUNCTIONS **/
+					//'tests/unit_tests/search/address_search_test.sql'
+					//'tests/unit_tests/search/cluster_test.sql'
+					//'tests/unit_tests/search/get_item_test.sql'
+					//'tests/unit_tests/search/list_categories_test.sql'
+					//'tests/unit_tests/search/list_categories_with_data.sql'
+					'tests/unit_tests/search/list_tags_test.sql'
 				]
 			},
 			upgrade: {
 				options: {
-					configFile: '../locus-env.yml',
-					configSection: grunt.option('stage') || 'test',
+					configFile: '../locaria-env.yml',
+					configSection: grunt.option('stage') || 'dev',
 					configType: 'yaml',
 					configObjectName: 'postgres'
 
 				},
 				tables: [
-					//'configuration/functions/internal/add_item.sql',
-					//'configuration/functions/internal/get_tables.sql',
-					//'configuration/functions/internal/update_item.sql',
-					//'configuration/functions/internal/delete_item.sql',
-					//'configuration/functions/locus_gateway.sql',
-					'configuration/functions/locus_internal_gateway.sql',
-					/*'configuration/functions/view_creation/create_materialised_view.sql',
-					'configuration/functions/view_creation/views_union.sql',
-					'configuration/functions/search/search_get_records.sql',
-					'configuration/functions/utility/table_name.sql',
-					'configuration/functions/search/list_categories.sql',
-					'configuration/functions/search/list_categories_with_data.sql',
-					'configuration/functions/search/list_tags.sql' */
-					//'configuration/functions/utility/polygon_divider.sql'
-
-					//'configuration/functions/search/search_get_records.sql',
-					//'configuration/functions/locus_internal_gateway.sql',
-					//'configuration/functions/internal/get_containers.sql',
-					//'configuration/functions/locus_gateway.sql',
-					//'configuration/functions/internal/initialise_container.sql',
-					//'configuration/functions/search/get_item.sql',
-					//'configuration/schema_and_views/create_history_table.sql',
-					//'configuration/functions/internal/add_history.sql',
-					//'configuration/functions/internal/update_history.sql',
-					//'configuration/functions/internal/view_report.sql'
+					
 				]
 			},
 			full: {
 				options: {
-					configFile: '../locus-env.yml',
-					configSection: grunt.option('stage') || 'test',
+					configFile: '../locaria-env.yml',
+					configSection: grunt.option('stage') || 'dev',
 					configType: 'yaml',
 					configObjectName: 'postgres'
 				},
 				tables: [
-					// Session
-					'configuration/schema_and_views/create_sessions_table.sql',
-					'configuration/functions/sessions_api.sql',
 
-					//Base database configuration
-					'configuration/schema_and_views/create_search_schema.sql',
-					'configuration/schema_and_views/create_search_categories.sql',
-					'configuration/schema_and_views/create_base_search_table.sql',
-					'configuration/schema_and_views/create_log_table.sql',
-					'configuration/schema_and_views/create_parameters_table.sql',
-					'configuration/schema_and_views/create_reports_table.sql',
-					'configuration/schema_and_views/create_sessions_table.sql',
+
+					//Create database schema
+					'database/schema_and_tables/create_core_schema.sql',
+					'database/schema_and_tables/create_categories_table.sql',
+					'database/schema_and_tables/create_base_search_table.sql',
+					'database/schema_and_tables/create_containers_table.sql',
+					'database/schema_and_tables/create_groups_table.sql',
+					'database/schema_and_tables/create_history_table.sql',
+					'database/schema_and_tables/create_log_table.sql',
+					'database/schema_and_tables/create_moderation_queue_table.sql',
+					'database/schema_and_tables/create_parameters_table.sql',
+					'database/schema_and_tables/create_reports_table.sql',
+					'database/schema_and_tables/create_sessions_table.sql',
+
 
 					//Create functions before creating views that need them
-					'configuration/functions/search_view_union.sql',
-					'configuration/functions/locus_gateway.sql',
-					'configuration/functions/search.sql',
-					'configuration/functions/search_get_records.sql',
-					'configuration/functions/cluster.sql',
-					'configuration/functions/get_item.sql',
-					'configuration/functions/base36_decode.sql',
-					'configuration/functions/locate.sql',
-					'configuration/functions/get_json_data_urls.sql',
-					'configuration/functions/reverse_geocoder.sql',
-					'configuration/functions/geocoder.sql',
-					'configuration/functions/create_materialised_view.sql',
-					'configuration/functions/address_search.sql',
-					'configuration/functions/report.sql',
-					'configuration/functions/reverse_geocoder.sql',
-					'configuration/functions/views_union.sql',
-					'configuration/functions/update_json_data_url.sql',
-					'configuration/functions/list_categories_with_data.sql',
-					'configuration/functions/list_categories.sql',
-					'configuration/functions/sessions_api.sql',
-
+					'database/functions/utility/*',
+					'database/functions/internal/*',
+					'database/functions/reports/*',
+					'database/functions/search/*',
+					'database/functions/sessions/*',
+					'database/functions/view_creation/*',
+					'database/functions/locaria_gateway.sql',
+					'database/functions/locaria_internal_gateway.sql',
 
 					//Reports
-					'configuration/reports/category_types.sql',
+					'database/reports/*',
 
-					//Used by batch processes to load json and update materialized views
-					'configuration/system_parameters/system_parameters.sql',
+					//System Parameters
+					'database/system_parameters/*',
 
-					//Global search view
+					//Final step Create the global search view
 
-					'configuration/schema_and_views/create_search_views.sql'
+					'database/schema_and_tables/create_search_views.sql'
 				]
 			}
 		},

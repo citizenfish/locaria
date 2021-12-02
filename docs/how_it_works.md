@@ -36,7 +36,7 @@ LOCUS is installed into a single schema within a PostgreSQL database. This schem
 
 **global_search_view** is a materialized view that holds all data to be searched. It is defined within the **locus_core** schema and must be present and full of data for LOCUS to operate quickly. The view is materialised which means that it holds its own copy of LOCUS data. This data has been optimised for full text searching and categorisation. 
 
-**global_search_view** is created by the SQL contained within **[configuration/schema_and_views/create_search_views.sql](../configuration/functions/create_search_views.sql)**   
+**global_search_view** is created by the SQL contained within **[configuration/schema_and_views/create_search_views.sql](../database/functions/create_search_views.sql)**   
 
 The view is constructed of the following data items:-
 

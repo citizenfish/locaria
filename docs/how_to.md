@@ -29,7 +29,7 @@ Firstly create a table in the locus_core schema to hold your data. This MUST hav
 ```SQL
 CREATE TABLE locus_core.my_new_data_table (
        nid BIGINT PRIMARY KEY
-) INHERITS (locus_core.base_table);
+) INHERITS (locaria_data.base_table);
 ```
 
 This will create a table with the column structure reflecting the system vase_table. Data can now be added as follows:-
@@ -85,7 +85,7 @@ Firstly we create a table to hold the data once imported:-
 ```SQL
 CREATE TABLE locus_core.flood_warning (
        nid BIGINT PRIMARY KEY
-) INHERITS (locus_core.base_table);
+) INHERITS (locaria_data.base_table);
 ```
 
 Next we set up the import:-
