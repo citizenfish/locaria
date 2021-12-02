@@ -20,7 +20,7 @@ SELECT locus_core.locus_internal_gateway('{"method" : "refresh_search_view"}'::J
 
 ## get_tables
 
-The **get_tables** method returns a list of tables that may be updated by an authorised user. Currently LOCUS only supports updating data that has been loaded into a table inheriting from the **locus_core.base_table** structure.
+The **get_tables** method returns a list of tables that may be updated by an authorised user. Currently LOCUS only supports updating data that has been loaded into a table inheriting from the **locaria_data.base_table** structure.
 
 get_tables will return a structure listing this table set
 
