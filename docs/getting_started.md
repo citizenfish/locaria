@@ -1,4 +1,4 @@
-# Installing Locus
+# Installing Locaria
 
 In order to install LOCUS you will need a degree of familiarity with the Amazon Web Services (AWS) environment. We
 recommend gaining familiarity with the guides at https://aws.amazon.com/getting-started/.
@@ -9,7 +9,7 @@ LOCUS comes with an installer that will guide you through the process.
 
 ## Pre-requisites
 
-In order to install Locus you will need the following components:-
+In order to install Locaria you will need the following components:-
 
 - an Amazon AWS account
 - Amazon IAM credentials [[link](https://docs.aws.amazon.com/iam/index.html)]
@@ -18,22 +18,22 @@ In order to install Locus you will need the following components:-
 
 ## Step 1 - install locally
 
-Download locus code and SQL with:-
+Download locaria code and SQL with:-
 
 ```sqlite-psql
-git clone https://github.com/nautoguide/locus.git
+git clone https://github.com/nautoguide/locaria.git
 ```
 
-Change to the locus directory and install all nodejs modules
+Change to the locaria directory and install all nodejs modules
 
 ```bash
-cd locus
+cd locaria
 npm install
 ```
 
 ## Step 2 - AWS Setup
 
-Locus needs access to your AWS account using the AWS cli. For this to work you need an IAM account that has privileges
+Locaria needs access to your AWS account using the AWS cli. For this to work you need an IAM account that has privileges
 to the following services:
 
 - S3: Full access
@@ -53,7 +53,7 @@ https://aws.amazon.com/cli/
 Once installed run:
 
 ```jshelllanguage
-aws configure --profile locus
+aws configure --profile locaria
 ```
 
 It will ask for both keys and also a default region, this will be the region you wish you services to be installed in.
@@ -115,20 +115,34 @@ pg://USERNAME:PASSWORD@HOST:PORT/DATABASE
 
 Once compete hit 'w' to save these details. This will write out a file in the directory below the repo:
 
-**locus.yml**
+**locaria.json**
 
 ```yaml
-test:
-  profile: locus
-  region: eu-west-1
-  cron: cron(0/10 * ? * MON-FRI *)
-  .......
+{
+  "new": {
+    "profile": "locaria",
+    "theme": "default",
+    "themeDir": "./src/theme/",
+    "region": "eu-west-1",
+    "domain": "demo1.locaria.org",
+    "imageDomain": "images.locaria.org",
+    "restdomain": "rest.locaria.org",
+    "wsdomain": "ws.locaria.org",
+    "auroraMasterUser": "locaria",
+    "auroraMasterPass": "xxxxxxxxx",
+    "auroraDatabaseName": "locaria",
+    "certARN": "arn:aws:acm:us-east-1:xxxxxxxxx:certificate/xxxxxxxxxxx",
+    "certImagesARN": "arn:aws:acm:us-east-1:xxxxxxx:certificate/xxxxxxxxxxxx",
+    "cognitoDomainName": "locariaauth.locaria.org",
+    "cognitoCertARN": "arn:aws:acm:us-east-1:xxxxxxxx:certificate/xxxxxxxxxxx"
+  }
+}
 ```
 
 This file can contain multiple connection strings to allow you to set up development,test and live instances of the
 databases. As shown above with local and development versions
 
-We highly recommend that you take this approach if you are planning on making your own changes to locus.
+We highly recommend that you take this approach if you are planning on making your own changes to locaria.
 
 We strongly advise that you keep these files outside of the git directory structure in order to ensure that it cannot
 accidentally be shared outside of your organisation or checked into a public repository.
