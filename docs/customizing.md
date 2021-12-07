@@ -15,30 +15,30 @@ Themes are stored in the directory:
 
 If you take a look we give you two examples 'default' and 'dark'.
 
-You can switch theme by editing the file:
+You can switch theme by editing your config file:
 
-```javascript
-#webpack.config.js
+```json
+#locaria.json
 
-resolve: {
-	fallback: {
-		util: require.resolve('util/'),
-			theme_locaria
-	:
-		require.resolve('./src/theme/default/locaria.js')
+{
+	"new":
+	{
+      "profile":"locus",
+      "theme":"default",
+      "themeDir": "./src/theme/",
 	}
 }
 ```
 
-Changing the 'theme_locaria' path will change the theme we build, so if we change './src/theme/default/locaria.js' to
-'./src/theme/dark/locaria.js' that will build the dark theme.
+Changing the 'theme' will change the theme we build base on the path, so if we change theme to 'dark' the
+'./src/theme/dark/locaria.js' that will built.
 
 To build a theme simply run for the terminal:
 
 ```javascript
 npm
 run
-build:dev
+build:new
 ```
 
 You can then check your new site locally by running
@@ -55,9 +55,17 @@ You will now want to create your own theme to setup the site to look how you wan
 under src/theme in this example lets do 'myTheme'.
 
 Adjust your webpack.config.js again to resolve to your new directory
+```json
+#locaria.json
 
-```javascript
-theme_locaria: require.resolve('./src/theme/myTheme/locaria.js')
+{
+	"new":
+	{
+      "profile":"locus",
+      "theme":"myTheme",
+      "themeDir": "./src/theme/",
+	}
+}
 ```
 
 Now copy the file locaria.js from the 'dark' theme directory into your myTheme. You can use the default one but to do
@@ -76,7 +84,6 @@ const configs = {
 	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
 	defaultRange: 10, // km|mile
-	websocket: "wss://cp90vff2qi.execute-api.eu-west-1.amazonaws.com/new"
 }
 
 ```
@@ -101,9 +108,3 @@ const theme = createTheme({
 You can also edit what channels you wish to display and adjust various other features all in here. When you are happy
 with your new theme simply deploy 'web' using the described install process
 in [Getting Started](docs/getting_started.md)
-
-Link in there with
-
-```shell
-mklink /J nmrn C:\Users\xrout\Documents\webstorm\locaria_private\nmrn
-```
