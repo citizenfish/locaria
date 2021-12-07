@@ -1,9 +1,9 @@
 /**
-* @author Richard Reynolds richard@nautoguide.com
-*
-* @description Lambda API
-*
-*/
+ * @author Richard Reynolds richard@nautoguide.com
+ *
+ * @description Lambda API
+ *
+ */
 
 'use strict';
 const Database = require("./database");
@@ -23,10 +23,10 @@ module.exports.run = (event, context, callback) => {
 		client = database.getClient();
 
 
-		const querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
+		const querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
 		let qarguments = [{}];
 		client.query(querysql, qarguments, function (err, result) {
-			let payload = {"foo": "bar","result":result};
+			let payload = {"foo": "bar", "result": result};
 			callback(null, payload);
 
 		});

@@ -2,15 +2,16 @@
  * Config
  * @type {string}
  */
+const pg = require("pg");
+const expand = require('glob-expand');
 
-const customFile = '../locus-custom.yml';
+const customFile = '../locaria.json';
 
 
 /**
  *  Includes
  */
 const fs = require('fs')
-const YAML = require('yaml');
 const {exec} = require('child_process');
 const dotenv = require('dotenv')
 
@@ -44,7 +45,7 @@ function checkEnvironment() {
 			//console.log(`stdout: ${stdout}`);
 			if (fs.existsSync(customFile)) {
 				console.log('Existing config found');
-				configs.custom = YAML.parse(fs.readFileSync(customFile, 'utf8'));
+				configs.custom = JSON.parse(fs.readFileSync(customFile, 'utf8'));
 				configNew = false;
 				listConfig();
 			} else {
@@ -118,6 +119,97 @@ async function loadData() {
 
 
 	commandLoop();
+
+}
+
+function sendSQLFiles(stage, configFile, callBack) {
+	let client = new pg.Client(configs.custom[stage].postgressConneciton);
+	let items = 0;
+	let skipped = 0;
+	let failed = 0;
+	let fileList = [];
+	const deployConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+	client.connect((err) => {
+		if (err) {
+			console.error("DATABASE CONNECTION FAILURE: ", err.stack);
+		} else {
+			console.log('Connected to db');
+			client.on('notice', msg => {
+				console.log(`Postgress Server NOTICE: ${msg.where} - ${msg.message}`);
+			});
+			//fileList = deployConfig.tables;
+			deployConfig.tables.forEach(function (f) {
+				fileList.push(...expand({cwd: './'}, [f]));
+			});
+			items = fileList.length;
+			sendFile(0);
+
+
+		}
+	});
+
+	function sendFile(index) {
+		let f = fileList[index];
+		if (!fs.existsSync(f)) {
+			console.log(`Source file ${f} not found.`);
+			index++;
+			skipped++;
+			if (index >= items) {
+				callBack(stage);
+			} else {
+				sendFile(index);
+			}
+		} else {
+			console.log('Running: ' + f);
+			let fileData = fs.readFileSync(f, 'utf8');
+
+			//replace any variables in SQL
+			//for (let i in options.substitutions) {
+			//	let reg = new RegExp('__' + i + '__', 'g');
+			//	fileData = fileData.replace(reg, options.substitutions[i])
+			//}
+
+			//Replace standard grunt configs
+			/*let match;
+			const vars = /\{\{(.*?)\}\}/g;
+			while (match = vars.exec(fileData)) {
+				fileData = fileData.replace(match[0], options[match[1]]);
+			}*/
+
+			client.query(fileData, function (err, result) {
+				index++;
+				if (err) {
+					console.log(`SQL ${f} failed`);
+					console.log(err.stack);
+					failed++;
+					if (deployConfig.stopOnError === true) {
+						console.log(`EARLY STOP! DONE ${fileList.length} Records SKIPPED ${skipped}`);
+						callBack(stage);
+						return;
+					}
+				} else {
+					if (deployConfig.output && result.rows) {
+						console.log(result.rows);
+					}
+					console.log(`SQL ${f} OK`);
+					if (Array.isArray(result)) {
+						result.forEach(function (res) {
+							console.log(`Result ${res.command} - ${res.rowCount}`);
+						})
+					} else {
+						console.log(`Result ${result.command} - ${result.rowCount}`);
+					}
+
+				}
+				if (index >= items) {
+					console.log(`DONE ${fileList.length} FAILED ${failed} Records SKIPPED ${skipped}`);
+					callBack(stage);
+				} else {
+					sendFile(index);
+				}
+			});
+		}
+	}
 
 }
 
@@ -231,7 +323,7 @@ function deployWS(stage) {
 			console.log(`#${cmdLine}`);
 			exec(cmdLine, options, (err, stdout, stderr) => {
 				console.log(stdout);
-				const cmdLine = `serverless deploy --stage ${stage}`;
+				const cmdLine = `serverless deploy --stage ${stage} --overwrite`;
 				console.log(`#${cmdLine}`);
 				exec(cmdLine, options, (err, stdout, stderr) => {
 					console.log(stdout);
@@ -263,12 +355,12 @@ function deployAPI(stage) {
 				console.log(`#${cmdLine}`);
 				exec(cmdLine, options, (err, stdout, stderr) => {
 					console.log(stdout);
-					const cmdLine = `sls export-env --stage ${stage}`;
+					/*const cmdLine = `sls export-env --stage ${stage}`;
 					console.log(`#${cmdLine}`);
 					exec(cmdLine, options, (err, stdout, stderr) => {
-						console.log(stdout);
-						deploySystemMain(stage);
-					});
+						console.log(stdout);*/
+					deploySystemMain(stage);
+					//});
 				});
 			});
 		}
@@ -319,23 +411,28 @@ function deployWEB(stage) {
 
 function deploySQL(stage) {
 	const options = {};
+	sendSQLFiles(stage, 'database/install.json', deploySystemMain);
 	const cmdLine = `grunt deploySQLFull --stage=${stage}`;
-	console.log(`#${cmdLine}`);
-	exec(cmdLine, options, (err, stdout, stderr) => {
-		console.log(stdout);
-		console.log(err);
-		console.log(stderr);
-		deploySystemMain(stage);
-	});
+	/*	console.log(`#${cmdLine}`);
+		exec(cmdLine, options, (err, stdout, stderr) => {
+			console.log(stdout);
+			console.log(err);
+			console.log(stderr);
+			deploySystemMain(stage);
+		});*/
 }
 
 function upgradeSQL(stage) {
-	executeWithCatch(`grunt deploySQLupgrade --stage=${stage}`, () => {
+
+	sendSQLFiles(stage, 'database/upgrade.json', deploySystemMain);
+
+
+	/*executeWithCatch(`grunt deploySQLupgrade --stage=${stage}`, () => {
 		deploySystemMain(stage);
 
 	}, () => {
 		deploySystemMain(stage);
-	});
+	});*/
 }
 
 function deleteConfig() {
@@ -358,6 +455,20 @@ const configQuestions = [
 		stage: true
 	},
 	{
+		details: "Which theme to use by default",
+		name: "theme",
+		text: "Theme name",
+		default: "default",
+		config: "custom"
+	},
+	{
+		details: "Theme dir",
+		name: "themeDir",
+		text: "Theme director",
+		default: "./src/theme/",
+		config: "custom"
+	},
+	{
 		details: "You need aws cli install and configured to access your account, enter the profile used here",
 		name: "profile",
 		text: "AWS profile to use",
@@ -367,12 +478,24 @@ const configQuestions = [
 
 	{name: "region", text: "AWS region", default: "eu-west-1", config: "custom"},
 	{name: "cron", text: "Cron string to use for scraper", default: "cron(0/10 * ? * MON-FRI *)", config: "custom"},
-	{name: "domain", text: "Domain name to use for website", default: "api.vialocus.co.uk", config: "custom"},
-	{name: "restdomain", text: "Domain name to use for rest api", default: "api.vialocus.co.uk", config: "custom"},
-	{name: "wsdomain", text: "Domain name to use for websocket", default: "ws.vialocus.co.uk", config: "custom"},
+	{name: "domain", text: "Domain name to use for website", default: "api.vialocaria.co.uk", config: "custom"},
+	{
+		name: "imageDomain",
+		text: "Domain name to use for image hosting",
+		default: "images.vialocaria.co.uk",
+		config: "custom"
+	},
+	{name: "restdomain", text: "Domain name to use for rest api", default: "api.vialocaria.co.uk", config: "custom"},
+	{name: "wsdomain", text: "Domain name to use for websocket", default: "ws.vialocaria.co.uk", config: "custom"},
 	{name: "certARN", text: "AWS cert ARN", default: "arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx", config: "custom"},
-	{name: "auroraDatabaseName", text: "Aurora database name", default: "locus", config: "custom"},
-	{name: "auroraMasterUser", text: "Aurora master user", default: "locus", config: "custom"},
+	{
+		name: "certImagesARN",
+		text: "AWS images cert ARN",
+		default: "arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx",
+		config: "custom"
+	},
+	{name: "auroraDatabaseName", text: "Aurora database name", default: "locaria", config: "custom"},
+	{name: "auroraMasterUser", text: "Aurora master user", default: "locaria", config: "custom"},
 	{name: "auroraMasterPass", text: "Aurora master password", default: "CHANGEME", config: "custom"},
 	{
 		name: "osDataHubProductURL",
@@ -413,7 +536,7 @@ function addConfig() {
 }
 
 function writeConfig() {
-	fs.writeFileSync(customFile, YAML.stringify(configs.custom));
+	fs.writeFileSync(customFile, JSON.stringify(configs.custom));
 	console.log('Config files written');
 	commandLoop();
 

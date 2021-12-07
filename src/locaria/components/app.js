@@ -2,7 +2,7 @@ import React from 'react';
 import {Switch, BrowserRouter as Router, Route, useLocation} from 'react-router-dom';
 
 import Home from "components/home";
-import Report from 'components/report';
+import Report from "components/report";
 import Category from 'components/category';
 import View from 'components/view';
 import Submit from 'components/submit';

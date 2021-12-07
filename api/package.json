@@ -13,6 +13,7 @@
   "devDependencies": {
 	"serverless-domain-manager": "^5.2.0",
 	"serverless-export-env": "^2.0.0",
+	"serverless-stack-output": "^0.2.3",
 	"serverless": "^2.66.1",
 	"dotenv": "^10.0.0"
   },

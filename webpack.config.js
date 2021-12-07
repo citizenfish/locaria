@@ -1,10 +1,10 @@
 const path = require('path');
-const theme = 'nmrn';
+const theme = 'src/theme/builder';
 
 module.exports = {
 	mode: 'development',
 	entry: {
-		full: './src/locus/index.js'
+		full: './src/locaria/index.js'
 	},
 	output: {
 		filename: '[name].bundle.js',
@@ -65,20 +65,20 @@ module.exports = {
 			util: require.resolve('util/')
 		},
 		alias: {
-			libs: path.resolve(__dirname, 'src/locus/libs'),
-			themeLocus: path.resolve(`./src/theme/${theme}/locus.js`),
-			themeDefault: path.resolve(`./src/theme/default`),
+			libs: path.resolve(__dirname, 'src/locaria/libs'),
+			themeLocus: path.resolve(`${theme}/locaria.js`),
+			themeDefault: path.resolve(`src/theme/default`),
 			mapStyle: [
-				path.resolve(`src/theme/${theme}/view.js`),
-				path.resolve(`src/locus/components/mapStyles/view.js`)
+				path.resolve(`${theme}/view.js`),
+				path.resolve(`src/locaria/components/mapStyles/view.js`)
 			],
 			components: [
-				path.resolve(`src/theme/${theme}/components`),
-				path.resolve(`src/locus/components`)
+				path.resolve(`${theme}/components`),
+				path.resolve(`src/locaria/components`)
 			],
 			defaults: [
-				path.resolve(__dirname, `src/theme/${theme}/components/defaults`),
-				path.resolve(__dirname, `src/locus/components/defaults`)
+				path.resolve(__dirname, `${theme}/components/defaults`),
+				path.resolve(__dirname, `src/locaria/components/defaults`)
 			]
 
 		}
@@ -90,7 +90,7 @@ module.exports = {
 		historyApiFallback: {
 			index: 'index.html'
 		},
-		liveReload: false,
+		liveReload: true,
 		hot: true
 	}
 };

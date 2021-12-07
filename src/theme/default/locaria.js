@@ -13,14 +13,7 @@ import iconDefault from './images/marker.svg';
 import iconPlanning from './images/marker-planning.svg';
 import iconEvents from './images/marker-events.svg';
 import iconCrime from './images/marker-crime.svg';
-import Channels from "../../locus/libs/Channels";
-import iconArts from "../london/images/icons/marker-arts-selected.svg";
-import iconCommunity from "../london/images/icons/marker-community-selected.svg";
-import iconDance from "../london/images/icons/marker-dance-selected.svg";
-import iconEducational from "../london/images/icons/marker-educational-selected.svg";
-import iconMusic from "../london/images/icons/marker-music-selected.svg";
-import iconSport from "../london/images/icons/marker-sport-selected.svg";
-import iconTech from "../london/images/icons/marker-tech-selected.svg";
+import Channels from "../../locaria/libs/Channels";
 
 
 //https://next.material-ui.com/customization/palette/
@@ -37,38 +30,6 @@ const theme = createTheme({
 
 const useStyles = new UseStyles(theme).get();
 
-const tags = {
-	"Full": {
-		"mapIcon": `${iconArts}`,
-		"color": "#df7f2b"
-	},
-	"Conditions": {
-		"mapIcon": `${iconCommunity}`,
-		"color": "#e95814"
-	},
-	"Outline": {
-		"mapIcon": `${iconDance}`,
-		"color": "#792d89"
-	},
-	"Heritage": {
-		"mapIcon": `${iconEducational}`,
-		"color": "#14587e"
-	},
-	"Amendment": {
-		"mapIcon": `${iconMusic}`,
-		"color": "#9e125b"
-	},
-	"Trees": {
-		"mapIcon": `${iconSport}`,
-		"color": "#0f8e47"
-	},
-	"Other": {
-		"mapIcon": `${iconTech}`,
-		"color": "#1aabe3"
-	}
-};
-
-
 const channels = new Channels();
 
 channels.addChannel('Planning', {
@@ -81,7 +42,6 @@ channels.addChannel('Planning', {
 	"mapIcon": iconPlanning,
 	"color": "#4a94e9",
 	"search": [{"component": "SearchDistance"}, {"component": "SearchTags"}],
-	"tags": tags,
 	"fields": [
 		{
 			"type": "text",
@@ -166,10 +126,11 @@ const configs = {
 	defaultDistanceSelect: 'km', // km|mile
 	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,
-	websocket: "wss://mpk9us5un9.execute-api.eu-west-1.amazonaws.com/new", // Get his this from your locus-custom.yml - wsdomain
-	cognitoURL: "locusauth.nautoguide.com", // Get his this from your locus-custom.yml - cognitoDomainName
-	cognitoPoolId: "6jbgpggjvqonk7p55m51rql445", // Get from you api/.env
+	cognitoURL: "locariaauth.locaria.org", // Get his this from your locus.yml - cognitoDomainName
+	cognitoPoolId: "517pj51429ufjp56skkoi6n78v", // Get from you api/.env
 	searchIcon: iconPlanning
 }
 
-export {useStyles, channels, theme, configs};
+const resources = require('./resources.json');
+
+export {useStyles, channels, theme, configs, resources};

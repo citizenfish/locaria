@@ -1,14 +1,13 @@
-const YAML = require('yaml');
-
+const stack = require('api/stack.json');
 
 module.exports = function (grunt) {
 	grunt.initConfig({
 		pgsql: {
 			tests: {
 				options: {
-					configFile: '../locaria-env.yml',
+					configFile: 'api/stack.json',
 					configSection: grunt.option('stage') || 'dev',
-					configType: 'yaml',
+					configType: 'json',
 					configObjectName: 'postgres'
 
 				},
@@ -34,9 +33,7 @@ module.exports = function (grunt) {
 					configObjectName: 'postgres'
 
 				},
-				tables: [
-					
-				]
+				tables: []
 			},
 			full: {
 				options: {
