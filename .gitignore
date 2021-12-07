@@ -102,3 +102,5 @@ typings/
 # TernJS port file
 .tern-port
 .idea
+src/theme/builder
+api/stack.json

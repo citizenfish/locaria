@@ -5,7 +5,7 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import {configs} from "themeLocus";
+import {configs, resources} from "themeLocus";
 
 import cssOL from './components/css/ol.css';
 
@@ -14,7 +14,7 @@ let tries = 0;
 document.title = configs.siteTitle;
 window.websocket = new Websockets();
 
-window.websocket.init({"url": configs.websocket}, connected, closed, errored);
+window.websocket.init({"url": resources.websocket}, connected, closed, errored);
 
 
 function connected() {

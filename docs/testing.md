@@ -17,7 +17,7 @@ In the example below the test **check_api_functions.sql** will be run
 pgsql: {
     tests: {
         options: {
-            configFile: '../locus-env.yml',
+            configFile: '../locaria-env.yml',
             configSection: grunt.option('stage') || 'test',
             configType: 'yaml',
             configObjectName: 'postgres'

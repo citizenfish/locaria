@@ -35,11 +35,16 @@ module.exports.run = (event, context, callback) => {
 
 	context.callbackWaitsForEmptyEventLoop = false;
 
+	console.log(event.requestContext);
+	/*	const apiClient = new AWS.ApiGatewayManagementApi({
+			apiVersion: '2018-11-29',
+			endpoint: 'https://' + event.requestContext.domainName + '/' + event.requestContext.stage
+		});*/
+
 	const apiClient = new AWS.ApiGatewayManagementApi({
 		apiVersion: '2018-11-29',
-		endpoint: 'https://' + event.requestContext.domainName + '/' + event.requestContext.stage
+		endpoint: 'https://' + event.requestContext.domainName
 	});
-
 	/**
 	 *  Connect to the database
 	 * @type {Database}
@@ -64,7 +69,7 @@ module.exports.run = (event, context, callback) => {
 
 	function endSession() {
 		client = database.getClient();
-		client.query("SELECT locus_core.session_api('del', $1)", [connectionId], function (err, result) {
+		client.query("SELECT locaria_core.session_api('del', $1)", [connectionId], function (err, result) {
 			if (err) {
 				console.log(err);
 			}
@@ -77,7 +82,7 @@ module.exports.run = (event, context, callback) => {
 
 	function newSession() {
 		client = database.getClient();
-		let querysql = "SELECT locus_core.session_api('set', $1, $2::JSONB)";
+		let querysql = "SELECT locaria_core.session_api('set', $1, $2::JSONB)";
 		let qarguments = [connectionId, {"status": "Connected"}];
 		client.query(querysql, qarguments, function (err, result) {
 			if (err) {
@@ -112,7 +117,7 @@ module.exports.run = (event, context, callback) => {
 			// Public API
 			case 'api':
 				client = database.getClient();
-				let querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
+				let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
 				let qarguments = [packet.data];
 				console.log(querysql);
 				console.log(qarguments);
@@ -123,11 +128,11 @@ module.exports.run = (event, context, callback) => {
 						sendToClient(payload);
 
 					} else {
-						if (result.rows[0]['locus_gateway'] === null) {
+						if (result.rows[0]['locaria_gateway'] === null) {
 							payload.packet['response_code'] = 500;
 							sendToClient(payload);
 						} else {
-							payload.packet = result.rows[0]['locus_gateway'];
+							payload.packet = result.rows[0]['locaria_gateway'];
 							payload.method = packet.data.method;
 							sendToClient(payload);
 						}
@@ -143,7 +148,7 @@ module.exports.run = (event, context, callback) => {
 							packet.data["_group"] = tokenPacket['cognito:groups'];
 							packet.data["_email"] = tokenPacket['email'];
 							client = database.getClient();
-							let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB,$2::JSONB)';
+							let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
 							/* For non admins
 														let qarguments = [packet.data, {
 															"owner": tokenPacket['cognito:username'],
@@ -164,11 +169,11 @@ module.exports.run = (event, context, callback) => {
 									sendToClient(payload);
 
 								} else {
-									if (result.rows[0]['locus_internal_gateway'] === null) {
+									if (result.rows[0]['locaria_internal_gateway'] === null) {
 										payload.packet['response_code'] = 500;
 										sendToClient(payload);
 									} else {
-										payload.packet = result.rows[0]['locus_internal_gateway'];
+										payload.packet = result.rows[0]['locaria_internal_gateway'];
 										payload.method = packet.data.method;
 										sendToClient(payload);
 									}

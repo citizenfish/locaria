@@ -13,6 +13,7 @@ import {useHistory} from "react-router-dom";
 import InputBase from "@material-ui/core/InputBase";
 import {useCookies} from "react-cookie";
 import SearchBanner from "defaults/searchBanner";
+import CardImageLoader from "./cardImageLoader";
 
 const ChannelSearch = () => {
 	const classes = useStyles();
@@ -20,6 +21,7 @@ const ChannelSearch = () => {
 
 	const [cookies, setCookies] = useCookies(['location']);
 	const [searchResults, setSearchResults] = React.useState(undefined);
+	const [mySearch, setMySearch] = React.useState(undefined);
 
 	React.useEffect(() => {
 
@@ -43,12 +45,15 @@ const ChannelSearch = () => {
 	}
 
 	function doSearch() {
+		setMySearch(document.getElementById('mySearch').value);
+
 		let packet = {
 			"queue": "searchLoader",
 			"api": "api",
 			"data": {
 				"method": "search",
 				"category": configs.homeCategorySearch,
+				"search_text": mySearch,
 				"limit": configs.searchLimit
 			}
 		};
@@ -62,11 +67,8 @@ const ChannelSearch = () => {
 					return (
 						<Grid item md={configs.homeGrid} className={classes.searchResults} key={feature.properties.fid}>
 							<Card className={classes.root}>
-								<CardMedia
-									className={classes.media}
-									image={configs.searchIcon}
-									title={'Search'}
-								/>
+								<CardImageLoader defaultImage={configs.defaultImage}
+								                 images={feature.properties.description.images}/>
 								<CardContent className={classes.channelPanel}>
 									<Typography gutterBottom variant="h5" component="h2">
 										{feature.properties.description.title}
@@ -123,9 +125,9 @@ const ChannelSearch = () => {
 								input: classes.inputInput,
 							}}
 							inputProps={{'aria-label': 'search'}}
-							defaultValue={''}
+							defaultValue={mySearch ? mySearch : ''}
 							onKeyPress={handleKeyDown}
-							id="myPostcode"
+							id="mySearch"
 						/>
 
 						<Button size="small" color="secondary" variant="outlined" onClick={() => {

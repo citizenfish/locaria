@@ -1,29 +1,27 @@
-service: locus-api
+service: locaria-api
 #configValidationMode: error
 projectDir: ../../
 provider:
   name: aws
-  profile: ${file(../../locus-custom.yml):${self:custom.stage}.profile}
+  profile: ${file(../../locaria.json):${self:custom.stage}.profile}
   #lambdaHashingVersion: 20201221
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   environment:
-    postgresHost:
-      Fn::GetAtt: [ AuroraRDSInstance , Endpoint.Address ]
+    postgresHost: !GetAtt [ AuroraRDSInstance, "Endpoint.Address" ]
     postgresPort:
       Fn::GetAtt: [ AuroraRDSInstance , Endpoint.Port ]
-      # TODO fix this for .env via https://www.serverless.com/plugins/serverless-export-env/
-    auroraDatabaseName: ${file(../../locus-custom.yml):${self:custom.stage}.auroraDatabaseName}
-    auroraMasterUser: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterUser}
-    auroraMasterPass: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterPass}
+    auroraDatabaseName: ${file(../../locaria.json):${self:custom.stage}.auroraDatabaseName}
+    auroraMasterUser: ${file(../../locaria.json):${self:custom.stage}.auroraMasterUser}
+    auroraMasterPass: ${file(../../locaria.json):${self:custom.stage}.auroraMasterPass}
     cfdist: !Ref WebsiteDistribution
-    fargateRouterHost: internal-locus-margate-125434216.eu-west-1.elb.amazonaws.com
+    fargateRouterHost: internal-locaria-margate-125434216.eu-west-1.elb.amazonaws.com
     fargateRouterPort: 5000
     poolClient: !Ref CognitoUserPoolClient
     pool: !Ref CognitoUserPool
-    ecrRepoARN: !GetAtt ECRLocusRepo.Arn
-    ecrRepoURI: !GetAtt ECRLocusRepo.RepositoryUri
-  region: ${file(../../locus-custom.yml):${self:custom.stage}.region}
-  websocketsApiName: locus-websockets-api
+    ecrRepoARN: !GetAtt ECRLocariaRepo.Arn
+    ecrRepoURI: !GetAtt ECRLocariaRepo.RepositoryUri
+  region: ${file(../../locaria.json):${self:custom.stage}.region}
+  websocketsApiName: locaria-websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action
   memorySize: 512
   timeout: 30
@@ -41,9 +39,18 @@ provider:
             - cloudfront:*
           Resource:
             - "*"
+        - Effect: 'Allow'
+          Action:
+            - execute-api:Invoke
+          Resource:
+            - "*"
+
 
 custom:
   stage: "${opt:stage, self:provider.stage}"
+  output:
+    file: stack.json
+    handler: ../scripts/updater.handler
   cors:
     origins:
       - '*'
@@ -58,15 +65,15 @@ custom:
   customDomain:
     rest:
       basePath: ""
-      certificateName: ${file(../../locus-custom.yml):${self:custom.stage}.restdomain}
-      domainName: ${file(../../locus-custom.yml):${self:custom.stage}.restdomain}
+      certificateName: ${file(../../locaria.json):${self:custom.stage}.restdomain}
+      domainName: ${file(../../locaria.json):${self:custom.stage}.restdomain}
       #stage: ${self:custom.stage}
       createRoute53Record: false
       endpointType: 'edge'
     websocket:
       basePath: ""
-      certificateName: ${file(../../locus-custom.yml):${self:custom.stage}.wsdomain}
-      domainName: ${file(../../locus-custom.yml):${self:custom.stage}.wsdomain}
+      certificateName: ${file(../../locaria.json):${self:custom.stage}.wsdomain}
+      domainName: ${file(../../locaria.json):${self:custom.stage}.wsdomain}
       #stage: ${self:custom.stage}
       createRoute53Record: false
       endpointType: 'regional'
@@ -79,14 +86,19 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         AccessControl: PublicRead
-        BucketName: ${file(../../locus-custom.yml):${self:custom.stage}.domain}
+        BucketName: ${file(../../locaria.json):${self:custom.stage}.domain}
         WebsiteConfiguration:
           IndexDocument: index.html
     DataImportBucket:
       Type: AWS::S3::Bucket
       Properties:
         AccessControl: BucketOwnerRead
-        BucketName: ${file(../../locus-custom.yml):${self:custom.stage}.domain}-data
+        BucketName: ${file(../../locaria.json):${self:custom.stage}.domain}-data
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: BucketOwnerRead
+        BucketName: ${file(../../locaria.json):${self:custom.stage}.imageDomain}
     WebsiteBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
@@ -104,6 +116,43 @@ resources:
       Properties:
         CloudFrontOriginAccessIdentityConfig:
           Comment: "CloudFrontOriginAccessIdentity for ${self:service}-${self:provider.stage}"
+    ImagesDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: ImageBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
+          CustomErrorResponses:
+            - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
+              ErrorCachingMinTTL: 1
+              ResponseCode: 200
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          Aliases:
+            - ${file(../../locaria.json):${self:custom.stage}.imageDomain}
+          ViewerCertificate:
+            AcmCertificateArn: ${file(../../locaria.json):${self:custom.stage}.certImagesARN}
+            MinimumProtocolVersion: TLSv1
+            SslSupportMethod: sni-only
+          Origins:
+            - Id: 'ImageBucketOrigin'
+              DomainName: { 'Fn::GetAtt': [ ImagesBucket, DomainName ] }
+              S3OriginConfig:
+                OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
     WebsiteDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
@@ -131,9 +180,9 @@ resources:
           PriceClass: 'PriceClass_100'
           HttpVersion: 'http2'
           Aliases:
-            - ${file(../../locus-custom.yml):${self:custom.stage}.domain}
+            - ${file(../../locaria.json):${self:custom.stage}.domain}
           ViewerCertificate:
-            AcmCertificateArn: ${file(../../locus-custom.yml):${self:custom.stage}.certARN}
+            AcmCertificateArn: ${file(../../locaria.json):${self:custom.stage}.certARN}
             MinimumProtocolVersion: TLSv1
             SslSupportMethod: sni-only
           Origins:
@@ -147,7 +196,7 @@ resources:
     #      Properties:
     #        HostedZoneId: 'Z06171983OLSUA1GYRUP4'
     #        RecordSets:
-    #          - Name: ${file(../../locus-custom.yml):${self:custom.stage}.domain}
+    #          - Name: ${file(../../locaria.json):${self:custom.stage}.domain}
     #            Type: A
     #            AliasTarget:
     #              HostedZoneId: Z2FDTNDATAQYW2
@@ -390,14 +439,14 @@ resources:
     AuroraRDSCluster:
       Type: "AWS::RDS::DBCluster"
       Properties:
-        MasterUsername: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterUser}
-        MasterUserPassword: ${file(../../locus-custom.yml):${self:custom.stage}.auroraMasterPass}
+        MasterUsername: ${file(../../locaria.json):${self:custom.stage}.auroraMasterUser}
+        MasterUserPassword: ${file(../../locaria.json):${self:custom.stage}.auroraMasterPass}
         DBSubnetGroupName:
           Ref: AuroraSubnetGroup
         Engine: aurora-postgresql
         EngineMode: provisioned
         EngineVersion: "12.7"
-        DatabaseName: ${file(../../locus-custom.yml):${self:custom.stage}.auroraDatabaseName}
+        DatabaseName: ${file(../../locaria.json):${self:custom.stage}.auroraDatabaseName}
         BackupRetentionPeriod: 3
         DBClusterParameterGroupName:
           Ref: AuroraRDSClusterParameter
@@ -421,7 +470,7 @@ resources:
       Type: "AWS::Cognito::UserPool"
       Properties:
         MfaConfiguration: OFF
-        UserPoolName: locus-pool
+        UserPoolName: locaria-pool
         UsernameAttributes:
           - email
         AutoVerifiedAttributes:
@@ -436,7 +485,7 @@ resources:
     CognitoUserPoolClient:
       Type: "AWS::Cognito::UserPoolClient"
       Properties:
-        ClientName: locus-pool-client
+        ClientName: locaria-pool-client
         GenerateSecret: False
         UserPoolId:
           Ref: CognitoUserPool
@@ -458,8 +507,8 @@ resources:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
         CustomDomainConfig:
-          CertificateArn: ${file(../../locus-custom.yml):${self:custom.stage}.cognitoCertARN}
-        Domain: ${file(../../locus-custom.yml):${self:custom.stage}.cognitoDomainName}
+          CertificateArn: ${file(../../locaria.json):${self:custom.stage}.cognitoCertARN}
+        Domain: ${file(../../locaria.json):${self:custom.stage}.cognitoDomainName}
         UserPoolId:
           Ref: CognitoUserPool
     CognitoUserGroupAdmin:
@@ -486,16 +535,23 @@ resources:
         Precedence: 2
         UserPoolId:
           Ref: CognitoUserPool
-    ECRLocusRepo:
+    ECRLocariaRepo:
       Type: AWS::ECR::Repository
       Properties:
-        RepositoryName: "locus-repo"
+        RepositoryName: "locaria-repo"
         ImageScanningConfiguration:
           ScanOnPush: "true"
-    ECSLocusCluster:
+    ECSLocariaCluster:
       Type: 'AWS::ECS::Cluster'
       Properties:
-        ClusterName: "locus-cluster"
+        ClusterName: "locaria-cluster"
+  Outputs:
+    postgresHost:
+      Value: { "Fn::GetAtt": [ AuroraRDSInstance, "Endpoint.Address" ] }
+    postgresPort:
+      Value: { "Fn::GetAtt": [ AuroraRDSInstance , Endpoint.Port ] }
+    stage:
+      Value: ${self:custom.stage}
 functions:
   api:
     handler: functions/api.run
@@ -544,3 +600,4 @@ functions:
 plugins:
   - serverless-domain-manager
   - serverless-export-env
+  - serverless-stack-output

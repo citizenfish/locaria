@@ -1,12 +1,13 @@
 # Customizing
 
-Once you have a working installation of locus the next thing you want to do is make it your own through customization.
-This is achieved with the use of themes. Locus comes with a 'default' theme that is currently setup to give you a helping
-hand but you will want to change at least a few key things.
+Once you have a working installation of locaria the next thing you want to do is make it your own through customization.
+This is achieved with the use of themes. Locus comes with a 'default' theme that is currently setup to give you a
+helping hand but you will want to change at least a few key things.
 
-Before we start we suggest that you fork our repo before customising, that way you can keep upto date with security updates
-and new features by merging in the base fork but also commit your local updates to your own repo. All themes are stored
-in their own directory so if you don't want to do this just edit the files in place and make sure to keep a backup.
+Before we start we suggest that you fork our repo before customising, that way you can keep upto date with security
+updates and new features by merging in the base fork but also commit your local updates to your own repo. All themes are
+stored in their own directory so if you don't want to do this just edit the files in place and make sure to keep a
+backup.
 
 Themes are stored in the directory:
 
@@ -20,26 +21,32 @@ You can switch theme by editing the file:
 #webpack.config.js
 
 resolve: {
-    fallback: {
-        util: require.resolve('util/'),
-        theme_locus: require.resolve('./src/theme/default/locus.js')
-        }
+	fallback: {
+		util: require.resolve('util/'),
+			theme_locaria
+	:
+		require.resolve('./src/theme/default/locaria.js')
+	}
 }
 ```
 
-Changing the 'theme_locus' path will change the theme we build, so if we change './src/theme/default/locus.js' to 
-'./src/theme/dark/locus.js' that will build the dark theme.
+Changing the 'theme_locaria' path will change the theme we build, so if we change './src/theme/default/locaria.js' to
+'./src/theme/dark/locaria.js' that will build the dark theme.
 
 To build a theme simply run for the terminal:
 
 ```javascript
-npm run build:dev
+npm
+run
+build:dev
 ```
 
 You can then check your new site locally by running
 
 ```javascript
-npm run runLocalSite
+npm
+run
+runLocalSite
 ```
 
 Vist the url http://127.0.0.1:8080 and you should see your now themed site looking dark.
@@ -50,12 +57,12 @@ under src/theme in this example lets do 'myTheme'.
 Adjust your webpack.config.js again to resolve to your new directory
 
 ```javascript
-theme_locus: require.resolve('./src/theme/myTheme/locus.js')
+theme_locaria: require.resolve('./src/theme/myTheme/locaria.js')
 ```
 
-Now copy the file locus.js from the 'dark' theme directory into your myTheme. You can use the default one but to do that
-you would need to copy all the images etc which is something you may do down the road but for now we will use all the
-default images.
+Now copy the file locaria.js from the 'dark' theme directory into your myTheme. You can use the default one but to do
+that you would need to copy all the images etc which is something you may do down the road but for now we will use all
+the default images.
 
 Now lets make some basic changes, at the bottom of the file you will find the configs structure
 
@@ -73,6 +80,7 @@ const configs = {
 }
 
 ```
+
 A simple test is to change siteTitle, run the rebuild process and then check your site.
 
 Other simple changes such as colors can be done here:
@@ -91,4 +99,11 @@ const theme = createTheme({
 ```
 
 You can also edit what channels you wish to display and adjust various other features all in here. When you are happy
-with your new theme simply deploy 'web' using the described install process in [Getting Started](docs/getting_started.md)
+with your new theme simply deploy 'web' using the described install process
+in [Getting Started](docs/getting_started.md)
+
+Link in there with
+
+```shell
+mklink /J nmrn C:\Users\xrout\Documents\webstorm\locaria_private\nmrn
+```

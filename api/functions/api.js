@@ -59,7 +59,7 @@ module.exports.run = (event, context, callback) => {
 		client = database.getClient();
 
 
-		let querysql = 'SELECT locus_core.locus_gateway($1::JSONB)';
+		let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
 		let qarguments = [packet];
 		console.log(querysql);
 		console.log(qarguments);
@@ -91,7 +91,7 @@ module.exports.run = (event, context, callback) => {
 						"Access-Control-Allow-Headers": "Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,x-token",
 						"Access-Control-Allow-Methods": "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT"
 					},
-					body: JSON.stringify(result.rows[0].locus_gateway)
+					body: JSON.stringify(result.rows[0].locaria_gateway)
 				});
 			}
 		});

@@ -3,7 +3,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Card from "@material-ui/core/Card";
 import React from "react";
-import searchMain from '../../images/main.jpg';
+import searchMain from '../../../theme/default/images/main.jpg';
 import {useStyles} from 'themeLocus';
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -16,22 +16,23 @@ const SearchBanner = () => {
 	return (
 		<Card className={classes.root}>
 			<CardMedia
-				className={classes.nmrnBannerImage}
+				className={classes.media}
 				image={searchMain}
 				title={'Search'}
 			/>
 			<CardContent className={classes.channelPanel}>
 				<Typography gutterBottom variant="h5" component="h2">
-					FIND YOUR RELATIVE
+					The default banner
 				</Typography>
 				<Typography variant="body2" color="textSecondary" component="p">
-					Explore the map and find your connection
+					This is a default component, you need to override it with your own version in
+					theme/yourtheme/default/searchBanner.js
 				</Typography>
 			</CardContent>
 			<CardActions>
 				<Button size="small" color="secondary" variant="outlined" onClick={() => {
 
-					window.location = `https://github.com/nautoguide/locus_open`;
+					window.location = `https://github.com/nautoguide/locaria_open`;
 				}}>
 					Link to something
 				</Button>
