@@ -58,6 +58,10 @@ function checkEnvironment() {
 	});
 }
 
+function reloadConfig() {
+	configs.custom = JSON.parse(fs.readFileSync(customFile, 'utf8'));
+}
+
 function commandLoop() {
 	readline.question(`Command[h for help]?`, (cmd) => {
 		switch (cmd) {
@@ -224,6 +228,7 @@ function deploySystem() {
 }
 
 function deploySystemMain(stage) {
+	reloadConfig();
 	readline.question(`Deploy command for stage ${stage} [h for help]?`, (cmd) => {
 		switch (cmd) {
 			case 'h':
@@ -497,6 +502,18 @@ const configQuestions = [
 	{name: "auroraDatabaseName", text: "Aurora database name", default: "locaria", config: "custom"},
 	{name: "auroraMasterUser", text: "Aurora master user", default: "locaria", config: "custom"},
 	{name: "auroraMasterPass", text: "Aurora master password", default: "CHANGEME", config: "custom"},
+	{
+		name: "auroraVersion",
+		text: "Aurora database version",
+		default: "13.4",
+		config: "custom"
+	},
+	{
+		name: "auroraFamily",
+		text: "Aurora database Family",
+		default: "aurora-postgresql13",
+		config: "custom"
+	},
 	{
 		name: "osDataHubProductURL",
 		text: "OS Data Hub Product URL (Data Downloads)",
