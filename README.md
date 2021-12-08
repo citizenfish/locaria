@@ -1,11 +1,21 @@
-# LOCARIA Technical Overview
+# LOCARIA Overview
 
-LOCARIA is a search and retrieval system. It is based around a set of APIs that connect to a relational database. These APIs allow users to search and filter data across a wide range of data sets and formats.
+LOCARIA is an open source platform for publishing location data either via a web based interface or api. LOCARIA is designed to be lightweight, easy to customise and extendable. If your use case falls into one of the following then LOCARIA will fit your purpose:-
 
-LOCARIA is designed to be low maintenance and highly scalable. This is achieved by using "microservices" operating within the Amazon Web Services environment. These microservices are tiny snippets of code that receive search requests from the internet and process them against a database.
+- you have location data that needs categorizing and centralising
+- you want a simple unified search/api over your location data
+- you want to publish a map based website allowing users to search and interrogate your data
+- you want to add, update and delete data including contributions from third parties
 
-Amazon refer to these microservices as Lambda functions. Lambda functions are written in the NodeJS language which is a superset of Javascript. LOCARIA uses Lambda functions to connect to a database and carry out searches.
+LOCARIA will provide all of these features within a single ecosystem with no external dependencies. We have used LOCARIA to operate:-
 
-Searches are actioned using the SQL language within the database. LOCARIA implements all search logic in the database using the PL/PGSQL language which is very similar to SQL. This allows us to separate search logic from api handling code making LOCARIA easy to change and maintain.
+- a public portal for local authorities allowing their customers to quickly find and view data linked to their household
+- a heritage map displaying thousands of individuals linked to a famous battle and showing their linkages with towns, memorials and naval infrastructure
+- a youth activities map, highlighting activities by category for young people and allowing them to find things to do i their locality
+- a set of simple REST based APIs unifying 15 sets of location data for consumption within desktop GIS packages
 
+LOCARIA is designed to be low maintenance and highly scalable. It will always be open source and available for free for those wishing to publish maps and location data. At present LOCARIA is focused upon deployment within the Amazon AWS web services infrastructure. 
+
+
+Nautoguide Ltd.
 8th December 2021
