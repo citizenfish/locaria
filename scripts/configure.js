@@ -123,7 +123,7 @@ async function loadData() {
 }
 
 function sendSQLFiles(stage, configFile, callBack) {
-	let client = new pg.Client(configs.custom[stage].postgressConneciton);
+	let client = new pg.Client(configs.custom[stage].postgressConnection);
 	let items = 0;
 	let skipped = 0;
 	let failed = 0;
