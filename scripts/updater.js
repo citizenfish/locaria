@@ -14,7 +14,7 @@ function handler(data, serverless, options) {
 		configs = JSON.parse(fs.readFileSync(customFile, 'utf8'));
 
 		if (configs[stage]) {
-			configs[stage].postgressConnection = `pg://${configs[stage].auroraMasterUser}:${configs[stage].auroraMasterPass}@${data.postgresHost}:${data.postgresPort}/${configs[stage].auroraDatabaseName}`;
+			configs[stage].postgresConnection = `pg://${configs[stage].auroraMasterUser}:${configs[stage].auroraMasterPass}@${data.postgresHost}:${data.postgresPort}/${configs[stage].auroraDatabaseName}`;
 			fs.writeFileSync(customFile, JSON.stringify(configs));
 			console.log('Written');
 		} else {
