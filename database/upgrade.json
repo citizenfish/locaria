@@ -1,6 +1,7 @@
 {
   "stopOnError": true,
   "tables": [
-	"database/reports/*"
-  ]
+	"database/test.sql"
+  ],
+  "substitutions": "../tests.json"
 }
