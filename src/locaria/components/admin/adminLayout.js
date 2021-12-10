@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from "@material-ui/icons/Menu";
-import {channels, useStyles, theme, configs} from "themeLocus";
+import {channels, useStyles, theme, configs} from "themeLocaria";
 import {adminTheme} from "../../../theme/admin/admin";
 import {ThemeProvider} from '@material-ui/core/styles';
 import {Link} from "react-router-dom";

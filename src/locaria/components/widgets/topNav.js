@@ -8,7 +8,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import Box from "@material-ui/core/Box";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import {channels, useStyles, theme, configs} from "themeLocus";
+import {channels, useStyles, theme, configs} from "themeLocaria";
 import MenuItem from "@material-ui/core/MenuItem";
 import {Link} from "react-router-dom";
 import Menu from "@material-ui/core/Menu";

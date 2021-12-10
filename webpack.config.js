@@ -66,7 +66,7 @@ module.exports = {
 		},
 		alias: {
 			libs: path.resolve(__dirname, 'src/locaria/libs'),
-			themeLocus: path.resolve(`${theme}/locaria.js`),
+			themeLocaria: path.resolve(`${theme}/locaria.js`),
 			themeDefault: path.resolve(`src/theme/default`),
 			mapStyle: [
 				path.resolve(`${theme}/view.js`),

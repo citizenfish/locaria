@@ -5,7 +5,7 @@ import Slider from '@material-ui/core/Slider';
 import Typography from "@material-ui/core/Typography";
 
 
-import {channels, useStyles} from "themeLocus";
+import {channels, useStyles} from "themeLocaria";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 

@@ -117,7 +117,7 @@ const configs = {
 	cluster: true, // true|false
 	clusterCutOff: 1.5,
 	clusterWidthMod: 50,
-	siteTitle: "Locus - My council",
+	siteTitle: "Locaria - My council",
 	homeGrid: 3,
 	homeCategorySearch: ["Planning", "Events", "Crime"],
 	defaultZoom: 12,

@@ -5,7 +5,7 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import {configs, resources} from "themeLocus";
+import {configs, resources} from "themeLocaria";
 
 import cssOL from './components/css/ol.css';
 

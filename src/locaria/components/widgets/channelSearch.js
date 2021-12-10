@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {channels, useStyles, configs} from 'themeLocus';
+import {channels, useStyles, configs} from 'themeLocaria';
 
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
