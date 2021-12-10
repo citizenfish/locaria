@@ -6,6 +6,7 @@ import Report from "components/report";
 import Category from 'components/category';
 import View from 'components/view';
 import Submit from 'components/submit';
+import Page from 'components/page';
 import Error from 'components/error';
 import AdminHome from "components/admin/adminHome";
 import AdminView from "components/admin/AdminView";
@@ -117,6 +118,7 @@ const App = () => {
 					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
 					<Route path="/View/:category/:feature" component={View}/>
 					<Route path="/Submit/:category" component={Submit}/>
+					<Route path="/Page/:page" component={Page}/>
 					<Route exact path="/:id_token?" component={Home}/>
 
 					<Route component={Error}/>

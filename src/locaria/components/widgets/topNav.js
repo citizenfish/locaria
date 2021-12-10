@@ -8,7 +8,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import Box from "@material-ui/core/Box";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import {channels, useStyles, configs,resources} from "themeLocaria";
+import {channels, useStyles, configs,resources,pages} from "themeLocaria";
 import MenuItem from "@material-ui/core/MenuItem";
 import {Link} from "react-router-dom";
 import Menu from "@material-ui/core/Menu";
@@ -84,6 +84,12 @@ const TopNav = () => {
 			{channels.listChannels().map(function (channel) {
 				if (channels.displayChannel(channel))
 					return channelDisplay(channels.getChannelProperties(channel));
+			})}
+			{pages.listPages().map(function(page) {
+					return (
+						<MenuItem component={Link} to={`/Page/${page.page}`} key={page.page}
+						          content={page.title}>{page.title}</MenuItem>
+					)
 			})}
 		</Menu>
 	);

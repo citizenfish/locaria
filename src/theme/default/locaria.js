@@ -14,6 +14,8 @@ import iconPlanning from './images/marker-planning.svg';
 import iconEvents from './images/marker-events.svg';
 import iconCrime from './images/marker-crime.svg';
 import Channels from "../../locaria/libs/Channels";
+import Pages from "../../locaria/libs/Pages";
+import React from 'react';
 
 
 //https://next.material-ui.com/customization/palette/
@@ -109,6 +111,10 @@ channels.addChannel('All', {
 	"mapIcon": iconDefault
 });
 
+const pages=new Pages();
+
+pages.addPage('help',{title:"Some page"},<h1>This is some data</h1>)
+
 
 const configs = {
 	mapXYZ: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv',
@@ -133,4 +139,4 @@ const configs = {
 
 const resources = require('./resources.json');
 
-export {useStyles, channels, theme, configs, resources};
+export {useStyles, channels, theme, configs, resources,pages};
