@@ -1,4 +1,4 @@
-import {alpha, makeStyles, createTheme} from '@material-ui/core/styles';
+import { createTheme} from '@material-ui/core/styles';
 
 import UseStyles from './styles';
 // Channel Images
@@ -126,9 +126,9 @@ const configs = {
 	defaultDistanceSelect: 'km', // km|mile
 	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,
-	cognitoURL: "locariaauth.locaria.org", // Get his this from your locus.yml - cognitoDomainName
-	cognitoPoolId: "517pj51429ufjp56skkoi6n78v", // Get from you api/.env
-	searchIcon: iconPlanning
+	searchIcon: iconPlanning,
+	navShowHome: true
+
 }
 
 const resources = require('./resources.json');

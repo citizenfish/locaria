@@ -15,6 +15,8 @@ function handler(data, serverless, options) {
 
 		if (configs[stage]) {
 			configs[stage].postgresConnection = `pg://${configs[stage].auroraMasterUser}:${configs[stage].auroraMasterPass}@${data.postgresHost}:${data.postgresPort}/${configs[stage].auroraDatabaseName}`;
+			configs[stage].cognitoURL = configs[stage].cognitoDomainName;
+			configs[stage].cognitoPoolId = data.cognitoPoolId;
 			fs.writeFileSync(customFile, JSON.stringify(configs));
 			console.log('Written');
 		} else {
