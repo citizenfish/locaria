@@ -552,6 +552,9 @@ resources:
       Value: { "Fn::GetAtt": [ AuroraRDSInstance , Endpoint.Port ] }
     stage:
       Value: ${self:custom.stage}
+    cognitoPoolId:
+      Value: !Ref CognitoUserPool
+
 functions:
   api:
     handler: functions/api.run

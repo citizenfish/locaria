@@ -17,15 +17,15 @@ If you take a look we give you two examples 'default' and 'dark'.
 
 You can switch theme by editing your config file:
 
+####locaria.json
 ```json
-#locaria.json
 
 {
 	"new":
 	{
       "profile":"locus",
       "theme":"default",
-      "themeDir": "./src/theme/",
+      "themeDir": "./src/theme/"
 	}
 }
 ```
@@ -35,7 +35,7 @@ Changing the 'theme' will change the theme we build base on the path, so if we c
 
 To build a theme simply run for the terminal:
 
-```javascript
+```shell
 npm
 run
 build:new
@@ -55,15 +55,15 @@ You will now want to create your own theme to setup the site to look how you wan
 under src/theme in this example lets do 'myTheme'.
 
 Adjust your webpack.config.js again to resolve to your new directory
-```json
-#locaria.json
+#####locaria.json
 
+```json
 {
 	"new":
 	{
       "profile":"locus",
       "theme":"myTheme",
-      "themeDir": "./src/theme/",
+      "themeDir": "./src/theme/"
 	}
 }
 ```
@@ -76,14 +76,24 @@ Now lets make some basic changes, at the bottom of the file you will find the co
 
 ```javascript
 const configs = {
-	OSKey: "w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
-	OSLayer: "Road_3857",
-	siteTitle: "Locus - My Dark council",
+	mapXYZ: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv',
+	mapAttribution: "© Crown copyright and database rights 2021 OS 123456",
+	mapBuffer: 50000,
+	cluster: true, // true|false
+	clusterCutOff: 1.5,
+	clusterWidthMod: 50,
+	siteTitle: "Locaria - My council",
+	homeGrid: 3,
+	homeCategorySearch: ["Planning", "Events", "Crime"],
 	defaultZoom: 12,
-	defaultPostcode: "TQ1 4TN",
-	defaultLocation: [-3.52130527563937, 50.5110125048114], // EPSG:3857
+	defaultPostcode: "E1",
+	defaultLocation: [5176.36, 6712961.88], // EPSG:3857
 	defaultDistanceSelect: 'km', // km|mile
-	defaultRange: 10, // km|mile
+	defaultDistance: 10, // km|mile
+	defaultMapIcon: iconDefault,
+	searchIcon: iconPlanning,
+	navShowHome: true
+
 }
 
 ```
