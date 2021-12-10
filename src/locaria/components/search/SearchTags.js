@@ -8,7 +8,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
 import FormControl from "@material-ui/core/FormControl";
 import Input from "@material-ui/core/Input";
-import {useStyles} from "themeLocus";
+import {useStyles} from "themeLocaria";
 
 
 const SearchTags = ({category, changeFunction, currentValue}) => {

@@ -2,7 +2,7 @@ import {Circle, Text, RegularShape, Fill, Stroke, Style, Icon} from 'ol/style.js
 import markerHome from 'themeDefault/images/marker-home.svg';
 import marker from 'themeDefault/images/marker.svg';
 
-import {configs, channels} from "themeLocus";
+import {configs, channels} from "themeLocaria";
 
 export function locationStyle(feature, resolution) {
 	return [

@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 
 import Container from '@material-ui/core/Container';
-import {useStyles, theme, configs, channels} from "themeLocus";
+import {useStyles, theme, configs, channels} from "themeLocaria";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';

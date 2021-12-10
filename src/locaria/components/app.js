@@ -12,7 +12,7 @@ import AdminView from "components/admin/AdminView";
 import AdminData from "components/admin/AdminData";
 import AdminLoader from "components/admin/AdminLoader";
 import {useCookies} from "react-cookie";
-import {configs} from "themeLocus";
+import {configs} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
 
 import AdminRoute from "./adminRoute";
