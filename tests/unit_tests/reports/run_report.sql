@@ -15,13 +15,15 @@ $$
         SELECT locaria_gateway(parameters) INTO ret_var;
 
         IF (ret_var->>'_test_report') IS NULL THEN
+
+            IF (ret_var->>'logid') IS NOT NULL THEN
+                RAISE EXCEPTION '[run_report_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
+            END IF;
+
             RAISE EXCEPTION '[run_report_test] TEST 1 expecting "worked" got %',ret_var;
         END IF;
 
         RAISE NOTICE '[run_report_test] TEST 1 expecting "worked" got %',ret_var;
 
-        EXCEPTION WHEN OTHERS THEN
-            --we need transaction to complete so writes to log table will work
-            RAISE NOTICE '%', SQLERMM;
         END;
     $$ LANGUAGE PLPGSQL;
