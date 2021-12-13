@@ -103,5 +103,9 @@ $$
         SET attributes = attributes -'acl' -'tags';
         PERFORM locaria_internal_gateway(jsonb_build_object('method', 'refresh_search_view'));
 
+
+        EXCEPTION WHEN OTHERS THEN
+        --we need transaction to complete so writes to log table will work
+        RAISE NOTICE 'TEST FAIL %', SQLERMM;
     END;
 $$ LANGUAGE PLPGSQL;
