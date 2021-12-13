@@ -33,5 +33,8 @@ DECLARE
 
     RAISE NOTICE 'TEST 2 PASSED %',ret_var;
 
+    EXCEPTION WHEN OTHERS THEN
+    --we need transaction to complete so writes to log table will work
+    RAISE NOTICE 'TEST FAIL %', SQLERMM;
 END;
 $$ LANGUAGE PLPGSQL;

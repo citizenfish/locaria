@@ -19,5 +19,9 @@ $$
 
         RAISE NOTICE '[list_categories] TEST 1 PASSED expected LOCARIA_TEST got %',ret_var->'categories';
 
+
+        EXCEPTION WHEN OTHERS THEN
+        --we need transaction to complete so writes to log table will work
+        RAISE NOTICE 'TEST FAIL %', SQLERMM;
     END;
 $$ LANGUAGE PLPGSQL;

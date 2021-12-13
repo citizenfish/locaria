@@ -38,6 +38,8 @@ BEGIN
     RETURN ret_var;
 
 EXCEPTION WHEN OTHERS THEN
+
+        EXECUTE 'SET SESSION ROLE '||cu_var;
         INSERT INTO locaria_core.logs(log_type, log_message)
         SELECT 'run_report',
                jsonb_build_object('parameters',search_parameters, 'response', SQLERRM)
