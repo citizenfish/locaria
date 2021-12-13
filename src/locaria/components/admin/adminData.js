@@ -8,7 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import {Link, useParams, useLocation} from 'react-router-dom';
-import {channels, useStyles, configs} from 'themeLocus';
+import {channels, useStyles, configs} from 'themeLocaria';
 import Openlayers from "libs/Openlayers";
 
 

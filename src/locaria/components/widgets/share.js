@@ -14,7 +14,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
-import {useStyles} from "themeLocus";
+import {useStyles} from "themeLocaria";
 import Grid from "@material-ui/core/Grid";
 
 const Transition = React.forwardRef(function Transition(props, ref) {

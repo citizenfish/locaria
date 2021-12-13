@@ -8,7 +8,7 @@ import ChannelCard from './widgets/channelCard';
 import {useParams, useHistory} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {channels, configs, useStyles} from "themeLocus";
+import {channels, configs, useStyles} from "themeLocaria";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";

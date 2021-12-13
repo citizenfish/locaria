@@ -21,7 +21,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import AdminCard from "./adminCard";
 import SearchTags from "../search/SearchTags";
-import {channels, configs, useStyles} from "themeLocus";
+import {channels, configs, useStyles} from "themeLocaria";
 
 
 const AdminView = () => {

@@ -426,14 +426,14 @@ resources:
       Type: AWS::RDS::DBClusterParameterGroup
       Properties:
         Description: Parameter group for the Serverless Aurora RDS DB.
-        Family: aurora-postgresql12
+        Family: ${file(../../locaria.json):${self:custom.stage}.auroraFamily}
         Parameters:
           max_connections: 5000
     AuroraRDSInstanceParameter:
       Type: AWS::RDS::DBParameterGroup
       Properties:
         Description: Parameter group for the Serverless Aurora RDS DB.
-        Family: aurora-postgresql12
+        Family: ${file(../../locaria.json):${self:custom.stage}.auroraFamily}
         Parameters:
           max_connections: 5000
     AuroraRDSCluster:
@@ -445,7 +445,7 @@ resources:
           Ref: AuroraSubnetGroup
         Engine: aurora-postgresql
         EngineMode: provisioned
-        EngineVersion: "12.7"
+        EngineVersion: ${file(../../locaria.json):${self:custom.stage}.auroraVersion}
         DatabaseName: ${file(../../locaria.json):${self:custom.stage}.auroraDatabaseName}
         BackupRetentionPeriod: 3
         DBClusterParameterGroupName:
@@ -458,7 +458,7 @@ resources:
         DBSubnetGroupName:
           Ref: AuroraSubnetGroup
         Engine: aurora-postgresql
-        EngineVersion: "12.7"
+        EngineVersion: ${file(../../locaria.json):${self:custom.stage}.auroraVersion}
         DBInstanceClass: "db.r5.large"
         PubliclyAccessible: false
         DBParameterGroupName:
@@ -552,6 +552,9 @@ resources:
       Value: { "Fn::GetAtt": [ AuroraRDSInstance , Endpoint.Port ] }
     stage:
       Value: ${self:custom.stage}
+    cognitoPoolId:
+      Value: !Ref CognitoUserPool
+
 functions:
   api:
     handler: functions/api.run

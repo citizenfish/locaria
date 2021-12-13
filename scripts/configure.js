@@ -58,6 +58,10 @@ function checkEnvironment() {
 	});
 }
 
+function reloadConfig() {
+	configs.custom = JSON.parse(fs.readFileSync(customFile, 'utf8'));
+}
+
 function commandLoop() {
 	readline.question(`Command[h for help]?`, (cmd) => {
 		switch (cmd) {
@@ -129,6 +133,17 @@ function sendSQLFiles(stage, configFile, callBack) {
 	let failed = 0;
 	let fileList = [];
 	const deployConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+	deployConfig.subs={};
+	if(deployConfig.substitutions) {
+		if(fs.existsSync(deployConfig.substitutions)) {
+			deployConfig.subs = JSON.parse(fs.readFileSync(deployConfig.substitutions, 'utf8'));
+		} else {
+			console.log(`substitutions file: ${deployConfig.substitutions} not found`);
+			callBack(stage);
+			return;
+		}
+	}
+	deployConfig.config=configs.custom[stage];
 	client.connect((err) => {
 		if (err) {
 			console.error("DATABASE CONNECTION FAILURE: ", err.stack);
@@ -169,13 +184,18 @@ function sendSQLFiles(stage, configFile, callBack) {
 			//	fileData = fileData.replace(reg, options.substitutions[i])
 			//}
 
-			//Replace standard grunt configs
-			/*let match;
-			const vars = /\{\{(.*?)\}\}/g;
+			let match;
+			let vars = /\{\{subs\.(.*?)\}\}/g;
 			while (match = vars.exec(fileData)) {
-				fileData = fileData.replace(match[0], options[match[1]]);
-			}*/
+				fileData = fileData.replace(match[0], deployConfig.subs[match[1]]);
+			}
 
+			vars = /\{\{config\.(.*?)\}\}/g;
+			while (match = vars.exec(fileData)) {
+				fileData = fileData.replace(match[0], deployConfig.config[match[1]]);
+			}
+
+			//console.log(fileData);
 			client.query(fileData, function (err, result) {
 				index++;
 				if (err) {
@@ -224,6 +244,7 @@ function deploySystem() {
 }
 
 function deploySystemMain(stage) {
+	reloadConfig();
 	readline.question(`Deploy command for stage ${stage} [h for help]?`, (cmd) => {
 		switch (cmd) {
 			case 'h':
@@ -497,6 +518,18 @@ const configQuestions = [
 	{name: "auroraDatabaseName", text: "Aurora database name", default: "locaria", config: "custom"},
 	{name: "auroraMasterUser", text: "Aurora master user", default: "locaria", config: "custom"},
 	{name: "auroraMasterPass", text: "Aurora master password", default: "CHANGEME", config: "custom"},
+	{
+		name: "auroraVersion",
+		text: "Aurora database version",
+		default: "13.4",
+		config: "custom"
+	},
+	{
+		name: "auroraFamily",
+		text: "Aurora database Family",
+		default: "aurora-postgresql13",
+		config: "custom"
+	},
 	{
 		name: "osDataHubProductURL",
 		text: "OS Data Hub Product URL (Data Downloads)",

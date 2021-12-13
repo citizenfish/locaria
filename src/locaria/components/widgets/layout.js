@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 
 import Container from '@material-ui/core/Container';
-import {useStyles, theme, configs, channels} from "themeLocus";
+import {useStyles, theme, configs, channels} from "themeLocaria";
 import {ThemeProvider} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
@@ -53,7 +53,7 @@ const Layout = ({children, map, update}) => {
 				"method": "search",
 				"category": configs.homeCategorySearch,
 				"bbox": `${resolutions.extent4326[0]} ${resolutions.extent4326[1]},${resolutions.extent4326[2]} ${resolutions.extent4326[3]}`,
-				"cluster": resolutions.resolution < configs.clusterCutOff ? false : true,
+				"cluster": resolutions.resolution >= configs.clusterCutOff,
 				"cluster_width": Math.floor(configs.clusterWidthMod * resolutions.resolution)
 			}
 		};
@@ -77,7 +77,7 @@ const Layout = ({children, map, update}) => {
 				});
 			}
 
-			if (cookies.location) {
+			if (cookies.location&&configs.navShowHome!==false) {
 				mapRef.current.markHome(cookies.location)
 			} else {
 				console.log('no location');
@@ -143,7 +143,7 @@ const Layout = ({children, map, update}) => {
 				</Alert>
 			</Snackbar>
 			<Container>
-				<TopNav></TopNav>
+				<TopNav/>
 				<div>
 					{displayMap()}
 

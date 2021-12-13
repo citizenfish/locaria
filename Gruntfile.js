@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 		aws_s3: {
 			options: {
 				region: grunt.option('region'),
-				awsProfile: grunt.option('profile') || 'locus'
+				awsProfile: grunt.option('profile') || 'locaria'
 			},
 			site: {
 				options: {

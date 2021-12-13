@@ -4,7 +4,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Card from "@material-ui/core/Card";
 import React from "react";
 import searchMain from '../../../theme/default/images/main.jpg';
-import {useStyles} from 'themeLocus';
+import {useStyles} from 'themeLocaria';
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import {useHistory} from "react-router-dom";

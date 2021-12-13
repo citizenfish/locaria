@@ -1,23 +1,26 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
 
-import {useStyles} from 'themeLocaria';
+import {useStyles,pages} from 'themeLocaria';
 
 
 import Layout from './widgets/layout';
-import ChannelSelect from "./widgets/channelSelect";
+import {useParams} from "react-router-dom";
 
-const Home = () => {
+const Page = () => {
 	const classes = useStyles();
+	let {page} = useParams();
+
+	const pageData=pages.getPageData(page);
 
 	return (
-		<Layout map={true}>
+		<Layout>
 			<Paper elevation={3} className={classes.paperMargin}>
-				<ChannelSelect/>
+				{pageData}
 			</Paper>
 		</Layout>
 	);
 };
 
 
-export default Home;
+export default Page;

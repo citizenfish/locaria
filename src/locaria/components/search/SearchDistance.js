@@ -4,7 +4,7 @@ import React from "react";
 import InputLabel from "@material-ui/core/InputLabel";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import FormControl from "@material-ui/core/FormControl";
-import {useStyles} from "themeLocus";
+import {useStyles} from "themeLocaria";
 import Slider from "@material-ui/core/Slider";
 
 

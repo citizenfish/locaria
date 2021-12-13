@@ -8,7 +8,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import Box from "@material-ui/core/Box";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import {channels, useStyles, theme, configs} from "themeLocus";
+import {channels, useStyles, configs,resources,pages} from "themeLocaria";
 import MenuItem from "@material-ui/core/MenuItem";
 import {Link} from "react-router-dom";
 import Menu from "@material-ui/core/Menu";
@@ -85,29 +85,29 @@ const TopNav = () => {
 				if (channels.displayChannel(channel))
 					return channelDisplay(channels.getChannelProperties(channel));
 			})}
+			{pages.listPages().map(function(page) {
+					return (
+						<MenuItem component={Link} to={`/Page/${page.page}`} key={page.page}
+						          content={page.title}>{page.title}</MenuItem>
+					)
+			})}
 		</Menu>
 	);
 
 	const handleLogin = function () {
 		handleMenuClose();
-		window.location = `https://${configs.cognitoURL}/login?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
 	}
 
 	const handleSignup = function () {
 		handleMenuClose();
-		window.location = `https://${configs.cognitoURL}/signup?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+		window.location = `https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
 	}
 
 	const handleLogout = function () {
 		handleMenuClose();
 		setCookies('id_token', "null", {path: '/', sameSite: true});
 		window.location = `/`;
-	}
-
-	const handleAdmin = function () {
-		handleMenuClose();
-		window.location = `/Admin/`;
-
 	}
 
 	function renderProfileMenu() {
@@ -155,8 +155,32 @@ const TopNav = () => {
 				</Menu>
 			)
 		}
-	};
+	}
 
+	function LocationSearch() {
+		if(configs.navShowHome!==false){
+			return (
+				<div className={classes.search}>
+					<div className={classes.searchIcon}>
+						<SearchIcon/>
+					</div>
+					<InputBase
+						placeholder="Postcode…"
+						classes={{
+							root: classes.inputRoot,
+							input: classes.inputInput,
+						}}
+						inputProps={{'aria-label': 'search'}}
+						defaultValue={cookies.postcode ? cookies.postcode : configs.defaultPostcode}
+						onKeyPress={handleKeyDown}
+						id="myPostcode"
+					/>
+				</div>
+			)
+		} else {
+			return (<Box sx={{flexGrow: 1}}/>)
+		}
+	}
 
 	return (
 		<div className={classes.grow}>
@@ -174,22 +198,9 @@ const TopNav = () => {
 					<Typography className={classes.title} variant="h6" noWrap>
 						{configs.siteTitle}
 					</Typography>
-					<div className={classes.search}>
-						<div className={classes.searchIcon}>
-							<SearchIcon/>
-						</div>
-						<InputBase
-							placeholder="Postcode…"
-							classes={{
-								root: classes.inputRoot,
-								input: classes.inputInput,
-							}}
-							inputProps={{'aria-label': 'search'}}
-							defaultValue={cookies.postcode ? cookies.postcode : configs.defaultPostcode}
-							onKeyPress={handleKeyDown}
-							id="myPostcode"
-						/>
-					</div>
+
+					<LocationSearch/>
+
 					<Box sx={{flexGrow: 1}}/>
 					<Box sx={{display: {xs: 'none', md: 'flex'}}}>
 						<IconButton

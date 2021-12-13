@@ -1,22 +1,22 @@
 import React from 'react';
-import {Switch, BrowserRouter as Router, Route, useLocation} from 'react-router-dom';
+import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Home from "components/home";
 import Report from "components/report";
 import Category from 'components/category';
 import View from 'components/view';
 import Submit from 'components/submit';
+import Page from 'components/page';
 import Error from 'components/error';
 import AdminHome from "components/admin/adminHome";
 import AdminView from "components/admin/AdminView";
 import AdminData from "components/admin/AdminData";
 import AdminLoader from "components/admin/AdminLoader";
 import {useCookies} from "react-cookie";
-import {configs} from "themeLocus";
+import {configs,resources} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
 
 import AdminRoute from "./adminRoute";
-import AWS from "aws-sdk";
 
 
 const App = () => {
@@ -53,7 +53,7 @@ const App = () => {
 		let hash = window.location.hash;
 		if (hash.match(/#id_token/)) {
 			hash = hash.replace(/#id_token=/, '');
-			hash = hash.replace(/\&.*/, '');
+			hash = hash.replace(/&.*/, '');
 		} else {
 			hash = undefined;
 		}
@@ -70,7 +70,7 @@ const App = () => {
 					const diff = exp - (start + 60000);
 					console.log(`Expires ${diff / 60000}`);
 					setTimeout(function () {
-						window.location = `https://${configs.cognitoURL}/login?response_type=token&client_id=${configs.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
 					}, diff);
 				}
 
@@ -118,6 +118,7 @@ const App = () => {
 					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
 					<Route path="/View/:category/:feature" component={View}/>
 					<Route path="/Submit/:category" component={Submit}/>
+					<Route path="/Page/:page" component={Page}/>
 					<Route exact path="/:id_token?" component={Home}/>
 
 					<Route component={Error}/>
