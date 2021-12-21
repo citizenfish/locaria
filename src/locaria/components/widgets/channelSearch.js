@@ -13,7 +13,7 @@ import {useHistory} from "react-router-dom";
 import InputBase from "@material-ui/core/InputBase";
 import {useCookies} from "react-cookie";
 import SearchBanner from "defaults/searchBanner";
-import CardImageLoader from "./cardImageLoader";
+import CardImageLoader from "widgets/cardImageLoader";
 
 const ChannelSearch = () => {
 	const classes = useStyles();
@@ -45,7 +45,8 @@ const ChannelSearch = () => {
 	}
 
 	function doSearch() {
-		setMySearch(document.getElementById('mySearch').value);
+		const newSearchValue=document.getElementById('mySearch').value;
+		setMySearch(newSearchValue);
 
 		let packet = {
 			"queue": "searchLoader",
@@ -53,7 +54,7 @@ const ChannelSearch = () => {
 			"data": {
 				"method": "search",
 				"category": configs.homeCategorySearch,
-				"search_text": mySearch,
+				"search_text": newSearchValue,
 				"limit": configs.searchLimit
 			}
 		};

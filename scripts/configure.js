@@ -408,14 +408,14 @@ function executeWithCatch(cmd, success, fail, options) {
 
 function deployWEB(stage) {
 
-	const buf = fs.readFileSync('api/.env');
-	const config = dotenv.parse(buf)
+	/*const buf = fs.readFileSync('api/.env');
+	const config = dotenv.parse(buf)*/
 	let path = 'main';
 	readline.question(`Path to use [${path}]?`, (cmd) => {
 		if (cmd)
 			path = cmd;
 		executeWithCatch('webpack --config webpack.config.js', () => {
-			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${config.cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
+			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
 			executeWithCatch(cmdLine, () => {
 				deploySystemMain(stage);
 			}, () => {
