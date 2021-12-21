@@ -554,6 +554,8 @@ resources:
       Value: ${self:custom.stage}
     cognitoPoolId:
       Value: !Ref CognitoUserPool
+    cfdist:
+      Value: !Ref WebsiteDistribution
 
 functions:
   api:

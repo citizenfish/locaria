@@ -66,6 +66,10 @@ module.exports = {
 		},
 		alias: {
 			libs: path.resolve(__dirname, 'src/locaria/libs'),
+			widgets: [
+				path.resolve(`${theme}/components/widgets`),
+				path.resolve(`src/locaria/components/widgets`)
+			],
 			themeLocaria: path.resolve(`${theme}/locaria.js`),
 			themeDefault: path.resolve(`src/theme/default`),
 			mapStyle: [
@@ -90,7 +94,7 @@ module.exports = {
 		historyApiFallback: {
 			index: 'index.html'
 		},
-		liveReload: true,
+		liveReload: false,
 		hot: true
 	}
 };
