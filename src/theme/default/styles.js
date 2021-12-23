@@ -148,6 +148,10 @@ export default class UseStyles {
 			},
 			gridFull: {
 				width: '100%'
+			},
+			imageList: {
+				/*width: 500,
+				height: 300,*/
 			}
 		};
 		base = Object.assign(base, merge);

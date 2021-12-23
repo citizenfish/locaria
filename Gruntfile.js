@@ -1,4 +1,3 @@
-const stack = require('api/stack.json');
 
 module.exports = function (grunt) {
 	grunt.initConfig({

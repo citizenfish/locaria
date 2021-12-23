@@ -6,7 +6,6 @@ import {useStyles, configs} from 'themeLocaria';
 const CardImageLoader = ({images, defaultImage, defaultTitle = 'Search'}) => {
 	const classes = useStyles();
 	let image, title;
-
 	if (images && images[0]) {
 		image = images[0].url;
 		title = images[0].title;
