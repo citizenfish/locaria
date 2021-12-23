@@ -30,5 +30,10 @@
 * 602 - Delete acl error
 * 650 - Duplicate group name
 
-# Codes
+# File Upload
+
+* 1097 - Error in get_files SQL
+* 1098 - Error in add_file SQL
+* 1099 - Error in update_file SQL
+* 1100 - Error in delete_file SQL
 
