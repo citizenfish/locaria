@@ -37,14 +37,6 @@ BEGIN
 
     RETURN ret_var;
 
-EXCEPTION WHEN OTHERS THEN
-        INSERT INTO locaria_core.logs(log_type, log_message)
-        SELECT 'run_report',
-               jsonb_build_object('parameters',search_parameters, 'response', SQLERRM)
-        RETURNING id INTO logid_var;
-
-    RETURN jsonb_build_object('error', 'request could not be completed','system_log_id', logid_var);
-
 END;
 $$
 LANGUAGE PLPGSQL;

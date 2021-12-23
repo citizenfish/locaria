@@ -22,5 +22,7 @@ END
 $$;
 
 GRANT USAGE ON SCHEMA locaria_core TO locaria_report_user;
+GRANT USAGE ON SCHEMA locaria_data TO locaria_report_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA locaria_data TO locaria_report_user;
 GRANT USAGE ON SCHEMA public TO locaria_report_user;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO locaria_report_user;

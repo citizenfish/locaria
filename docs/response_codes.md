@@ -21,6 +21,7 @@
 ### Public API
 
 * 500 - SQL Exception
+* 501 - Report Exception
 
 ### Internal API
 

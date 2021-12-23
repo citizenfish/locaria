@@ -6,7 +6,7 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    INSERT INTO locaria_core.logs(log_type, log_message)
+    INSERT INTO logs(log_type, log_message)
     SELECT COALESCE(parameters ->> 'method', 'internal'),
            parameters || jsonb_build_object('_message', message)
     RETURNING jsonb_build_object('logid',id) INTO ret_var;

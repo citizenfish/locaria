@@ -19,5 +19,6 @@ $$
 
         RAISE NOTICE '[list_categories] TEST 1 PASSED expected LOCARIA_TEST got %',ret_var->'categories';
 
+
     END;
 $$ LANGUAGE PLPGSQL;

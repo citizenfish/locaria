@@ -28,5 +28,6 @@ $$
         SET attributes = attributes -'tags';
 
         PERFORM locaria_internal_gateway(jsonb_build_object('method', 'refresh_search_view'));
+
     END;
 $$ LANGUAGE PLPGSQL;
