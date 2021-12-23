@@ -99,10 +99,18 @@ export default class Websockets {
 
 	registerQueue(queue, hook) {
 		this.queues[queue] = hook;
+		console.log(`WS ADD ${queue}`);
+	}
+
+	removeQueue(queue) {
+		delete this.queues[queue];
+		console.log(`WS DEL ${queue}`);
+
 	}
 
 	clearQueues() {
 		this.queues = [];
+		console.log('WS CLEAR');
 	}
 
 	close(pid, json) {

@@ -112,7 +112,8 @@ const Layout = ({children, map, update}) => {
 		});
 
 		return () => {
-			window.websocket.clearQueues();
+			window.websocket.removeQueue("postcode");
+			window.websocket.removeQueue("homeLoader");
 		}
 
 	}, [map]);
