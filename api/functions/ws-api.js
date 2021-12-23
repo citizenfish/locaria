@@ -15,7 +15,7 @@ const fetch = require('node-fetch');
 
 //data load api
 
-const {get_containers, instantiate_container, get_container_status} = require('./data_loader/load_methods.js');
+const {add_file,update_file,delete_file,get_files} = require('./data_loader/load_methods.js');
 const MAX_BYTES = 50000;
 
 
@@ -202,14 +202,17 @@ module.exports.run = (event, context, callback) => {
 								sendToClient(result)
 							}
 							switch (packet.data.method) {
-								case 'get_containers':
-									get_containers(packet, client, cb);
+								case 'get_files':
+									get_files(packet, client, cb);
 									break;
-								case 'instantiate_container':
-									instantiate_container(packet, client, cb);
+								case 'add_file':
+									add_file(packet, client, cb);
 									break;
-								case 'get_container_status':
-									get_container_status(packet, client, cb);
+								case 'update_file':
+									update_file(packet, client, cb);
+									break;
+								case 'delete_file':
+									delete_file(packet, client, cb);
 									break;
 								default:
 									payload.packet['response_code'] = 401;
