@@ -35,14 +35,17 @@ BEGIN
             REFRESH MATERIALIZED VIEW CONCURRENTLY global_search_view WITH data;
             RETURN jsonb_build_object('message', 'view refreshed', 'refresh', ret_var);
 
-        WHEN parameters ->> 'method' IN ('get_containers') THEN
-            ret_var = get_containers(parameters);
+        WHEN parameters ->> 'method' IN ('get_files') THEN
+            ret_var = get_files(parameters);
 
-        WHEN parameters ->> 'method' IN ('initialise_container') THEN
-            ret_var = initialise_container(parameters);
+        WHEN parameters ->> 'method' IN ('add_file') THEN
+            ret_var = add_file(parameters);
 
-        WHEN parameters ->> 'method' IN ('update_container') THEN
-            ret_var = update_container(parameters);
+        WHEN parameters ->> 'method' IN ('update_file') THEN
+            ret_var = update_file(parameters);
+
+        WHEN parameters ->> 'method' IN ('delete_file') THEN
+            ret_var = delete_file(parameters);
 
         WHEN parameters ->> 'method' IN ('view_report') THEN
             ret_var = view_report(parameters);
