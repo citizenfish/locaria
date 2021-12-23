@@ -18,6 +18,7 @@ function handler(data, serverless, options) {
 			configs[stage].cognitoURL = configs[stage].cognitoDomainName;
 			configs[stage].cognitoPoolId = data.cognitoPoolId;
 			configs[stage].poolClientId = data.poolClientId;
+			configs[stage].ecrRepoURI = data.ecrRepoURI;
 			configs[stage].cfdist = data.cfdist;
 			fs.writeFileSync(customFile, JSON.stringify(configs));
 			console.log('Written');
