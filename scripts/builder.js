@@ -46,7 +46,10 @@ function doCopy() {
 		} else {
 
 			const resource = {
-				websocket: `wss://${config.wsdomain}`
+				websocket: `wss://${config.wsdomain}`,
+				cognitoURL: config.cognitoURL,
+				cognitoPoolId: config.cognitoPoolId,
+				poolClientId: config.poolClientId
 			}
 			fs.writeFileSync(`${buildDir}/resources.json`, JSON.stringify(resource));
 			const cmdLine = `webpack --config webpack.config.js`;
