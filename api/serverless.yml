@@ -558,6 +558,9 @@ resources:
       Value: !Ref CognitoUserPoolClient
     cfdist:
       Value: !Ref WebsiteDistribution
+    ecrRepoURI:
+      Value: !GetAtt ECRLocariaRepo.RepositoryUri
+
 
 functions:
   api:

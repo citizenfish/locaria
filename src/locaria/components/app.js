@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Home from "components/home";
@@ -13,10 +13,12 @@ import AdminView from "components/admin/AdminView";
 import AdminData from "components/admin/AdminData";
 import AdminLoader from "components/admin/AdminLoader";
 import {useCookies} from "react-cookie";
-import {configs,resources} from "themeLocaria";
+import {configs, resources} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
 
 import AdminRoute from "./adminRoute";
+
+import LocariaContext from './context/locariaContext';
 
 
 const App = () => {
@@ -46,6 +48,22 @@ const App = () => {
 	if (cookies.distance === undefined) {
 		setCookies('distance', configs.defaultDistance, {path: '/', sameSite: true});
 	}
+
+
+	// Globals
+
+	const [homeSearch, setHomeSearch] = useState('');
+
+	const updateHomeSearch = (text) => {
+		setHomeSearch(text);
+	};
+
+	const userSettings = {
+		homeSearch: homeSearch,
+		updateHomeSearch
+	};
+
+
 	React.useEffect(() => {
 
 
@@ -106,25 +124,27 @@ const App = () => {
 
 
 	return (
-		<Router>
-			<div>
-				<Switch>
-					<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
-					<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
-					<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
-					<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
+		<LocariaContext.Provider value={userSettings}>
+			<Router>
+				<div>
+					<Switch>
+						<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
+						<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
+						<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
+						<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
-					<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
-					<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
-					<Route path="/View/:category/:feature" component={View}/>
-					<Route path="/Submit/:category" component={Submit}/>
-					<Route path="/Page/:page" component={Page}/>
-					<Route exact path="/:id_token?" component={Home}/>
+						<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
+						<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
+						<Route path="/View/:category/:feature" component={View}/>
+						<Route path="/Submit/:category" component={Submit}/>
+						<Route path="/Page/:page" component={Page}/>
+						<Route exact path="/:id_token?" component={Home}/>
 
-					<Route component={Error}/>
-				</Switch>
-			</div>
-		</Router>
+						<Route component={Error}/>
+					</Switch>
+				</div>
+			</Router>
+		</LocariaContext.Provider>
 	);
 };
 
