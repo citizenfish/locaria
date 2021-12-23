@@ -212,7 +212,7 @@ module.exports.run = (event, context, callback) => {
 									update_file(packet, client, cb);
 									break;
 								case 'delete_file':
-									update_file(packet, client, cb);
+									delete_file(packet, client, cb);
 									break;
 								default:
 									payload.packet['response_code'] = 401;
