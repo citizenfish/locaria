@@ -1,58 +1,57 @@
 /**
-    get_containers - connect to database and retrieve a list of containers via the internal api
- */
+    file operations
+ **/
+let _ret = {}
+let _querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB)'
 
-module.exports.get_files =  (packet, client, callback) => {
+let _runQuery = (packet,client,callback,error_code) => {
 
-    console.log("get_files")
-    let ret = {}
-    let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB)'
-    let qarguments= [{method: "get_files"}]
-
-    client.query(querysql, qarguments,  (err, result) => {
+    client.query(_querysql, [packet],  (err, result) => {
 
         if(err) {
-            callback({error :err, "response_code" : 1097})
+            callback({error :err, "response_code" : error_code})
         }
 
         callback(result.rows[0])
     })
+}
 
-    return ret
+module.exports.get_files =  (packet, client, callback) => {
+
+    packet["method"] = 'get_files'
+
+    _runQuery(packet,client,callback,1097)
+
+    return _ret
 
 }
 
-module.exports.add_file = (packet,client) => {
+module.exports.add_file = (packet,client,callback) => {
 
-    return {
-        "container_id" : 12345,
-        "user_message" : "Foo baa"
-    }
+    packet["method"] = 'add_file'
+
+    _runQuery(packet,client,callback,1098)
+
+    return _ret
+
+
 }
 
-module.exports.delete_file = (packet,client) => {
+module.exports.update_file = (packet,client,callback) => {
 
-    return {
-        "container_id" : 12345,
-        "user_message" : "Foo baa"
-    }
+    packet["method"] = 'update_file'
+
+    _runQuery(packet,client,callback,1099)
+
+    return _ret
 }
 
-module.exports.update_file = (packet,client) => {
+module.exports.delete_file = (packet,client,callback) => {
 
-    return {
-        "response_code" : 200,
-        "message" : "Text message",
-        "attributes" : {
-            "log_messages" : [
-                {
-                    "date" : "DD-MM-YYYY HH:MM:SS",
-                    "log" : "This is the log message"
-                }
-            ],
-            "last_error" : "Last error message",
-            "progress" : "20%"
-        },
-        "last_update" : "DD-MM-YYYY HH:MM:SS"
-    }
+    packet["method"] = 'delete_file'
+
+    _runQuery(packet,client,callback,1100)
+
+    return _ret
 }
+

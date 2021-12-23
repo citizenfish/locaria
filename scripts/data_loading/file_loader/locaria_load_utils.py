@@ -12,39 +12,26 @@ def database_connect():
         print("Database credentials not provided ... exiting")
         exit()
 
-def get_file_details(db, schema, fileID):
+def update_file_status(db,schema,id,update):
+    q = db.prepare(f"SELECT {schema}.locaria_internal_gateway($1) AS files")
+    update["method"] = "update_file"
+    update["id"] = id
+    files = q(json.dumps(update))
+    return json.loads(files[0][0])
 
-    q = db.prepare(f"SELECT status,attributes from {schema}.files WHERE id = $1")
-    file = q(fileID)
+def get_files_to_process(db,schema):
+    q = db.prepare(f"SELECT {schema}.locaria_internal_gateway($1) AS files")
+    files = q(json.dumps({"method" : "get_files", "status" : "REGISTERED"}))
+    return json.loads(files[0][0])
 
-    if len(file) == 0:
-        print(f"File {fileID} not found")
-        exit()
+def process_file_csv(db,file):
+    print("CSV PROCESSING")
+    return {"status" : 'PROCESSED', "log_message" : {"result": "CSV PROCESSED"}}
 
-    q = db.prepare(f"UPDATE {schema}.files SET status = 'PREUPLOAD' WHERE id = $1")
-    update = q(fileID)
+def process_file_xls(db,file):
+    print("XLS PROCESSING")
+    return {"status" : 'PROCESSED', "log_message" : {"result": "XLS PROCESSED"}}
 
-    if update[1] != 1:
-        print(f"Unable to update file {fileID} status")
-        exit()
-
-    return file[0]
-
-def move_to_temp(_fileDetails):
-    fileDetails = json.loads(_fileDetails)
-    tmp_dir = tempfile.gettempdir()
-    s3 = boto3.client('s3')
-    try:
-
-        with tempfile.NamedTemporaryFile() as tmp:
-            s3.download_fileobj(fileDetails['bucket'], fileDetails['path'], tmp)
-
-    except Exception as e:
-        print(f"S3 download error {e}")
-        exit()
-
-def ogr_loader(fileName, parameters, layers = []):
-    print(f"ogr_loader loading {fileName} with parameters {parameters} and layers {layers}")
-
-def file_status(db,schema,status,statusMessage):
-    q = db.prepare(f"UPDATE {schema}.files set status = $1)
+def process_file_geojson(db,f):
+    print("GEOSJSON PROCESSING")
+    return {"status" : 'PROCESSED', "log_message" : {"result": "GEOJSON PROCESSED"}}
