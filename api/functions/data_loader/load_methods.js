@@ -2,12 +2,12 @@
     get_containers - connect to database and retrieve a list of containers via the internal api
  */
 
-module.exports.get_containers =  (packet, client, callback) => {
+module.exports.get_files =  (packet, client, callback) => {
 
-    console.log("get_containers")
+    console.log("get_files")
     let ret = {}
-    let querysql = 'SELECT locus_core.locus_internal_gateway($1::JSONB)'
-    let qarguments= [{method: "get_containers"}]
+    let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB)'
+    let qarguments= [{method: "get_files"}]
 
     client.query(querysql, qarguments,  (err, result) => {
 
@@ -22,7 +22,7 @@ module.exports.get_containers =  (packet, client, callback) => {
 
 }
 
-module.exports.instantiate_container = (packet,client) => {
+module.exports.add_file = (packet,client) => {
 
     return {
         "container_id" : 12345,
@@ -30,7 +30,15 @@ module.exports.instantiate_container = (packet,client) => {
     }
 }
 
-module.exports.get_container_status = (packet,client) => {
+module.exports.delete_file = (packet,client) => {
+
+    return {
+        "container_id" : 12345,
+        "user_message" : "Foo baa"
+    }
+}
+
+module.exports.update_file = (packet,client) => {
 
     return {
         "response_code" : 200,
