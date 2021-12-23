@@ -554,6 +554,8 @@ resources:
       Value: ${self:custom.stage}
     cognitoPoolId:
       Value: !Ref CognitoUserPool
+    poolClientId:
+      Value: !Ref CognitoUserPoolClient
     cfdist:
       Value: !Ref WebsiteDistribution
 

@@ -96,12 +96,12 @@ const TopNav = () => {
 
 	const handleLogin = function () {
 		handleMenuClose();
-		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
 	}
 
 	const handleSignup = function () {
 		handleMenuClose();
-		window.location = `https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+		window.location = `https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
 	}
 
 	const handleLogout = function () {
