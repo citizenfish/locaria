@@ -14,19 +14,20 @@ import InputBase from "@material-ui/core/InputBase";
 import {useCookies} from "react-cookie";
 import SearchBanner from "defaults/searchBanner";
 import CardImageLoader from "widgets/cardImageLoader";
+import { InView } from 'react-intersection-observer';
 
 const ChannelSearch = () => {
 	const classes = useStyles();
 	const history = useHistory();
 
-	const [cookies, setCookies] = useCookies(['location']);
-	const [searchResults, setSearchResults] = React.useState(undefined);
+	const [searchResults, setSearchResults] = React.useState([]);
 	const [mySearch, setMySearch] = React.useState(undefined);
+	const [isInView, setIsInView] = React.useState(false);
 
 	React.useEffect(() => {
 
 		window.websocket.registerQueue("searchLoader", function (json) {
-			setSearchResults(json.packet.features);
+			setSearchResults(searchResults.concat(json.packet.features));
 		});
 
 		return () => {
@@ -34,7 +35,7 @@ const ChannelSearch = () => {
 		}
 
 
-	}, []);
+	}, [searchResults]);
 
 	function handleKeyDown(e) {
 		if (e.key === 'Enter') {
@@ -44,10 +45,12 @@ const ChannelSearch = () => {
 
 	}
 
-	function doSearch() {
+	function doSearch(mode='new') {
 		const newSearchValue=document.getElementById('mySearch').value;
 		setMySearch(newSearchValue);
 
+		if(mode==='new')
+			setSearchResults([]);
 		let packet = {
 			"queue": "searchLoader",
 			"api": "api",
@@ -55,18 +58,27 @@ const ChannelSearch = () => {
 				"method": "search",
 				"category": configs.homeCategorySearch,
 				"search_text": newSearchValue,
-				"limit": configs.searchLimit
+				"limit": configs.searchLimit,
+				"offset":searchResults.length
 			}
 		};
 		window.websocket.send(packet);
 	}
 
+	const inViewEvent =function(event) {
+		console.log(event);
+		setIsInView(event);
+		if(event===true&&searchResults.length>0) {
+			doSearch('scroll');
+		}
+	}
+
 	const SearchResults = () => {
-		if (searchResults !== undefined) {
+		if (searchResults.length>0) {
 			return (
 				searchResults.map(function (feature) {
 					return (
-						<Grid item md={configs.homeGrid} className={classes.searchResults} key={feature.properties.fid}>
+						<Grid item md={configs.homeGrid} className={classes.searchResults} key={feature.properties.fid} id={"infini"}>
 							<Card className={classes.root}>
 								<CardImageLoader defaultImage={configs.defaultImage}
 								                 images={feature.properties.description.images}/>
@@ -143,10 +155,14 @@ const ChannelSearch = () => {
 	}
 
 	return (
+		<div>
 		<Grid container className={classes.root} spacing={2} justifyContent="flex-start">
 			<SearchPanel/>
 			<SearchResults/>
 		</Grid>
+			<InView as="div" onChange={(inView, entry) => {inViewEvent(inView)}}>
+			</InView>
+		</div>
 	)
 }
 
