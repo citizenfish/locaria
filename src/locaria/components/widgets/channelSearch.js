@@ -11,18 +11,23 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {useHistory} from "react-router-dom";
 import InputBase from "@material-ui/core/InputBase";
-import {useCookies} from "react-cookie";
 import SearchBanner from "defaults/searchBanner";
 import CardImageLoader from "widgets/cardImageLoader";
 import { InView } from 'react-intersection-observer';
+import { useContext } from 'react';
+
+import LocariaContext from '../context/locariaContext';
 
 const ChannelSearch = () => {
+
+	const myContext = useContext(LocariaContext);
+
 	const classes = useStyles();
 	const history = useHistory();
 
 	const [searchResults, setSearchResults] = React.useState([]);
-	const [mySearch, setMySearch] = React.useState(undefined);
 	const [isInView, setIsInView] = React.useState(false);
+	const [autoLoad, setAutoLoad] = React.useState(true);
 
 	React.useEffect(() => {
 
@@ -30,8 +35,12 @@ const ChannelSearch = () => {
 			setSearchResults(searchResults.concat(json.packet.features));
 		});
 
+		if(searchResults.length===0&&myContext.homeSearch!==''&&autoLoad===true) {
+			doSearch('new');
+		}
+
 		return () => {
-			window.websocket.clearQueues();
+			window.websocket.removeQueue("searchLoader");
 		}
 
 
@@ -39,15 +48,17 @@ const ChannelSearch = () => {
 
 	function handleKeyDown(e) {
 		if (e.key === 'Enter') {
-			doSearch();
+			doSearch('new');
 
 		}
 
 	}
 
 	function doSearch(mode='new') {
+		setAutoLoad(false);
+
 		const newSearchValue=document.getElementById('mySearch').value;
-		setMySearch(newSearchValue);
+		myContext.updateHomeSearch(newSearchValue);
 
 		if(mode==='new')
 			setSearchResults([]);
@@ -138,7 +149,7 @@ const ChannelSearch = () => {
 								input: classes.inputInput,
 							}}
 							inputProps={{'aria-label': 'search'}}
-							defaultValue={mySearch ? mySearch : ''}
+							defaultValue={myContext.homeSearch}
 							onKeyPress={handleKeyDown}
 							id="mySearch"
 						/>
