@@ -1,5 +1,5 @@
 --The main search query engine
-CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 1000) RETURNS TABLE (
+CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 10000) RETURNS TABLE (
     _fid TEXT,
     _search_rank DOUBLE PRECISION,
     _wkb_geometry GEOMETRY,
@@ -20,6 +20,7 @@ DECLARE
     metadata_var BOOLEAN DEFAULT TRUE;
     min_range_var FLOAT;
     max_range_var FLOAT;
+    ranking_attribute_var TEXT [] DEFAULT '{description,title}';
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -107,6 +108,11 @@ BEGIN
 
     metadata_var = COALESCE(search_parameters->>'metadata', metadata_var::TEXT)::BOOLEAN;
 
+    --We rank results by default on description, title but this can be overridden by search parameters: Format = '{description,foo,baa}'
+    IF search_parameters->>'ranking_attributes' ~ '^\{[a-zA-Z0-9,_]+\}$' THEN
+        ranking_attribute_var = search_parameters->>'ranking_attributes'::TEXT [];
+    END IF;
+
     --This is the core search query
 
     RETURN QUERY
@@ -124,11 +130,13 @@ BEGIN
 
             FROM (
                 SELECT  distinct ON(fid) fid,
-			            CASE WHEN search_ts_query = '_IGNORE' tHEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
+			            CASE WHEN search_ts_query = '_IGNORE' THEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
 			            wkb_geometry,
 			            (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
 			            COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance,
-                        jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max, 'acl', attributes->'acl')) AS metadata
+                        jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max, 'acl', attributes->'acl')) AS metadata,
+                        --used to further rank results against a specific attribute
+                        levenshtein(lower(jsonb_extract_path_text(attributes,VARIADIC ranking_attribute_var)), lower(search_parameters->>'search_text')) AS attribute_rank
 
                 FROM global_search_view
                 WHERE wkb_geometry IS NOT NULL
@@ -150,11 +158,12 @@ BEGIN
                  AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
                 --range query
                 AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
-                OFFSET default_offset
+
             ) INNER_SUB
              --restrict to only allowed groups
             WHERE attributes#>'{acl,view}' IS NULL OR attributes#>'{acl,view}' ?| json2text(search_parameters->'_group')
-            ORDER by distance ASC, search_rank DESC
+            ORDER by attribute_rank ASC, distance ASC, search_rank DESC
+            OFFSET default_offset
             LIMIT default_limit;
 
 
