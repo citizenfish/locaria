@@ -38,7 +38,7 @@ module.exports.run = (event, context, callback) => {
 			"method": "add_file",
 			"file_id": parts[1],
 			"status": "UPLOADED",
-			"s3_path": params['Key']
+			"s3_path": key
 
 		};
 
