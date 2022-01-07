@@ -15,7 +15,7 @@ const fetch = require('node-fetch');
 
 //data load api
 
-const {add_file,update_file,delete_file,get_files} = require('./data_loader/load_methods.js');
+const {update_file,delete_file,get_files} = require('./data_loader/load_methods.js');
 const MAX_BYTES = 50000;
 
 
@@ -206,7 +206,7 @@ module.exports.run = (event, context, callback) => {
 									get_files(packet, client, cb);
 									break;
 								case 'add_file':
-									add_file(packet, client, cb);
+									add_file(packet);
 									break;
 								case 'update_file':
 									update_file(packet, client, cb);
@@ -249,6 +249,52 @@ module.exports.run = (event, context, callback) => {
 
 
 		}
+	}
+
+	function add_file(packet) {
+
+		client = database.getClient();
+		let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB)';
+		packet.data.s3_bucket=process.env.importBucket;
+		packet.data.s3_region=process.env.region;
+		packet.data.status='REGISTERED';
+
+		let qarguments= [packet.data];
+		console.log(querysql);
+		console.log(qarguments);
+		client.query(querysql, qarguments, function (err, result) {
+			if (err) {
+				console.log(err);
+				payload.packet['response_code'] = 310;
+				sendToClient(payload);
+
+			} else {
+				if (result.rows[0]['locaria_internal_gateway']['file_id'] === undefined) {
+					payload.packet['response_code'] = 500;
+					sendToClient(payload);
+				} else {
+
+					let s3 = new AWS.S3();
+					let filePath = `incoming/${process.env.stage}/${result.rows[0]['locaria_internal_gateway']['file_id']}`;
+
+					let s3parameters = {
+						Bucket: process.env.importBucket,
+						Key: filePath,
+						ContentType: packet.packet.payload.contentType
+					};
+
+					let url = s3.getSignedUrl('putObject', s3parameters);
+					payload.packet = {
+						"url": url
+					};
+					payload.response_code = 200;
+					payload.method = packet.data.method;
+					sendToClient(payload);
+				}
+			}
+		});
+
+
 	}
 
 	function validateToken(packet, success, fail) {
