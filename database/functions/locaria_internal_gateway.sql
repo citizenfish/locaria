@@ -77,7 +77,7 @@ BEGIN
                         WHERE parameter_name = 'log_configuration'), log_var);
 
     IF log_var THEN
-        PERFORM log(parameters,CASE
+        PERFORM log(parameters ||jsonb_build_object('ret',ret_var),CASE
                            WHEN COALESCE(ret_var ->> 'error', '') = ''
                                THEN 'ok'
                            ELSE ret_var ->> 'error' END);
