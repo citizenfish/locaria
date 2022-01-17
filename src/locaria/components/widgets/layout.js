@@ -1,11 +1,12 @@
 import React, {useRef} from 'react';
 
-import Container from '@material-ui/core/Container';
-import {useStyles, theme, configs, channels} from "themeLocaria";
-import {ThemeProvider} from '@material-ui/core/styles';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import Paper from "@material-ui/core/Paper";
+import Container from '@mui/material/Container';
+import { configs, channels} from "themeLocaria";
+import {useStyles} from "stylesLocaria";
+
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Paper from "@mui/material/Paper";
 import {useCookies} from 'react-cookie';
 import {useHistory} from 'react-router-dom';
 import Map from "./map";
@@ -129,7 +130,7 @@ const Layout = ({children, map, update}) => {
 
 
 	return (
-		<ThemeProvider theme={theme}>
+		<Container>
 			<Snackbar open={openError} autoHideDuration={3000} onClose={closeError}
 			          anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
 				<Alert severity="error">
@@ -154,7 +155,7 @@ const Layout = ({children, map, update}) => {
 				</div>
 
 			</Container>
-		</ThemeProvider>
+		</Container>
 	);
 
 	function displayMap() {

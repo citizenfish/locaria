@@ -1,14 +1,14 @@
 import React from 'react';
 import {Link, useParams} from 'react-router-dom';
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import ChannelCard from './widgets/channelCard';
-import Paper from "@material-ui/core/Paper";
+import Paper from "@mui/material/Paper";
 
 
 import Layout from './widgets/layout';
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 
-import {useStyles} from 'themeLocaria';
+import {useStyles} from 'stylesLocaria';
 import {useCookies} from "react-cookie";
 
 import ShowReport from 'defaults/showReport';

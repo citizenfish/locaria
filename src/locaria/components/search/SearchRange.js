@@ -1,12 +1,12 @@
 import React from "react";
 
-import FormControl from "@material-ui/core/FormControl";
-import Slider from '@material-ui/core/Slider';
-import Typography from "@material-ui/core/Typography";
+import FormControl from "@mui/material/FormControl";
+import Slider from '@mui/material/Slider';
+import Typography from "@mui/material/Typography";
 
 
-import {useStyles} from "themeLocaria";
-import InputLabel from "@material-ui/core/InputLabel";
+import {useStyles} from "stylesLocaria";
+import InputLabel from "@mui/material/InputLabel";
 
 
 const SearchRange = ({changeFunction, currentValueFrom, currentValueTo, title = 'Age', min = 0, max = 100}) => {

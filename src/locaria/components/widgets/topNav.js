@@ -1,17 +1,19 @@
 import React from 'react';
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import Typography from "@material-ui/core/Typography";
-import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
-import Box from "@material-ui/core/Box";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import {channels, useStyles, configs,resources,pages} from "themeLocaria";
-import MenuItem from "@material-ui/core/MenuItem";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Typography from "@mui/material/Typography";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
+import Box from "@mui/material/Box";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import {channels, configs,resources,pages} from "themeLocaria";
+import {useStyles} from "stylesLocaria";
+
+import MenuItem from "@mui/material/MenuItem";
 import {Link} from "react-router-dom";
-import Menu from "@material-ui/core/Menu";
+import Menu from "@mui/material/Menu";
 import {useCookies} from "react-cookie";
 
 
@@ -184,7 +186,7 @@ const TopNav = () => {
 
 	return (
 		<div className={classes.grow}>
-			<AppBar position="static">
+			<AppBar position="static" color="primary">
 				<Toolbar>
 					<IconButton
 						edge="start"

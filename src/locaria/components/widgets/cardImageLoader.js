@@ -1,6 +1,7 @@
 import React from 'react';
-import CardMedia from "@material-ui/core/CardMedia";
-import {useStyles, configs} from 'themeLocaria';
+import CardMedia from "@mui/material/CardMedia";
+import {useStyles} from "stylesLocaria";
+
 
 
 const CardImageLoader = ({images, defaultImage, defaultTitle = 'Search'}) => {

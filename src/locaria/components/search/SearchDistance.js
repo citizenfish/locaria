@@ -1,11 +1,11 @@
 import React from "react";
 
 
-import InputLabel from "@material-ui/core/InputLabel";
-import NativeSelect from "@material-ui/core/NativeSelect";
-import FormControl from "@material-ui/core/FormControl";
-import {useStyles} from "themeLocaria";
-import Slider from "@material-ui/core/Slider";
+import InputLabel from "@mui/material/InputLabel";
+import NativeSelect from "@mui/material/NativeSelect";
+import FormControl from "@mui/material/FormControl";
+import {useStyles} from "stylesLocaria";
+import Slider from "@mui/material/Slider";
 
 
 const SearchDistance = ({changeFunction, currentValue, min = 0, max = 100}) => {

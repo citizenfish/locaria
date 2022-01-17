@@ -71,6 +71,7 @@ module.exports = {
 				path.resolve(`src/locaria/components/widgets`)
 			],
 			themeLocaria: path.resolve(`${theme}/locaria.js`),
+			stylesLocaria: path.resolve(`${theme}/styles.js`),
 			themeDefault: path.resolve(`src/theme/default`),
 			mapStyle: [
 				path.resolve(`${theme}/view.js`),

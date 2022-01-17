@@ -1,7 +1,9 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 
-import {useStyles, configs} from 'themeLocaria';
+import { configs} from 'themeLocaria';
+import {useStyles} from "stylesLocaria";
+
 
 
 import Layout from './widgets/layout';

@@ -124,27 +124,27 @@ const App = () => {
 
 
 	return (
-		<LocariaContext.Provider value={userSettings}>
-			<Router>
-				<div>
-					<Switch>
-						<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
-						<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
-						<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
-						<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
+			<LocariaContext.Provider value={userSettings}>
+				<Router>
+					<div>
+						<Switch>
+							<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
+							<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
+							<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
+							<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
-						<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
-						<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
-						<Route path="/View/:category/:feature" component={View}/>
-						<Route path="/Submit/:category" component={Submit}/>
-						<Route path="/Page/:page" component={Page}/>
-						<Route exact path="/:id_token?" component={Home}/>
+							<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
+							<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
+							<Route path="/View/:category/:feature" component={View}/>
+							<Route path="/Submit/:category" component={Submit}/>
+							<Route path="/Page/:page" component={Page}/>
+							<Route exact path="/:id_token?" component={Home}/>
 
-						<Route component={Error}/>
-					</Switch>
-				</div>
-			</Router>
-		</LocariaContext.Provider>
+							<Route component={Error}/>
+						</Switch>
+					</div>
+				</Router>
+			</LocariaContext.Provider>
 	);
 };
 

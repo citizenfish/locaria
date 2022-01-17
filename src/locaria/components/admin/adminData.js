@@ -1,27 +1,28 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
 import {Link, useParams, useLocation} from 'react-router-dom';
-import {channels, useStyles, configs} from 'themeLocaria';
+import {channels, configs} from 'themeLocaria';
+import {useStyles} from 'stylesLocaria';
 import Openlayers from "libs/Openlayers";
 
 
 import AdminLayout from './adminLayout';
 import Map from '../widgets/map';
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from "@material-ui/core/Checkbox";
-import ListItemText from "@material-ui/core/ListItemText";
-import FormControl from "@material-ui/core/FormControl";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import Input from "@mui/material/Input";
+import MenuItem from "@mui/material/MenuItem";
+import Checkbox from "@mui/material/Checkbox";
+import ListItemText from "@mui/material/ListItemText";
+import FormControl from "@mui/material/FormControl";
+import LinearProgress from "@mui/material/LinearProgress";
 import {useCookies} from "react-cookie";
 import AdminCard from "./adminCard";
 import AutoForm from "../widgets/autoForm"

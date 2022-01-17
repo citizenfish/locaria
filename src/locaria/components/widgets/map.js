@@ -1,7 +1,9 @@
 import React, {forwardRef, useRef, useImperativeHandle} from 'react';
 
-import {channels, useStyles, configs} from "themeLocaria";
-import Button from "@material-ui/core/Button";
+import {channels, configs} from "themeLocaria";
+import {useStyles} from "stylesLocaria";
+
+import Button from "@mui/material/Button";
 import {viewStyle, locationStyle} from "mapStyle";
 import Openlayers from "libs/Openlayers";
 
