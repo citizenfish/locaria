@@ -20,6 +20,9 @@ provider:
     pool: !Ref CognitoUserPool
     ecrRepoARN: !GetAtt ECRLocariaRepo.Arn
     ecrRepoURI: !GetAtt ECRLocariaRepo.RepositoryUri
+    importBucket: ${file(../../locaria.json):${self:custom.stage}.domain}-data
+    stage: ${self:custom.stage}
+    region: ${file(../../locaria.json):${self:custom.stage}.region}
   region: ${file(../../locaria.json):${self:custom.stage}.region}
   websocketsApiName: locaria-websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action
@@ -563,6 +566,16 @@ resources:
 
 
 functions:
+  PUT:
+    handler: functions/incoming.run
+    events:
+      - s3:
+          bucket: ${file(../../locaria.json):${self:custom.stage}.domain}-data
+          event: s3:ObjectCreated:Put
+          rules:
+            - prefix: "incoming/${self:custom.stage}"
+          existing: true
+
   api:
     handler: functions/api.run
     vpc:
