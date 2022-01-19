@@ -9,7 +9,7 @@ export default class Pages {
 		let list=[];
 		for (let p in this.pages) {
 			if(this.pages[p].options.addToMenu===true) {
-				list.push({title:this.pages[p].options.title,page:p})
+				list.push({title:this.pages[p].options.title,page:p,icon:this.pages[p].options.icon})
 			}
 		}
 		return list;

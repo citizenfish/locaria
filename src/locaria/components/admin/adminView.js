@@ -3,25 +3,27 @@ import React from 'react';
 import AdminLayout from './adminLayout';
 
 import {Link, useParams, BrowserRouter, useHistory} from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import Input from "@material-ui/core/Input";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Input from "@mui/material/Input";
+import CardActions from "@mui/material/CardActions";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
 import Openlayers from "libs/Openlayers";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import {viewStyle} from "../mapStyles/view"
 import {useCookies} from "react-cookie";
-import Chip from "@material-ui/core/Chip";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
+import Chip from "@mui/material/Chip";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 import AdminCard from "./adminCard";
 import SearchTags from "../search/SearchTags";
-import {channels, configs, useStyles} from "themeLocaria";
+import {channels, configs} from "themeLocaria";
+import {useStyles} from "stylesLocaria";
+
 
 
 const AdminView = () => {

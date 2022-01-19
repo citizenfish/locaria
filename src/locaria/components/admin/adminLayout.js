@@ -1,19 +1,20 @@
 import React from 'react';
 
-import Container from '@material-ui/core/Container';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuIcon from "@material-ui/icons/Menu";
-import {channels, useStyles, theme, configs} from "themeLocaria";
+import Container from '@mui/material/Container';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MenuIcon from "@mui/icons-material/Menu";
+import {channels, theme, configs} from "themeLocaria";
+import {useStyles} from "stylesLocaria";
 import {adminTheme} from "../../../theme/admin/admin";
-import {ThemeProvider} from '@material-ui/core/styles';
+import {ThemeProvider} from '@mui/styles';
 import {Link} from "react-router-dom";
 import {useCookies} from 'react-cookie';
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 
 
 const AdminLayout = ({children}) => {

@@ -5,7 +5,14 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import {configs, resources} from "themeLocaria";
+import {theme,configs, resources} from "themeLocaria";
+import {ThemeProvider} from '@mui/material/styles';
+
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 import cssOL from './components/css/ol.css';
 
@@ -19,7 +26,7 @@ window.websocket.init({"url": resources.websocket}, connected, closed, errored);
 
 function connected() {
 
-	ReactDOM.render(<App/>, document.getElementById('root'));
+	ReactDOM.render(<Main/>, document.getElementById('root'));
 }
 
 function closed(event) {
@@ -32,8 +39,16 @@ function errored(event) {
 	tries++;
 	console.log(`websock errored: ${event}`);
 	if (tries > 2) {
-		ReactDOM.render(<App/>, document.getElementById('root'));
+		ReactDOM.render(<Main/>, document.getElementById('root'));
 	}
+}
+
+function Main() {
+	return (
+		<ThemeProvider theme={theme}>
+			<App/>
+		</ThemeProvider>
+	)
 }
 
 

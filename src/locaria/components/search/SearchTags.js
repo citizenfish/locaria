@@ -1,14 +1,14 @@
 import React from "react";
 
 
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from "@material-ui/core/Checkbox";
-import ListItemText from "@material-ui/core/ListItemText";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import {useStyles} from "themeLocaria";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Checkbox from "@mui/material/Checkbox";
+import ListItemText from "@mui/material/ListItemText";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import {useStyles} from "stylesLocaria";
 
 
 const SearchTags = ({category, changeFunction, currentValue}) => {

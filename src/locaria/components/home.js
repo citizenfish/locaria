@@ -1,7 +1,9 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 
-import {useStyles, configs} from 'themeLocaria';
+import { configs} from 'themeLocaria';
+import {useStyles} from "stylesLocaria";
+
 
 
 import Layout from './widgets/layout';
@@ -12,18 +14,22 @@ const Home = () => {
 	const classes = useStyles();
 	if (configs.homeMode === 'Search') {
 		return (
-			<Layout map={true}>
-				<Paper elevation={3} className={classes.paperMargin}>
+			<Layout map={true} fullscreen={true}>
+			{/*	<Paper elevation={3} className={classes.paperMargin}>
 					<ChannelSearch/>
-				</Paper>
+				</Paper>*/}
 			</Layout>
 		)
 	} else {
 		return (
 			<Layout map={true}>
+{/*
 				<Paper elevation={3} className={classes.paperMargin}>
+*/}
 					<ChannelSelect/>
+{/*
 				</Paper>
+*/}
 			</Layout>
 		);
 	}

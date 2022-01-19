@@ -1,13 +1,15 @@
 import React from "react";
 
-import FormControl from "@material-ui/core/FormControl";
-import Slider from '@material-ui/core/Slider';
-import Typography from "@material-ui/core/Typography";
+import FormControl from "@mui/material/FormControl";
+import Slider from '@mui/material/Slider';
+import Typography from "@mui/material/Typography";
 
 
-import {channels, useStyles} from "themeLocaria";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
+import {channels} from "themeLocaria";
+import {useStyles} from "stylesLocaria";
+
+import InputLabel from "@mui/material/InputLabel";
+import Input from "@mui/material/Input";
 
 
 const autoForm = ({category, properties}) => {

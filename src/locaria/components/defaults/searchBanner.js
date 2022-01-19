@@ -1,12 +1,12 @@
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Card from "@material-ui/core/Card";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Card from "@mui/material/Card";
 import React from "react";
 import searchMain from '../../../theme/default/images/main.jpg';
-import {useStyles} from 'themeLocaria';
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import {useStyles} from 'stylesLocaria';
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
 
 const SearchBanner = () => {

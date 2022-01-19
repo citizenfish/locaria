@@ -3,23 +3,25 @@ import {Link, useHistory, useParams} from 'react-router-dom';
 
 import Layout from './widgets/layout';
 import ChannelCard from './widgets/channelCard';
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import {channels, useStyles} from "themeLocaria";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardHeader from '@material-ui/core/CardHeader';
-import Avatar from '@material-ui/core/Avatar';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import InputLabel from '@material-ui/core/InputLabel';
-import Chip from '@material-ui/core/Chip';
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import {channels} from "themeLocaria";
+import {useStyles} from "stylesLocaria";
 
-import LinearProgress from '@material-ui/core/LinearProgress';
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import CardActions from "@mui/material/CardActions";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardHeader from '@mui/material/CardHeader';
+import Avatar from '@mui/material/Avatar';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
+import InputLabel from '@mui/material/InputLabel';
+import Chip from '@mui/material/Chip';
+
+import LinearProgress from '@mui/material/LinearProgress';
 import {useCookies} from "react-cookie";
 
 import Distance from "libs/Distance";
