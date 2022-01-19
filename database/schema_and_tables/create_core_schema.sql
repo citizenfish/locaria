@@ -28,6 +28,7 @@ BEGIN
     DROP SCHEMA IF EXISTS locaria_data CASCADE;
     CREATE SCHEMA locaria_core;
     CREATE SCHEMA locaria_data;
+    CREATE SCHEMA locaria_uploads;
 
 
 EXCEPTION WHEN OTHERS THEN

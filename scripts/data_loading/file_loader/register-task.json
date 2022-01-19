@@ -1,0 +1,42 @@
+{
+  "family": "locaria_data_loader",
+  "networkMode": "awsvpc",
+  "executionRoleArn": "arn:aws:iam::617273772516:role/locaria_data_loader-task-execution-role",
+  "taskRoleArn": "arn:aws:iam::617273772516:role/locaria_data_loader-task-role",
+  "containerDefinitions": [
+    {
+      "name": "locaria_data_loader",
+      "image": "617273772516.dkr.ecr.eu-west-1.amazonaws.com/locaria-repo:latest",
+      "essential": true,
+      "environment": [
+        {
+          "name": "AWSREGION",
+          "value": "eu-west-1"
+        },
+        {
+          "name": "FILTER",
+          "value": "Locaria Data Loader"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "LOCARIADB",
+          "valueFrom": "arn:aws:secretsmanager:eu-west-1:617273772516:secret:LOCARIADB-QXkzjj"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "locaria_data_loader",
+          "awslogs-region": "eu-west-1",
+          "awslogs-stream-prefix": "locaria_data_loader"
+        }
+      }
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}

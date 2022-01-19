@@ -2,7 +2,7 @@ DO
 $$
 DECLARE
     ret_var JSONB;
-    parameters JSONB DEFAULT jsonb_build_object('method', 'add_file', 'file_attributes', jsonb_build_object('type', 'csv', 'name', 'File Foo'));
+    parameters JSONB DEFAULT jsonb_build_object('method', 'add_file', 'file_attributes', jsonb_build_object('type', 'csv', 'name', 'File Foo', 'path', '/demo1.locaria.org-data/uploads/OLS Activities (1).xlsx'));
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
