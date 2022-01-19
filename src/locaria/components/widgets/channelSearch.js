@@ -10,7 +10,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {useHistory} from "react-router-dom";
-import InputBase from "@material-ui/core/InputBase";
+import TextField  from "@material-ui/core/TextField";
 import SearchBanner from "defaults/searchBanner";
 import CardImageLoader from "widgets/cardImageLoader";
 import { InView } from 'react-intersection-observer';
@@ -142,7 +142,7 @@ const ChannelSearch = () => {
 						</Typography>
 					</CardContent>
 					<CardActions>
-						<InputBase
+						<TextField
 							placeholder="Search…"
 							classes={{
 								root: classes.inputRoot,
@@ -152,6 +152,7 @@ const ChannelSearch = () => {
 							defaultValue={myContext.homeSearch}
 							onKeyPress={handleKeyDown}
 							id="mySearch"
+							color="secondary"
 						/>
 
 						<Button size="small" color="secondary" variant="outlined" onClick={() => {
