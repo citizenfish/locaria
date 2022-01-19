@@ -9,9 +9,25 @@ export default class UseStyles {
 
 	constructor(theme, merge = {}) {
 		let base = {
+
+			/*
+				Defaults
+			 */
+
+			icons: {
+				color: theme.palette.icons.main
+			},
+
+
+
 			grow: {
 				flexGrow: 1,
 			},
+
+			/*
+			  Possibly legacy
+			 */
+
 			menuButton: {
 				marginRight: theme.spacing(2),
 			},
@@ -99,6 +115,147 @@ export default class UseStyles {
 				},
 
 			},
+
+			/*
+				Search Draw
+			 */
+
+			"searchDraw": {
+				zIndex: 100,
+				maxWidth: 500,
+				position: 'fixed',
+				bottom: 0,
+				right: 0,
+				width: '100%',
+				height: '50%',
+				borderTopLeftRadius: '20px',
+				borderTopRightRadius: '20px',
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					borderTop: 'none',
+					position: 'absolute',
+					top: 0,
+					color: theme.palette.icons.main,
+					backgroundColor: theme.palette.primary.main
+
+				}
+			},
+
+			searchDrawHeader: {
+				padding: 20,
+				position: 'relative',
+				display: 'flex',
+				flexDirection: 'row',
+				alignItems: 'center'
+			},
+
+			searchDrawTitle: {
+				flex: 1,
+				textAlign: 'center'
+			},
+
+			searchDrawClose: {
+				position: 'absolute',
+				right: 12,
+				top: 16
+			},
+
+			searchDrawSearch: {
+				margin: 20,
+				display: 'flex',
+				borderRadius: '6px',
+				overflow: 'hidden',
+				padding: '12px 14px',
+				backgroundColor: theme.palette.primary.lighter
+			},
+
+			searchDrawBox: {
+				flex: 1,
+				fontSize: 16
+			},
+
+			searchDrawResultList: {
+				padding: 20,
+				paddingBottom: 0,
+				display: 'flex',
+				flexDirection: 'column'
+			},
+
+			searchDrawResults: {
+				backgroundColor: theme.palette.primary.main,
+				borderTopLeftRadius: '20px',
+				borderTopRightRadius: '20px',
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				overflowY: 'auto'
+			},
+
+			searchDrawNoResults: {
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+				flex: 1
+			},
+
+			searchDrawNoResultsIcon: {
+				color: alpha(theme.palette.icons.main,0.35),
+				height: '128px',
+				width: '128px'
+			},
+
+			searchDrawNoResultsText: {
+				color: 'rgba(255, 255, 255, 0.35)',
+				marginTop: '12px',
+				fontWeight: 200,
+				fontSize: 24
+			},
+
+			SearchDrawImage: {
+				width: '128px',
+				height: '128px',
+				marginRight: '20px'
+			},
+
+			SearchDrawNameText: {
+				color: theme.palette.primary.contrastText,
+				fontSize: '16px'
+			},
+
+			SearchDrawShipText: {
+				color: alpha(theme.palette.primary.contrastText,0.35),
+				fontSize: '14px'
+			},
+
+			SearchDrawWrapper: {
+				display: 'flex',
+				flexDirection: 'row',
+				borderRadius: '10px',
+				overflow: 'hidden',
+				height: '128px',
+				marginBottom: '20px',
+				backgroundColor: `${theme.palette.primary.lighter} !important`
+			},
+
+			SearchDrawContent: {
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'flex-start',
+				justifyContent: 'stretch',
+				padding: '10px 10px 10px 0'
+			},
+
+			SearchDrawButton: {
+				marginTop: '10px',
+				marginRight: '10px',
+				alignSelf: 'stretch'
+			},
+
+			/*
+			  Other
+			 */
 
 			sectionDesktop: {
 				display: 'none',

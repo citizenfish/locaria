@@ -6,11 +6,10 @@ import {useStyles} from "stylesLocaria";
 
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import Paper from "@mui/material/Paper";
 import {useCookies} from 'react-cookie';
 import {useHistory} from 'react-router-dom';
 import Map from "./map";
-import TopNav from "./topNav";
+import Nav from "./nav";
 
 
 const Layout = ({children, map, update, fullscreen = false}) => {
@@ -145,7 +144,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 				</Alert>
 			</Snackbar>
 			<div>
-				<TopNav/>
+				<Nav/>
 				<div>
 					{displayMap()}
 
