@@ -14,18 +14,22 @@ const Home = () => {
 	const classes = useStyles();
 	if (configs.homeMode === 'Search') {
 		return (
-			<Layout map={true}>
-				<Paper elevation={3} className={classes.paperMargin}>
+			<Layout map={true} fullscreen={true}>
+			{/*	<Paper elevation={3} className={classes.paperMargin}>
 					<ChannelSearch/>
-				</Paper>
+				</Paper>*/}
 			</Layout>
 		)
 	} else {
 		return (
 			<Layout map={true}>
+{/*
 				<Paper elevation={3} className={classes.paperMargin}>
+*/}
 					<ChannelSelect/>
+{/*
 				</Paper>
+*/}
 			</Layout>
 		);
 	}

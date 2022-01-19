@@ -126,7 +126,6 @@ const App = () => {
 	return (
 			<LocariaContext.Provider value={userSettings}>
 				<Router>
-					<div>
 						<Switch>
 							<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
 							<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
@@ -142,7 +141,6 @@ const App = () => {
 
 							<Route component={Error}/>
 						</Switch>
-					</div>
 				</Router>
 			</LocariaContext.Provider>
 	);

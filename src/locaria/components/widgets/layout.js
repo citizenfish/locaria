@@ -13,7 +13,7 @@ import Map from "./map";
 import TopNav from "./topNav";
 
 
-const Layout = ({children, map, update}) => {
+const Layout = ({children, map, update, fullscreen = false}) => {
 	const history = useHistory();
 	const mapRef = useRef();
 
@@ -130,7 +130,7 @@ const Layout = ({children, map, update}) => {
 
 
 	return (
-		<Container>
+		<div>
 			<Snackbar open={openError} autoHideDuration={3000} onClose={closeError}
 			          anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
 				<Alert severity="error">
@@ -144,7 +144,7 @@ const Layout = ({children, map, update}) => {
 					Found your location
 				</Alert>
 			</Snackbar>
-			<Container>
+			<div>
 				<TopNav/>
 				<div>
 					{displayMap()}
@@ -154,19 +154,17 @@ const Layout = ({children, map, update}) => {
 
 				</div>
 
-			</Container>
-		</Container>
+			</div>
+		</div>
 	);
 
 	function displayMap() {
 		if (map === true) {
 			return (
-				<Paper elevation={3} className={classes.paperMargin}>
-					<div className={classes.mapContainer}>
+					<div className={fullscreen? classes.mapContainerFull:classes.mapContainer}>
 						<Map ref={mapRef} onFeatureSeleted={handleFeatureSelected}
 						     onZoomChange={configs.cluster ? onZoomChange : undefined}/>
 					</div>
-				</Paper>
 			)
 		}
 	}

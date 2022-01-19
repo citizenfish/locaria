@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-import UseStyles from './styles';
+import UseStyles from './systemStyles';
 // Channel Images
 import channelPlanning from './images/channel-planning.jpg';
 import channelDemocracy from './images/channel-democracy.jpg';
@@ -17,20 +17,24 @@ import Channels from "../../locaria/libs/Channels";
 import Pages from "../../locaria/libs/Pages";
 import React from 'react';
 
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
-//https://next.material-ui.com/customization/palette/
 const theme = createTheme({
 	palette: {
 		primary: {
 			main: '#ff9d00',
+			contrastText: '#000'
 		},
 		secondary: {
 			main: '#f44336',
+			contrastText: '#fff'
+		},
+		icons: {
+			main: '#fff'
 		}
 	}
 });
 
-const useStyles = new UseStyles(theme).get();
 
 const channels = new Channels();
 
@@ -113,7 +117,7 @@ channels.addChannel('All', {
 
 const pages=new Pages();
 
-pages.addPage('help',{title:"Some page"},<h1>This is some data</h1>)
+pages.addPage('help',{title:"Some page",icon:<InfoOutlinedIcon/>},<h1>This is some data</h1>)
 
 
 const configs = {
@@ -139,4 +143,4 @@ const configs = {
 
 const resources = require('./resources.json');
 
-export {useStyles, channels, theme, configs, resources,pages};
+export {channels, theme, configs, resources,pages};

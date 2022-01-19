@@ -4,40 +4,48 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import {channels, configs,resources,pages} from "themeLocaria";
+import {channels, configs, resources, pages} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import MenuItem from "@mui/material/MenuItem";
 import {Link} from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import {useCookies} from "react-cookie";
+import {
+	BottomNavigation,
+	BottomNavigationAction,
+	Divider,
+	Drawer,
+	ListItem,
+	ListItemIcon,
+	ListItemText
+} from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import SearchIcon from "@mui/icons-material/Search";
 
 
 const TopNav = () => {
 	const classes = useStyles();
-	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [leftDraw, setLeftDraw] = React.useState(false);
 	const [anchorProfileEl, setAnchorProfileEl] = React.useState(null);
-	const isMenuOpen = Boolean(anchorEl);
 	const isProfileMenuOpen = Boolean(anchorProfileEl);
 	const [cookies, setCookies] = useCookies(['location']);
 
 	const handleMenuOpen = (e) => {
-		setAnchorEl(e.currentTarget);
+		setLeftDraw(true);
 	};
 
 
 	const handleMenuClose = () => {
-		setAnchorEl(null);
+		setLeftDraw(false);
 		setAnchorProfileEl(null);
 	};
 
 	const handleProfileMenuOpen = (e) => {
 		setAnchorProfileEl(e.currentTarget);
-
 	}
 
 	const menuId = 'primary-search-account-menu';
@@ -63,37 +71,67 @@ const TopNav = () => {
 
 	function channelDisplay(channel) {
 		if (channel.type === 'Report' && channel.noCategory !== undefined && channel.noCategory === true)
-			return (<MenuItem component={Link} to={`/Report/${channel.report_name}`} key={channel.key}
-			                  content={channel.name}>{channel.name}</MenuItem>)
-		else
-			return (<MenuItem component={Link} to={`/Category/${channel.key}`} key={channel.key}
-			                  content={channel.name}>{channel.name}</MenuItem>)
 
+			return (<ListItem button component={Link} to={`/Report/${channel.report_name}`} key={channel.key}>
+				<ListItemIcon>
+					<SearchIcon/>
+				</ListItemIcon>
+				<ListItemText primary={channel.name}/>
+			</ListItem>)
+		else
+			return (<ListItem button component={Link} to={`/Category/${channel.key}`} key={channel.key}>
+				<ListItemIcon>
+					<SearchIcon/>
+				</ListItemIcon>
+				<ListItemText primary={channel.name}/>
+			</ListItem>)
 	}
 
 
-	const renderMenu = (
-		<Menu
-			anchorEl={anchorEl}
-			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-			id={menuId}
-			keepMounted
-			transformOrigin={{vertical: 'top', horizontal: 'right'}}
-			open={isMenuOpen}
-			onClose={handleMenuClose}
-		>
-			<MenuItem key={'Home'} component={Link} to={`/`}>Home</MenuItem>
-			{channels.listChannels().map(function (channel) {
-				if (channels.displayChannel(channel))
-					return channelDisplay(channels.getChannelProperties(channel));
-			})}
-			{pages.listPages().map(function(page) {
-					return (
-						<MenuItem component={Link} to={`/Page/${page.page}`} key={page.page}
-						          content={page.title}>{page.title}</MenuItem>
-					)
-			})}
-		</Menu>
+	const renderDraw = (
+		<React.Fragment key={'leftDraw'}>
+			<Drawer
+				anchor={'left'}
+				open={leftDraw}
+				onClose={handleMenuClose}
+				className={classes.drawLeft}
+			>
+				<Box
+					role="presentation"
+					onClick={handleMenuClose}
+					onKeyDown={handleMenuClose}
+				>
+
+					<ListItem button key={'Home'} component={Link} to={`/`}>
+						<ListItemIcon>
+							<HomeIcon/>
+						</ListItemIcon>
+						<ListItemText primary={'Home'}/>
+					</ListItem>
+
+					<Divider/>
+
+					{channels.listChannels().map(function (channel) {
+						if (channels.displayChannel(channel))
+							return channelDisplay(channels.getChannelProperties(channel));
+					})}
+
+					<Divider/>
+
+					{pages.listPages().map(function(page) {
+						return (
+							<ListItem button component={Link} to={`/Page/${page.page}`} key={page.page}>
+								<ListItemIcon>
+									{page.icon}
+								</ListItemIcon>
+								<ListItemText primary={page.title}/>
+							</ListItem>
+						)
+					})}
+				</Box>
+			</Drawer>
+		</React.Fragment>
+
 	);
 
 	const handleLogin = function () {
@@ -115,8 +153,12 @@ const TopNav = () => {
 	function renderProfileMenu() {
 		if (cookies['id_token'] === undefined || cookies['id_token'] === "null") {
 			return (
-				<Menu
-					anchorEl={anchorProfileEl}
+				<BottomNavigationAction label="Menu" icon={<AccountCircle  color="icons"/>} onClick={handleLogin}/>
+
+/*			<Menu
+					/!*
+										anchorEl={anchorProfileEl}
+					*!/
 					anchorOrigin={{
 						vertical: 'top',
 						horizontal: 'right',
@@ -132,12 +174,16 @@ const TopNav = () => {
 				>
 					<MenuItem key={"Login"} onClick={handleLogin}>Login</MenuItem>
 					<MenuItem key={"Signup"} onClick={handleSignup}>Signup</MenuItem>
-				</Menu>
+				</Menu>*/
 			)
 		} else {
 			return (
-				<Menu
-					anchorEl={anchorProfileEl}
+				<BottomNavigationAction label="Menu" icon={<AccountCircle  color="icons"/>} onClick={handleLogout}/>
+
+			/*<Menu
+					/!*
+										anchorEl={anchorProfileEl}
+					*!/
 					anchorOrigin={{
 						vertical: 'top',
 						horizontal: 'right',
@@ -154,13 +200,13 @@ const TopNav = () => {
 					<MenuItem key={"Logout"} onClick={handleLogout}>Logout</MenuItem>
 					{cookies.groups.indexOf('Admins') !== -1 ?
 						<MenuItem component={Link} to={`/Admin/`} key={"adminLink"}>Admin</MenuItem> : ''}
-				</Menu>
+				</Menu>*/
 			)
 		}
 	}
 
 	function LocationSearch() {
-		if(configs.navShowHome!==false){
+		if (configs.navShowHome !== false) {
 			return (
 				<div className={classes.search}>
 					<div className={classes.searchIcon}>
@@ -186,7 +232,12 @@ const TopNav = () => {
 
 	return (
 		<div className={classes.grow}>
-			<AppBar position="static" color="primary">
+			<BottomNavigation className={classes.nav}>
+				<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>}  onClick={handleMenuOpen}/>
+				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>}/>
+				{renderProfileMenu()}
+			</BottomNavigation>
+			{/*<AppBar position="static" color="primary" className={classes.nav}>
 				<Toolbar>
 					<IconButton
 						edge="start"
@@ -218,9 +269,8 @@ const TopNav = () => {
 						</IconButton>
 					</Box>
 				</Toolbar>
-			</AppBar>
-			{renderMenu}
-			{renderProfileMenu()}
+			</AppBar>*/}
+			{renderDraw}
 		</div>
 	)
 }
