@@ -9,7 +9,7 @@ $$
 
         SELECT locaria_gateway(parameters) INTO ret_var;
 
-        IF (ret_var->'features'->0->'properties'->>'count') != '2' THEN
+        IF (ret_var->'error') IS NOT NULL THEN
             IF (ret_var->>'logid') IS NOT NULL THEN
                 RAISE EXCEPTION '[cluster_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
             END IF;
