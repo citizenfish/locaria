@@ -9,9 +9,26 @@ export default class UseStyles {
 
 	constructor(theme, merge = {}) {
 		let base = {
+
+			/*
+				Defaults
+			 */
+
+			icons: {
+				color: theme.palette.icons.main
+			},
+
+
+
 			grow: {
 				flexGrow: 1,
 			},
+
+
+			/*
+			  Possibly legacy
+			 */
+
 			menuButton: {
 				marginRight: theme.spacing(2),
 			},
@@ -69,7 +86,7 @@ export default class UseStyles {
 				borderRadius: '10px',
 				width: '300px',
 				position: 'fixed',
-				zIndex: '100',
+				zIndex: '150',
 				left: 'calc(50% - 150px)',
 				bottom: '40px',
 				'& .MuiSvgIcon-root ':{
@@ -78,6 +95,18 @@ export default class UseStyles {
 */
 				},
 				'& button:nth-child(2)':{
+				}
+			},
+
+			/*
+				Profile speed dial on nav
+
+			 */
+
+			profileDial: {
+				position: 'relative', bottom: 11, right: 16 ,marginLeft: '30px',
+				"& .MuiFab-root": {
+					boxShadow: '0px 0px 0px 0px !important'
 				}
 			},
 
@@ -100,18 +129,143 @@ export default class UseStyles {
 
 			},
 
-			sectionDesktop: {
-				display: 'none',
-				[theme.breakpoints.up('md')]: {
-					display: 'flex',
-				},
+			/*
+				Search Draw
+			 */
+
+			"searchDraw": {
+				borderTopLeftRadius: '20px',
+				borderTopRightRadius: '20px',
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					height:'50%',
+					maxWidth: 500,
+					color: theme.palette.icons.main,
+					backgroundColor: theme.palette.primary.main,
+					width: 'calc(100vw)',
+					left: 'auto'
+				}
 			},
-			sectionMobile: {
+
+			searchDrawHeader: {
+				padding: 20,
+				position: 'relative',
 				display: 'flex',
-				[theme.breakpoints.up('md')]: {
-					display: 'none',
-				},
+				flexDirection: 'row',
+				alignItems: 'center'
 			},
+
+			searchDrawTitle: {
+				flex: 1,
+				textAlign: 'center'
+			},
+
+			searchDrawClose: {
+				position: 'absolute',
+				right: 12,
+				top: 16
+			},
+
+			searchDrawSearch: {
+				margin: 20,
+				display: 'flex',
+				borderRadius: '6px',
+				overflow: 'hidden',
+				padding: '12px 14px',
+				backgroundColor: theme.palette.primary.lighter
+			},
+
+			searchDrawBox: {
+				flex: 1,
+			},
+
+			searchDrawResultList: {
+				padding: 20,
+				paddingBottom: 0,
+				display: 'flex',
+				flexDirection: 'column'
+			},
+
+			searchDrawResults: {
+				backgroundColor: theme.palette.primary.main,
+				borderTopLeftRadius: '20px',
+				borderTopRightRadius: '20px',
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				overflowY: 'auto'
+			},
+
+			searchDrawNoResults: {
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+				flex: 1
+			},
+
+			searchDrawNoResultsIcon: {
+				color: alpha(theme.palette.icons.main,0.35),
+				height: '128px',
+				width: '128px'
+			},
+
+			searchDrawNoResultsText: {
+				color: 'rgba(255, 255, 255, 0.35)',
+				marginTop: '12px',
+				fontWeight: 200,
+				fontSize: 24
+			},
+
+			SearchDrawImage: {
+				width: '128px',
+				height: '128px',
+				marginRight: '20px'
+			},
+
+			SearchDrawNameText: {
+				color: theme.palette.primary.contrastText,
+				fontSize: '18px !important'
+			},
+
+			SearchDrawShipText: {
+				color: alpha(theme.palette.primary.contrastText,0.35),
+				fontSize: '16px !important'
+			},
+
+			SearchDrawWrapper: {
+				display: 'flex',
+				flexDirection: 'row',
+				borderRadius: '10px',
+				overflow: 'hidden',
+				height: '128px',
+				marginBottom: '20px',
+				backgroundColor: `${theme.palette.primary.lighter} !important`
+			},
+
+			SearchDrawContent: {
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'flex-start',
+				justifyContent: 'stretch',
+				padding: '10px 10px 10px 0'
+			},
+
+			SearchDrawButton: {
+				marginTop: '10px',
+				marginRight: '10px',
+				alignSelf: 'stretch'
+			},
+
+			/* Mapping */
+
+			mapDial: {
+				position: 'absolute',
+				left: 20,
+				top: 20
+			},
+
 			mapContainer: {
 				position: "relative",
 				width: '100%',
@@ -135,13 +289,23 @@ export default class UseStyles {
 				height: '50vh',
 				position: "relative"
 			},
-			mapResetButton: {
-				position: "absolute !important",
-				top: "10px",
-				right: "10px",
-				zIndex: 100,
-				background: alpha(theme.palette.common.white, 0.25)
+			/*
+			  Other
+			 */
+
+			sectionDesktop: {
+				display: 'none',
+				[theme.breakpoints.up('md')]: {
+					display: 'flex',
+				},
 			},
+			sectionMobile: {
+				display: 'flex',
+				[theme.breakpoints.up('md')]: {
+					display: 'none',
+				},
+			},
+
 			paperMargin: {
 				margin: '5px',
 				padding: '5px'

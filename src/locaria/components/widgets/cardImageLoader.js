@@ -17,11 +17,7 @@ const CardImageLoader = ({images, defaultImage, defaultTitle = 'Search'}) => {
 
 
 	return (
-		<CardMedia
-			className={classes.media}
-			image={image}
-			title={title}
-		/>
+		<img src={image} alt={title} className={classes.SearchDrawImage} />
 	)
 }
 
