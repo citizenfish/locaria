@@ -4,7 +4,7 @@ import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
 import {channels, configs, pages} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
-import {Profile} from "./profile";
+import {NavProfile} from "./navProfile";
 import {Link} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import {
@@ -160,10 +160,10 @@ const Nav = () => {
 			<BottomNavigation className={classes.nav}>
 				<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>}  onClick={handleDrawOpen}/>
 				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>} onClick={openSearchWrapper}/>
-				<Profile/>
+				<NavProfile/>
 			</BottomNavigation>
-			<RenderDraw/>
 			<SearchDraw ref={searchRef}/>
+			<RenderDraw/>
 		</div>
 	)
 }

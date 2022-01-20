@@ -24,6 +24,7 @@ export default class UseStyles {
 				flexGrow: 1,
 			},
 
+
 			/*
 			  Possibly legacy
 			 */
@@ -85,7 +86,7 @@ export default class UseStyles {
 				borderRadius: '10px',
 				width: '300px',
 				position: 'fixed',
-				zIndex: '100',
+				zIndex: '150',
 				left: 'calc(50% - 150px)',
 				bottom: '40px',
 				'& .MuiSvgIcon-root ':{
@@ -94,6 +95,18 @@ export default class UseStyles {
 */
 				},
 				'& button:nth-child(2)':{
+				}
+			},
+
+			/*
+				Profile speed dial on nav
+
+			 */
+
+			profileDial: {
+				position: 'relative', bottom: 11, right: 16 ,marginLeft: '30px',
+				"& .MuiFab-root": {
+					boxShadow: '0px 0px 0px 0px !important'
 				}
 			},
 
@@ -121,23 +134,16 @@ export default class UseStyles {
 			 */
 
 			"searchDraw": {
-				zIndex: 100,
-				maxWidth: 500,
-				position: 'fixed',
-				bottom: 0,
-				right: 0,
-				width: '100%',
-				height: '50%',
 				borderTopLeftRadius: '20px',
 				borderTopRightRadius: '20px',
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
-					borderTop: 'none',
-					position: 'absolute',
-					top: 0,
+					height:'50%',
+					maxWidth: 500,
 					color: theme.palette.icons.main,
-					backgroundColor: theme.palette.primary.main
-
+					backgroundColor: theme.palette.primary.main,
+					width: 'calc(100vw)',
+					left: 'auto'
 				}
 			},
 
@@ -171,7 +177,6 @@ export default class UseStyles {
 
 			searchDrawBox: {
 				flex: 1,
-				fontSize: 16
 			},
 
 			searchDrawResultList: {
@@ -220,12 +225,12 @@ export default class UseStyles {
 
 			SearchDrawNameText: {
 				color: theme.palette.primary.contrastText,
-				fontSize: '16px'
+				fontSize: '18px !important'
 			},
 
 			SearchDrawShipText: {
 				color: alpha(theme.palette.primary.contrastText,0.35),
-				fontSize: '14px'
+				fontSize: '16px !important'
 			},
 
 			SearchDrawWrapper: {
@@ -253,22 +258,14 @@ export default class UseStyles {
 				alignSelf: 'stretch'
 			},
 
-			/*
-			  Other
-			 */
+			/* Mapping */
 
-			sectionDesktop: {
-				display: 'none',
-				[theme.breakpoints.up('md')]: {
-					display: 'flex',
-				},
+			mapDial: {
+				position: 'absolute',
+				left: 20,
+				top: 20
 			},
-			sectionMobile: {
-				display: 'flex',
-				[theme.breakpoints.up('md')]: {
-					display: 'none',
-				},
-			},
+
 			mapContainer: {
 				position: "relative",
 				width: '100%',
@@ -292,13 +289,23 @@ export default class UseStyles {
 				height: '50vh',
 				position: "relative"
 			},
-			mapResetButton: {
-				position: "absolute !important",
-				top: "10px",
-				right: "10px",
-				zIndex: 100,
-				background: alpha(theme.palette.common.white, 0.25)
+			/*
+			  Other
+			 */
+
+			sectionDesktop: {
+				display: 'none',
+				[theme.breakpoints.up('md')]: {
+					display: 'flex',
+				},
 			},
+			sectionMobile: {
+				display: 'flex',
+				[theme.breakpoints.up('md')]: {
+					display: 'none',
+				},
+			},
+
 			paperMargin: {
 				margin: '5px',
 				padding: '5px'

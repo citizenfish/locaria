@@ -6,7 +6,11 @@ import {useStyles} from "stylesLocaria";
 import Button from "@mui/material/Button";
 import {viewStyle, locationStyle} from "mapStyle";
 import Openlayers from "libs/Openlayers";
-
+import {SpeedDial, SpeedDialAction} from "@mui/material";
+import MapIcon from '@mui/icons-material/Map';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 const Map = forwardRef((props, ref) => {
 
@@ -104,10 +108,43 @@ const Map = forwardRef((props, ref) => {
 
 	}
 
+	const mapZoomIn = () => {
+		ol.animateZoom({inc:+1});
+	}
+
+	const mapZoomOut = () => {
+		ol.animateZoom({inc:-1});
+	}
+
 	return (
 		<div id="map" className={classes.mapView}>
-			<Button onClick={mapReset} className={classes.mapResetButton} color="secondary"
-			        variant="outlined">Reset map</Button>
+			<SpeedDial
+				ariaLabel="SpeedDial basic example"
+				icon={<MapIcon fontSize="medium"/>}
+				className={classes.mapDial}
+				direction={'down'}
+			>
+
+				<SpeedDialAction
+					key={'reset'}
+					icon={<RestartAltIcon/>}
+					tooltipTitle={'Reset Map'}
+					onClick={mapReset}
+				/>
+				<SpeedDialAction
+					key={'zoomIn'}
+					icon={<ZoomInIcon/>}
+					tooltipTitle={'Zoom In'}
+					onClick={mapZoomIn}
+				/>
+				<SpeedDialAction
+					key={'zoomOut'}
+					icon={<ZoomOutIcon/>}
+					tooltipTitle={'Zoom Out'}
+					onClick={mapZoomOut}
+				/>
+
+			</SpeedDial>
 		</div>
 	)
 });

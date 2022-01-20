@@ -10,12 +10,15 @@ import {configs} from "themeLocaria";
 import LocariaContext from "../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
 import SearchDrawCard from "./searchDrawCard";
+import {InView} from "react-intersection-observer";
+import LinearProgress from "@mui/material/LinearProgress";
 
 
 const SearchDraw = forwardRef((props, ref) => {
 		const classes = useStyles();
 		const [searchDraw, setSearchDraw] = React.useState(false);
 		const [isInView, setIsInView] = React.useState(false);
+		const [moreResults, setMoreResults] = React.useState(false);
 		const [searchResults, setSearchResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
 
@@ -27,6 +30,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		React.useEffect(() => {
 
 			window.websocket.registerQueue("searchLoader", function (json) {
+				setMoreResults(json.packet.features.length===configs.searchLimit);
 				setSearchResults(searchResults.concat(json.packet.features));
 			});
 
@@ -35,7 +39,7 @@ const SearchDraw = forwardRef((props, ref) => {
 			}
 
 
-		}, []);
+		}, [searchResults]);
 
 		function handleKeyDown(e) {
 			if (e.key === 'Enter') {
@@ -48,10 +52,10 @@ const SearchDraw = forwardRef((props, ref) => {
 		function doSearch(mode = 'new') {
 			const newSearchValue = document.getElementById('mySearch').value;
 			myContext.updateHomeSearch(newSearchValue);
-			let offset=searchResults.length;
+			let offset = searchResults.length;
 			if (mode === 'new') {
 				setSearchResults([]);
-				offset=0;
+				offset = 0;
 			}
 			let packet = {
 				"queue": "searchLoader",
@@ -94,7 +98,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				variant="persistent"
 			>
 				<div className={classes.searchDrawHeader}>
-					<Typography className={classes.searchDrawTitle} variant={'h5'}>Search our records</Typography>
+					<Typography className={classes.searchDrawTitle} variant={'h5'}>{configs.searchTitle}</Typography>
 					<IconButton onClick={toggleSearchDraw} className={classes.searchDrawClose} type="submit"
 					            aria-label="search">
 						<CloseIcon className={classes.icons}/>
@@ -109,23 +113,36 @@ const SearchDraw = forwardRef((props, ref) => {
 						variant="filled"
 						onKeyDown={handleKeyDown}
 					/>
-					<IconButton onClick={() => {doSearch('new')}} type="submit" aria-label="search">
+					<IconButton onClick={() => {
+						doSearch('new')
+					}} type="submit" aria-label="search">
 						<SearchIcon className={classes.icons}/>
 					</IconButton>
 				</div>
 				<div className="custom-scroll" className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
-					<div className={classes.searchDrawResultList}>
-						{searchResults.map((item, index) => (
-							<SearchDrawCard key={index} {...item} />
-						))}
-					</div>
-				) : (
-					<div className={classes.searchDrawNoResults}>
-						<DirectionsBoatOutlinedIcon className={classes.searchDrawNoResultsIcon} />
-						<Typography className={classes.searchDrawNoResultsText} variant="body1">No results found</Typography>
-					</div>
-				)}
+						<div className={classes.searchDrawResultList}>
+							{searchResults.map((item, index) => (
+								<SearchDrawCard key={index} {...item} />
+							))}
+							{moreResults? (
+								<div sx={{height: '10px'}}>
+									<InView as="div" onChange={(inView, entry) => {
+										inViewEvent(inView)
+									}}>
+									</InView>
+									<LinearProgress/>
+								</div>
+							) : <div/>
+							}
+						</div>
+					) : (
+						<div className={classes.searchDrawNoResults}>
+							<DirectionsBoatOutlinedIcon className={classes.searchDrawNoResultsIcon}/>
+							<Typography className={classes.searchDrawNoResultsText} variant="body1">No results
+								found</Typography>
+						</div>
+					)}
 				</div>
 			</Drawer>
 		)

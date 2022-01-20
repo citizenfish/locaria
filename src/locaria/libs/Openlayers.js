@@ -119,11 +119,13 @@ export default class Openlayers {
 				extent: options.extent,
 				pixelRatio: options.pixelRatio,
 				maxTilesLoading: options.maxTilesLoading
-			}),
+				}
+			),
 			interactions: defaultInteractions().extend([
 				new DragRotateAndZoom()
 			]),
-			keyboardEventTarget: kt
+			keyboardEventTarget: kt,
+			controls: []
 
 		});
 		if (options.debug === true) {
@@ -1335,13 +1337,13 @@ export default class Openlayers {
 	 * @example
 	 * openlayers.animateZoom({"inc":"2});
 	 */
-	animateZoom(pid, json) {
+	animateZoom(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
 			"inc": +1,
 			"delay": 100
-		}, json);
+		}, options);
 		/*
 		 * Pull all our resources
 		 */
@@ -1351,8 +1353,7 @@ export default class Openlayers {
 		 * Animate a zoom
 		 */
 		view.animate({zoom: view.getZoom() + options.inc, duration: options.delay});
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
-
+		return true;
 	}
 
 	/**

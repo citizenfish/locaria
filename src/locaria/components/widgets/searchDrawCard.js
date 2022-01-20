@@ -6,6 +6,7 @@ import CardImageLoader from "./cardImageLoader";
 import {channels,configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 import {useHistory} from "react-router-dom";
+import {Divider} from "@mui/material";
 
 const SearchDrawCard = function({properties}) {
 	const classes = useStyles();
@@ -18,6 +19,8 @@ const SearchDrawCard = function({properties}) {
 			<div className={classes.SearchDrawContent}>
 				<Typography className={classes.SearchDrawNameText}
 				            variant="h5">{properties.description.title}</Typography>
+				<Divider/>
+
 				<Typography className={classes.SearchDrawShipText}
 				            variant="h5">{properties.description.text}</Typography>
 				<Button disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
