@@ -88,14 +88,27 @@ export default class UseStyles {
 				position: 'fixed',
 				zIndex: '150',
 				left: 'calc(50% - 150px)',
-				bottom: '40px',
-				'& .MuiSvgIcon-root ':{
-/*
-					color: theme.palette.primary.fontColor
-*/
-				},
-				'& button:nth-child(2)':{
-				}
+				bottom: '40px'
+			},
+
+			modal: {
+				outline: 'none'
+			},
+
+			navIntroBox: {
+				backgroundColor: `${theme.palette.primary.lighter}`,
+				position: 'absolute',
+				top: '50%',
+				left: '50%',
+				transform: 'translate(-50%, -50%)',
+				width: '80vw',
+				maxWidth: 600,
+				borderRadius: '10px 10px 10px 10px',
+				padding: 10,
+				border: 0,
+				color:  `${theme.palette.primary.contrastText}`,
+				outline: 'none'
+
 			},
 
 			/*
@@ -256,6 +269,19 @@ export default class UseStyles {
 				marginTop: '10px',
 				marginRight: '10px',
 				alignSelf: 'stretch'
+			},
+
+			/* Channels on home */
+
+			channelPod: {
+				border: `1px solid ${theme.palette.primary.main}`,
+				borderRadius: `10px 10px 10px 10px`,
+				padding: 10,
+				margin: 10,
+				height: '30vh',
+				'& img':{
+					width:'100%'
+				}
 			},
 
 			/* Mapping */

@@ -53,14 +53,20 @@ const App = () => {
 	// Globals
 
 	const [homeSearch, setHomeSearch] = useState('');
+	const [introModal, setIntroModal] = useState(false);
 
 	const updateHomeSearch = (text) => {
 		setHomeSearch(text);
 	};
+	const seenIntroModal = (value) => {
+		setIntroModal(value);
+	};
 
 	const userSettings = {
 		homeSearch: homeSearch,
-		updateHomeSearch
+		updateHomeSearch,
+		introModal:introModal,
+		seenIntroModal,
 	};
 
 
@@ -88,7 +94,7 @@ const App = () => {
 					const diff = exp - (start + 60000);
 					console.log(`Expires ${diff / 60000}`);
 					setTimeout(function () {
-						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.cognitoPoolId}&redirect_uri=http://localhost:8080/`;
+						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
 					}, diff);
 				}
 

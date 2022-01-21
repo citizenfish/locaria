@@ -137,6 +137,9 @@ const configs = {
 	defaultDistance: 10, // km|mile
 	defaultMapIcon: iconDefault,
 	searchIcon: iconPlanning,
+	searchLimit: 20,
+	searchTitle: 'Find a location',
+	searchPlaceholder: 'Enter a postcode',
 	navShowHome: true
 
 }
