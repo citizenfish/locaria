@@ -1,4 +1,4 @@
-import {Divider, Drawer} from "@mui/material";
+import {Divider, Drawer, useMediaQuery} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -6,7 +6,7 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import React, {forwardRef, useContext, useImperativeHandle} from "react";
 import {useStyles} from "stylesLocaria";
-import {configs} from "themeLocaria";
+import {configs,theme} from "themeLocaria";
 import LocariaContext from "../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
 import SearchDrawCard from "./searchDrawCard";
@@ -22,7 +22,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		const [searchResults, setSearchResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
 
-
+		const desktop = useMediaQuery(theme.breakpoints.up('md'));
 		const toggleSearchDraw = () => {
 			setSearchDraw(!searchDraw);
 		}
@@ -109,7 +109,7 @@ const SearchDraw = forwardRef((props, ref) => {
 			<Drawer
 				anchor="bottom"
 				open={searchDraw}
-				className={classes.searchDraw}
+				className={desktop? classes.searchDrawDesktop:classes.searchDraw}
 				variant="persistent"
 			>
 				<div className={classes.searchDrawHeader}>

@@ -160,6 +160,22 @@ export default class UseStyles {
 				}
 			},
 
+			"searchDrawDesktop": {
+				borderTopLeftRadius: '20px',
+				borderTopRightRadius: '20px',
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					height:'50%',
+					maxWidth: 500,
+					color: theme.palette.icons.main,
+					backgroundColor: theme.palette.primary.main,
+					width: 'calc(100vw)',
+					right: 'calc(50vw - 250px)',
+					bottom: 200,
+					left: 'auto'
+				}
+			},
+
 			searchDrawHeader: {
 				padding: 20,
 				position: 'relative',
