@@ -1,12 +1,12 @@
 --Function to search for an address using keyword search principle
-
-CREATE OR REPLACE FUNCTION locaria_core.address_search(parameters JSONB) RETURNS JSONB AS
+CREATE OR REPLACE FUNCTION locaria_core.location_search(parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
 	results_var JSONB;
 	search_ts_query tsquery;
 	default_limit INTEGER DEFAULT 10;
     default_offset INTEGER DEFAULT 0;
+    location_var TEXT;
 BEGIN
 
         SET SEARCH_PATH = 'locaria_data', 'locaria_core', 'public';
@@ -19,10 +19,12 @@ BEGIN
             default_offset =  (parameters->>'offset')::INTEGER;
         END IF;
 
-        IF REPLACE(parameters->>'address', ' ', '') = '' THEN
+        location_var = COALESCE(parameters->>'location',parameters->>'address');
+
+        IF REPLACE(location_var, ' ', '') = '' THEN
             RETURN json_build_object('error', 'Missing address');
         ELSE
-            search_ts_query = plainto_tsquery(parameters->>'address');
+            search_ts_query = plainto_tsquery(location_var);
         END IF;
 
 	    SELECT json_build_object('type','FeatureCollection',
@@ -39,7 +41,7 @@ BEGIN
 		    SELECT attributes,
 		           wkb_geometry,
 		           ts_rank(jsonb_to_tsvector('simple'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) as search_rank
-            FROM   address_search_view
+            FROM   location_search_view
             WHERE  jsonb_to_tsvector('simple'::regconfig, attributes, '["string", "numeric"]'::jsonb) @@ search_ts_query
             ORDER BY search_rank DESC
             OFFSET default_offset
