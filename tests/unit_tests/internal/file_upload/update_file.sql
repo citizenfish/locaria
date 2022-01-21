@@ -13,7 +13,7 @@ $$
 
         RAISE NOTICE '%', locaria_tests.test_result_processor('update_file TEST 1', ret_var , '{id}', '*');
 
-        parameters = jsonb_build_object('method', 'update_file', 'status', 'NEWSTATUS', 'id', ret_var->>'id', 'message', 'Foo Message');
+        parameters = jsonb_build_object('method', 'update_file', 'status', 'NEWSTATUS', 'id', ret_var->>'id', 'message', 'Foo Message', 'attributes', jsonb_build_object('foo','baa'));
 
         SELECT locaria_internal_gateway(parameters) INTO ret_var;
 

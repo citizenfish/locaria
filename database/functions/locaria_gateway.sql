@@ -31,8 +31,8 @@ BEGIN
          WHEN parameters->>'method' IN ('list_categories_with_data') THEN
             ret_var = list_categories_with_data(parameters);
 
-	     WHEN parameters->>'method' IN ('address_search') THEN
-	     	 ret_var = address_search(parameters);
+	     WHEN parameters->>'method' IN ('location_search','address_search') THEN
+	     	 ret_var = location_search(parameters);
 
          WHEN parameters->>'method' IN ('version') THEN
             ret_var = json_build_object('version', version_var);
