@@ -24,13 +24,8 @@ const ChannelSelect = () => {
 					if (chan.display !== false) {
 						return (
 							<Grid item md={configs.homeGrid} className={classes.channel} key={chan.key}>
-								<Card className={classes.root}>
-									<CardMedia
-										className={classes.media}
-										image={chan.image}
-										title={chan.name}
-									/>
-									<CardContent className={classes.channelPanel}>
+								<div className={classes.channelPod}>
+								<img src={chan.image}/>
 										<Typography gutterBottom variant="h5" component="h2"
 										            style={{color: `${chan.color}`}}>
 											{chan.name}
@@ -38,8 +33,6 @@ const ChannelSelect = () => {
 										<Typography variant="body2" color="textSecondary" component="p">
 											{chan.description}
 										</Typography>
-									</CardContent>
-									<CardActions>
 										<Button size="small" color="secondary" variant="outlined" onClick={() => {
 											if (chan.type === 'Report' && chan.noCategory !== undefined && chan.noCategory === true) {
 												history.push(`/${chan.type}/${channel}/${chan.report_name}`)
@@ -50,8 +43,7 @@ const ChannelSelect = () => {
 										}}>
 											View
 										</Button>
-									</CardActions>
-								</Card>
+								</div>
 							</Grid>
 
 						)

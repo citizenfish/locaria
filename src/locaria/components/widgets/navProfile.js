@@ -7,6 +7,8 @@ import LoginIcon from '@mui/icons-material/Login';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {useStyles} from "stylesLocaria";
 import LogoutIcon from '@mui/icons-material/Logout';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import {Link} from "react-router-dom";
 
 const NavProfile = () => {
 	const classes = useStyles();
@@ -24,6 +26,10 @@ const NavProfile = () => {
 	const handleLogout = function () {
 		setCookies('id_token', "null", {path: '/', sameSite: true});
 		window.location = `/`;
+	}
+
+	const handleAdmin = function () {
+
 	}
 
 	if (cookies['id_token'] === undefined || cookies['id_token'] === "null") {
@@ -63,6 +69,13 @@ const NavProfile = () => {
 					tooltipTitle={'Logout'}
 					onClick={handleLogout}
 				/>
+				{cookies.groups.indexOf('Admins') !== -1 ?
+					<SpeedDialAction
+						key={'admin'}
+						icon={<AdminPanelSettingsIcon/>}
+						tooltipTitle={'Admin'}
+						component={Link} to={`/Admin/`}
+					/> : ''}
 
 			</SpeedDial>
 

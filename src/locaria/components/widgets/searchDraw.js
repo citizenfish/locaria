@@ -50,13 +50,13 @@ const SearchDraw = forwardRef((props, ref) => {
 		}
 
 		function doSearch(mode = 'new') {
-			const newSearchValue = document.getElementById('mySearch').value;
-			myContext.updateHomeSearch(newSearchValue);
+			let newSearchValue = document.getElementById('mySearch').value;
 			let offset = searchResults.length;
 			if (mode === 'new') {
 				setSearchResults([]);
 				offset = 0;
 			}
+
 			let packet = {
 				"queue": "searchLoader",
 				"api": "api",
@@ -68,6 +68,21 @@ const SearchDraw = forwardRef((props, ref) => {
 					"offset": offset
 				}
 			};
+
+
+			if(configs.homeMode!=="Search") {
+				newSearchValue=newSearchValue.toUpperCase();
+				document.getElementById('mySearch').value=newSearchValue;
+				packet= {
+					"queue": "searchLoader",
+					"api": "api",
+					"data": {
+						"method": "location_search",
+						"address": newSearchValue
+					}
+				}
+			}
+			myContext.updateHomeSearch(newSearchValue);
 			window.websocket.send(packet);
 		}
 
@@ -109,7 +124,7 @@ const SearchDraw = forwardRef((props, ref) => {
 					<InputBase
 						className={classes.searchDrawBox}
 						id="mySearch"
-						placeholder="Search a name, ship, etc..."
+						placeholder={configs.searchPlaceholder}
 						variant="filled"
 						onKeyDown={handleKeyDown}
 					/>

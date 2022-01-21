@@ -11,13 +11,14 @@ import {
 	BottomNavigation,
 	BottomNavigationAction,
 	Divider,
-	Drawer,
+	Drawer, Fade,
 	ListItem,
 	ListItemIcon,
-	ListItemText
+	ListItemText, Popper
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
+import {IntroModal} from "./intro";
 
 
 import {SearchDraw} from "./searchDraw";
@@ -27,7 +28,11 @@ const Nav = () => {
 	const [leftDraw, setLeftDraw] = React.useState(false);
 	const [cookies, setCookies] = useCookies(['location']);
 
+
 	const searchRef = useRef();
+
+
+
 
 	const handleDrawOpen = (e) => {
 		setLeftDraw(true);
@@ -37,6 +42,8 @@ const Nav = () => {
 	const handleDrawClose = () => {
 		setLeftDraw(false);
 	};
+
+
 
 
 
@@ -157,7 +164,9 @@ const Nav = () => {
 
 	return (
 		<div className={classes.grow}>
-			<BottomNavigation className={classes.nav}>
+			<IntroModal/>
+			<BottomNavigation className={classes.nav} id={"navMain"}>
+
 				<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>}  onClick={handleDrawOpen}/>
 				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>} onClick={openSearchWrapper}/>
 				<NavProfile/>
