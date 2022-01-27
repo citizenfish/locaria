@@ -15,6 +15,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 
 const SearchDraw = forwardRef((props, ref) => {
+
 		const classes = useStyles();
 		const [searchDraw, setSearchDraw] = React.useState(false);
 		const [isInView, setIsInView] = React.useState(false);
@@ -22,7 +23,6 @@ const SearchDraw = forwardRef((props, ref) => {
 		const [searchResults, setSearchResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
 
-		const desktop = useMediaQuery(theme.breakpoints.up('md'));
 		const toggleSearchDraw = () => {
 			setSearchDraw(!searchDraw);
 		}
@@ -109,7 +109,7 @@ const SearchDraw = forwardRef((props, ref) => {
 			<Drawer
 				anchor="bottom"
 				open={searchDraw}
-				className={desktop? classes.searchDrawDesktop:classes.searchDraw}
+				className={classes.searchDraw}
 				variant="persistent"
 			>
 				<div className={classes.searchDrawHeader}>
@@ -138,7 +138,7 @@ const SearchDraw = forwardRef((props, ref) => {
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
 							{searchResults.map((item, index) => (
-								<SearchDrawCard key={index} {...item} />
+								<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper}/>
 							))}
 							{moreResults? (
 								<div sx={{height: '10px'}}>

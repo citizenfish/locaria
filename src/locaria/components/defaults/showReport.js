@@ -12,7 +12,7 @@ const ShowReport = ({reportId,data}) => {
 
 	const classes = useStyles();
 
-	if (data.features.length > 0) {
+	if (data&&data.features&&data.features.length > 0) {
 		return (data.features
 				.map(feature => (
 					<Card variant="outlined" className={classes.categoryResultsCard}>

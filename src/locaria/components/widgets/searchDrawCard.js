@@ -8,7 +8,7 @@ import {useStyles} from "stylesLocaria";
 import {useHistory} from "react-router-dom";
 import {Divider} from "@mui/material";
 
-const SearchDrawCard = function({properties}) {
+const SearchDrawCard = function({properties,viewWrapper}) {
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -26,7 +26,9 @@ const SearchDrawCard = function({properties}) {
 						            variant="h5">{properties['local_type']}</Typography>
 						<Button disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							let channel = channels.getChannelProperties(properties.category);
-							history.push(`/${channel.type}/${properties.category}/${channel.reportId}/${properties.fid}`)
+							viewWrapper(channel.type,properties.category,channel.reportId,properties.fid);
+
+							//history.push(`/${channel.type}/${properties.category}/${channel.reportId}/${properties.fid}`)
 						}}>View</Button>
 					</div>
 				</Paper>
@@ -45,7 +47,9 @@ const SearchDrawCard = function({properties}) {
 						            variant="h5">{properties.description.text}</Typography>
 						<Button disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							let channel = channels.getChannelProperties(properties.category);
-							history.push(`/${channel.type}/${properties.category}/${channel.reportId}/${properties.fid}`)
+							viewWrapper(channel.type,properties.category,channel.reportId,properties.fid);
+
+//							history.push(`/${channel.type}/${properties.category}/${channel.reportId}/${properties.fid}`)
 						}}>View</Button>
 					</div>
 				</Paper>

@@ -4,7 +4,7 @@ import {useStyles} from "stylesLocaria";
 
 
 
-const CardImageLoader = ({images, defaultImage, defaultTitle = 'Search'}) => {
+const CardImageLoader = ({images, defaultImage, defaultTitle = 'Search', className}) => {
 	const classes = useStyles();
 	let image, title;
 	if (images && images[0]) {
@@ -17,7 +17,7 @@ const CardImageLoader = ({images, defaultImage, defaultTitle = 'Search'}) => {
 
 
 	return (
-		<img src={image} alt={title} className={classes.SearchDrawImage} />
+		<img src={image} alt={title} className={className? className:classes.SearchDrawImage} />
 	)
 }
 
