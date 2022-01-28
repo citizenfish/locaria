@@ -15,13 +15,17 @@ const ViewDraw = forwardRef((props, ref) => {
 	const [reportId, setReportId] = React.useState(false);
 	const [fid, setFid] = React.useState(false);
 
-	const toggleViewDraw = (type,category,reportIdLocal,fidLocal) => {
-		if(!viewDraw) {
+	const toggleViewDraw = (type,category,reportIdLocal,fidLocal,force = false) => {
+		if(!viewDraw||force===true) {
 			setReportId(reportIdLocal);
 			setFid(fidLocal);
 			forceUpdate(reportIdLocal,fidLocal);
 		}
-		setViewDraw(!viewDraw);
+		setViewDraw(force===true? true:!viewDraw);
+	}
+
+	const closeViewDraw = () => {
+		setViewDraw(false);
 	}
 
 	const [report, setReport] = React.useState(null);
@@ -66,6 +70,9 @@ const ViewDraw = forwardRef((props, ref) => {
 		() => ({
 			toggleViewDraw(type,category,reportId,fid) {
 				return toggleViewDraw(type,category,reportId,fid);
+			},
+			closeViewDraw() {
+				return closeViewDraw();
 			}
 		})
 	)
@@ -79,13 +86,15 @@ const ViewDraw = forwardRef((props, ref) => {
 		>
 			<div className={classes.searchDrawHeader}>
 				<Typography className={classes.viewDrawTitle} variant={'h5'}>{configs.viewTitle}</Typography>
-				<IconButton onClick={toggleViewDraw} className={classes.viewDrawClose} type="submit"
+				<IconButton onClick={closeViewDraw} className={classes.viewDrawClose} type="submit"
 				            aria-label="search">
 					<CloseIcon className={classes.icons}/>
 				</IconButton>
 			</div>
 			<Divider/>
-			<ShowReport reportId={reportId} reportData={report}/>
+			<div className={classes.viewDrawScroll}>
+				<ShowReport reportId={reportId} reportData={report} viewWrapper={toggleViewDraw}/>
+			</div>
 		</Drawer>
 	)
 });

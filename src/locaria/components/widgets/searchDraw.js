@@ -134,7 +134,7 @@ const SearchDraw = forwardRef((props, ref) => {
 						<SearchIcon className={classes.icons}/>
 					</IconButton>
 				</div>
-				<div className="custom-scroll" className={classes.searchDrawResults}>
+				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
 							{searchResults.map((item, index) => (

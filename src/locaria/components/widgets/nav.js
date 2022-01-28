@@ -161,6 +161,7 @@ const Nav = () => {
 	}
 
 	const openSearchWrapper=function() {
+		viewRef.current.closeViewDraw();
 		searchRef.current.toggleSearchDraw();
 	}
 
