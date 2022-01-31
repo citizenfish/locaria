@@ -19,7 +19,6 @@ export default class UseStyles {
 			},
 
 
-
 			grow: {
 				flexGrow: 1,
 			},
@@ -81,14 +80,19 @@ export default class UseStyles {
 			  The Nav bar
 			 */
 
-			"nav":{
+			"nav": {
 				backgroundColor: `${theme.palette.primary.main} !important`,
 				borderRadius: '10px',
 				width: '300px',
 				position: 'fixed',
 				zIndex: '150',
-				left: 'calc(50% - 150px)',
-				bottom: '40px'
+				bottom: '40px',
+				[theme.breakpoints.up('md')]: {
+					right: 150
+				},
+				[theme.breakpoints.down('md')]: {
+					right: 'calc(50% - 150px)',
+				}
 			},
 
 			modal: {
@@ -106,7 +110,7 @@ export default class UseStyles {
 				borderRadius: '10px 10px 10px 10px',
 				padding: 10,
 				border: 0,
-				color:  `${theme.palette.primary.contrastText}`,
+				color: `${theme.palette.primary.contrastText}`,
 				outline: 'none'
 
 			},
@@ -117,7 +121,7 @@ export default class UseStyles {
 			 */
 
 			profileDial: {
-				position: 'relative', bottom: 11, right: 16 ,marginLeft: '30px',
+				position: 'relative', bottom: 11, right: 16, marginLeft: '30px',
 				"& .MuiFab-root": {
 					boxShadow: '0px 0px 0px 0px !important'
 				}
@@ -136,7 +140,7 @@ export default class UseStyles {
 						color: theme.palette.icons.main
 					},
 					'& .MuiDivider-root': {
-						borderColor: alpha(theme.palette.icons.main,0.2)
+						borderColor: alpha(theme.palette.icons.main, 0.2)
 					}
 				},
 
@@ -147,21 +151,31 @@ export default class UseStyles {
 			 */
 
 			"searchDraw": {
-				borderTopLeftRadius: '20px',
-				borderTopRightRadius: '20px',
+
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
-					height:'50%',
+					borderTopRightRadius: '20px',
 					maxWidth: 500,
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.main,
 					width: 'calc(100vw)',
-					left: 'auto'
-				}
+					left: 'auto',
+					[theme.breakpoints.up('md')]: {
+						left: 0,
+						height: '100%'
+					},
+					[theme.breakpoints.down('md')]: {
+						left: 'auto',
+						height: '50%',
+
+					}
+				},
+				height: '100%'
+
 			},
 
 			searchDrawHeader: {
-				padding: 20,
+				padding: 10,
 				position: 'relative',
 				display: 'flex',
 				flexDirection: 'row',
@@ -174,9 +188,7 @@ export default class UseStyles {
 			},
 
 			searchDrawClose: {
-				position: 'absolute',
-				right: 12,
-				top: 16
+				position: 'absolute'
 			},
 
 			searchDrawSearch: {
@@ -218,7 +230,7 @@ export default class UseStyles {
 			},
 
 			searchDrawNoResultsIcon: {
-				color: alpha(theme.palette.icons.main,0.35),
+				color: alpha(theme.palette.icons.main, 0.35),
 				height: '128px',
 				width: '128px'
 			},
@@ -242,7 +254,7 @@ export default class UseStyles {
 			},
 
 			SearchDrawShipText: {
-				color: alpha(theme.palette.primary.contrastText,0.35),
+				color: alpha(theme.palette.primary.contrastText, 0.35),
 				fontSize: '16px !important'
 			},
 
@@ -279,8 +291,8 @@ export default class UseStyles {
 				padding: 10,
 				margin: 10,
 				height: '30vh',
-				'& img':{
-					width:'100%'
+				'& img': {
+					width: '100%'
 				}
 			},
 
@@ -288,7 +300,7 @@ export default class UseStyles {
 
 			mapDial: {
 				position: 'absolute',
-				left: 20,
+				right: 20,
 				top: 20
 			},
 
@@ -315,6 +327,206 @@ export default class UseStyles {
 				height: '50vh',
 				position: "relative"
 			},
+
+			/*
+			  View draw
+
+			 */
+
+			viewDraw: {
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					borderTopRightRadius: '20px',
+
+					height: '100%',
+					color: theme.palette.icons.main,
+					backgroundColor: theme.palette.primary.main,
+					width: 'calc(100vw)',
+					[theme.breakpoints.up('md')]: {
+						maxWidth: 600,
+						left: 0
+					},
+					[theme.breakpoints.down('md')]: {
+						maxWidth: 500,
+						left: 'auto',
+
+
+					}
+				}
+			},
+
+			viewDrawHeader: {
+				padding: 10,
+				position: 'relative',
+				display: 'flex',
+				flexDirection: 'row',
+				alignItems: 'center'
+			},
+
+			viewDrawScroll: {
+				overflowY: 'auto',
+				padding: 10
+			},
+
+			viewDrawTitle: {
+				flex: 1,
+				textAlign: 'center'
+			},
+
+			viewDrawClose: {
+				position: 'absolute',
+
+			},
+
+			/*
+			  Reports page
+			 */
+
+			ReportPageWrapper: {
+				minHeight: '100vh',
+				display: 'flex',
+				alignItems: 'flex-end',
+				justifyContent: 'center',
+				backgroundColor: '#192123',
+			},
+			ReportWrapper: {
+				borderRadius: 0,
+				padding: '20px',
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				backgroundColor: '#232F34',
+				[theme.breakpoints.up('md')]: {
+					borderTopLeftRadius: '20px',
+					borderTopRightRadius: '20px',
+					maxWidth: '600px',
+					paddingBottom: '150px'
+				},
+				[theme.breakpoints.down('md')]: {
+					borderTopLeftRadius: 0,
+					borderTopRightRadius: 0,
+					maxWidth: 'calc(100vw - 40px)',
+					paddingBottom: '20px'
+				}
+			},
+			ReportProfileHeader: {
+				display: 'flex',
+				[theme.breakpoints.up('md')]: {
+					flexDirection: 'column'
+				},
+				[theme.breakpoints.down('md')]: {
+					flexDirection: 'column'
+				},
+				width: '97%',
+				backgroundColor: `${theme.palette.primary.lighter} !important`,
+				padding: 10,
+				borderRadius: 20,
+				marginBottom: '10px',
+				overflow: 'hidden'
+
+			},
+			ReportProfileImageContainer: {
+		/*		[theme.breakpoints.up('md')]: {
+					height: '250px !important'
+				},
+				[theme.breakpoints.down('md')]: {
+					width: 'unset !important',
+					height: '100% !important'
+
+				},*/
+				borderRadius: '10px',
+				overflowY: 'auto',
+				display: 'flex',
+				flexDirection: 'row',
+				width: 'fit-content',
+			},
+			ReportProfileImage: {
+
+				width: '250px',
+				height: '250px',
+				borderRadius: '10px',
+				margin: '10px 10px 10px 0',
+			},
+			ReportProfileTitle: {
+				fontWeight: 200,
+				fontSize: '2rem'
+			},
+			ReportProfileText: {
+				fontWeight: 100,
+				padding: 10,
+				color: alpha(theme.palette.primary.contrastText, 0.35)
+			},
+			ReportMainInfo: {
+				[theme.breakpoints.up('md')]: {
+					paddingLeft: '20px'
+				},
+				[theme.breakpoints.down('md')]: {
+					paddingLeft: 0
+				},
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'space-between',
+				margin: 10
+			},
+			ReportMainInfoExtra: {
+				[theme.breakpoints.up('md')]: {
+					paddingLeft: '20px'
+				},
+				[theme.breakpoints.down('md')]: {
+					paddingLeft: 0
+				},
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'space-between',
+				margin: 10
+			},
+			ReportMainInfoRow: {
+				display: 'flex',
+				flexDirection: 'row',
+				justifyContent: 'space-between',
+				marginBottom: 10,
+			},
+
+			ReportInfoText: {
+				color: '#AAAAAA',
+			},
+			ReportShareButton: {
+				alignSelf: 'stretch',
+				top: 0
+			},
+			ReportProfileShip: {
+				display: 'flex',
+				flexDirection: 'column',
+				marginBottom: '10px',
+				width: '97%',
+				backgroundColor: `${theme.palette.primary.lighter} !important`,
+				padding: 10,
+				borderRadius: 20,
+			},
+			ReportHorizontalList: {
+				overflowX: 'auto',
+			},
+			ReportListContent: {
+				display: 'flex',
+				flexDirection: 'row',
+				width: 'fit-content',
+			},
+			ReportListItem: {
+				width: '250px',
+				height: '250px',
+				borderRadius: '10px',
+				overflow: 'hidden',
+				margin: '10px 10px 10px 0',
+			},
+			ReportViewButton: {
+				marginTop: '20px',
+				alignSelf: 'flex-start',
+				minWidth: '200px',
+			},
+
+
 			/*
 			  Other
 			 */
@@ -390,6 +602,8 @@ export default class UseStyles {
 				/*width: 500,
 				height: 300,*/
 			}
+			/* Admin */
+
 		};
 		base = Object.assign(base, merge);
 		this.useStyles = makeStyles(base);

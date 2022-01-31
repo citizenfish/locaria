@@ -22,6 +22,7 @@ import {IntroModal} from "./intro";
 
 
 import {SearchDraw} from "./searchDraw";
+import {ViewDraw} from "./viewDraw";
 
 const Nav = () => {
 	const classes = useStyles();
@@ -30,6 +31,7 @@ const Nav = () => {
 
 
 	const searchRef = useRef();
+	const viewRef = useRef();
 
 
 
@@ -159,7 +161,12 @@ const Nav = () => {
 	}
 
 	const openSearchWrapper=function() {
+		viewRef.current.closeViewDraw();
 		searchRef.current.toggleSearchDraw();
+	}
+
+	const openViewWrapper=function(type,category,reportId,fid) {
+		viewRef.current.toggleViewDraw(type,category,reportId,fid);
 	}
 
 	return (
@@ -171,8 +178,9 @@ const Nav = () => {
 				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>} onClick={openSearchWrapper}/>
 				<NavProfile/>
 			</BottomNavigation>
-			<SearchDraw ref={searchRef}/>
+			<SearchDraw ref={searchRef} viewWrapper={openViewWrapper}/>
 			<RenderDraw/>
+			<ViewDraw ref={viewRef}/>
 		</div>
 	)
 }

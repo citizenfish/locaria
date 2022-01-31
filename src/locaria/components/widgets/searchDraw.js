@@ -1,4 +1,4 @@
-import {Divider, Drawer} from "@mui/material";
+import {Divider, Drawer, useMediaQuery} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -6,7 +6,7 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import React, {forwardRef, useContext, useImperativeHandle} from "react";
 import {useStyles} from "stylesLocaria";
-import {configs} from "themeLocaria";
+import {configs,theme} from "themeLocaria";
 import LocariaContext from "../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
 import SearchDrawCard from "./searchDrawCard";
@@ -15,13 +15,13 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 
 const SearchDraw = forwardRef((props, ref) => {
+
 		const classes = useStyles();
 		const [searchDraw, setSearchDraw] = React.useState(false);
 		const [isInView, setIsInView] = React.useState(false);
 		const [moreResults, setMoreResults] = React.useState(false);
 		const [searchResults, setSearchResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
-
 
 		const toggleSearchDraw = () => {
 			setSearchDraw(!searchDraw);
@@ -134,11 +134,11 @@ const SearchDraw = forwardRef((props, ref) => {
 						<SearchIcon className={classes.icons}/>
 					</IconButton>
 				</div>
-				<div className="custom-scroll" className={classes.searchDrawResults}>
+				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
 							{searchResults.map((item, index) => (
-								<SearchDrawCard key={index} {...item} />
+								<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper}/>
 							))}
 							{moreResults? (
 								<div sx={{height: '10px'}}>

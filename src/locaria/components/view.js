@@ -118,6 +118,10 @@ const View = () => {
 				</Layout>
 			)
 		} else {
+
+
+
+
 			return (
 				<Layout update={handleNewLocation}>
 					<Grid container className={classes.root} spacing={6} component="div">

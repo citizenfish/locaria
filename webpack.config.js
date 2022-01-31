@@ -84,6 +84,9 @@ module.exports = {
 			defaults: [
 				path.resolve(__dirname, `${theme}/components/defaults`),
 				path.resolve(__dirname, `src/locaria/components/defaults`)
+			],
+			theme: [
+				path.resolve(__dirname, `${theme}`)
 			]
 
 		}

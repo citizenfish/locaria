@@ -58,7 +58,9 @@ const Report = () => {
 
 	if (report !== null) {
 		return (
-			<Layout update={forceUpdate}>
+			<Layout update={forceUpdate} map={false}>
+				<ShowReport reportId={reportId} reportData={report}/>
+{/*
 				<Grid container className={classes.root} spacing={6}>
 					<Grid item md={4}>
 						<Paper elevation={3} className={classes.paperMargin}>
@@ -71,6 +73,7 @@ const Report = () => {
 						</Paper>
 					</Grid>
 				</Grid>
+*/}
 			</Layout>
 		);
 	} else {

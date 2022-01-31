@@ -8,14 +8,14 @@ import {useStyles} from "stylesLocaria";
 import {useHistory} from "react-router-dom";
 import {Divider} from "@mui/material";
 
-const SearchDrawCard = function({properties}) {
+const SearchDrawCard = function({properties,viewWrapper}) {
 	const classes = useStyles();
 	const history = useHistory();
 
 	switch(properties.featureType) {
 		case 'location':
 			return (
-				<Paper elevation={0} disableElevation className={classes.SearchDrawWrapper}>
+				<Paper elevation={0} className={classes.SearchDrawWrapper}>
 					<CardImageLoader defaultImage={configs.defaultImage}/>
 					<div className={classes.SearchDrawContent}>
 						<Typography className={classes.SearchDrawNameText}
@@ -24,16 +24,16 @@ const SearchDrawCard = function({properties}) {
 
 						<Typography className={classes.SearchDrawShipText}
 						            variant="h5">{properties['local_type']}</Typography>
-						<Button disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
+						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							let channel = channels.getChannelProperties(properties.category);
-							history.push(`/${channel.type}/${properties.category}/${channel.reportId}/${properties.fid}`)
+							viewWrapper(channel.type,properties.category,channel.reportId,properties.fid,true);
 						}}>View</Button>
 					</div>
 				</Paper>
 			)
 		default:
 			return (
-				<Paper elevation={0} disableElevation className={classes.SearchDrawWrapper}>
+				<Paper elevation={0} className={classes.SearchDrawWrapper}>
 					<CardImageLoader defaultImage={configs.defaultImage}
 					                 images={properties.description? properties.description.images:''}/>
 					<div className={classes.SearchDrawContent}>
@@ -43,9 +43,9 @@ const SearchDrawCard = function({properties}) {
 
 						<Typography className={classes.SearchDrawShipText}
 						            variant="h5">{properties.description.text}</Typography>
-						<Button disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
+						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							let channel = channels.getChannelProperties(properties.category);
-							history.push(`/${channel.type}/${properties.category}/${channel.reportId}/${properties.fid}`)
+							viewWrapper(channel.type,properties.category,channel.reportId,properties.fid,true);
 						}}>View</Button>
 					</div>
 				</Paper>
