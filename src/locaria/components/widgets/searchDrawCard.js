@@ -45,7 +45,9 @@ const SearchDrawCard = function({properties,viewWrapper}) {
 						            variant="h5">{properties.description.text}</Typography>
 						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							let channel = channels.getChannelProperties(properties.category);
-							viewWrapper(channel.type,properties.category,channel.reportId,properties.fid,true);
+							viewWrapper(properties.fid,true);
+							history.push(`/View/${properties.category}/${channel.reportId,properties.fid}`)
+
 						}}>View</Button>
 					</div>
 				</Paper>

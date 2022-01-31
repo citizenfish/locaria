@@ -426,19 +426,10 @@ export default class UseStyles {
 
 			},
 			ReportProfileImageContainer: {
-		/*		[theme.breakpoints.up('md')]: {
-					height: '250px !important'
-				},
-				[theme.breakpoints.down('md')]: {
-					width: 'unset !important',
-					height: '100% !important'
-
-				},*/
 				borderRadius: '10px',
-				overflowY: 'auto',
+				overflowX: 'auto',
 				display: 'flex',
 				flexDirection: 'row',
-				width: 'fit-content',
 			},
 			ReportProfileImage: {
 
@@ -480,7 +471,12 @@ export default class UseStyles {
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
-				margin: 10
+				margin: 10,
+				color: alpha(theme.palette.primary.contrastText, 1)
+			},
+			ReportMainInfoAccordion: {
+				backgroundColor: `${theme.palette.primary.lighter} !important`,
+				marginBottom: 10
 			},
 			ReportMainInfoRow: {
 				display: 'flex',
