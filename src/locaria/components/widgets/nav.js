@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import {channels, configs, pages} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 import {NavProfile} from "./navProfile";
-import {Link} from "react-router-dom";
+import {Link, useHistory, useLocation, useParams} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import {
 	BottomNavigation,
@@ -29,11 +29,23 @@ const Nav = () => {
 	const [leftDraw, setLeftDraw] = React.useState(false);
 	const [cookies, setCookies] = useCookies(['location']);
 
+	const location = useLocation();
+	let {feature} = useParams();
 
 	const searchRef = useRef();
 	const viewRef = useRef();
 
+	React.useEffect(() => {
+		console.log(location);
+		if(location.pathname==='/Search/') {
+			searchRef.current.toggleSearchDraw();
+		}
+		console.log(feature);
+		if(feature) {
+			openViewWrapper(feature,true);
+		}
 
+	}, []);
 
 
 	const handleDrawOpen = (e) => {
@@ -160,13 +172,13 @@ const Nav = () => {
 		}
 	}
 
-	const openSearchWrapper=function() {
+	const toggleSearchWrapper=function() {
 		viewRef.current.closeViewDraw();
 		searchRef.current.toggleSearchDraw();
 	}
 
-	const openViewWrapper=function(type,category,reportId,fid) {
-		viewRef.current.toggleViewDraw(type,category,reportId,fid);
+	const openViewWrapper=function(fid) {
+		viewRef.current.toggleViewDraw(fid);
 	}
 
 	return (
@@ -175,7 +187,7 @@ const Nav = () => {
 			<BottomNavigation className={classes.nav} id={"navMain"}>
 
 				<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>}  onClick={handleDrawOpen}/>
-				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>} onClick={openSearchWrapper}/>
+				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>} onClick={toggleSearchWrapper}/>
 				<NavProfile/>
 			</BottomNavigation>
 			<SearchDraw ref={searchRef} viewWrapper={openViewWrapper}/>

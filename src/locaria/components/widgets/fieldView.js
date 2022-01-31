@@ -3,9 +3,9 @@ import {channels} from 'theme/locaria';
 import Typography from "@mui/material/Typography";
 import {useStyles} from 'theme/styles';
 import Grid from "@mui/material/Grid";
-import {Container, ToggleButton, ToggleButtonGroup} from "@mui/material";
-import ViewListIcon from '@mui/icons-material/ViewList';
+import {Accordion, AccordionDetails, AccordionSummary, Container} from "@mui/material";
 
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const FieldView = ({data}) => {
 	const classes = useStyles();
@@ -14,39 +14,42 @@ const FieldView = ({data}) => {
 
 	let fields = channel.fields;
 
-	const [extra, setExtra] = React.useState(false);
-
-
-	const handleExtra = (event, newExtra => {
-			setExtra(newExtra);
-		}
-	)
-
+	if(fields) {
 	return (
 		<Container>
 			<Grid container spacing={2} className={classes.ReportMainInfo}>
-				<FormatField field={fields.title} data={data}></FormatField>
-				<FormatFields fields={fields.main} data={data}></FormatFields>
+				{fields.title? <FormatField field={fields.title} data={data}></FormatField>:null}
+				{fields.main? <FormatFields fields={fields.main} data={data}></FormatFields>:null}
 			</Grid>
-			<Grid container spacing={2} className={classes.ReportMainInfoExtra}>
-				<FormatFields fields={fields.extra} data={data} extra={true}></FormatFields>
-				<ToggleButtonGroup
-					value={extra}
-					exclusive
-					onChange={handleExtra}
-					aria-label="text alignment"
-				>
-					<ToggleButton value="list" aria-label="list">
-						<ViewListIcon/>
-					</ToggleButton>
-				</ToggleButtonGroup>
-			</Grid>
+			{fields.extra?
+				<Grid container spacing={2} className={classes.ReportMainInfo}>
+					<Accordion className={classes.ReportMainInfoAccordion}>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon/>}
+							aria-controls="panel1a-content"
+							id="panel1a-header"
+						>
+							<Typography>More</Typography>
+						</AccordionSummary>
+						<AccordionDetails>
+							<FormatFields fields={fields.extra} data={data}></FormatFields>
+						</AccordionDetails>
+					</Accordion>
+				</Grid>:null
+			}
 		</Container>
 	)
+	} else {
+		return (
+			<Grid container spacing={2} className={classes.ReportMainInfo}>
+				<h1>You have not configured data for category {data.category}</h1>
+			</Grid>
+			)
+	}
 
 }
 
-const FormatFields = ({fields, data, extra = false}) => {
+const FormatFields = ({fields, data}) => {
 	const classes = useStyles();
 
 	if (fields && fields.length > 0) {
@@ -62,19 +65,22 @@ const FormatFields = ({fields, data, extra = false}) => {
 
 const FormatField = ({field, data}) => {
 	const classes = useStyles();
+
+	let dataActual=getData(data, field.key);
+
 	switch (field.display) {
 		case 'h3':
 			return (
 				<Grid item md={12}>
 					<Typography variant={"h3"}
-					            className={classes.ReportProfileTitle}>{getData(data, field.key)}</Typography>
+					            className={classes.ReportProfileTitle}>{dataActual}</Typography>
 				</Grid>
 			)
 		case 'p':
 			return (
 				<Grid item md={12}>
 					<Typography variant={"p"}
-					            className={classes.ReportProfileText}>{getData(data, field.key)}</Typography>
+					            className={classes.ReportProfileText}>{dataActual}</Typography>
 				</Grid>
 			)
 		case 'div':
@@ -82,12 +88,12 @@ const FormatField = ({field, data}) => {
 				<Grid item md={6}>
 					<Typography variant={'h5'} className={classes.ReportInfoTitle}>{field.name}</Typography>
 					<Typography variant={'subtitle'}
-					            className={classes.ReportInfoText}>{getData(data, field.key)}</Typography>
+					            className={classes.ReportInfoText}>{dataActual}</Typography>
 				</Grid>
 			)
 		default:
 			return (
-				<Typography variant={"p"} className={classes.ReportProfileText}>{getData(data, field.key)}</Typography>
+				<Typography variant={"p"} className={classes.ReportProfileText}>{dataActual}</Typography>
 			)
 
 	}

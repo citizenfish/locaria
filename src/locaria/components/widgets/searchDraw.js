@@ -12,9 +12,11 @@ import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlin
 import SearchDrawCard from "./searchDrawCard";
 import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
+import {useHistory} from "react-router-dom";
 
 
 const SearchDraw = forwardRef((props, ref) => {
+	const history = useHistory();
 
 		const classes = useStyles();
 		const [searchDraw, setSearchDraw] = React.useState(false);
@@ -24,6 +26,12 @@ const SearchDraw = forwardRef((props, ref) => {
 		const myContext = useContext(LocariaContext);
 
 		const toggleSearchDraw = () => {
+			if(searchDraw) {
+				history.push(`/`);
+			} else {
+				history.push(`/Search/`);
+			}
+
 			setSearchDraw(!searchDraw);
 		}
 
