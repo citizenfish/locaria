@@ -9,6 +9,7 @@ import Submit from 'components/submit';
 import Page from 'components/page';
 import Error from 'components/error';
 import AdminHome from "components/admin/adminHome";
+import AdminNew from "components/admin/adminNew";
 import AdminView from "components/admin/AdminView";
 import AdminData from "components/admin/AdminData";
 import AdminLoader from "components/admin/AdminLoader";
@@ -134,13 +135,14 @@ const App = () => {
 				<Router>
 						<Switch>
 							<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
+							<AdminRoute path="/AdminNew/" user={user} component={AdminNew}/>
 							<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
 							<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
 							<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
 							<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
 							<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
-							<Route path="/View/:category/:feature" component={View}/>
+							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Submit/:category" component={Submit}/>
 							<Route path="/Page/:page" component={Page}/>
 							<Route exact path="/:id_token?" component={Home}/>

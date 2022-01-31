@@ -74,7 +74,7 @@ const NavProfile = () => {
 						key={'admin'}
 						icon={<AdminPanelSettingsIcon/>}
 						tooltipTitle={'Admin'}
-						component={Link} to={`/Admin/`}
+						component={Link} to={`/AdminNew/`}
 					/> : ''}
 
 			</SpeedDial>

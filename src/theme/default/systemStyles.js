@@ -467,6 +467,20 @@ export default class UseStyles {
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
+				margin: 10
+			},
+			ReportMainInfoExtra: {
+				[theme.breakpoints.up('md')]: {
+					paddingLeft: '20px'
+				},
+				[theme.breakpoints.down('md')]: {
+					paddingLeft: 0
+				},
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'space-between',
+				margin: 10
 			},
 			ReportMainInfoRow: {
 				display: 'flex',
@@ -474,11 +488,7 @@ export default class UseStyles {
 				justifyContent: 'space-between',
 				marginBottom: 10,
 			},
-			ReportMainInfoPart: {
-				display: 'flex',
-				flexDirection: 'column',
-				flex: 1,
-			},
+
 			ReportInfoText: {
 				color: '#AAAAAA',
 			},
@@ -489,13 +499,7 @@ export default class UseStyles {
 			ReportProfileShip: {
 				display: 'flex',
 				flexDirection: 'column',
-/*
-				paddingTop: '10px',
-*/
 				marginBottom: '10px',
-/*
-				borderBottom: '1px solid #AAAAAA',
-*/
 				width: '97%',
 				backgroundColor: `${theme.palette.primary.lighter} !important`,
 				padding: 10,
@@ -598,6 +602,8 @@ export default class UseStyles {
 				/*width: 500,
 				height: 300,*/
 			}
+			/* Admin */
+
 		};
 		base = Object.assign(base, merge);
 		this.useStyles = makeStyles(base);

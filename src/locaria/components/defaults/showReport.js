@@ -1,52 +1,76 @@
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import Avatar from "@mui/material/Avatar";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import {useStyles} from 'stylesLocaria';
 
+import Button from "@mui/material/Button";
 
-const ShowReport = ({reportId,data}) => {
+import CardImageLoader from "../widgets/cardImageLoader";
+import {configs} from "themeLocaria";
+import LinearProgress from "@mui/material/LinearProgress";
+
+import SearchDrawCard from "../widgets/searchDrawCard";
+
+import {FieldView} from '../widgets/fieldView'
+
+const ShowReport = ({reportId, reportData,viewWrapper}) => {
 
 	const classes = useStyles();
 
-	if (data&&data.features&&data.features.length > 0) {
-		return (data.features
-				.map(feature => (
-					<Card variant="outlined" className={classes.categoryResultsCard}>
-						<CardHeader
-							avatar={
-								<Avatar aria-label="recipe" className={classes.avatar}>
-									{feature.properties.description.title}
-								</Avatar>
-							}
-							title={feature.properties.title}
-						/>
-						<CardActionArea>
-							<CardContent>
-								<Typography gutterBottom variant="h5" component="h2">
-									{feature.properties.title}
-								</Typography>
-								<Typography variant="body2" color="textSecondary" component="p">
-									{feature.properties.description.text}
-								</Typography>
-							</CardContent>
-						</CardActionArea>
-					</Card>
-				))
-		)
+	if (reportData && reportData.feature &&reportData.feature.packet && reportData.feature.packet.features.length > 0) {
+
+		return (
+
+				<div>
+					<div className={classes.ReportProfileHeader}>
+						<div className={classes.ReportProfileImageContainer}>
+							<CardImageLoader className={classes.ReportProfileImage}
+							                 images={reportData.feature.packet.features[0].properties.description.images}
+							                 defaultImage={configs.defaultImage} gallery={true}/>
+						</div>
+							<FieldView data={reportData.feature.packet.features[0].properties}></FieldView>
+
+
+						{/*	<div className={classes.ReportMainInfoRow}>
+								<div className={classes.ReportMainInfoPart}>
+									<Typography variant={'h5'} className={classes.ReportInfoTitle}>Place of
+										birth</Typography>
+									<Typography variant={'subtitle'}
+									            className={classes.ReportInfoText}>{reportData.feature.packet.features[0].properties.description.data.place_of_birth_town}</Typography>
+								</div>
+								<div className={classes.ReportMainInfoPart}>
+									<Typography variant={'h5'} className={classes.ReportInfoTitle}>Date of
+										birth</Typography>
+									<Typography variant={'subtitle'}
+									            className={classes.ReportInfoText}>{reportData.feature.packet.features[0].properties.description.data.date_of_birth}</Typography>
+								</div>
+							</div>
+
+							<div className={classes.ReportMainInfoRow}>
+								<div className={classes.ReportMainInfoPart}>
+									<Typography variant={'h5'} className={classes.ReportInfoTitle}>Rank</Typography>
+									<Typography variant={'subtitle'}
+									            className={classes.ReportInfoText}>{reportData.feature.packet.features[0].properties.description.data.rank_branch}</Typography>
+								</div>
+								<div className={classes.ReportMainInfoPart}>
+									<Typography variant={'h5'} className={classes.ReportInfoTitle}>Date of
+										death</Typography>
+									<Typography variant={'subtitle'}
+									            className={classes.ReportInfoText}>{reportData.feature.packet.features[0].properties.description.data.date_of_death}</Typography>
+								</div>
+							</div>*/}
+
+							<Button variant="contained"
+							        className={classes.ReportShareButton}>Share</Button>
+					</div>
+					{reportData.links.packet.features.map((item, index) => (
+						<SearchDrawCard key={index} {...item} viewWrapper={viewWrapper}/>
+					))}
+				</div>
+			);
 	} else {
 		return (
-			<Card className={classes.channelCardForm}>
-				<CardContent>
-					<Typography variant="h2" component="h2" gutterBottom>
-						No results found
-					</Typography>
-					<p>Try adjusting your location</p>
-				</CardContent>
-			</Card>
+			<LinearProgress/>
+
 		)
 	}
 }
