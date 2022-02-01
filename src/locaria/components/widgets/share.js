@@ -16,6 +16,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import {useStyles} from "stylesLocaria";
 import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -34,8 +35,8 @@ const Share = () => {
 	};
 
 	return (
-		<div>
-			<Button size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
+		<Container>
+			<Button color="secondary" onClick={handleClickOpen} variant="contained" className={classes.ReportShareButton}>
 				Share
 			</Button>
 			<Dialog
@@ -88,7 +89,7 @@ const Share = () => {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</div>
+		</Container>
 	)
 }
 

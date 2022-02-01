@@ -36,11 +36,9 @@ const Nav = () => {
 	const viewRef = useRef();
 
 	React.useEffect(() => {
-		console.log(location);
 		if(location.pathname==='/Search/') {
 			searchRef.current.toggleSearchDraw();
 		}
-		console.log(feature);
 		if(feature) {
 			openViewWrapper(feature,true);
 		}

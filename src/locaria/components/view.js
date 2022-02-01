@@ -78,7 +78,7 @@ const View = () => {
 		});
 
 		return () => {
-			window.websocket.clearQueues();
+			window.websocket.removeQueue("viewLoader");
 		}
 
 

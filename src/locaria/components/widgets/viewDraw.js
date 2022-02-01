@@ -43,7 +43,7 @@ const ViewDraw = forwardRef((props, ref) => {
 
 
 		return () => {
-			window.websocket.clearQueues();
+			window.websocket.removeQueue("viewLoader");
 		}
 
 	}, [report]);

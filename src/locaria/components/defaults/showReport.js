@@ -11,6 +11,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import SearchDrawCard from "../widgets/searchDrawCard";
 
 import {FieldView} from '../widgets/fieldView'
+import Share from "../widgets/share";
 
 const ShowReport = ({viewData,viewWrapper,fid}) => {
 
@@ -45,7 +46,7 @@ const ShowReport = ({viewData,viewWrapper,fid}) => {
 		}
 
 		return () => {
-			window.websocket.clearQueues();
+			window.websocket.removeQueue("reportLoader");
 		}
 
 
@@ -63,8 +64,7 @@ const ShowReport = ({viewData,viewWrapper,fid}) => {
 							                 defaultImage={configs.defaultImage} gallery={true}/>
 						</div>
 							<FieldView data={viewData.features[0].properties}></FieldView>
-							<Button variant="contained"
-							        className={classes.ReportShareButton}>Share</Button>
+							<Share/>
 					</div>
 					{report!==null? (report.features.map((item, index) => (
 						<SearchDrawCard key={index} {...item} viewWrapper={viewWrapper}/>

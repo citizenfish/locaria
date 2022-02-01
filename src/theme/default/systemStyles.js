@@ -490,7 +490,8 @@ export default class UseStyles {
 			},
 			ReportShareButton: {
 				alignSelf: 'stretch',
-				top: 0
+				top: 0,
+				width: "100%"
 			},
 			ReportProfileShip: {
 				display: 'flex',
