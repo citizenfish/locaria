@@ -1,9 +1,9 @@
 import React, {useRef} from 'react';
 
-import Layout from './widgets/layout';
-import Share from './widgets/share';
-import Linker from './widgets/linker';
-import ChannelCard from './widgets/channelCard';
+import Layout from '../locaria/components/widgets/layout';
+import Share from '../locaria/components/widgets/share';
+import Linker from '../locaria/components/widgets/linker';
+import ChannelCard from '../locaria/components/widgets/channelCard';
 
 import {useParams, useHistory} from "react-router-dom";
 import Grid from "@mui/material/Grid";
@@ -20,7 +20,7 @@ import Card from "@mui/material/Card";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useCookies} from "react-cookie";
 import Chip from "@mui/material/Chip";
-import Map from "./widgets/map";
+import Map from "../locaria/components/widgets/map";
 
 const View = () => {
 	let {feature} = useParams();

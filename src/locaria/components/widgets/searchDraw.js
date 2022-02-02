@@ -6,7 +6,7 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import React, {forwardRef, useContext, useImperativeHandle} from "react";
 import {useStyles} from "stylesLocaria";
-import {configs,theme} from "themeLocaria";
+import {configs, theme} from "themeLocaria";
 import LocariaContext from "../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
 import SearchDrawCard from "./searchDrawCard";
@@ -16,7 +16,7 @@ import {useHistory} from "react-router-dom";
 
 
 const SearchDraw = forwardRef((props, ref) => {
-	const history = useHistory();
+		const history = useHistory();
 
 		const classes = useStyles();
 		const [searchDraw, setSearchDraw] = React.useState(false);
@@ -26,20 +26,31 @@ const SearchDraw = forwardRef((props, ref) => {
 		const myContext = useContext(LocariaContext);
 
 		const toggleSearchDraw = () => {
-			if(searchDraw) {
+			if (searchDraw) {
 				history.push(`/`);
 			} else {
 				history.push(`/Search/`);
+				props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
+				props.mapRef.current.zoomToLayerExtent("data");
+
 			}
 
 			setSearchDraw(!searchDraw);
 		}
 
 		React.useEffect(() => {
+			props.updateMap();
+		}, [searchDraw]);
+
+		React.useEffect(() => {
 
 			window.websocket.registerQueue("searchLoader", function (json) {
-				setMoreResults(json.packet.features.length===configs.searchLimit);
-				setSearchResults(searchResults.concat(json.packet.features));
+				setMoreResults(json.packet.features.length === configs.searchLimit);
+				const newResults = searchResults.concat(json.packet.features);
+				setSearchResults(newResults);
+				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
+				props.mapRef.current.zoomToLayerExtent("data");
+
 			});
 
 			return () => {
@@ -78,10 +89,10 @@ const SearchDraw = forwardRef((props, ref) => {
 			};
 
 
-			if(configs.homeMode!=="Search") {
-				newSearchValue=newSearchValue.toUpperCase();
-				document.getElementById('mySearch').value=newSearchValue;
-				packet= {
+			if (configs.homeMode !== "Search") {
+				newSearchValue = newSearchValue.toUpperCase();
+				document.getElementById('mySearch').value = newSearchValue;
+				packet = {
 					"queue": "searchLoader",
 					"api": "api",
 					"data": {
@@ -108,6 +119,9 @@ const SearchDraw = forwardRef((props, ref) => {
 			() => ({
 				toggleSearchDraw() {
 					return toggleSearchDraw();
+				},
+				state() {
+					return searchDraw;
 				}
 			})
 		)
@@ -146,9 +160,9 @@ const SearchDraw = forwardRef((props, ref) => {
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
 							{searchResults.map((item, index) => (
-								<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper}/>
+								<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper} mapRef={props.mapRef}/>
 							))}
-							{moreResults? (
+							{moreResults ? (
 								<div sx={{height: '10px'}}>
 									<InView as="div" onChange={(inView, entry) => {
 										inViewEvent(inView)

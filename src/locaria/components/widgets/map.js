@@ -24,7 +24,8 @@ const Map = forwardRef((props, ref) => {
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
 			"zoom": configs.defaultZoom,
-			"center": configs.defaultLocation
+			"center": configs.defaultLocation,
+			"maxZoom": 16
 		});
 		ol.addLayer({
 			"name": "xyz",
@@ -44,7 +45,7 @@ const Map = forwardRef((props, ref) => {
 			"name": "data",
 			"type": "vector",
 			"active": true,
-			"style": viewStyle
+			"style": function(feature,resolution) { return viewStyle(feature,resolution,ol);}
 		});
 
 		// optionals
@@ -75,6 +76,24 @@ const Map = forwardRef((props, ref) => {
 			zoomToExtent(extent, buffer) {
 				buffer = buffer || configs.mapBuffer;
 				ol.zoomToLayerExtent({"layer": "data", "buffer": buffer, "extent": extent});
+			},
+			flyTo(coordinate,zoom,projection) {
+				ol.flyTo({"coordinate":coordinate,"zoom":zoom,"projection":projection});
+			},
+			centerOnCoordinate(coordinate,zoom,projection) {
+				ol.centerOnCoordinate({"coordinate":coordinate,"zoom":zoom,"projection":projection})
+			},
+			findFeatureByFid(map,layer,fid) {
+				return ol.findFeatureByFid(map,layer,fid);
+			},
+			setHighlighted(map,layer,fids) {
+				ol.setHighlighted(map,layer,fids);
+			},
+			clearHighlighted(map,layer) {
+				ol.clearHighlighted(map,layer);
+			},
+			setSelected(map,layer,fids) {
+				ol.setSelected(map,layer,fids);
 			},
 			addGeojson(json, layer = "data", clear = true) {
 				ol.addGeojson({"layer": layer, "geojson": json, "clear": clear});

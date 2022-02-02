@@ -143,7 +143,9 @@ export default class Openlayers {
 			"loadStateEnabled": options.loadStateEnabled,
 			"timeout1": undefined,
 			"timeout2": undefined,
-			"eventsEnabled": options.enableEvents
+			"eventsEnabled": options.enableEvents,
+			"selected":[],
+			"highlighted":[]
 		};
 
 	}
@@ -706,12 +708,14 @@ export default class Openlayers {
 		}
 
 		function selectFunction(e) {
-
-			if (e.deselected.length > 0 && e.selected.length === 0 && options.deselectectedFunction !== undefined)
+			self.setSelected(options.map,options.layer,e.selected);
+			if (e.deselected.length > 0 && e.selected.length === 0 && options.deselectectedFunction !== undefined) {
 				options.deselectectedFunction(e.selected);
+			}
 
-			if (e.selected.length > 0)
+			if (e.selected.length > 0) {
 				options.selectedFunction(e.selected);
+			}
 
 		}
 
@@ -785,6 +789,17 @@ export default class Openlayers {
 		this.queue.setMemory(options.map + 'selectedFeatures', foundFeatures, "Session");
 		this.finished(pid, this.queue.DEFINE.FIN_OK);
 		return foundFeatures;
+	}
+
+	findFeatureByFid(map,layer,fid) {
+		let layerObj = this.maps[map].layers[layer];
+		let source = layerObj.getSource();
+		let features = source.getFeatures();
+		for (let i in features) {
+			if(features[i].get('fid')===fid)
+				return features[i];
+		}
+		return false;
 	}
 
 	/*
@@ -898,6 +913,40 @@ export default class Openlayers {
 
 
 		this.finished(pid, this.queue.DEFINE.FIN_OK);
+	}
+
+	clearHighlighted(map,layer) {
+		this.maps[map].highlighted=[];
+		this.changed(map,layer);
+
+	}
+
+	setHighlighted(map,layer,fids) {
+		this.maps[map].highlighted=fids;
+		this.changed(map,layer);
+	}
+
+	isHighlighted(map,fid) {
+		if(this.maps[map].highlighted.indexOf(fid)!==-1)
+			return true;
+		return false;
+	}
+
+	clearSelected(map,layer) {
+		this.maps[map].selected=[];
+		this.changed(map,layer);
+
+	}
+
+	setSelected(map,layer,features) {
+		this.maps[map].selected=features;
+		this.changed(map,layer);
+	}
+
+	isSelected(map,fid) {
+		if(this.maps[map].selected.indexOf(fid)!==-1)
+			return true;
+		return false;
 	}
 
 	/**
@@ -1189,24 +1238,17 @@ export default class Openlayers {
 	 * @param {string} json.map - Map reference
 	 * @param {string} json.layer - Layer to flag
 	 */
-	changed(pid, json) {
-		let self = this;
-		let options = Object.assign({
-			"map": "default",
-			"layer": "default"
-		}, json);
-		for (let m in self.maps) {
-			if (m === options.map || options.map === '*') {
-				for (let l in self.maps[m].layers) {
-					if (l === options.layer || options.layer === '*') {
-						let layer = self.maps[m].layers[options.layer];
-						layer.changed();
+	changed(map,layer) {
+		for (let m in this.maps) {
+			if (m === map || map === '*') {
+				for (let l in this.maps[m].layers) {
+					if (l === layer || layer === '*') {
+						let layerObj = this.maps[m].layers[layer];
+						layerObj.changed();
 					}
 				}
 			}
 		}
-
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
 	}
 
 	/**
@@ -1257,27 +1299,27 @@ export default class Openlayers {
 	 * openlayers.centerOnCoordinate({"coordinate":"{{!^JSON.stringify(memory.simpleSelect.value.selected[0].getGeometry().getCoordinates())}}"});
 	 *
 	 */
-	centerOnCoordinate(pid, json) {
+	centerOnCoordinate(options) {
 		let self = this;
-		let options = Object.assign({
+		options = Object.assign({
 			"map": "default",
-		}, json);
+		}, options);
 		/*
 		 * Pull all our resources
 		 */
 		let map = self.maps[options.map].object;
 		let view = map.getView();
 
-		if (!options.projectionFrom)
-			options.projectionFrom = view.getProjection().getCode();
+		if (!options.projection)
+			options.projection = view.getProjection().getCode();
 		let size = map.getSize();
-		let cords = this.decodeCoords(options.coordinate, options.projectionFrom, view.getProjection().getCode());
+		let cords = this.decodeCoords(options.coordinate, options.projection, view.getProjection().getCode());
 		if (cords) {
 			view.centerOn(cords, size, [size[0] / 2, size[1] / 2]);
 		}
 		if (options.zoom)
 			view.setZoom(options.zoom);
-		self.finished(pid, self.queue.DEFINE.FIN_OK);
+		return true;
 
 	}
 
@@ -1469,6 +1511,7 @@ export default class Openlayers {
 				featuresBbox = bbox(featuresGeojson);
 			} else {
 				console.log('No features to bbox');
+				return false;
 			}
 		}
 

@@ -4,14 +4,14 @@ import {useStyles} from 'stylesLocaria';
 
 import Button from "@mui/material/Button";
 
-import CardImageLoader from "../widgets/cardImageLoader";
+import CardImageLoader from "./cardImageLoader";
 import {configs,channels} from "themeLocaria";
 import LinearProgress from "@mui/material/LinearProgress";
 
-import SearchDrawCard from "../widgets/searchDrawCard";
+import SearchDrawCard from "./searchDrawCard";
 
-import {FieldView} from '../widgets/fieldView'
-import Share from "../widgets/share";
+import {FieldView} from './fieldView'
+import Share from "./share";
 
 const ShowReport = ({viewData,viewWrapper,fid}) => {
 

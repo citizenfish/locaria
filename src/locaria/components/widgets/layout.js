@@ -1,26 +1,46 @@
 import React, {useRef} from 'react';
 
 import Container from '@mui/material/Container';
-import { configs, channels} from "themeLocaria";
+import {configs, channels, pages} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import {useCookies} from 'react-cookie';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory, useLocation, useParams} from 'react-router-dom';
 import Map from "./map";
-import Nav from "./nav";
+import {IntroModal} from "./intro";
+import {
+	BottomNavigation,
+	BottomNavigationAction,
+	Divider,
+	Drawer,
+	ListItem,
+	ListItemIcon,
+	ListItemText
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+import {NavProfile} from "./navProfile";
+import {SearchDraw} from "./searchDraw";
+import {ViewDraw} from "./viewDraw";
+import Box from "@mui/material/Box";
+import HomeIcon from "@mui/icons-material/Home";
 
 
 const Layout = ({children, map, update, fullscreen = false}) => {
 	const history = useHistory();
 	const mapRef = useRef();
-
+	const searchRef = useRef();
+	const viewRef = useRef();
+	const location = useLocation();
+	let {feature} = useParams();
 	const classes = useStyles();
 
-
+	const [leftDraw, setLeftDraw] = React.useState(false);
 	const [openError, setOpenError] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
+	const [resolutions, setResolutions] = React.useState(undefined);
 
 
 	const [cookies, setCookies] = useCookies(['location']);
@@ -30,37 +50,55 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		if (features[0].get('geometry_type') === 'cluster') {
 			mapRef.current.zoomToExtent(features[0].get('extent'));
 		} else {
-			let channel = channels.getChannelProperties(features[0].get('category'));
-			if (channel.type === "Report") {
-				// can only handle one feature
-				history.push(`/Report/${features[0].get('category')}/${channel.reportId}/${features[0].get('fid')}`);
+			history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`);
+			viewRef.current.openViewDraw(features[0].get('fid'));
+
+			/*if (features.length === 1) {
+
 			} else {
-				if (features.length === 1) {
-					history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`)
-				} else {
-					let searchLocation = mapRef.current.decodeCoords(features[0].getGeometry().flatCoordinates);
-					history.push(`Category/${features[0].get('category')}/${searchLocation[0]},${searchLocation[1]}/1`)
-				}
-			}
+				// TODO this is not reall a valid multiselect
+				let searchLocation = mapRef.current.decodeCoords(features[0].getGeometry().flatCoordinates);
+				history.push(`Category/${features[0].get('category')}/${searchLocation[0]},${searchLocation[1]}/1`)
+			}*/
 		}
 	}
 
-	const onZoomChange = (resolutions) => {
+	const onZoomChange = (newRes) => {
+		if(newRes!==undefined)
+			setResolutions(newRes);
+
+		if(newRes===undefined&&resolutions!==undefined)
+			newRes=resolutions;
+
+		if (searchRef.current.state() === false&&newRes!==undefined) {
+			updateMap(newRes);
+		}
+	}
+
+	const updateMap =(newRes) => {
 		let packet = {
 			"queue": "homeLoader",
 			"api": "api",
 			"data": {
 				"method": "search",
 				"category": configs.homeCategorySearch,
-				"bbox": `${resolutions.extent4326[0]} ${resolutions.extent4326[1]},${resolutions.extent4326[2]} ${resolutions.extent4326[3]}`,
-				"cluster": resolutions.resolution >= configs.clusterCutOff,
-				"cluster_width": Math.floor(configs.clusterWidthMod * resolutions.resolution)
+				"bbox": `${newRes.extent4326[0]} ${newRes.extent4326[1]},${newRes.extent4326[2]} ${newRes.extent4326[3]}`,
+				"cluster": newRes.resolution >= configs.clusterCutOff,
+				"cluster_width": Math.floor(configs.clusterWidthMod * newRes.resolution)
 			}
 		};
 		window.websocket.send(packet);
 	}
 
+
 	React.useEffect(() => {
+
+		if (location.pathname === '/Search/') {
+			searchRef.current.toggleSearchDraw();
+		}
+		if (feature) {
+			openViewWrapper(feature, true);
+		}
 
 		if (map === true) {
 			if (configs.cluster === undefined || configs.cluster === false) {
@@ -77,7 +115,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 				});
 			}
 
-			if (cookies.location&&configs.navShowHome!==false) {
+			if (cookies.location && configs.navShowHome !== false) {
 				mapRef.current.markHome(cookies.location)
 			} else {
 				console.log('no location');
@@ -127,6 +165,89 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		setOpenSuccess(false);
 	}
 
+	const toggleSearchWrapper = function () {
+		viewRef.current.closeViewDraw();
+		searchRef.current.toggleSearchDraw();
+	}
+
+	const openViewWrapper = function (fid) {
+		viewRef.current.openViewDraw(fid);
+	}
+
+	const handleDrawOpen = (e) => {
+		setLeftDraw(true);
+	};
+
+
+	const handleDrawClose = () => {
+		setLeftDraw(false);
+
+	};
+
+	function channelDisplay(channel) {
+		if (channel.type === 'Report' && channel.noCategory !== undefined && channel.noCategory === true)
+
+			return (<ListItem button component={Link} to={`/Report/${channel.report_name}`} key={channel.key}>
+				<ListItemIcon>
+					<SearchIcon/>
+				</ListItemIcon>
+				<ListItemText primary={channel.name}/>
+			</ListItem>)
+		else
+			return (<ListItem button component={Link} to={`/Category/${channel.key}`} key={channel.key}>
+				<ListItemIcon>
+					<SearchIcon/>
+				</ListItemIcon>
+				<ListItemText primary={channel.name}/>
+			</ListItem>)
+	}
+
+	const RenderDraw = function () {
+		return (
+			<React.Fragment key={'leftDraw'}>
+				<Drawer
+					anchor={'left'}
+					open={leftDraw}
+					onClose={handleDrawClose}
+					className={classes.drawLeft}
+				>
+					<Box
+						role="presentation"
+						onClick={handleDrawClose}
+						onKeyDown={handleDrawClose}
+					>
+
+						<ListItem button key={'Home'} component={Link} to={`/`}>
+							<ListItemIcon>
+								<HomeIcon/>
+							</ListItemIcon>
+							<ListItemText primary={'Home'}/>
+						</ListItem>
+
+						<Divider/>
+
+						{channels.listChannels().map(function (channel) {
+							if (channels.displayChannel(channel))
+								return channelDisplay(channels.getChannelProperties(channel));
+						})}
+
+						<Divider/>
+
+						{pages.listPages().map(function (page) {
+							return (
+								<ListItem button component={Link} to={`/Page/${page.page}`} key={page.page}>
+									<ListItemIcon>
+										{page.icon}
+									</ListItemIcon>
+									<ListItemText primary={page.title}/>
+								</ListItem>
+							)
+						})}
+					</Box>
+				</Drawer>
+			</React.Fragment>
+		);
+	}
 
 	return (
 		<div>
@@ -144,7 +265,19 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 				</Alert>
 			</Snackbar>
 			<div>
-				<Nav/>
+				<div className={classes.grow}>
+					<IntroModal/>
+					<BottomNavigation className={classes.nav} id={"navMain"}>
+
+						<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>} onClick={handleDrawOpen}/>
+						<BottomNavigationAction label="Search" icon={<SearchIcon color="secondary" fontSize="large"/>}
+						                        onClick={toggleSearchWrapper}/>
+						<NavProfile/>
+					</BottomNavigation>
+					<SearchDraw ref={searchRef} viewWrapper={openViewWrapper} mapRef={mapRef} updateMap={onZoomChange}/>
+					<RenderDraw/>
+					<ViewDraw ref={viewRef} mapRef={mapRef}/>
+				</div>
 				<div>
 					{displayMap()}
 
@@ -160,10 +293,10 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	function displayMap() {
 		if (map === true) {
 			return (
-					<div className={fullscreen? classes.mapContainerFull:classes.mapContainer}>
-						<Map ref={mapRef} onFeatureSeleted={handleFeatureSelected}
-						     onZoomChange={configs.cluster ? onZoomChange : undefined}/>
-					</div>
+				<div className={fullscreen ? classes.mapContainerFull : classes.mapContainer}>
+					<Map ref={mapRef} onFeatureSeleted={handleFeatureSelected}
+					     onZoomChange={configs.cluster ? onZoomChange : undefined}/>
+				</div>
 			)
 		}
 	}

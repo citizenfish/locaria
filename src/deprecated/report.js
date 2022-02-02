@@ -1,17 +1,17 @@
 import React from 'react';
 import {Link, useParams} from 'react-router-dom';
 import Grid from "@mui/material/Grid";
-import ChannelCard from './widgets/channelCard';
+import ChannelCard from '../locaria/components/widgets/channelCard';
 import Paper from "@mui/material/Paper";
 
 
-import Layout from './widgets/layout';
+import Layout from '../locaria/components/widgets/layout';
 import LinearProgress from "@mui/material/LinearProgress";
 
 import {useStyles} from 'stylesLocaria';
 import {useCookies} from "react-cookie";
 
-import ShowReport from 'defaults/showReport';
+import ShowReport from 'src/locaria/components/widgets/showReport';
 
 const Report = () => {
 	const classes = useStyles();

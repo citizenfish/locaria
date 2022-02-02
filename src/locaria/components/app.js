@@ -2,9 +2,6 @@ import React, {useState} from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Home from "components/home";
-import Report from "components/report";
-import Category from 'components/category';
-import View from 'components/view';
 import Submit from 'components/submit';
 import Page from 'components/page';
 import Error from 'components/error';
@@ -140,8 +137,6 @@ const App = () => {
 							<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
 							<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
-							<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
-							<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
 							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Search/" component={Home}/>
 							<Route path="/Submit/:category" component={Submit}/>

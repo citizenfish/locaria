@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link, useHistory, useParams} from 'react-router-dom';
 
-import Layout from './widgets/layout';
-import ChannelCard from './widgets/channelCard';
+import Layout from '../locaria/components/widgets/layout';
+import ChannelCard from '../locaria/components/widgets/channelCard';
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import {channels} from "themeLocaria";
@@ -26,9 +26,9 @@ import {useCookies} from "react-cookie";
 
 import Distance from "libs/Distance";
 
-import SearchDistance from "./search/SearchDistance";
-import SearchRange from "./search/SearchRange";
-import SearchTags from "./search/SearchTags";
+import SearchDistance from "../locaria/components/search/SearchDistance";
+import SearchRange from "../locaria/components/search/SearchRange";
+import SearchTags from "../locaria/components/search/SearchTags";
 
 const Category = () => {
 	const history = useHistory();

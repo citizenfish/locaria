@@ -8,9 +8,19 @@ import {useStyles} from "stylesLocaria";
 import {useHistory} from "react-router-dom";
 import {Divider} from "@mui/material";
 
-const SearchDrawCard = function({properties,viewWrapper}) {
+const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef}) {
 	const classes = useStyles();
 	const history = useHistory();
+
+	const mapOver=(e) => {
+		mapRef.current.setHighlighted("default","data",[e.currentTarget.getAttribute('data-fid')]);
+		console.log('over');
+	}
+
+	const mapOut=(e) => {
+		mapRef.current.clearHighlighted("default","data");
+		console.log('out');
+	}
 
 	switch(properties.featureType) {
 		case 'location':
@@ -26,14 +36,14 @@ const SearchDrawCard = function({properties,viewWrapper}) {
 						            variant="h5">{properties['local_type']}</Typography>
 						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							let channel = channels.getChannelProperties(properties.category);
-							viewWrapper(channel.type,properties.category,channel.reportId,properties.fid,true);
+							viewWrapper(properties.fid);
 						}}>View</Button>
 					</div>
 				</Paper>
 			)
 		default:
 			return (
-				<Paper elevation={0} className={classes.SearchDrawWrapper}>
+				<Paper elevation={0} className={classes.SearchDrawWrapper} onMouseOver={mapOver} onMouseOut={mapOut} data-fid={properties.fid}>
 					<CardImageLoader defaultImage={configs.defaultImage}
 					                 images={properties.description? properties.description.images:''}/>
 					<div className={classes.SearchDrawContent}>
@@ -45,9 +55,9 @@ const SearchDrawCard = function({properties,viewWrapper}) {
 						            variant="h5">{properties.description.text}</Typography>
 						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							let channel = channels.getChannelProperties(properties.category);
-							viewWrapper(properties.fid,true);
+							viewWrapper(properties.fid);
 							history.push(`/View/${properties.category}/${channel.reportId,properties.fid}`)
-
+							//mapRef.current.flyTo(geometry.coordinates,15,"EPSG:4326")
 						}}>View</Button>
 					</div>
 				</Paper>

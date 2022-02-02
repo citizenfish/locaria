@@ -414,8 +414,11 @@ function deployWEB(stage) {
 	readline.question(`Path to use [${path}]?`, (cmd) => {
 		if (cmd)
 			path = cmd;
+		let dist=configs['custom'][stage].cfdist;
+		if(configs['custom'][stage].sites&&configs['custom'][stage].sites[path])
+			dist=configs['custom'][stage].sites[path];
 		executeWithCatch('webpack --config webpack.config.js', () => {
-			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${configs['custom'][stage].cfdist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
+			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
 			executeWithCatch(cmdLine, () => {
 				deploySystemMain(stage);
 			}, () => {

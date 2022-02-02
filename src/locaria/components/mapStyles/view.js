@@ -95,6 +95,7 @@ export function viewStyle(feature, resolution) {
 
 	let channel = channels.getChannelProperties(category);
 
+
 	let icon = channels.getChannelMapIcon(category, tags);
 	if (icon === undefined)
 		icon = configs.defaultMapIcon;
