@@ -12,7 +12,7 @@ import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlin
 import SearchDrawCard from "./searchDrawCard";
 import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 
 
 const SearchDraw = forwardRef((props, ref) => {
@@ -25,10 +25,23 @@ const SearchDraw = forwardRef((props, ref) => {
 		const [searchResults, setSearchResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
 
+		let {text} = useParams();
+
+		const openSearchDraw = () => {
+			history.push(`/Search/`);
+			props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
+			props.mapRef.current.zoomToLayerExtent("data");
+			setSearchDraw(true);
+		}
+
 		const toggleSearchDraw = () => {
 			if (searchDraw) {
 				history.push(`/`);
 			} else {
+				if(text!==undefined) {
+					document.getElementById('mySearch').value=text;
+					doSearch('new');
+				}
 				history.push(`/Search/`);
 				props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
 				props.mapRef.current.zoomToLayerExtent("data");
@@ -39,7 +52,11 @@ const SearchDraw = forwardRef((props, ref) => {
 		}
 
 		React.useEffect(() => {
-			props.updateMap();
+			if (searchDraw === false)
+				props.updateMap();
+			else {
+
+			}
 		}, [searchDraw]);
 
 		React.useEffect(() => {
@@ -120,8 +137,8 @@ const SearchDraw = forwardRef((props, ref) => {
 				toggleSearchDraw() {
 					return toggleSearchDraw();
 				},
-				state() {
-					return searchDraw;
+				openSearchDraw() {
+					return openSearchDraw();
 				}
 			})
 		)
@@ -160,7 +177,8 @@ const SearchDraw = forwardRef((props, ref) => {
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
 							{searchResults.map((item, index) => (
-								<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper} mapRef={props.mapRef}/>
+								<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper}
+								                mapRef={props.mapRef}/>
 							))}
 							{moreResults ? (
 								<div sx={{height: '10px'}}>

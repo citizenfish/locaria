@@ -1,7 +1,7 @@
 import React, {forwardRef, useImperativeHandle} from "react";
 import {Divider, Drawer, LinearProgress, useMediaQuery} from "@mui/material";
 import {useStyles} from "stylesLocaria";
-import {configs,theme} from "themeLocaria";
+import {configs, theme} from "themeLocaria";
 import {useCookies} from "react-cookie";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -17,39 +17,42 @@ const ViewDraw = forwardRef((props, ref) => {
 	const [fid, setFid] = React.useState(false);
 
 	const openViewDraw = (fidLocal) => {
-			setFid(fidLocal);
+		setFid(fidLocal);
 	}
 
 	React.useEffect(() => {
-		if(fid!==false) {
+		if (fid !== false) {
 			forceUpdate(fid);
 			setViewDraw(true);
 		}
-	},[fid]);
+	}, [fid]);
 
 	const closeViewDraw = () => {
 		setViewDraw(false);
-		history.push(`/Search/`);
-		props.mapRef.current.zoomToLayerExtent("data");
+		props.mapRef.current.setSelected("default", "data", []);
+		props.searchRef.current.openSearchDraw();
+		setFid(false);
 
 	}
 
 	const [report, setReport] = React.useState(null);
 	const [location, setLocation] = useCookies(['location']);
 
+
 	React.useEffect(() => {
 
 		window.websocket.registerQueue("viewLoader", function (json) {
 			setReport(json.packet);
-			props.mapRef.current.centerOnCoordinate(json.packet.features[0].geometry.coordinates,15,"EPSG:4326");
-			props.mapRef.current.setSelected("default","data",[fid]);
+			props.mapRef.current.addGeojson(json.packet);
+			props.mapRef.current.centerOnCoordinate(json.packet.features[0].geometry.coordinates, 15, "EPSG:4326");
+			props.mapRef.current.setSelected("default", "data", [fid]);
 		});
 
 		return () => {
 			window.websocket.removeQueue("viewLoader");
 		}
 
-	}, [report,fid]);
+	}, [report, fid]);
 
 	const forceUpdate = () => {
 		setReport(null);
@@ -71,6 +74,7 @@ const ViewDraw = forwardRef((props, ref) => {
 			closeViewDraw() {
 				return closeViewDraw();
 			}
+
 		})
 	)
 
@@ -90,7 +94,9 @@ const ViewDraw = forwardRef((props, ref) => {
 			</div>
 			<Divider/>
 			<div className={classes.viewDrawScroll}>
-				{report!==null? (<ShowReport viewData={report} viewWrapper={openViewDraw} fid={fid}/>):(<LinearProgress/>)}
+				{report !== null ? (
+					<ShowReport viewData={report} viewWrapper={openViewDraw} fid={fid} mapRef={props.mapRef}/>) : (
+					<LinearProgress/>)}
 			</div>
 		</Drawer>
 	)

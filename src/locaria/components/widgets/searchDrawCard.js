@@ -14,12 +14,10 @@ const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef}) {
 
 	const mapOver=(e) => {
 		mapRef.current.setHighlighted("default","data",[e.currentTarget.getAttribute('data-fid')]);
-		console.log('over');
 	}
 
 	const mapOut=(e) => {
 		mapRef.current.clearHighlighted("default","data");
-		console.log('out');
 	}
 
 	switch(properties.featureType) {
@@ -57,7 +55,6 @@ const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef}) {
 							let channel = channels.getChannelProperties(properties.category);
 							viewWrapper(properties.fid);
 							history.push(`/View/${properties.category}/${channel.reportId,properties.fid}`)
-							//mapRef.current.flyTo(geometry.coordinates,15,"EPSG:4326")
 						}}>View</Button>
 					</div>
 				</Paper>

@@ -138,7 +138,7 @@ const App = () => {
 							<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
 
 							<Route path="/View/:category/:feature" component={Home}/>
-							<Route path="/Search/" component={Home}/>
+							<Route path="/Search/:text?" component={Home}/>
 							<Route path="/Submit/:category" component={Submit}/>
 							<Route path="/Page/:page" component={Page}/>
 							<Route exact path="/:id_token?" component={Home}/>

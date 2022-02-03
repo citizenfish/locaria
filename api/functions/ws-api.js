@@ -259,7 +259,7 @@ module.exports.run = (event, context, callback) => {
 		packet.data.s3_bucket=process.env.importBucket;
 		packet.data.s3_region=process.env.region;
 		packet.data.status='REGISTERED';
-		packet.data.contentType=packet.data.contentType||'text/csv';
+		//packet.data.contentType=packet.data.contentType||'text/csv';
 		if(packet.data.file_attributes===undefined)
 			packet.data={};
 		packet.data.file_attributes.bucket=process.env.importBucket;

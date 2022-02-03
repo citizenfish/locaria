@@ -13,7 +13,7 @@ import SearchDrawCard from "./searchDrawCard";
 import {FieldView} from './fieldView'
 import Share from "./share";
 
-const ShowReport = ({viewData,viewWrapper,fid}) => {
+const ShowReport = ({viewData,viewWrapper,fid,mapRef}) => {
 
 	const classes = useStyles();
 
@@ -26,6 +26,11 @@ const ShowReport = ({viewData,viewWrapper,fid}) => {
 		window.websocket.registerQueue("reportLoader", function (json) {
 			console.log(json);
 			setReport(json.packet);
+
+			mapRef.current.addGeojson(json.packet,"data",false);
+			mapRef.current.zoomToLayerExtent("data");
+
+
 		});
 
 		if(report===null&&channel.report!==undefined) {
@@ -67,7 +72,7 @@ const ShowReport = ({viewData,viewWrapper,fid}) => {
 							<Share/>
 					</div>
 					{report!==null? (report.features.map((item, index) => (
-						<SearchDrawCard key={index} {...item} viewWrapper={viewWrapper}/>
+						<SearchDrawCard key={index} {...item} viewWrapper={viewWrapper} mapRef={mapRef}/>
 					))):null}
 				</div>
 			);

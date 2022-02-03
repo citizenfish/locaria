@@ -63,19 +63,26 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		}
 	}
 
-	const onZoomChange = (newRes) => {
-		if(newRes!==undefined)
-			setResolutions(newRes);
+	const forceMapRefresh = () => {
+		if(resolutions!==undefined) {
+			updateMap(resolutions);
+			console.log('Forced refresh');
 
-		if(newRes===undefined&&resolutions!==undefined)
-			newRes=resolutions;
-
-		if (searchRef.current.state() === false&&newRes!==undefined) {
-			updateMap(newRes);
 		}
 	}
 
-	const updateMap =(newRes) => {
+	const onZoomChange = (newRes) => {
+		console.log('Zoom refresh');
+		setResolutions(newRes);
+	}
+	React.useEffect(() => {
+		if (resolutions !== undefined && location.pathname !== '/Search/' && feature==undefined) {
+			updateMap(resolutions);
+		}
+
+	}, [resolutions]);
+
+	const updateMap = (newRes) => {
 		let packet = {
 			"queue": "homeLoader",
 			"api": "api",
@@ -93,7 +100,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	React.useEffect(() => {
 
-		if (location.pathname === '/Search/') {
+		if (location.pathname.match('^/Search/.*')) {
 			searchRef.current.toggleSearchDraw();
 		}
 		if (feature) {
@@ -274,9 +281,9 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 						                        onClick={toggleSearchWrapper}/>
 						<NavProfile/>
 					</BottomNavigation>
-					<SearchDraw ref={searchRef} viewWrapper={openViewWrapper} mapRef={mapRef} updateMap={onZoomChange}/>
+					<SearchDraw ref={searchRef} viewWrapper={openViewWrapper} mapRef={mapRef} updateMap={forceMapRefresh} />
 					<RenderDraw/>
-					<ViewDraw ref={viewRef} mapRef={mapRef}/>
+					<ViewDraw ref={viewRef} mapRef={mapRef} searchRef={searchRef}/>
 				</div>
 				<div>
 					{displayMap()}
