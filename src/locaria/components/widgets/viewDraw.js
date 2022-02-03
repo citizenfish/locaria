@@ -1,5 +1,5 @@
 import React, {forwardRef, useImperativeHandle} from "react";
-import {Divider, Drawer, useMediaQuery} from "@mui/material";
+import {Divider, Drawer, LinearProgress, useMediaQuery} from "@mui/material";
 import {useStyles} from "stylesLocaria";
 import {configs,theme} from "themeLocaria";
 import {useCookies} from "react-cookie";
@@ -7,25 +7,29 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import ShowReport from 'defaults/showReport';
+import {useHistory} from "react-router-dom";
 
 const ViewDraw = forwardRef((props, ref) => {
+	const history = useHistory();
 
 	const classes = useStyles();
 	const [viewDraw, setViewDraw] = React.useState(false);
-	const [reportId, setReportId] = React.useState(false);
 	const [fid, setFid] = React.useState(false);
 
-	const toggleViewDraw = (type,category,reportIdLocal,fidLocal,force = false) => {
+	const toggleViewDraw = (fidLocal,force = false) => {
 		if(!viewDraw||force===true) {
-			setReportId(reportIdLocal);
+			//setReportId(reportIdLocal);
 			setFid(fidLocal);
-			forceUpdate(reportIdLocal,fidLocal);
+			//forceUpdate(reportIdLocal,fidLocal);
+			forceUpdate(fidLocal);
 		}
 		setViewDraw(force===true? true:!viewDraw);
 	}
 
 	const closeViewDraw = () => {
 		setViewDraw(false);
+		history.push(`/Search/`);
+
 	}
 
 	const [report, setReport] = React.useState(null);
@@ -33,8 +37,8 @@ const ViewDraw = forwardRef((props, ref) => {
 
 	React.useEffect(() => {
 
-		window.websocket.registerQueue("bulk1", function (json) {
-			setReport(json);
+		window.websocket.registerQueue("viewLoader", function (json) {
+			setReport(json.packet);
 		});
 
 
@@ -44,32 +48,22 @@ const ViewDraw = forwardRef((props, ref) => {
 
 	}, [report]);
 
-	const forceUpdate = (reportIdLocal,fidLocal) => {
+	const forceUpdate = (fidLocal) => {
 		setReport(null);
-		window.websocket.sendBulk('bulk1',[{
-			"queue": "feature",
+		window.websocket.send({
+			"queue": "viewLoader",
 			"api": "api",
 			"data": {"method": "get_item", "fid": fidLocal}
-		},
-			{
-				"queue": "links",
-				"api": "api",
-				"data": {
-					"method": "report",
-					"report_name": reportIdLocal,
-					"location": `SRID=4326;POINT(${location.location[0]} ${location.location[1]})`,
-					"fid": fidLocal
-				}
-			}
-		]);
+		});
+
 	}
 
 
 	useImperativeHandle(
 		ref,
 		() => ({
-			toggleViewDraw(type,category,reportId,fid) {
-				return toggleViewDraw(type,category,reportId,fid);
+			toggleViewDraw(fid) {
+				return toggleViewDraw(fid);
 			},
 			closeViewDraw() {
 				return closeViewDraw();
@@ -93,7 +87,7 @@ const ViewDraw = forwardRef((props, ref) => {
 			</div>
 			<Divider/>
 			<div className={classes.viewDrawScroll}>
-				<ShowReport reportId={reportId} reportData={report} viewWrapper={toggleViewDraw}/>
+				{report!==null? (<ShowReport viewData={report} viewWrapper={toggleViewDraw} fid={fid}/>):(<LinearProgress/>)}
 			</div>
 		</Drawer>
 	)

@@ -143,6 +143,7 @@ const App = () => {
 							<Route path="/Report/:category/:reportId/:feature?" component={Report}/>
 							<Route path="/Category/:category/:searchLocation?/:searchDistance?" component={Category}/>
 							<Route path="/View/:category/:feature" component={Home}/>
+							<Route path="/Search/" component={Home}/>
 							<Route path="/Submit/:category" component={Submit}/>
 							<Route path="/Page/:page" component={Page}/>
 							<Route exact path="/:id_token?" component={Home}/>
