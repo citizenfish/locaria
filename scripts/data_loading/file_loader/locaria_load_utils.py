@@ -75,7 +75,8 @@ def process_file_generic(db,file,parameters):
 
     log_parameters = parameters[:]
     ogr = ogr_loader(file,parameters)
-    return {"status" : ogr["status"], "log_message" : {"message" : ogr["message"], "parameters" : log_parameters, "result" : ogr["result"]}}
+    return ogr
+    #return {"status" : ogr["status"], "log_message" : {"message" : ogr["message"], "parameters" : log_parameters, "result" : ogr["result"]}}
 
 def get_file_from_url(url, format='json'):
     data = request.get(url)
@@ -97,11 +98,11 @@ def ogr_loader(file, parameters):
     command = ['ogr2ogr']
     ogrConn = f"PG:dbname={pgConn.path[1:]} user={pgConn.username} password={pgConn.password} host={pgConn.hostname} port={pgConn.port}"
 
-    filename = file['filename'] if 'filename' in file else  f"/vsis3{file['attributes']['path']}"
+    filename = file['filename'] if 'filename' in file else  f"/vsis3/{file['attributes']['path']}"
 
-    #Can use GDAL driver or boto3 to get file from s3, gdal is default, boto3 added as option in case gdal break things and alos to allow local debug if needed
+    #Can use GDAL driver or boto3 to get file from s3, gdal is default, boto3 added as option in case gdal break things and also to allow local debug if needed
     if 's3_driver' in file['attributes'] and file['attributes']['s3_driver'] == 'boto3':
-        filename = f"s3:/{file['attributes']['path']}"
+        filename = f"s3://{file['attributes']['path']}"
         #download file to tmp filename we need to preserve extension for ogr2ogr
         print(f"Downloading from s3 {filename}")
         s3file = urlparse(filename)
@@ -123,11 +124,13 @@ def ogr_loader(file, parameters):
 
     print(f"Running ogr2ogr on {filename}")
     print(' '.join(command))
+
     try:
         result = subprocess.run(command,check=True, capture_output=True)
+
     except subprocess.CalledProcessError as error:
         print("OGR2OGR ERROR")
         print(error)
-        return {'status' : 'ERROR', 'result' : result.stderror.decode('utf-8'), 'message': 'OGR ERROR'}
+        return {'status' : 'ERROR', 'result' : error, 'message': 'OGR ERROR'}
 
     return {'status' : 'FARGATE_PROCESSED', 'result' : {'filename' : filename, 'stdout' : result.stdout.decode('utf-8'), 'returncode' : result.returncode}, 'message' : 'OGR SUCCESS'}
