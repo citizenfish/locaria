@@ -155,19 +155,18 @@ export default class UseStyles {
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
 					borderTopRightRadius: '20px',
-					maxWidth: 500,
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.main,
-					width: 'calc(100vw)',
-					left: 'auto',
 					[theme.breakpoints.up('md')]: {
 						left: 0,
-						height: '100%'
+						height: '100%',
+						maxWidth: 600,
+
 					},
 					[theme.breakpoints.down('md')]: {
-						left: 'auto',
+						left: 0,
 						height: '50%',
-
+						maxWidth: '100vw',
 					}
 				},
 				height: '100%'
@@ -347,8 +346,8 @@ export default class UseStyles {
 						left: 0
 					},
 					[theme.breakpoints.down('md')]: {
-						maxWidth: 500,
-						left: 'auto',
+						maxWidth: '100vw',
+						left: 0,
 
 
 					}
@@ -490,7 +489,8 @@ export default class UseStyles {
 			},
 			ReportShareButton: {
 				alignSelf: 'stretch',
-				top: 0
+				top: 0,
+				width: "100%"
 			},
 			ReportProfileShip: {
 				display: 'flex',

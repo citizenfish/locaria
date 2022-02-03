@@ -252,12 +252,19 @@ module.exports.run = (event, context, callback) => {
 	}
 
 	function add_file(packet) {
+		let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
 
 		client = database.getClient();
 		let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB)';
 		packet.data.s3_bucket=process.env.importBucket;
 		packet.data.s3_region=process.env.region;
 		packet.data.status='REGISTERED';
+		//packet.data.contentType=packet.data.contentType||'text/csv';
+		if(packet.data.file_attributes===undefined)
+			packet.data={};
+		packet.data.file_attributes.bucket=process.env.importBucket;
+		packet.data.file_attributes.path=`incoming/${process.env.stage}/`;
+		packet.data.file_attributes.id_as_filename=true;
 
 		let qarguments= [packet.data];
 		console.log(querysql);
@@ -269,19 +276,21 @@ module.exports.run = (event, context, callback) => {
 				sendToClient(payload);
 
 			} else {
-				if (result.rows[0]['locaria_internal_gateway']['file_id'] === undefined) {
+				console.log(result.rows[0]['locaria_internal_gateway']);
+				if (result.rows[0]['locaria_internal_gateway']['id'] === undefined) {
 					payload.packet['response_code'] = 500;
 					sendToClient(payload);
 				} else {
 
 					let s3 = new AWS.S3();
-					let filePath = `incoming/${process.env.stage}/${result.rows[0]['locaria_internal_gateway']['file_id']}`;
+					let filePath = `incoming/${process.env.stage}/${result.rows[0]['locaria_internal_gateway']['id']}.${packet.data.file_attributes.ext}`;
 
 					let s3parameters = {
 						Bucket: process.env.importBucket,
 						Key: filePath,
-						ContentType: packet.packet.payload.contentType
+						ContentType: packet.data.contentType
 					};
+					console.log(s3parameters);
 
 					let url = s3.getSignedUrl('putObject', s3parameters);
 					payload.packet = {

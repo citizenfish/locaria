@@ -97,6 +97,16 @@ resources:
       Properties:
         AccessControl: BucketOwnerRead
         BucketName: ${file(../../locaria.json):${self:custom.stage}.domain}-data
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+              - '*'
+              AllowedMethods: ["GET","POST","PUT" ]
+              AllowedOrigins:
+                - '*'
+              ExposedHeaders: []
+              Id: dataCORS
+              MaxAge: 3800
     ImagesBucket:
       Type: AWS::S3::Bucket
       Properties:

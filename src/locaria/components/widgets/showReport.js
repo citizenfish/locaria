@@ -4,15 +4,16 @@ import {useStyles} from 'stylesLocaria';
 
 import Button from "@mui/material/Button";
 
-import CardImageLoader from "../widgets/cardImageLoader";
+import CardImageLoader from "./cardImageLoader";
 import {configs,channels} from "themeLocaria";
 import LinearProgress from "@mui/material/LinearProgress";
 
-import SearchDrawCard from "../widgets/searchDrawCard";
+import SearchDrawCard from "./searchDrawCard";
 
-import {FieldView} from '../widgets/fieldView'
+import {FieldView} from './fieldView'
+import Share from "./share";
 
-const ShowReport = ({viewData,viewWrapper,fid}) => {
+const ShowReport = ({viewData,viewWrapper,fid,mapRef}) => {
 
 	const classes = useStyles();
 
@@ -25,6 +26,11 @@ const ShowReport = ({viewData,viewWrapper,fid}) => {
 		window.websocket.registerQueue("reportLoader", function (json) {
 			console.log(json);
 			setReport(json.packet);
+
+			mapRef.current.addGeojson(json.packet,"data",false);
+			mapRef.current.zoomToLayerExtent("data");
+
+
 		});
 
 		if(report===null&&channel.report!==undefined) {
@@ -45,7 +51,7 @@ const ShowReport = ({viewData,viewWrapper,fid}) => {
 		}
 
 		return () => {
-			window.websocket.clearQueues();
+			window.websocket.removeQueue("reportLoader");
 		}
 
 
@@ -63,11 +69,10 @@ const ShowReport = ({viewData,viewWrapper,fid}) => {
 							                 defaultImage={configs.defaultImage} gallery={true}/>
 						</div>
 							<FieldView data={viewData.features[0].properties}></FieldView>
-							<Button variant="contained"
-							        className={classes.ReportShareButton}>Share</Button>
+							<Share/>
 					</div>
 					{report!==null? (report.features.map((item, index) => (
-						<SearchDrawCard key={index} {...item} viewWrapper={viewWrapper}/>
+						<SearchDrawCard key={index} {...item} viewWrapper={viewWrapper} mapRef={mapRef}/>
 					))):null}
 				</div>
 			);

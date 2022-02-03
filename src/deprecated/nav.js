@@ -4,7 +4,7 @@ import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
 import {channels, configs, pages} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
-import {NavProfile} from "./navProfile";
+import {NavProfile} from "../locaria/components/widgets/navProfile";
 import {Link, useHistory, useLocation, useParams} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import {
@@ -18,11 +18,11 @@ import {
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
-import {IntroModal} from "./intro";
+import {IntroModal} from "../locaria/components/widgets/intro";
 
 
-import {SearchDraw} from "./searchDraw";
-import {ViewDraw} from "./viewDraw";
+import {SearchDraw} from "../locaria/components/widgets/searchDraw";
+import {ViewDraw} from "../locaria/components/widgets/viewDraw";
 
 const Nav = () => {
 	const classes = useStyles();
@@ -36,11 +36,9 @@ const Nav = () => {
 	const viewRef = useRef();
 
 	React.useEffect(() => {
-		console.log(location);
 		if(location.pathname==='/Search/') {
 			searchRef.current.toggleSearchDraw();
 		}
-		console.log(feature);
 		if(feature) {
 			openViewWrapper(feature,true);
 		}
