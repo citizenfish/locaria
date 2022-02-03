@@ -8,6 +8,7 @@ RUN apt-get --assume-yes install gdal-bin
 COPY .. .
 
 RUN pip3 install psycopg
+RUN pip3 install boto3
 
 ENTRYPOINT python3 file_loader.py
 

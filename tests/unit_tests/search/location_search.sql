@@ -2,7 +2,7 @@ DO
 $$
 DECLARE
     ret_var JSONB;
-    parameters JSONB DEFAULT jsonb_build_object('method', 'address_search', 'address', 'XX1 1XA');
+    parameters JSONB DEFAULT jsonb_build_object('method', 'location_search', 'address', 'SN1');
     BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';

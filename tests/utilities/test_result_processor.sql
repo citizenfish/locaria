@@ -4,18 +4,24 @@ CREATE OR REPLACE FUNCTION locaria_tests.test_result_processor(test_name TEXT, r
 $$
 DECLARE
     ret_value TEXT;
+    ret_value_jsonb JSONB;
 BEGIN
     ret_value = jsonb_extract_path_text(ret_var, VARIADIC ret_path);
+    ret_value_jsonb = jsonb_extract_path(ret_var, VARIADIC ret_path);
 
     IF (ret_var->>'logid') IS NOT NULL THEN
         RAISE EXCEPTION '[%] FAILED - WITH SQL ERROR%',test_name, (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
     END IF;
 
-    IF ret_value IS NULL OR (ret_value::TEXT != test_value AND test_value != '*') THEN
-        RAISE EXCEPTION '[%] FAILED - EXPECTING % RECEIVED %',test_name, test_value,ret_value;
+    IF ret_value IS NULL OR (ret_value::TEXT != test_value AND test_value != '*' AND (NOT test_value ~ '^\[')) THEN
+        RAISE EXCEPTION '[%] FAILED VALUE - EXPECTING % RECEIVED %',test_name, test_value,ret_value;
     END IF;
 
-    --RETURN '[%] PASSED - EXPECTING % RECEIVED %', test_name, test_value, ret_value;
+    IF ret_value IS NULL OR (NOT (ret_value_jsonb ? (test_value::JSONB->>0)::TEXT) AND test_value != '*' AND test_value ~ '^\[') THEN
+        RAISE EXCEPTION '[%] FAILED ARRAY - EXPECTING % RECEIVED %',test_name, test_value, ret_value_jsonb;
+    END IF;
+
+
     RETURN format('[%s] PASSED - EXPECTING %s RECEIVED %s',test_name, test_value, ret_value);
 END;
 $$ LANGUAGE PLPGSQL;
