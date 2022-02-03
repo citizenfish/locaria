@@ -20,7 +20,8 @@ BEGIN
            wkb_geometry,
            --note dependency on get_item here
 	       jsonb_build_object(  'tags',         COALESCE(strip_array_blanks(attributes->'tags'), jsonb_build_array()),
-                                'description',  COALESCE(attributes->'description', jsonb_build_object()),
+                                --TODO mandate title/text attributes in description
+	                            'description',  COALESCE(attributes->'description', jsonb_build_object()),
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),
                                 'ofid',         id,
