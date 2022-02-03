@@ -26,6 +26,7 @@ import {SearchDraw} from "./searchDraw";
 import {ViewDraw} from "./viewDraw";
 import Box from "@mui/material/Box";
 import HomeIcon from "@mui/icons-material/Home";
+import Multi from "./multi";
 
 
 const Layout = ({children, map, update, fullscreen = false}) => {
@@ -33,6 +34,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	const mapRef = useRef();
 	const searchRef = useRef();
 	const viewRef = useRef();
+	const multiRef = useRef();
 	const location = useLocation();
 	let {feature} = useParams();
 	const classes = useStyles();
@@ -284,6 +286,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 					<SearchDraw ref={searchRef} viewWrapper={openViewWrapper} mapRef={mapRef} updateMap={forceMapRefresh} />
 					<RenderDraw/>
 					<ViewDraw ref={viewRef} mapRef={mapRef} searchRef={searchRef}/>
+					<Multi ref={multiRef}/>
 				</div>
 				<div>
 					{displayMap()}
