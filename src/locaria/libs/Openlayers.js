@@ -710,11 +710,11 @@ export default class Openlayers {
 		function selectFunction(e) {
 			self.setSelected(options.map,options.layer,e.selected);
 			if (e.deselected.length > 0 && e.selected.length === 0 && options.deselectectedFunction !== undefined) {
-				options.deselectectedFunction(e.selected);
+				options.deselectectedFunction(e.selected,self.featuresToGeojson(e.selected));
 			}
 
 			if (e.selected.length > 0) {
-				options.selectedFunction(e.selected);
+				options.selectedFunction(e.selected,self.featuresToGeojson(e.selected));
 			}
 
 		}
@@ -1201,7 +1201,7 @@ export default class Openlayers {
 	 * @param features
 	 * @private
 	 */
-	_featuresToGeojson(toProjection, fromProjection, features) {
+	featuresToGeojson(features,toProjection="EPSG:4326", fromProjection="EPSG:3857") {
 		let returnJson = new GeoJSON({
 			"dataProjection": toProjection,
 			"featureProjection": fromProjection
