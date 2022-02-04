@@ -11,7 +11,6 @@ import {useCookies} from "react-cookie";
 
 export default function AdminFileDetails(props) {
     let fileDetails = props.fileDetails
-    console.log(fileDetails)
     //Add a mandatory id to each column
     fileDetails.log_messages = fileDetails.log_messages.map((x,i) => {x.id = i + 1;return x})
     let statusColour = fileDetails.status === 'FARGATE_PROCESSED' ? 'success' :
@@ -25,7 +24,6 @@ export default function AdminFileDetails(props) {
 
     //Delete file function
     const deleteFile = () => {
-        console.log(`DELETE FILE ${fileDetails.id}`)
         window.websocket.send({
             queue: 'fileDetails',
             api: "sapi",
@@ -39,7 +37,6 @@ export default function AdminFileDetails(props) {
     }
 
     const resubmitFile = () => {
-        console.log(`REPROCESS FILE ${fileDetails.id}`)
         window.websocket.send({
             queue: 'fileDetails',
             api: "sapi",

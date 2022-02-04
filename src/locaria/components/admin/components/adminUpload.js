@@ -7,7 +7,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import AdminFileDetails from "./adminFileDetails";
 import AdminDataMapper from "./adminDataMapper";
+
+//Details of file we are going to map
 let fileDetailsData = {}
+
+//How often we poll for file updates,default is 30 seconds
+let defaultRefreshInterval = 30000
 
 export default function AdminUpload(props) {
 
@@ -21,16 +26,13 @@ export default function AdminUpload(props) {
     //hook used to trigger a refresh from a timer to update the file listing from database
     const [time, setTime] = useState(Date.now());
     //hook used to display the data mapping component
-    const [mapFileDetails,setmapFileDetails] = useState(null)
+    const [mapFileDetails,setMapFileDetails] = useState(null)
 
     useEffect(() => {
-        //This hook manages the refresh of the files display every 30 seconds
+        //This hook manages the refresh of the files display every X seconds
         const interval = setInterval(() => {
-
                 setTime(Date.now())
-                console.log("PING")
-
-        }, 30000);
+        }, props.refreshInterval || defaultRefreshInterval);
         return () => {
             clearInterval(interval);
         };
@@ -84,9 +86,9 @@ export default function AdminUpload(props) {
             for(let f in json.packet.files) {
                 let file = json.packet.files[f]
                 //For view button TODO may be a better way to get this
-                file.attributes['status'] = file.status
-                file.attributes['id'] = file.id
-                files.push({id: file.id, attributes : file.attributes, name : file.attributes.name, status : file.status})
+                //file.attributes['status'] = file.status
+                //file.attributes['id'] = file.id
+                files.push({id: file.id, attributes : {...file,...file.attributes}, name : file.attributes.name, status : file.status})
             }
             setTableData(files)
         })
@@ -96,7 +98,6 @@ export default function AdminUpload(props) {
         //Fetch file details every 30 seconds based upon the time hook
         //Don't fetch if we are looking at a file's details
         if(!open && mapFileDetails === null) {
-            console.log("PONG")
             window.websocket.send({
                 "queue": 'getFiles',
                 "api": "sapi",
@@ -146,7 +147,7 @@ export default function AdminUpload(props) {
                          fileColumns = {fileColumns}
                          open = {setOpen}
                          forceRefresh = {setTime}
-                         setFileDetails = {setmapFileDetails}
+                         setFileDetails = {setMapFileDetails}
                      />
              }
 
