@@ -8,7 +8,7 @@ import {useStyles} from "stylesLocaria";
 import {useHistory} from "react-router-dom";
 import {Divider} from "@mui/material";
 
-const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef}) {
+const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef,closeWrapper}) {
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -52,6 +52,8 @@ const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef}) {
 						<Typography className={classes.SearchDrawShipText}
 						            variant="h5">{properties.description.text}</Typography>
 						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
+							if(closeWrapper)
+								closeWrapper();
 							let channel = channels.getChannelProperties(properties.category);
 							viewWrapper(properties.fid);
 							history.push(`/View/${properties.category}/${channel.reportId,properties.fid}`)

@@ -48,20 +48,16 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	const [cookies, setCookies] = useCookies(['location']);
 
 
-	const handleFeatureSelected = function (features) {
+	const handleFeatureSelected = function (features,geojsonFeatures) {
 		if (features[0].get('geometry_type') === 'cluster') {
 			mapRef.current.zoomToExtent(features[0].get('extent'));
 		} else {
-			history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`);
-			viewRef.current.openViewDraw(features[0].get('fid'));
-
-			/*if (features.length === 1) {
-
+			if(features.length>1)  {
+				multiRef.current.openMulti(geojsonFeatures.features);
 			} else {
-				// TODO this is not reall a valid multiselect
-				let searchLocation = mapRef.current.decodeCoords(features[0].getGeometry().flatCoordinates);
-				history.push(`Category/${features[0].get('category')}/${searchLocation[0]},${searchLocation[1]}/1`)
-			}*/
+				history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`);
+				viewRef.current.openViewDraw(features[0].get('fid'));
+			}
 		}
 	}
 
@@ -286,7 +282,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 					<SearchDraw ref={searchRef} viewWrapper={openViewWrapper} mapRef={mapRef} updateMap={forceMapRefresh} />
 					<RenderDraw/>
 					<ViewDraw ref={viewRef} mapRef={mapRef} searchRef={searchRef}/>
-					<Multi ref={multiRef}/>
+					<Multi ref={multiRef} mapRef={mapRef} viewWrapper={openViewWrapper}/>
 				</div>
 				<div>
 					{displayMap()}
