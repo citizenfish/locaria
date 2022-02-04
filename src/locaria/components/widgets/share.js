@@ -48,6 +48,8 @@ const Share = () => {
 				onClose={handleClose}
 				aria-labelledby="alert-dialog-slide-title"
 				aria-describedby="alert-dialog-slide-description"
+				className={classes.dialog}
+
 			>
 				<DialogTitle id="alert-dialog-slide-title">{"Share this page"}</DialogTitle>
 				<DialogContent>
@@ -57,7 +59,7 @@ const Share = () => {
 							<Grid item xs={12}>
 								<FormControl fullWidth>
 									<TextField id="outlined-basic" label="Link" variant="outlined"
-									           value={window.location.href}/>
+									           value={window.location.href} className={classes.dialogInput}/>
 								</FormControl>
 							</Grid>
 							<Grid item md={2}>

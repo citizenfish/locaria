@@ -127,6 +127,18 @@ export default class UseStyles {
 				}
 			},
 
+			/* Dialogues */
+			dialog: {
+				"& .MuiPaper-root": {
+					backgroundColor: theme.palette.primary.main,
+					color: alpha(theme.palette.primary.contrastText, 1)
+				}
+			},
+
+			dialogInput: {
+				backgroundColor: theme.palette.primary.lighter
+			},
+
 			/*
 				Left Draw
 			*/
