@@ -67,6 +67,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				setSearchResults(newResults);
 				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
 				props.mapRef.current.zoomToLayerExtent("data");
+				console.log(newResults.length)
 
 			});
 
