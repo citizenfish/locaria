@@ -8,8 +8,25 @@ export default class UseStyles {
 	}
 
 	constructor(theme, merge = {}) {
+
+
+		const leftWidth = 350;
+
 		let base = {
 
+
+			'@global': {
+				'*::-webkit-scrollbar': {
+					width: '0.6em'
+				},
+				'*::-webkit-scrollbar-track': {
+					'-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+				},
+				'*::-webkit-scrollbar-thumb': {
+					backgroundColor: 'rgba(0,0,0,.1)',
+					outline: '1px solid slategrey'
+				}
+			},
 			/*
 				Defaults
 			 */
@@ -169,10 +186,11 @@ export default class UseStyles {
 					borderTopRightRadius: '20px',
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.main,
+
 					[theme.breakpoints.up('md')]: {
 						left: 0,
 						height: '100%',
-						maxWidth: 600,
+						maxWidth: leftWidth,
 
 					},
 					[theme.breakpoints.down('md')]: {
@@ -261,12 +279,17 @@ export default class UseStyles {
 
 			SearchDrawNameText: {
 				color: theme.palette.primary.contrastText,
-				fontSize: '18px !important'
+				fontSize: '1rem !important'
+			},
+
+			SearchDrawDivider: {
+				marginTop: '5px !important',
+				marginBottom: '5px !important'
 			},
 
 			SearchDrawShipText: {
 				color: alpha(theme.palette.primary.contrastText, 0.35),
-				fontSize: '16px !important'
+				fontSize: '1rem !important'
 			},
 
 			SearchDrawWrapper: {
@@ -286,6 +309,11 @@ export default class UseStyles {
 				alignItems: 'flex-start',
 				justifyContent: 'stretch',
 				padding: '10px 10px 10px 0'
+			},
+			SearchDrawContentSub: {
+				height: 90,
+				paddingLeft: '0px !important',
+				paddingRight: '0px !important'
 			},
 
 			SearchDrawButton: {
@@ -354,7 +382,7 @@ export default class UseStyles {
 					backgroundColor: theme.palette.primary.main,
 					width: 'calc(100vw)',
 					[theme.breakpoints.up('md')]: {
-						maxWidth: 600,
+						maxWidth: leftWidth,
 						left: 0
 					},
 					[theme.breakpoints.down('md')]: {
@@ -428,7 +456,7 @@ export default class UseStyles {
 				[theme.breakpoints.down('md')]: {
 					flexDirection: 'column'
 				},
-				width: '97%',
+				width: '92%',
 				backgroundColor: `${theme.palette.primary.lighter} !important`,
 				padding: 10,
 				borderRadius: 20,
@@ -451,16 +479,22 @@ export default class UseStyles {
 			},
 			ReportProfileTitle: {
 				fontWeight: 200,
-				fontSize: '2rem'
+				fontSize: '1rem !important',
+				marginTop: '10px !important',
+				width: '100%',
+				margin: '5px !important'
 			},
 			ReportProfileText: {
 				fontWeight: 100,
 				padding: 10,
-				color: alpha(theme.palette.primary.contrastText, 0.35)
+				color: alpha(theme.palette.primary.contrastText, 0.35),
+				width: '100%',
+				margin: 3
+
 			},
 			ReportMainInfo: {
 				[theme.breakpoints.up('md')]: {
-					paddingLeft: '20px'
+					paddingLeft: 0
 				},
 				[theme.breakpoints.down('md')]: {
 					paddingLeft: 0
@@ -498,6 +532,10 @@ export default class UseStyles {
 
 			ReportInfoText: {
 				color: '#AAAAAA',
+				width: '100%'
+			},
+			ReportInfoTitle: {
+				width: '100%'
 			},
 			ReportShareButton: {
 				alignSelf: 'stretch',

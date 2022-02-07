@@ -18,7 +18,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Linker = ({location}) => {
+const Linker = ({children,location}) => {
 	const [open, setOpen] = React.useState(false);
 	const classes = useStyles();
 
@@ -38,7 +38,7 @@ const Linker = ({location}) => {
 	return (
 		<div>
 			<Button size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
-				Visit
+				{children||'Visit'}
 			</Button>
 			<Dialog
 				open={open}

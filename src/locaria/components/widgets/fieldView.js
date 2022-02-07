@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import {Accordion, AccordionDetails, AccordionSummary, Container} from "@mui/material";
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Linker from "./linker";
 
 const FieldView = ({data}) => {
 	const classes = useStyles();
@@ -14,15 +15,12 @@ const FieldView = ({data}) => {
 
 	let fields = channel.fields;
 
-	if(fields) {
-	return (
-		<Container>
-			<Grid container spacing={2} className={classes.ReportMainInfo}>
-				{fields.title? <FormatField field={fields.title} data={data}></FormatField>:null}
-				{fields.main? <FormatFields fields={fields.main} data={data}></FormatFields>:null}
-			</Grid>
-			{fields.extra?
-				<Grid container spacing={2} className={classes.ReportMainInfo}>
+	if (fields) {
+		return (
+			<div>
+				{fields.title ? <FormatField field={fields.title} data={data}></FormatField> : null}
+				{fields.main ? <FormatFields fields={fields.main} data={data}></FormatFields> : null}
+				{fields.extra ?
 					<Accordion className={classes.ReportMainInfoAccordion}>
 						<AccordionSummary
 							expandIcon={<ExpandMoreIcon/>}
@@ -35,16 +33,16 @@ const FieldView = ({data}) => {
 							<FormatFields fields={fields.extra} data={data}></FormatFields>
 						</AccordionDetails>
 					</Accordion>
-				</Grid>:null
-			}
-		</Container>
-	)
+					: null
+				}
+			</div>
+		)
 	} else {
 		return (
 			<Grid container spacing={2} className={classes.ReportMainInfo}>
 				<h1>You have not configured data for category {data.category}</h1>
 			</Grid>
-			)
+		)
 	}
 
 }
@@ -66,31 +64,52 @@ const FormatFields = ({fields, data}) => {
 const FormatField = ({field, data}) => {
 	const classes = useStyles();
 
-	let dataActual=getData(data, field.key);
+	let dataActual = getData(data, field.key, field.dataFunction);
+
+
+	if (dataActual === undefined || dataActual === "" || dataActual === null) {
+		return null;
+	}
 
 	switch (field.display) {
 		case 'h3':
 			return (
-				<Grid item md={12}>
-					<Typography variant={"h3"}
-					            className={classes.ReportProfileTitle}>{dataActual}</Typography>
-				</Grid>
+				<Typography className={classes.ReportProfileTitle}>{dataActual}</Typography>
 			)
 		case 'p':
 			return (
-				<Grid item md={12}>
-					<Typography variant={"p"}
-					            className={classes.ReportProfileText}>{dataActual}</Typography>
-				</Grid>
+				<Typography className={classes.ReportProfileText}>{dataActual}</Typography>
 			)
 		case 'div':
+			if (field.icon) {
+				return (
+						<Grid container spacing={2}>
+							<Grid item md={2}>
+								<img src={field.icon}/>
+							</Grid>
+							<Grid item md={10}>
+								<Typography className={classes.ReportInfoTitle}>{field.name}</Typography>
+								<Typography className={classes.ReportInfoText}>{dataActual}</Typography>
+							</Grid>
+						</Grid>
+				)
+
+			} else {
+				return (
+					<div style={{width: '100%', marginTop: 10}}>
+						<Typography className={classes.ReportInfoTitle}>{field.name}</Typography>
+						<Typography className={classes.ReportInfoText}>{dataActual}</Typography>
+					</div>
+				)
+
+			}
+
+		case 'linker':
 			return (
-				<Grid item md={6}>
-					<Typography variant={'h5'} className={classes.ReportInfoTitle}>{field.name}</Typography>
-					<Typography variant={'subtitle'}
-					            className={classes.ReportInfoText}>{dataActual}</Typography>
-				</Grid>
+					<Linker location={dataActual}>{field.name}</Linker>
 			)
+		case 'function':
+			return dataActual;
 		default:
 			return (
 				<Typography variant={"p"} className={classes.ReportProfileText}>{dataActual}</Typography>
@@ -99,8 +118,19 @@ const FormatField = ({field, data}) => {
 	}
 }
 
-const getData = (data, path) => {
-	let result = eval('data.' + path);
+const getData = (data, path, func) => {
+	let result;
+	const classes = useStyles();
+
+	if (func)
+		return func(data, classes);
+
+	try {
+		result = eval('data.' + path);
+	} catch (e) {
+		console.log(e);
+		return "";
+	}
 	return result;
 }
 
