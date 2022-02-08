@@ -123,14 +123,15 @@ def ogr_loader(file, parameters):
         command.extend([file['attributes']['layer']])
 
     print(f"Running ogr2ogr on {filename}")
-    print(' '.join(command))
+    #print(' '.join(command))
 
     try:
         result = subprocess.run(command,check=True, capture_output=True)
 
     except subprocess.CalledProcessError as error:
         print("OGR2OGR ERROR")
-        print(error)
-        return {'status' : 'ERROR', 'result' : error, 'message': 'OGR ERROR'}
+        print(str(error))
+        # never return the error here as it can leak the database password in command line
+        return {'status' : 'ERROR', 'message': "OGR2OGR Error in execution"}
 
     return {'status' : 'FARGATE_PROCESSED', 'result' : {'filename' : filename, 'stdout' : result.stdout.decode('utf-8'), 'returncode' : result.returncode}, 'message' : 'OGR SUCCESS'}
