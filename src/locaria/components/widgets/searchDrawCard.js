@@ -3,24 +3,24 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import CardImageLoader from "./cardImageLoader";
-import {channels,configs} from "themeLocaria";
+import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 import {useHistory} from "react-router-dom";
-import {Divider} from "@mui/material";
+import {Container, Divider} from "@mui/material";
 
-const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef,closeWrapper}) {
+const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, closeWrapper, full = true}) {
 	const classes = useStyles();
 	const history = useHistory();
 
-	const mapOver=(e) => {
-		mapRef.current.setHighlighted("default","data",[e.currentTarget.getAttribute('data-fid')]);
+	const mapOver = (e) => {
+		mapRef.current.setHighlighted("default", "data", [e.currentTarget.getAttribute('data-fid')]);
 	}
 
-	const mapOut=(e) => {
-		mapRef.current.clearHighlighted("default","data");
+	const mapOut = (e) => {
+		mapRef.current.clearHighlighted("default", "data");
 	}
 
-	switch(properties.featureType) {
+	switch (properties.featureType) {
 		case 'location':
 			return (
 				<Paper elevation={0} className={classes.SearchDrawWrapper}>
@@ -40,27 +40,41 @@ const SearchDrawCard = function({properties, geometry,viewWrapper,mapRef,closeWr
 				</Paper>
 			)
 		default:
-			return (
-				<Paper elevation={0} className={classes.SearchDrawWrapper} onMouseOver={mapOver} onMouseOut={mapOut} data-fid={properties.fid}>
-					<CardImageLoader defaultImage={configs.defaultImage}
-					                 images={properties.description? properties.description.images:''}/>
-					<div className={classes.SearchDrawContent}>
-						<Typography className={classes.SearchDrawNameText}
-						            variant="h5">{properties.description.title}</Typography>
-						<Divider/>
-
-						<Typography className={classes.SearchDrawShipText}
-						            variant="h5">{properties.description.text}</Typography>
-						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
-							if(closeWrapper)
-								closeWrapper();
-							let channel = channels.getChannelProperties(properties.category);
-							viewWrapper(properties.fid);
-							history.push(`/View/${properties.category}/${channel.reportId,properties.fid}`)
-						}}>View</Button>
-					</div>
-				</Paper>
-			)
+			if (full) {
+				return (
+					<Paper elevation={0} className={classes.SearchDrawWrapper} onMouseOver={mapOver} onMouseOut={mapOut}
+					       data-fid={properties.fid}>
+						<CardImageLoader defaultImage={configs.defaultImage}
+						                 images={properties.description ? properties.description.images : ''}/>
+						<div className={classes.SearchDrawContent}>
+							<div className={classes.SearchDrawContentSub}>
+								<Typography className={classes.SearchDrawNameText}>{properties.description.title}</Typography>
+								<Divider className={classes.SearchDrawDivider}/>
+								<Typography className={classes.SearchDrawShipText}>{properties.description.text}</Typography>
+							</div>
+							<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
+								if (closeWrapper)
+									closeWrapper();
+								let channel = channels.getChannelProperties(properties.category);
+								mapRef.current.clearHighlighted("default", "data");
+								viewWrapper(properties.fid);
+								history.push(`/View/${properties.category}/${properties.fid}`)
+							}}>View</Button>
+						</div>
+					</Paper>
+				)
+			} else {
+				return (
+					<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
+						if (closeWrapper)
+							closeWrapper();
+						let channel = channels.getChannelProperties(properties.category);
+						mapRef.current.clearHighlighted("default", "data");
+						viewWrapper(properties.fid);
+						history.push(`/View/${properties.category}/${properties.fid}`)
+					}}>View</Button>
+				)
+			}
 	}
 
 };
