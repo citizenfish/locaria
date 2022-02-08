@@ -8,6 +8,7 @@ import Button from '@mui/material/Button'
 import AdminFileDetails from "./adminFileDetails";
 import AdminDataMapper from "./adminDataMapper";
 
+
 //Details of file we are going to map
 let fileDetailsData = {}
 
@@ -85,9 +86,6 @@ export default function AdminUpload(props) {
             let files = []
             for(let f in json.packet.files) {
                 let file = json.packet.files[f]
-                //For view button TODO may be a better way to get this
-                //file.attributes['status'] = file.status
-                //file.attributes['id'] = file.id
                 files.push({id: file.id, attributes : {...file,...file.attributes}, name : file.attributes.name, status : file.status})
             }
             setTableData(files)
@@ -108,7 +106,7 @@ export default function AdminUpload(props) {
             })
             setDataFetching(false)
         }
-    },[time])
+    },[time,mapFileDetails,open])
 
     return(
 
@@ -162,6 +160,7 @@ export default function AdminUpload(props) {
                  mapFileDetails !== null &&
                      <AdminDataMapper
                         fileDetails = {mapFileDetails}
+                        open = {setMapFileDetails}
                      />
 
              }

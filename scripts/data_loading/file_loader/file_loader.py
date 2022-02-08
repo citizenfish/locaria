@@ -50,7 +50,8 @@ for f in files_to_process["files"]:
                 result = {'status': 'FARGATE_ERROR', 'log_message' : {'error' : f"Unsupported file type {f['attributes']['type']}"}}
     else:
 
-        extension = os.path.splitext(f['attributes']['path'])[1].lower().replace('.','')
+        #extension = os.path.splitext(f['attributes']['path'])[1].lower().replace('.','')
+        extension = f['ext']
         if re.match('^xl',extension):
             result = process_file_xls(db,f)
         elif re.match('^cs|tx',extension):
@@ -58,7 +59,7 @@ for f in files_to_process["files"]:
         elif re.match('^gpk',extension):
             result = process_file_geopackage(db,f)
         elif re.match('^js|ge', extension):
-            result = process_file_geojson(db,f)
+            result = process_file_json(db,f)
         else:
             result = process_file_generic(db,f)
 

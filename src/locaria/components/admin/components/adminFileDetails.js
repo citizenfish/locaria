@@ -43,12 +43,13 @@ export default function AdminFileDetails(props) {
             data: {
                 method: "update_file",
                 id : fileDetails.id,
-                status: 'REGISTERED',
+                status: fileDetails.status === 'IMPORTED' ? 'FARGATE_PROCESSED' : 'REGISTERED',
+                attributes: {processed: 0},
                 message: 'Resubmitted by administrator',
                 id_token: cookies['id_token']
             }
         })
-        console.log()
+
     }
 
     //File process websocket
@@ -56,7 +57,7 @@ export default function AdminFileDetails(props) {
     useEffect(() =>{
         //Register the initial ws queue for getting details of files, only fired once on render
         window.websocket.registerQueue("fileDetails", function(json){
-            console.log(json)
+
             if(json.packet.id !== undefined) {
                 props.forceRefresh(Date.now())
                 props.open(false)
@@ -88,7 +89,7 @@ export default function AdminFileDetails(props) {
                 borderRadius: '5px' }}
             >
                 <Box component="div" sx = {{mb: 2}}>
-                    <Grid container spacing = {2}>
+                    <Grid container spacing = {1}>
                     <Grid item xs={4}>
                         <Typography variant="subtitle1" noWrap>
                             File Name
@@ -146,16 +147,16 @@ export default function AdminFileDetails(props) {
                     </Grid>
 
                     {
-                    fileDetails.status === 'FARGATE_PROCESSED' &&
+                        (fileDetails.status === 'FARGATE_PROCESSED' || fileDetails.status === 'IMPORTING') &&
                         <>
                         <Grid item xs={4}>
                             <Typography variant="subtitle1" noWrap>
-                                Record count
+                                Loaded
                             </Typography>
                         </Grid>
                         <Grid item xs={8}>
                             <Typography variant="subtitle1" noWrap>
-                                {fileDetails.record_count}
+                                {fileDetails.processed || 0} of {fileDetails.record_count} records
                             </Typography>
                         </Grid>
                         <Grid item xs={4}>
@@ -177,11 +178,17 @@ export default function AdminFileDetails(props) {
                                 <Button variant='contained'
                                         color='success'
                                         onClick = {() => {
+
+                                            if(fileDetails.status === 'IMPORTING'){
+                                                fileDetails['continueLoad'] = true
+                                            }
+
                                             props.setFileDetails(fileDetails)
                                             props.open(false)
                                         }}
                                 >
-                                    Load File Data
+                                    {fileDetails.status === 'IMPORTING' && 'Continue Loading'}
+                                    {fileDetails.status !== 'IMPORTING' && 'Map Data'}
                                 </Button>
                         </Grid>
                         </>
