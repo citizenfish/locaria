@@ -7,10 +7,13 @@ import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 import {useHistory} from "react-router-dom";
 import {Container, Divider} from "@mui/material";
+import {useSelector, useDispatch} from 'react-redux'
+import {closeViewDraw,openViewDraw} from "../redux/slices/viewDrawSlice";
 
-const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, closeWrapper, full = true}) {
+const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper, full = true}) {
 	const classes = useStyles();
 	const history = useHistory();
+	const dispatch = useDispatch()
 
 	const mapOver = (e) => {
 		mapRef.current.setHighlighted("default", "data", [e.currentTarget.getAttribute('data-fid')]);
@@ -33,8 +36,7 @@ const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, clo
 						<Typography className={classes.SearchDrawShipText}
 						            variant="h5">{properties['local_type']}</Typography>
 						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
-							let channel = channels.getChannelProperties(properties.category);
-							viewWrapper(properties.fid);
+							dispatch(openViewDraw(properties.fid));
 						}}>View</Button>
 					</div>
 				</Paper>
@@ -55,10 +57,8 @@ const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, clo
 							<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 								if (closeWrapper)
 									closeWrapper();
-								let channel = channels.getChannelProperties(properties.category);
 								mapRef.current.clearHighlighted("default", "data");
-								viewWrapper(properties.fid);
-								history.push(`/View/${properties.category}/${properties.fid}`)
+								dispatch(openViewDraw(properties.fid));
 							}}>View</Button>
 						</div>
 					</Paper>
@@ -68,10 +68,9 @@ const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, clo
 					<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 						if (closeWrapper)
 							closeWrapper();
-						let channel = channels.getChannelProperties(properties.category);
 						mapRef.current.clearHighlighted("default", "data");
-						viewWrapper(properties.fid);
-						history.push(`/View/${properties.category}/${properties.fid}`)
+						dispatch(openViewDraw(properties.fid));
+
 					}}>View</Button>
 				)
 			}

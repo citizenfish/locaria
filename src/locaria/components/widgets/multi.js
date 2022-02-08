@@ -8,10 +8,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
+import {useSelector, useDispatch} from 'react-redux'
 
 import {useStyles} from "stylesLocaria";
-import Container from "@mui/material/Container";
 import SearchDrawCard from "./searchDrawCard";
+import {closeMultiSelect} from "../redux/slices/multiSelectSlice";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -19,29 +20,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const Multi = forwardRef((props, ref) => {
 
-//const Multi = ({viewWrapper,mapRef}) => {
-	const [open, setOpen] = React.useState(false);
-	const [features, setFeatures] = React.useState([]);
+	const open = useSelector((state) => state.multiSelect.open);
+	const features = useSelector((state) => state.multiSelect.features);
+
 	const classes = useStyles();
 
-	const openMulti = () => {
-		setOpen(true);
-	};
+	const dispatch = useDispatch()
 
-	const closeMulti = () => {
-		setOpen(false);
-	};
-
-
-	useImperativeHandle(
-		ref,
-		() => ({
-			openMulti(features) {
-				setFeatures(features);
-				return  openMulti();
-			}
-		})
-	)
 
 	return (
 
@@ -51,7 +36,7 @@ const Multi = forwardRef((props, ref) => {
 			keepMounted
 			maxWidth="sm"
 			fullWidth={true}
-			onClose={closeMulti}
+			onClose={()=>{dispatch(closeMultiSelect())}}
 			aria-labelledby="alert-dialog-slide-title"
 			aria-describedby="alert-dialog-slide-description"
 			className={classes.dialog}
@@ -60,13 +45,12 @@ const Multi = forwardRef((props, ref) => {
 			<DialogContent>
 				<DialogContentText id="alert-dialog-slide-description" component="div">
 					{features.map((item, index) => (
-						<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper}
-						                mapRef={props.mapRef} closeWrapper={closeMulti}/>
+						<SearchDrawCard key={index} {...item} mapRef={props.mapRef} />
 					))}
 				</DialogContentText>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={closeMulti} color="secondary" variant="outlined">
+				<Button onClick={()=>{dispatch(closeMultiSelect())}} color="secondary" variant="outlined">
 					Dismiss
 				</Button>
 			</DialogActions>

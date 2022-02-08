@@ -21,8 +21,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import {IntroModal} from "../locaria/components/widgets/intro";
 
 
-import {SearchDraw} from "../locaria/components/widgets/searchDraw";
-import {ViewDraw} from "../locaria/components/widgets/viewDraw";
+import {SearchDraw} from "../locaria/components/widgets/draws/searchDraw";
+import {ViewDraw} from "../locaria/components/widgets/draws/viewDraw";
 
 const Nav = () => {
 	const classes = useStyles();

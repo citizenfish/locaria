@@ -1,4 +1,4 @@
-import React, {forwardRef, useImperativeHandle} from "react";
+import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import {Divider, Drawer, LinearProgress, useMediaQuery} from "@mui/material";
 import {useStyles} from "stylesLocaria";
 import {configs, theme} from "themeLocaria";
@@ -6,43 +6,59 @@ import {useCookies} from "react-cookie";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import ShowReport from './showReport';
+import ShowReport from '../showReport';
 import {useHistory} from "react-router-dom";
+import {useSelector, useDispatch} from 'react-redux'
+import {openSearchDraw,closeSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {closeMultiSelect} from "../../redux/slices/multiSelectSlice";
 
 const ViewDraw = forwardRef((props, ref) => {
+	const dispatch = useDispatch()
 	const history = useHistory();
 
-	const classes = useStyles();
-	const [viewDraw, setViewDraw] = React.useState(false);
-	const [fid, setFid] = React.useState(false);
+	const open = useSelector((state) => state.viewDraw.open);
+	const fid = useSelector((state) => state.viewDraw.fid);
 
-	const openViewDraw = (fidLocal) => {
-		setFid(fidLocal);
-	}
+	const classes = useStyles();
+
+
+	const isInitialMount = useRef(true);
+
+	React.useEffect(() => {
+		if (isInitialMount.current) {
+			isInitialMount.current = false;
+		} else {
+			if (open === true) {
+				dispatch(closeSearchDraw());
+				dispatch(closeMultiSelect());
+			} else {
+				props.mapRef.current.setSelected("default", "data", []);
+				dispatch(openSearchDraw());
+			}
+		}
+	}, [open]);
+
 
 	React.useEffect(() => {
 		if (fid !== false) {
-			forceUpdate(fid);
-			setViewDraw(true);
+			setReport(null);
+			window.websocket.send({
+				"queue": "viewLoader",
+				"api": "api",
+				"data": {"method": "get_item", "fid": fid}
+			});
 		}
 	}, [fid]);
 
-	const closeViewDraw = () => {
-		setViewDraw(false);
-		props.mapRef.current.setSelected("default", "data", []);
-		props.searchRef.current.openSearchDraw();
-		setFid(false);
-
-	}
 
 	const [report, setReport] = React.useState(null);
-	const [location, setLocation] = useCookies(['location']);
 
 
 	React.useEffect(() => {
 
 		window.websocket.registerQueue("viewLoader", function (json) {
 			setReport(json.packet);
+			history.push(`/View/${json.packet.features[0].properties.category}/${fid}`)
 			props.mapRef.current.addGeojson(json.packet);
 			props.mapRef.current.centerOnCoordinate(json.packet.features[0].geometry.coordinates, 15, "EPSG:4326");
 			props.mapRef.current.setSelected("default", "data", [fid]);
@@ -54,40 +70,17 @@ const ViewDraw = forwardRef((props, ref) => {
 
 	}, [report, fid]);
 
-	const forceUpdate = () => {
-		setReport(null);
-		window.websocket.send({
-			"queue": "viewLoader",
-			"api": "api",
-			"data": {"method": "get_item", "fid": fid}
-		});
-
-	}
-
-
-	useImperativeHandle(
-		ref,
-		() => ({
-			openViewDraw(fid) {
-				return openViewDraw(fid);
-			},
-			closeViewDraw() {
-				return closeViewDraw();
-			}
-
-		})
-	)
 
 	return (
 		<Drawer
 			anchor="bottom"
-			open={viewDraw}
+			open={open}
 			className={classes.viewDraw}
 			variant="persistent"
 		>
 			<div className={classes.searchDrawHeader}>
 				<Typography className={classes.viewDrawTitle} variant={'h5'}>{configs.viewTitle}</Typography>
-				<IconButton onClick={closeViewDraw} className={classes.viewDrawClose} type="submit"
+				<IconButton onClick={()=>{dispatch(openSearchDraw());}} className={classes.viewDrawClose} type="submit"
 				            aria-label="search">
 					<CloseIcon className={classes.icons}/>
 				</IconButton>
@@ -95,7 +88,7 @@ const ViewDraw = forwardRef((props, ref) => {
 			<Divider/>
 			<div className={classes.viewDrawScroll}>
 				{report !== null ? (
-					<ShowReport viewData={report} viewWrapper={openViewDraw} fid={fid} mapRef={props.mapRef}/>) : (
+					<ShowReport viewData={report} fid={fid} mapRef={props.mapRef}/>) : (
 					<LinearProgress/>)}
 			</div>
 		</Drawer>

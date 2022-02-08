@@ -22,27 +22,33 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import {NavProfile} from "./navProfile";
-import {SearchDraw} from "./searchDraw";
-import {ViewDraw} from "./viewDraw";
+import {SearchDraw} from "./draws/searchDraw";
+import {ViewDraw} from "./draws/viewDraw";
+import CategoryDraw from "./draws/categoryDraw";
 import Box from "@mui/material/Box";
 import HomeIcon from "@mui/icons-material/Home";
 import Multi from "./multi";
 
+import { useSelector, useDispatch } from 'react-redux'
+import { openCategoryDraw } from '../redux/slices/categoryDrawSlice'
+import { openSearchDraw ,toggleSearchDraw} from '../redux/slices/searchDrawSlice'
+import { openViewDraw} from '../redux/slices/viewDrawSlice'
+import { openMultiSelect} from '../redux/slices/multiSelectSlice'
 
 const Layout = ({children, map, update, fullscreen = false}) => {
-	const history = useHistory();
 	const mapRef = useRef();
-	const searchRef = useRef();
-	const viewRef = useRef();
-	const multiRef = useRef();
 	const location = useLocation();
 	let {feature} = useParams();
 	const classes = useStyles();
+
+	const dispatch = useDispatch()
+
 
 	const [leftDraw, setLeftDraw] = React.useState(false);
 	const [openError, setOpenError] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
 	const [resolutions, setResolutions] = React.useState(undefined);
+	const viewDrawOpen = useSelector((state) => state.viewDraw.open);
 
 
 	const [cookies, setCookies] = useCookies(['location']);
@@ -53,16 +59,15 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			mapRef.current.zoomToExtent(features[0].get('extent'));
 		} else {
 			if(features.length>1)  {
-				multiRef.current.openMulti(geojsonFeatures.features);
+				dispatch(openMultiSelect(geojsonFeatures.features));
 			} else {
-				history.push(`/View/${features[0].get('category')}/${features[0].get('fid')}`);
-				viewRef.current.openViewDraw(features[0].get('fid'));
+				dispatch(openViewDraw(features[0].get('fid')));
 			}
 		}
 	}
 
 	const forceMapRefresh = () => {
-		if(resolutions!==undefined) {
+		if(resolutions!==undefined&&viewDrawOpen===false) {
 			updateMap(resolutions);
 			console.log('Forced refresh');
 
@@ -99,10 +104,12 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	React.useEffect(() => {
 
 		if (location.pathname.match('^/Search/.*')) {
-			searchRef.current.toggleSearchDraw();
+			dispatch(openSearchDraw());
+
 		}
 		if (feature) {
-			openViewWrapper(feature, true);
+			dispatch(openViewDraw(feature));
+
 		}
 
 		if (map === true) {
@@ -171,12 +178,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	}
 
 	const toggleSearchWrapper = function () {
-		viewRef.current.closeViewDraw();
-		searchRef.current.toggleSearchDraw();
-	}
-
-	const openViewWrapper = function (fid) {
-		viewRef.current.openViewDraw(fid);
+		dispatch(toggleSearchDraw());
 	}
 
 	const handleDrawOpen = (e) => {
@@ -190,16 +192,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	};
 
 	function channelDisplay(channel) {
-		if (channel.type === 'Report' && channel.noCategory !== undefined && channel.noCategory === true)
-
-			return (<ListItem button component={Link} to={`/Report/${channel.report_name}`} key={channel.key}>
-				<ListItemIcon>
-					<SearchIcon/>
-				</ListItemIcon>
-				<ListItemText primary={channel.name}/>
-			</ListItem>)
-		else
-			return (<ListItem button component={Link} to={`/Category/${channel.key}`} key={channel.key}>
+			return (<ListItem button key={channel.key} onClick={() =>{dispatch(openCategoryDraw())}}>
 				<ListItemIcon>
 					<SearchIcon/>
 				</ListItemIcon>
@@ -276,13 +269,14 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 						<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>} onClick={handleDrawOpen}/>
 						<BottomNavigationAction label="Search" icon={<SearchIcon color="secondary" fontSize="large"/>}
-						                        onClick={toggleSearchWrapper}/>
+						                        onClick={() => {toggleSearchWrapper()}}/>
 						<NavProfile/>
 					</BottomNavigation>
-					<SearchDraw ref={searchRef} viewWrapper={openViewWrapper} mapRef={mapRef} updateMap={forceMapRefresh} />
+					<SearchDraw  mapRef={mapRef} updateMap={forceMapRefresh} />
 					<RenderDraw/>
-					<ViewDraw ref={viewRef} mapRef={mapRef} searchRef={searchRef}/>
-					<Multi ref={multiRef} mapRef={mapRef} viewWrapper={openViewWrapper}/>
+					<ViewDraw mapRef={mapRef}/>
+					<Multi mapRef={mapRef}/>
+					<CategoryDraw></CategoryDraw>
 				</div>
 				<div>
 					{displayMap()}
