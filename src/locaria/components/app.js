@@ -13,6 +13,8 @@ import AdminLoader from "components/admin/AdminLoader";
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
+import store from './redux/store'
+import { Provider } from 'react-redux'
 
 import AdminRoute from "./adminRoute";
 
@@ -128,6 +130,7 @@ const App = () => {
 
 
 	return (
+		<Provider store={store}>
 			<LocariaContext.Provider value={userSettings}>
 				<Router>
 						<Switch>
@@ -147,6 +150,7 @@ const App = () => {
 						</Switch>
 				</Router>
 			</LocariaContext.Provider>
+		</Provider>
 	);
 };
 

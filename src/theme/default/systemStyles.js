@@ -449,14 +449,7 @@ export default class UseStyles {
 				}
 			},
 			ReportProfileHeader: {
-				display: 'flex',
-				[theme.breakpoints.up('md')]: {
-					flexDirection: 'column'
-				},
-				[theme.breakpoints.down('md')]: {
-					flexDirection: 'column'
-				},
-				width: '92%',
+
 				backgroundColor: `${theme.palette.primary.lighter} !important`,
 				padding: 10,
 				borderRadius: 20,
@@ -479,10 +472,11 @@ export default class UseStyles {
 			},
 			ReportProfileTitle: {
 				fontWeight: 200,
-				fontSize: '1rem !important',
+				fontSize: '1.2rem !important',
 				marginTop: '10px !important',
-				width: '100%',
-				margin: '5px !important'
+				marginBottom: '10px !important',
+				width: '100% !important',
+				padding: '5px !important'
 			},
 			ReportProfileText: {
 				fontWeight: 100,
@@ -595,8 +589,7 @@ export default class UseStyles {
 				padding: '5px'
 			},
 			channelPanel: {
-				"min-width": '200px',
-				"min-height": '150px'
+
 			},
 			channel: {
 				width: '100%'
