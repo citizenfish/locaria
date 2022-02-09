@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import {useStyles} from "stylesLocaria";
 import {closeCategoryDraw} from "../../redux/slices/categoryDrawSlice";
+import {openSearchDraw} from "../../redux/slices/searchDrawSlice";
 import Slide from "@mui/material/Slide";
 
 import {channels, configs} from 'themeLocaria';
@@ -44,26 +45,13 @@ const CategoryDraw = forwardRef((props, ref) => {
 						if (chan.display !== false) {
 							return (
 								<Grid item md={6} className={classes.channel} key={chan.key}>
-									<div className={classes.channelPod}>
+									<div className={classes.channelPod} onClick={() => {
+										dispatch(closeCategoryDraw());
+										dispatch(openSearchDraw({categories:[chan.category]}));
+									}}>
+										<Typography>{chan.name}</Typography>
+
 										<img src={chan.image}/>
-										<Typography gutterBottom variant="h5" component="h2"
-										            style={{color: `${chan.color}`}}>
-											{chan.name}
-										</Typography>
-										<Typography variant="body2" color="textSecondary" component="p">
-											{chan.description}
-										</Typography>
-										<Button size="small" color="secondary" variant="outlined" onClick={() => {
-
-											if (chan.type === 'Report' && chan.noCategory !== undefined && chan.noCategory === true) {
-												history.push(`/${chan.type}/${channel}/${chan.report_name}`)
-											} else {
-												history.push(`/Category/${channel}`)
-
-											}
-										}}>
-											Search
-										</Button>
 									</div>
 								</Grid>
 

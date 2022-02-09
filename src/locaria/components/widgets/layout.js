@@ -192,7 +192,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	};
 
 	function channelDisplay(channel) {
-			return (<ListItem button key={channel.key} onClick={() =>{dispatch(openCategoryDraw())}}>
+			return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDraw({categories:[channel.category]}));}}>
 				<ListItemIcon>
 					<SearchIcon/>
 				</ListItemIcon>

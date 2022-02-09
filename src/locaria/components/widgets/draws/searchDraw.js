@@ -1,4 +1,4 @@
-import {Divider, Drawer, useMediaQuery} from "@mui/material";
+import {Container, Divider, Drawer, useMediaQuery} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -14,8 +14,12 @@ import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useHistory, useParams} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
-import {openSearchDraw, closeSearchDraw, toggleSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {closeSearchDraw, deleteSearchCategory} from "../../redux/slices/searchDrawSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
+import Chip from "@mui/material/Chip";
+import MenuIcon from "@mui/icons-material/Menu";
+import DoneIcon from "@mui/icons-material/Done";
+import {openCategoryDraw} from "../../redux/slices/categoryDrawSlice";
 
 
 const SearchDraw = forwardRef((props, ref) => {
@@ -24,6 +28,7 @@ const SearchDraw = forwardRef((props, ref) => {
 
 
 		const open = useSelector((state) => state.searchDraw.open);
+		const categories = useSelector((state) => state.searchDraw.categories);
 
 		const classes = useStyles();
 		const [moreResults, setMoreResults] = React.useState(false);
@@ -54,6 +59,11 @@ const SearchDraw = forwardRef((props, ref) => {
 				}
 			}
 		}, [open]);
+
+		React.useEffect(() => {
+			doSearch('new');
+
+		},[categories]);
 
 
 		React.useEffect(() => {
@@ -95,7 +105,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				"api": "api",
 				"data": {
 					"method": "search",
-					"category": configs.homeCategorySearch,
+					"category": categories.length>0? categories:configs.homeCategorySearch,
 					"search_text": newSearchValue,
 					"limit": configs.searchLimit,
 					"offset": offset
@@ -128,6 +138,7 @@ const SearchDraw = forwardRef((props, ref) => {
 
 
 
+
 		return (
 			<Drawer
 				anchor="bottom"
@@ -154,9 +165,19 @@ const SearchDraw = forwardRef((props, ref) => {
 					<IconButton onClick={() => {
 						doSearch('new')
 					}} type="submit" aria-label="search">
-						<SearchIcon className={classes.icons}/>
+						<SearchIcon className={classes.icons}  />
 					</IconButton>
 				</div>
+				<Container className={classes.searchDrawAdvanced}>
+					<MenuIcon color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
+						dispatch(openCategoryDraw());
+					}}/>
+					{categories.map((category) => (
+							<Chip label={category} onDelete={() => {
+								dispatch(deleteSearchCategory(category));
+							}}/>
+						))}
+				</Container>
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
