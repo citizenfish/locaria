@@ -9,7 +9,7 @@ import {useStyles} from "stylesLocaria";
 import {configs, theme} from "themeLocaria";
 import LocariaContext from "../../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
-import SearchDrawCard from "../searchDrawCard";
+import SearchDrawCard from "./cards/searchDrawCard";
 import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useHistory, useParams} from "react-router-dom";
@@ -18,7 +18,6 @@ import {closeSearchDraw, deleteSearchCategory} from "../../redux/slices/searchDr
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 import Chip from "@mui/material/Chip";
 import MenuIcon from "@mui/icons-material/Menu";
-import DoneIcon from "@mui/icons-material/Done";
 import {openCategoryDraw} from "../../redux/slices/categoryDrawSlice";
 
 
@@ -111,6 +110,10 @@ const SearchDraw = forwardRef((props, ref) => {
 					"offset": offset
 				}
 			};
+
+			if(newSearchValue===''&&categories.length===0) {
+				packet.data.tags=['featured'];
+			}
 
 
 			if (configs.homeMode !== "Search") {

@@ -8,7 +8,7 @@ import CardImageLoader from "./cardImageLoader";
 import {configs, channels} from "themeLocaria";
 import LinearProgress from "@mui/material/LinearProgress";
 
-import SearchDrawCard from "./searchDrawCard";
+import SearchDrawCard from "./draws/cards/searchDrawCard";
 
 import {FieldView} from './fieldView'
 import Share from "./share";

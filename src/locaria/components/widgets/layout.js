@@ -1,7 +1,6 @@
 import React, {useRef} from 'react';
 
-import Container from '@mui/material/Container';
-import {configs, channels, pages} from "themeLocaria";
+import {configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import Snackbar from '@mui/material/Snackbar';
@@ -13,11 +12,6 @@ import {IntroModal} from "./intro";
 import {
 	BottomNavigation,
 	BottomNavigationAction,
-	Divider,
-	Drawer,
-	ListItem,
-	ListItemIcon,
-	ListItemText
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -25,15 +19,14 @@ import {NavProfile} from "./navProfile";
 import {SearchDraw} from "./draws/searchDraw";
 import {ViewDraw} from "./draws/viewDraw";
 import CategoryDraw from "./draws/categoryDraw";
-import Box from "@mui/material/Box";
-import HomeIcon from "@mui/icons-material/Home";
+import MenuDraw from "./draws/menuDraw";
 import Multi from "./multi";
 
 import { useSelector, useDispatch } from 'react-redux'
-import { openCategoryDraw } from '../redux/slices/categoryDrawSlice'
 import { openSearchDraw ,toggleSearchDraw} from '../redux/slices/searchDrawSlice'
 import { openViewDraw} from '../redux/slices/viewDrawSlice'
 import { openMultiSelect} from '../redux/slices/multiSelectSlice'
+import { openMenuDraw} from '../redux/slices/menuDrawSlice'
 
 const Layout = ({children, map, update, fullscreen = false}) => {
 	const mapRef = useRef();
@@ -78,6 +71,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		console.log('Zoom refresh');
 		setResolutions(newRes);
 	}
+
 	React.useEffect(() => {
 		if (resolutions !== undefined && location.pathname !== '/Search/' && feature==undefined) {
 			updateMap(resolutions);
@@ -181,71 +175,8 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		dispatch(toggleSearchDraw());
 	}
 
-	const handleDrawOpen = (e) => {
-		setLeftDraw(true);
-	};
 
 
-	const handleDrawClose = () => {
-		setLeftDraw(false);
-
-	};
-
-	function channelDisplay(channel) {
-			return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDraw({categories:[channel.category]}));}}>
-				<ListItemIcon>
-					<SearchIcon/>
-				</ListItemIcon>
-				<ListItemText primary={channel.name}/>
-			</ListItem>)
-	}
-
-	const RenderDraw = function () {
-		return (
-			<React.Fragment key={'leftDraw'}>
-				<Drawer
-					anchor={'left'}
-					open={leftDraw}
-					onClose={handleDrawClose}
-					className={classes.drawLeft}
-				>
-					<Box
-						role="presentation"
-						onClick={handleDrawClose}
-						onKeyDown={handleDrawClose}
-					>
-
-						<ListItem button key={'Home'} component={Link} to={`/`}>
-							<ListItemIcon>
-								<HomeIcon/>
-							</ListItemIcon>
-							<ListItemText primary={'Home'}/>
-						</ListItem>
-
-						<Divider/>
-
-						{channels.listChannels().map(function (channel) {
-							if (channels.displayChannel(channel))
-								return channelDisplay(channels.getChannelProperties(channel));
-						})}
-
-						<Divider/>
-
-						{pages.listPages().map(function (page) {
-							return (
-								<ListItem button component={Link} to={`/Page/${page.page}`} key={page.page}>
-									<ListItemIcon>
-										{page.icon}
-									</ListItemIcon>
-									<ListItemText primary={page.title}/>
-								</ListItem>
-							)
-						})}
-					</Box>
-				</Drawer>
-			</React.Fragment>
-		);
-	}
 
 	return (
 		<div>
@@ -267,13 +198,13 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 					<IntroModal/>
 					<BottomNavigation className={classes.nav} id={"navMain"}>
 
-						<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>} onClick={handleDrawOpen}/>
+						<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
 						<BottomNavigationAction label="Search" icon={<SearchIcon color="secondary" fontSize="large"/>}
 						                        onClick={() => {toggleSearchWrapper()}}/>
 						<NavProfile/>
 					</BottomNavigation>
 					<SearchDraw  mapRef={mapRef} updateMap={forceMapRefresh} />
-					<RenderDraw/>
+					<MenuDraw/>
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
 					<CategoryDraw></CategoryDraw>
