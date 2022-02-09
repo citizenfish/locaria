@@ -17,7 +17,7 @@ export default function AdminAppBar(props) {
                 </Toolbar>
                 <Toolbar>
                     <Typography variant="h6" noWrap component="div" >
-                        {props.mode == 'upload' && 'Files Uploaded'}
+                        {props.mode == 'upload' && 'Upload Data'}
                         {props.mode == 'edit' && 'Edit Data'}
                         {props.mode == 'moderate' && 'Moderate Data'}
                         {props.mode == 'export' && 'Export Data'}

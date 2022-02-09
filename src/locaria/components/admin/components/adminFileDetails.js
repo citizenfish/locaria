@@ -88,8 +88,7 @@ export default function AdminFileDetails(props) {
                 border: '1px solid grey',
                 borderRadius: '5px' }}
             >
-                <Box component="div" sx = {{mb: 2}}>
-                    <Grid container spacing = {1}>
+                <Grid container spacing = {1}>
                     <Grid item xs={4}>
                         <Typography variant="subtitle1" noWrap>
                             File Name
@@ -100,6 +99,19 @@ export default function AdminFileDetails(props) {
                             {fileDetails.name}
                         </Typography>
                     </Grid>
+                </Grid>
+            </Box>
+
+            <Box
+                component="div" sx={{
+                p:2,
+                mb:2,
+                border: '1px solid grey',
+                borderRadius: '5px' }}
+            >
+                <Box component="div" sx = {{mb: 2}}>
+                    <Grid container spacing = {1}>
+
                     <Grid item xs={4}>
                         <Typography variant="subtitle1" noWrap>
                             Status
@@ -145,30 +157,40 @@ export default function AdminFileDetails(props) {
                             {fileDetails.ext}
                         </Typography>
                     </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="subtitle1" noWrap>
+                            Loaded
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Typography variant="subtitle1" noWrap>
+                            {
+                                fileDetails.status !== 'REGISTERED' && <div>
+                                    {fileDetails.processed || 0} of {fileDetails.record_count} records
+                                </div>
 
-                    {
-                        (fileDetails.status === 'FARGATE_PROCESSED' || fileDetails.status === 'IMPORTING') &&
-                        <>
-                        <Grid item xs={4}>
-                            <Typography variant="subtitle1" noWrap>
-                                Loaded
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Typography variant="subtitle1" noWrap>
-                                {fileDetails.processed || 0} of {fileDetails.record_count} records
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Typography variant="subtitle1" noWrap>
-                                Processing Time
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Typography variant="subtitle1" noWrap>
-                                {fileDetails.processing_time} seconds
-                            </Typography>
-                        </Grid>
+                            }
+                            {
+                                fileDetails.status === 'REGISTERED' && <div>
+                                    Awaiting file load
+                                </div>
+                            }
+
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="subtitle1" noWrap>
+                            Load Time
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Typography variant="subtitle1" noWrap>
+                            {fileDetails.processing_time || 0} seconds
+                        </Typography>
+                    </Grid>
+                        {
+                            (fileDetails.status === 'FARGATE_PROCESSED' || fileDetails.status === 'IMPORTING') &&
+                            <>
                         <Grid item xs={4}>
                             <Typography variant="subtitle1" noWrap>
                                 File Actions
@@ -236,17 +258,17 @@ export default function AdminFileDetails(props) {
                 </Box>
             </Box>
             <DataGrid
-                style={{height: 370, width: '100%'}}
+                style={{width: '100%'}}
                 columns={props.fileColumns}
                 rows={fileDetails.log_messages}
-                pageSize={5}
+                autoHeight
+                rowHeight={30}
                 initialState={{
                     sorting: {
                         sortModel: [{ field: 'id', sort: 'asc' }],
                     },
                 }}
             />
-
 
         </div>
     )
