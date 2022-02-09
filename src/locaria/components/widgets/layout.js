@@ -27,6 +27,7 @@ import { openSearchDraw ,toggleSearchDraw} from '../redux/slices/searchDrawSlice
 import { openViewDraw} from '../redux/slices/viewDrawSlice'
 import { openMultiSelect} from '../redux/slices/multiSelectSlice'
 import { openMenuDraw} from '../redux/slices/menuDrawSlice'
+import PageDialog from "./dialogs/pageDialog";
 
 const Layout = ({children, map, update, fullscreen = false}) => {
 	const mapRef = useRef();
@@ -208,6 +209,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
 					<CategoryDraw></CategoryDraw>
+					<PageDialog></PageDialog>
 				</div>
 				<div>
 					{displayMap()}

@@ -433,6 +433,12 @@ export default class UseStyles {
 
 			},
 
+			pageDialog: {
+				"& .MuiPaper-root": {
+					padding: 10
+				}
+			},
+
 			/*
 			  Reports page
 			 */

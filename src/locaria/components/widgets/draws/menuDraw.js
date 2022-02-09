@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {closeMenuDraw} from "../../redux/slices/menuDrawSlice";
 import {openSearchDraw} from "../../redux/slices/searchDrawSlice";
 import SearchIcon from "@mui/icons-material/Search";
+import {openPageDialog} from "../../redux/slices/pageDialogSlice";
 
 
 
@@ -60,7 +61,7 @@ const MenuDraw = function () {
 
 					{pages.listPages().map(function (page) {
 						return (
-							<ListItem button component={Link} to={`/Page/${page.page}`} key={page.page}>
+							<ListItem onClick={()=>{ dispatch(openPageDialog(page.page));}} key={page.page}>
 								<ListItemIcon>
 									{page.icon}
 								</ListItemIcon>
