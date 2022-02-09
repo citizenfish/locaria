@@ -46,7 +46,7 @@ const IntroModal = () => {
 			onClose={closeIntro}
 			aria-labelledby="keep-mounted-modal-title"
 			aria-describedby="keep-mounted-modal-description"
-			className={classes.modal}
+			className={classes.introModal}
 		>
 			<Box className={classes.navIntroBox}>
 

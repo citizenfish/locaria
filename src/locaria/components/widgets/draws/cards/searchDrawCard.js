@@ -2,12 +2,12 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import CardImageLoader from "./cardImageLoader";
+import CardImageLoader from "../../cardImageLoader";
 import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 import {Container, Divider} from "@mui/material";
 import {useDispatch} from 'react-redux'
-import {openViewDraw} from "../redux/slices/viewDrawSlice";
+import {openViewDraw} from "../../../redux/slices/viewDrawSlice";
 
 const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
