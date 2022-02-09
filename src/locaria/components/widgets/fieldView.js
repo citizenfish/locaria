@@ -72,9 +72,9 @@ const FormatField = ({field, data}) => {
 	}
 
 	switch (field.display) {
-		case 'h3':
+		case 'title':
 			return (
-				<Typography className={classes.ReportProfileTitle}>{dataActual}</Typography>
+					<Typography className={classes.ReportProfileTitle}>{dataActual}</Typography>
 			)
 		case 'p':
 			return (
@@ -83,6 +83,7 @@ const FormatField = ({field, data}) => {
 		case 'div':
 			if (field.icon) {
 				return (
+					<Container>
 						<Grid container spacing={2}>
 							<Grid item md={2}>
 								<img src={field.icon}/>
@@ -92,6 +93,7 @@ const FormatField = ({field, data}) => {
 								<Typography className={classes.ReportInfoText}>{dataActual}</Typography>
 							</Grid>
 						</Grid>
+					</Container>
 				)
 
 			} else {

@@ -5,12 +5,13 @@ import Typography from '@mui/material/Typography';
 import CardImageLoader from "./cardImageLoader";
 import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
-import {useHistory} from "react-router-dom";
 import {Container, Divider} from "@mui/material";
+import {useDispatch} from 'react-redux'
+import {openViewDraw} from "../redux/slices/viewDrawSlice";
 
-const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, closeWrapper, full = true}) {
+const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
-	const history = useHistory();
+	const dispatch = useDispatch()
 
 	const mapOver = (e) => {
 		mapRef.current.setHighlighted("default", "data", [e.currentTarget.getAttribute('data-fid')]);
@@ -19,6 +20,8 @@ const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, clo
 	const mapOut = (e) => {
 		mapRef.current.clearHighlighted("default", "data");
 	}
+
+	const channel = channels.getChannelProperties(properties.category);
 
 	switch (properties.featureType) {
 		case 'location':
@@ -33,18 +36,16 @@ const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, clo
 						<Typography className={classes.SearchDrawShipText}
 						            variant="h5">{properties['local_type']}</Typography>
 						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
-							let channel = channels.getChannelProperties(properties.category);
-							viewWrapper(properties.fid);
+							dispatch(openViewDraw(properties.fid));
 						}}>View</Button>
 					</div>
 				</Paper>
 			)
 		default:
-			if (full) {
 				return (
 					<Paper elevation={0} className={classes.SearchDrawWrapper} onMouseOver={mapOver} onMouseOut={mapOut}
 					       data-fid={properties.fid}>
-						<CardImageLoader defaultImage={configs.defaultImage}
+						<CardImageLoader defaultImage={channel.image? channel.image:configs.defaultImage}
 						                 images={properties.description ? properties.description.images : ''}/>
 						<div className={classes.SearchDrawContent}>
 							<div className={classes.SearchDrawContentSub}>
@@ -55,26 +56,13 @@ const SearchDrawCard = function ({properties, geometry, viewWrapper, mapRef, clo
 							<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 								if (closeWrapper)
 									closeWrapper();
-								let channel = channels.getChannelProperties(properties.category);
 								mapRef.current.clearHighlighted("default", "data");
-								viewWrapper(properties.fid);
-								history.push(`/View/${properties.category}/${properties.fid}`)
+								dispatch(openViewDraw(properties.fid));
 							}}>View</Button>
 						</div>
 					</Paper>
 				)
-			} else {
-				return (
-					<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
-						if (closeWrapper)
-							closeWrapper();
-						let channel = channels.getChannelProperties(properties.category);
-						mapRef.current.clearHighlighted("default", "data");
-						viewWrapper(properties.fid);
-						history.push(`/View/${properties.category}/${properties.fid}`)
-					}}>View</Button>
-				)
-			}
+
 	}
 
 };

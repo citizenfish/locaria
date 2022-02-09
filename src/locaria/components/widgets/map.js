@@ -101,7 +101,6 @@ const Map = forwardRef((props, ref) => {
 			markHome(location, layer = "location") {
 				setLocation(location);
 				ol.clearLayer({"layer": "location"});
-				//ol.flyTo({"coordinate": location, "projection": "EPSG:4326"});
 				ol.addGeojson({
 					"layer": layer,
 					"geojson": {

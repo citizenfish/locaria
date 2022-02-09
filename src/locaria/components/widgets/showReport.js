@@ -13,8 +13,9 @@ import SearchDrawCard from "./searchDrawCard";
 import {FieldView} from './fieldView'
 import Share from "./share";
 import {InView} from "react-intersection-observer";
+import {Container} from "@mui/material";
 
-const ShowReport = ({viewData, viewWrapper, fid, mapRef}) => {
+const ShowReport = ({viewData, fid, mapRef}) => {
 
 	const classes = useStyles();
 
@@ -100,17 +101,17 @@ const ShowReport = ({viewData, viewWrapper, fid, mapRef}) => {
 		return (
 
 			<div>
-				<div className={classes.ReportProfileHeader}>
+				<Container className={classes.ReportProfileHeader}>
 					<div className={classes.ReportProfileImageContainer}>
 						<CardImageLoader className={classes.ReportProfileImage}
 						                 images={viewData.features[0].properties.description.images}
-						                 defaultImage={configs.defaultImage} gallery={true}/>
+						                 defaultImage={channel.image? channel.image:configs.defaultImage} gallery={true}/>
 					</div>
 					<FieldView data={viewData.features[0].properties}></FieldView>
 					<Share/>
-				</div>
+				</Container>
 				{displayData !== null ? (displayData.map((item, index) => (
-					<SearchDrawCard key={index} {...item} viewWrapper={viewWrapper} mapRef={mapRef} full={true}/>
+					<SearchDrawCard key={index} {...item}  mapRef={mapRef} full={true}/>
 				))) : null}
 				{moreResults ? (
 					<div sx={{height: '10px'}}>

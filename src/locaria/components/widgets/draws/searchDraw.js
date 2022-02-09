@@ -1,63 +1,70 @@
-import {Divider, Drawer, useMediaQuery} from "@mui/material";
+import {Container, Divider, Drawer, useMediaQuery} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import React, {forwardRef, useContext, useImperativeHandle} from "react";
+import React, {forwardRef, useContext, useImperativeHandle, useRef} from "react";
 import {useStyles} from "stylesLocaria";
 import {configs, theme} from "themeLocaria";
-import LocariaContext from "../context/locariaContext";
+import LocariaContext from "../../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
-import SearchDrawCard from "./searchDrawCard";
+import SearchDrawCard from "../searchDrawCard";
 import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useHistory, useParams} from "react-router-dom";
+import {useSelector, useDispatch} from 'react-redux'
+import {closeSearchDraw, deleteSearchCategory} from "../../redux/slices/searchDrawSlice";
+import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
+import Chip from "@mui/material/Chip";
+import MenuIcon from "@mui/icons-material/Menu";
+import DoneIcon from "@mui/icons-material/Done";
+import {openCategoryDraw} from "../../redux/slices/categoryDrawSlice";
 
 
 const SearchDraw = forwardRef((props, ref) => {
 		const history = useHistory();
+		const dispatch = useDispatch()
+
+
+		const open = useSelector((state) => state.searchDraw.open);
+		const categories = useSelector((state) => state.searchDraw.categories);
 
 		const classes = useStyles();
-		const [searchDraw, setSearchDraw] = React.useState(false);
-		const [isInView, setIsInView] = React.useState(false);
 		const [moreResults, setMoreResults] = React.useState(false);
 		const [searchResults, setSearchResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
 
 		let {text} = useParams();
 
-		const openSearchDraw = () => {
-			history.push(`/Search/`);
-			props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
-			props.mapRef.current.zoomToLayerExtent("data");
-			setSearchDraw(true);
-		}
-
-		const toggleSearchDraw = () => {
-			if (searchDraw) {
-				history.push(`/`);
-			} else {
-				if(text!==undefined) {
-					document.getElementById('mySearch').value=text;
-					doSearch('new');
-				}
-				history.push(`/Search/`);
-				props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
-				props.mapRef.current.zoomToLayerExtent("data");
-
-			}
-
-			setSearchDraw(!searchDraw);
-		}
+		const isInitialMount = useRef(true);
 
 		React.useEffect(() => {
-			if (searchDraw === false)
-				props.updateMap();
-			else {
+			if (isInitialMount.current) {
+				isInitialMount.current = false;
+			} else {
+				if (open === true) {
+					dispatch(closeViewDraw());
+					history.push(`/Search/`);
+					props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
+					props.mapRef.current.zoomToLayerExtent("data");
+					if (text !== undefined) {
+						document.getElementById('mySearch').value = text;
+						doSearch('new');
+					}
+				} else {
+					history.push(`/`);
+					props.updateMap();
 
+				}
 			}
-		}, [searchDraw]);
+		}, [open]);
+
+		React.useEffect(() => {
+			doSearch('new');
+
+		},[categories]);
+
 
 		React.useEffect(() => {
 
@@ -67,7 +74,6 @@ const SearchDraw = forwardRef((props, ref) => {
 				setSearchResults(newResults);
 				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
 				props.mapRef.current.zoomToLayerExtent("data");
-				console.log(newResults.length)
 
 			});
 
@@ -99,7 +105,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				"api": "api",
 				"data": {
 					"method": "search",
-					"category": configs.homeCategorySearch,
+					"category": categories.length>0? categories:configs.homeCategorySearch,
 					"search_text": newSearchValue,
 					"limit": configs.searchLimit,
 					"offset": offset
@@ -125,36 +131,24 @@ const SearchDraw = forwardRef((props, ref) => {
 
 		const inViewEvent = function (event) {
 			console.log(event);
-			setIsInView(event);
 			if (event === true && searchResults.length > 0) {
 				doSearch('scroll');
 			}
 		}
 
 
-		useImperativeHandle(
-			ref,
-			() => ({
-				toggleSearchDraw() {
-					return toggleSearchDraw();
-				},
-				openSearchDraw() {
-					return openSearchDraw();
-				}
-			})
-		)
 
 
 		return (
 			<Drawer
 				anchor="bottom"
-				open={searchDraw}
+				open={open}
 				className={classes.searchDraw}
 				variant="persistent"
 			>
 				<div className={classes.searchDrawHeader}>
 					<Typography className={classes.searchDrawTitle} variant={'h5'}>{configs.searchTitle}</Typography>
-					<IconButton onClick={toggleSearchDraw} className={classes.searchDrawClose} type="submit"
+					<IconButton onClick={()=>{dispatch(closeSearchDraw());}} className={classes.searchDrawClose} type="submit"
 					            aria-label="search">
 						<CloseIcon className={classes.icons}/>
 					</IconButton>
@@ -171,15 +165,24 @@ const SearchDraw = forwardRef((props, ref) => {
 					<IconButton onClick={() => {
 						doSearch('new')
 					}} type="submit" aria-label="search">
-						<SearchIcon className={classes.icons}/>
+						<SearchIcon className={classes.icons}  />
 					</IconButton>
 				</div>
+				<Container className={classes.searchDrawAdvanced}>
+					<MenuIcon color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
+						dispatch(openCategoryDraw());
+					}}/>
+					{categories.map((category) => (
+							<Chip label={category} onDelete={() => {
+								dispatch(deleteSearchCategory(category));
+							}}/>
+						))}
+				</Container>
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
 							{searchResults.map((item, index) => (
-								<SearchDrawCard key={index} {...item} viewWrapper={props.viewWrapper}
-								                mapRef={props.mapRef}/>
+								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
 							))}
 							{moreResults ? (
 								<div sx={{height: '10px'}}>

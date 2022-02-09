@@ -278,7 +278,7 @@ export default class UseStyles {
 
 			SearchDrawNameText: {
 				color: theme.palette.primary.contrastText,
-				fontSize: '1rem !important'
+				fontSize: '0.9rem !important'
 			},
 
 			SearchDrawDivider: {
@@ -288,7 +288,7 @@ export default class UseStyles {
 
 			SearchDrawShipText: {
 				color: alpha(theme.palette.primary.contrastText, 0.35),
-				fontSize: '1rem !important'
+				fontSize: '0.8rem !important'
 			},
 
 			SearchDrawWrapper: {
@@ -321,17 +321,33 @@ export default class UseStyles {
 				alignSelf: 'stretch'
 			},
 
+			searchDrawAdvanced: {
+				marginBottom: 5
+			},
+
+			searchDrawAdvancedButton: {
+				top: 5,
+				position: 'relative'
+			},
+
 			/* Channels on home */
+
+			channel: {
+				textAlign: "center",
+				width: "100%"
+			},
 
 			channelPod: {
 				border: `1px solid ${theme.palette.primary.main}`,
 				borderRadius: `10px 10px 10px 10px`,
 				padding: 10,
 				margin: 10,
-				height: '30vh',
 				'& img': {
-					width: '100%'
-				}
+					width: '250px',
+					height: '250px'
+				},
+				backgroundColor: `${theme.palette.primary.lighter} !important`
+
 			},
 
 			/* Mapping */
@@ -448,14 +464,7 @@ export default class UseStyles {
 				}
 			},
 			ReportProfileHeader: {
-				display: 'flex',
-				[theme.breakpoints.up('md')]: {
-					flexDirection: 'column'
-				},
-				[theme.breakpoints.down('md')]: {
-					flexDirection: 'column'
-				},
-				width: '92%',
+
 				backgroundColor: `${theme.palette.primary.lighter} !important`,
 				padding: 10,
 				borderRadius: 20,
@@ -478,10 +487,11 @@ export default class UseStyles {
 			},
 			ReportProfileTitle: {
 				fontWeight: 200,
-				fontSize: '1rem !important',
+				fontSize: '1.2rem !important',
 				marginTop: '10px !important',
-				width: '100%',
-				margin: '5px !important'
+				marginBottom: '10px !important',
+				width: '100% !important',
+				padding: '5px !important'
 			},
 			ReportProfileText: {
 				fontWeight: 100,
@@ -593,13 +603,7 @@ export default class UseStyles {
 				margin: '5px',
 				padding: '5px'
 			},
-			channelPanel: {
-				"min-width": '200px',
-				"min-height": '150px'
-			},
-			channel: {
-				width: '100%'
-			},
+
 			searchResults: {
 				width: '100%',
 				height: '100%'
