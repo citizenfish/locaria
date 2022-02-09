@@ -59,11 +59,17 @@ BEGIN
         WHEN parameters->>'method' IN ('get_moderation_items') THEN
             ret_var = get_moderation_items(parameters);
 
+        WHEN parameters->>'method' IN ('preview_file_data') THEN
+            ret_var = preview_file_data(parameters);
+
+        WHEN parameters->>'method' IN ('load_preview_file_data') THEN
+            ret_var = load_preview_file_data(parameters);
+
         WHEN parameters->>'method' IN ('update_moderation_status') THEN
             ret_var = update_moderation_status(parameters);
 
-            ELSE
-            RETURN json_build_object('error', 'unsupported method', 'method', parameters ->> 'method');
+        ELSE
+            RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');
         END CASE;
 
     --If debug_var is set then the API will return the calling parameters in a debug object. NOTE WELL this will break GeoJSON returned

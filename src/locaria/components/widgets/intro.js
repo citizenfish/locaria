@@ -49,14 +49,14 @@ const IntroModal = () => {
 			className={classes.modal}
 		>
 			<Box className={classes.navIntroBox}>
+
 				<Grid
 					container
 					spacing={0}
 					direction="column"
-					alignItems={"center"} justifyContent={"center"}
+
 				>
 					{configs.intro}
-
 				</Grid>
 				<FormGroup>
 					<FormControlLabel control={<Checkbox color="secondary" id={"dismiss"} onChange={handleChange}/>}

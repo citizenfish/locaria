@@ -122,10 +122,9 @@ export default class UseStyles {
 				top: '50%',
 				left: '50%',
 				transform: 'translate(-50%, -50%)',
-				width: '80vw',
-				maxWidth: 600,
+				maxWidth: 1000,
 				borderRadius: '10px 10px 10px 10px',
-				padding: 10,
+				padding: 0,
 				border: 0,
 				color: `${theme.palette.primary.contrastText}`,
 				outline: 'none'

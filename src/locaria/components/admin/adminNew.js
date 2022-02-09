@@ -14,7 +14,7 @@ const drawerWidth = 240
 
 
 const AdminNew= () => {
-	const classes = useStyles()
+
 	const [component,setComponent] = useState('upload')
 
 	return (
@@ -27,7 +27,7 @@ const AdminNew= () => {
 			>
 				<Toolbar />
 				<Toolbar />
-				{component == 'upload' && <AdminUpload cm = {setComponent}/>}
+				{component == 'upload' && <AdminUpload />}
 				{component == 'edit' && <AdminEdit/>}
 				{component == 'moderate' && <AdminModerate/>}
 				{component == 'export' && <AdminExport/>}

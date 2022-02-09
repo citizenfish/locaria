@@ -22,6 +22,7 @@ BEGIN
 	       jsonb_build_object(  'tags',         COALESCE(strip_array_blanks(attributes->'tags'), jsonb_build_array()),
                                 --TODO mandate title/text attributes in description
 	                            'description',  COALESCE(attributes->'description', jsonb_build_object()),
+	                            'data',         COALESCE(attributes->'data', jsonb_build_object()),
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),
                                 'ofid',         id,

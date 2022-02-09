@@ -15,6 +15,10 @@ BEGIN
         CONSTRAINT category_id_fk FOREIGN KEY  (category_id) REFERENCES locaria_core.categories(id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS locaria_data.imports(
+        CONSTRAINT imports_table_pk PRIMARY KEY (id),
+        CONSTRAINT imports_category_id_fk FOREIGN KEY  (category_id) REFERENCES locaria_core.categories(id) ON DELETE CASCADE
+    ) INHERITS (locaria_data.base_table);
 
 EXCEPTION WHEN OTHERS THEN
 
