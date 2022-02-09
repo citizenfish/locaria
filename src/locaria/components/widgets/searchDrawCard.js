@@ -5,14 +5,12 @@ import Typography from '@mui/material/Typography';
 import CardImageLoader from "./cardImageLoader";
 import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
-import {useHistory} from "react-router-dom";
 import {Container, Divider} from "@mui/material";
-import {useSelector, useDispatch} from 'react-redux'
-import {closeViewDraw,openViewDraw} from "../redux/slices/viewDrawSlice";
+import {useDispatch} from 'react-redux'
+import {openViewDraw} from "../redux/slices/viewDrawSlice";
 
-const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper, full = true}) {
+const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
-	const history = useHistory();
 	const dispatch = useDispatch()
 
 	const mapOver = (e) => {
@@ -22,6 +20,8 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper, fu
 	const mapOut = (e) => {
 		mapRef.current.clearHighlighted("default", "data");
 	}
+
+	const channel = channels.getChannelProperties(properties.category);
 
 	switch (properties.featureType) {
 		case 'location':
@@ -42,11 +42,10 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper, fu
 				</Paper>
 			)
 		default:
-			if (full) {
 				return (
 					<Paper elevation={0} className={classes.SearchDrawWrapper} onMouseOver={mapOver} onMouseOut={mapOut}
 					       data-fid={properties.fid}>
-						<CardImageLoader defaultImage={configs.defaultImage}
+						<CardImageLoader defaultImage={channel.image? channel.image:configs.defaultImage}
 						                 images={properties.description ? properties.description.images : ''}/>
 						<div className={classes.SearchDrawContent}>
 							<div className={classes.SearchDrawContentSub}>
@@ -63,17 +62,7 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper, fu
 						</div>
 					</Paper>
 				)
-			} else {
-				return (
-					<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
-						if (closeWrapper)
-							closeWrapper();
-						mapRef.current.clearHighlighted("default", "data");
-						dispatch(openViewDraw(properties.fid));
 
-					}}>View</Button>
-				)
-			}
 	}
 
 };

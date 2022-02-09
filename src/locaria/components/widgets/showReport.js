@@ -105,7 +105,7 @@ const ShowReport = ({viewData, fid, mapRef}) => {
 					<div className={classes.ReportProfileImageContainer}>
 						<CardImageLoader className={classes.ReportProfileImage}
 						                 images={viewData.features[0].properties.description.images}
-						                 defaultImage={configs.defaultImage} gallery={true}/>
+						                 defaultImage={channel.image? channel.image:configs.defaultImage} gallery={true}/>
 					</div>
 					<FieldView data={viewData.features[0].properties}></FieldView>
 					<Share/>
