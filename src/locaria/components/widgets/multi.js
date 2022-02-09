@@ -11,7 +11,7 @@ import Slide from '@mui/material/Slide';
 import {useSelector, useDispatch} from 'react-redux'
 
 import {useStyles} from "stylesLocaria";
-import SearchDrawCard from "./searchDrawCard";
+import SearchDrawCard from "./draws/cards/searchDrawCard";
 import {closeMultiSelect} from "../redux/slices/multiSelectSlice";
 
 const Transition = React.forwardRef(function Transition(props, ref) {

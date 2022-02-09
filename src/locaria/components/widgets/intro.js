@@ -46,17 +46,17 @@ const IntroModal = () => {
 			onClose={closeIntro}
 			aria-labelledby="keep-mounted-modal-title"
 			aria-describedby="keep-mounted-modal-description"
-			className={classes.modal}
+			className={classes.introModal}
 		>
 			<Box className={classes.navIntroBox}>
+
 				<Grid
 					container
 					spacing={0}
 					direction="column"
-					alignItems={"center"} justifyContent={"center"}
+
 				>
 					{configs.intro}
-
 				</Grid>
 				<FormGroup>
 					<FormControlLabel control={<Checkbox color="secondary" id={"dismiss"} onChange={handleChange}/>}
