@@ -44,10 +44,11 @@ export default function AdminUpload(props) {
         fileDetailsData = params
         setOpen(true)
     };
-    const closeFileDetails = () => {
+/*    const closeFileDetails = () => {
         //When we close the file details panel
         setOpen(false)
     };
+*/
 
     const viewButton = (params) => {
         //The View file details button shown in the file listing
@@ -55,11 +56,11 @@ export default function AdminUpload(props) {
 
             <Button
                 variant="contained"
-                color="secondary"
+                color={params.value.status== 'FARGATE_PROCESSED'? "primary" : "secondary"}
                 size="small"
                 onClick ={() => showFileDetails(params.value)}
             >
-                View
+                {params.value.status== 'FARGATE_PROCESSED'? "IMPORT" : "DETAILS"}
             </Button>
 
         )
@@ -126,10 +127,10 @@ export default function AdminUpload(props) {
 
              {
                  mapFileDetails === null && tableData.length > 0 && open === false &&
-                     <DataGrid style={{height: 370, width: '100%'}}
+                     <DataGrid style={{width: '100%'}}
                          rows={tableData}
                          columns={columns}
-                         pageSize={5}
+                               autoHeight
                          initialState={{
                            sorting: {
                                sortModel: [{ field: 'id', sort: 'desc' }],

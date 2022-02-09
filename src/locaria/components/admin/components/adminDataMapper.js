@@ -9,12 +9,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import AdminLoadFileData from "./adminLoadFileData";
-import AdminViewItemsMap from "./adminViewItemsMap";
-
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import AdminLoadFileData from "./adminLoadFileData";
+import AdminViewItemsMap from "./adminViewItemsMap";
+import AdminRowEditor from "./adminRowEditor";
+
 
 export default function AdminDataMapper(props) {
 
@@ -33,6 +34,7 @@ export default function AdminDataMapper(props) {
     const [postcodeField,setPostcodeField] = useState('postcode')
     const [load,setLoad] = useState(false)
     const [mapData,setMapData] = useState({display: false})
+    const [rowEditor,setRowEditor] = useState(null)
 
     const dataLimit = 100
 
@@ -73,6 +75,7 @@ export default function AdminDataMapper(props) {
             </Button>
         )
     }
+
     const columns = [
         {field: 'id', headerName: 'ID', width: 50},
         {field : "title", headerName  : "Title", width: 300},
@@ -171,6 +174,10 @@ export default function AdminDataMapper(props) {
         setMapData({display: false})
     }
 
+    const handleRowEditorClose = () => {
+        setRowEditor({display: false})
+    }
+
     const mapAllItems = () => {
         let features = []
         for(let f in tableData.items) {
@@ -222,7 +229,7 @@ export default function AdminDataMapper(props) {
             <div>
                 <Dialog
                     open={mapData.display}
-                    fullwidth={true}
+                    fullwidth='true'
                     maxWidth='xl'
                 >
                     <DialogContent>
@@ -233,6 +240,25 @@ export default function AdminDataMapper(props) {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleMapClose}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        }
+        {
+            load === false && rowEditor !== null &&
+            <div>
+                <Dialog
+                    open={rowEditor.display}
+                    fullwidth='true'
+                    maxWidth='xl'
+                >
+                    <DialogContent>
+                        <AdminRowEditor
+                            rowData={rowEditor}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleRowEditorClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -436,8 +462,36 @@ export default function AdminDataMapper(props) {
                                                 setLoad(true)
                                             }}
                                     >
-                                        Process File
+                                        Import Data
                                     </Button>
+                                </Grid>
+                                {dataOffset >= 100 &&
+                                    <Grid item xs={2}>
+                                        <Typography variant="subtitle1" noWrap>
+                                            <Button variant='outlined'
+                                                    onClick={() => {
+
+                                                        setDataOffset(dataOffset - 100)
+                                                    }
+                                                    }
+                                            >
+                                                &lt;&lt;
+                                            </Button>
+                                        </Typography>
+                                    </Grid>
+                                }
+                                <Grid item xs={2}>
+                                    <Typography variant="subtitle1" noWrap>
+                                        <Button variant='outlined'
+                                                onClick={() => {
+
+                                                    setDataOffset(dataOffset + 100)
+                                                }
+                                                }
+                                        >
+                                            &gt;&gt;
+                                        </Button>
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}>
                                     <Typography variant="subtitle1" noWrap>
@@ -480,10 +534,19 @@ export default function AdminDataMapper(props) {
                         tableData.items &&
                         <div>
 
-                            <DataGrid style={{height: 800, width: '100%'}}
+                            <DataGrid style={{width: '100%'}}
                                       rows={tableData.items}
                                       columns={columns}
-                                      pageSize={50}
+                                      autoHeight
+                                      rowHeight={35}
+                                      onCellDoubleClick={(params) => {
+                                            setRowEditor({
+                                                data: params.row.data,
+                                                display: true,
+                                                fileDetails: fileDetails
+                                            })
+                                        }
+                                      }
                                       initialState={{
                                           sorting: {
                                               sortModel: [{field: 'id', sort: 'asc'}],
