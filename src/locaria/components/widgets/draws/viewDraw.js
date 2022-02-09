@@ -72,26 +72,28 @@ const ViewDraw = forwardRef((props, ref) => {
 
 
 	return (
-		<Drawer
-			anchor="bottom"
-			open={open}
-			className={classes.viewDraw}
-			variant="persistent"
-		>
-			<div className={classes.searchDrawHeader}>
-				<Typography className={classes.viewDrawTitle} variant={'h5'}>{configs.viewTitle}</Typography>
-				<IconButton onClick={()=>{dispatch(openSearchDraw());}} className={classes.viewDrawClose} type="submit"
-				            aria-label="search">
-					<CloseIcon className={classes.icons}/>
-				</IconButton>
-			</div>
-			<Divider/>
-			<div className={classes.viewDrawScroll}>
-				{report !== null ? (
-					<ShowReport viewData={report} fid={fid} mapRef={props.mapRef}/>) : (
-					<LinearProgress/>)}
-			</div>
-		</Drawer>
+		<>
+			<Drawer
+				anchor="bottom"
+				open={open}
+				className={classes.viewDraw}
+				variant="persistent"
+			>
+				<div className={classes.searchDrawHeader}>
+					<Typography className={classes.viewDrawTitle} variant={'h5'}>{configs.viewTitle}</Typography>
+					<IconButton onClick={()=>{dispatch(openSearchDraw());}} className={classes.viewDrawClose} type="submit"
+								aria-label="search">
+						<CloseIcon className={classes.icons}/>
+					</IconButton>
+				</div>
+				<Divider className={classes.drawHeaderDivider}/>
+				<div className={classes.viewDrawScroll}>
+					{report !== null ? (
+						<ShowReport viewData={report} fid={fid} mapRef={props.mapRef}/>) : (
+						<LinearProgress/>)}
+				</div>
+			</Drawer>
+		</>
 	)
 });
 

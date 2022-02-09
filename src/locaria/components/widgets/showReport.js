@@ -13,7 +13,7 @@ import SearchDrawCard from "./searchDrawCard";
 import {FieldView} from './fieldView'
 import Share from "./share";
 import {InView} from "react-intersection-observer";
-import {Container} from "@mui/material";
+import {Container, Divider} from "@mui/material";
 
 const ShowReport = ({viewData, fid, mapRef}) => {
 
@@ -110,9 +110,15 @@ const ShowReport = ({viewData, fid, mapRef}) => {
 					<FieldView data={viewData.features[0].properties}></FieldView>
 					<Share/>
 				</Container>
-				{displayData !== null ? (displayData.map((item, index) => (
-					<SearchDrawCard key={index} {...item}  mapRef={mapRef} full={true}/>
-				))) : null}
+				{displayData !== null && (
+					<>
+						<Divider className={classes.ReportInfoDivider}/>
+						<Typography className={classes.ReportProfileTitle}>Links</Typography>
+						{displayData.map((item, index) => (
+							<SearchDrawCard key={index} {...item}  mapRef={mapRef} full={true}/>
+						))}
+					</>
+				)}
 				{moreResults ? (
 					<div sx={{height: '10px'}}>
 						<InView as="div" onChange={(inView, entry) => {

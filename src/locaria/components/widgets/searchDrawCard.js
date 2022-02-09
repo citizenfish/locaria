@@ -53,7 +53,7 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 								<Divider className={classes.SearchDrawDivider}/>
 								<Typography className={classes.SearchDrawShipText}>{properties.description.text}</Typography>
 							</div>
-							<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
+							<Button color="secondary" disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
 								if (closeWrapper)
 									closeWrapper();
 								mapRef.current.clearHighlighted("default", "data");

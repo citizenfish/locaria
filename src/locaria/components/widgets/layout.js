@@ -265,18 +265,18 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			<div>
 				<div className={classes.grow}>
 					<IntroModal/>
-					<BottomNavigation className={classes.nav} id={"navMain"}>
-
-						<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>} onClick={handleDrawOpen}/>
-						<BottomNavigationAction label="Search" icon={<SearchIcon color="secondary" fontSize="large"/>}
-						                        onClick={() => {toggleSearchWrapper()}}/>
-						<NavProfile/>
-					</BottomNavigation>
 					<SearchDraw  mapRef={mapRef} updateMap={forceMapRefresh} />
 					<RenderDraw/>
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
 					<CategoryDraw></CategoryDraw>
+					<BottomNavigation className={classes.nav} id={"navMain"}>
+
+						<BottomNavigationAction className={classes.NavMenuButton} showLabel={false} icon={<MenuIcon color="icons"/>} onClick={handleDrawOpen}/>
+						<BottomNavigationAction className={classes.NavSearchButton} showLabel={false} icon={<SearchIcon color="contrastIcons" fontSize="large"/>}
+												onClick={() => {toggleSearchWrapper()}}/>
+						<NavProfile/>
+					</BottomNavigation>
 				</div>
 				<div>
 					{displayMap()}
