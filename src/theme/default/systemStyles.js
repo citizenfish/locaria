@@ -112,7 +112,7 @@ export default class UseStyles {
 				}
 			},
 
-			modal: {
+			introModal: {
 				outline: 'none'
 			},
 
@@ -124,7 +124,7 @@ export default class UseStyles {
 				transform: 'translate(-50%, -50%)',
 				maxWidth: 1000,
 				borderRadius: '10px 10px 10px 10px',
-				padding: 0,
+				padding: 10,
 				border: 0,
 				color: `${theme.palette.primary.contrastText}`,
 				outline: 'none'
