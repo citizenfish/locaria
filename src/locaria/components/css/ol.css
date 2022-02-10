@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  background-color: #344955;
+}
+
 .ol-box {
   box-sizing: border-box;
   border-radius: 2px;

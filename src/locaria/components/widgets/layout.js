@@ -1,3 +1,4 @@
+
 import React, {useRef} from 'react';
 
 import {configs} from "themeLocaria";
@@ -197,19 +198,18 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			<div>
 				<div className={classes.grow}>
 					<IntroModal/>
-					<BottomNavigation className={classes.nav} id={"navMain"}>
-
-						<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
-						<BottomNavigationAction label="Search" icon={<SearchIcon color="secondary" fontSize="large"/>}
-						                        onClick={() => {toggleSearchWrapper()}}/>
-						<NavProfile/>
-					</BottomNavigation>
 					<SearchDraw  mapRef={mapRef} updateMap={forceMapRefresh} />
 					<MenuDraw/>
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
 					<CategoryDraw></CategoryDraw>
 					<PageDialog></PageDialog>
+                    <BottomNavigation className={classes.nav} id={"navMain"}>
+						<BottomNavigationAction className={classes.NavMenuButton} showLabel={false} icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
+						<BottomNavigationAction className={classes.NavSearchButton} showLabel={false} icon={<SearchIcon color="contrastIcons" fontSize="large"/>}
+												onClick={() => {toggleSearchWrapper()}}/>
+						<NavProfile/>
+					</BottomNavigation>
 				</div>
 				<div>
 					{displayMap()}

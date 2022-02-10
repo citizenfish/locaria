@@ -21,11 +21,12 @@ const FieldView = ({data}) => {
 				{fields.title ? <FormatField field={fields.title} data={data}></FormatField> : null}
 				{fields.main ? <FormatFields fields={fields.main} data={data}></FormatFields> : null}
 				{fields.extra ?
-					<Accordion className={classes.ReportMainInfoAccordion}>
+					<Accordion elevation={0} className={classes.ReportMainInfoAccordion}>
 						<AccordionSummary
-							expandIcon={<ExpandMoreIcon/>}
+							expandIcon={<ExpandMoreIcon className={classes.ReportMainInfoAccordionSummary}/>}
 							aria-controls="panel1a-content"
 							id="panel1a-header"
+							className={classes.ReportMainInfoAccordionSummary}
 						>
 							<Typography>More</Typography>
 						</AccordionSummary>
@@ -83,12 +84,12 @@ const FormatField = ({field, data}) => {
 		case 'div':
 			if (field.icon) {
 				return (
-					<Container>
-						<Grid container spacing={2}>
-							<Grid item md={2}>
-								<img src={field.icon}/>
+					<Container className={classes.ReportIconRow}>
+						<Grid className={classes.ReportMainInfoGrid} container spacing={2}>
+							<Grid item md={2} className={classes.ReportMainInfoGridItem}>
+								<img src={field.icon} className={classes.ReportInfoIcon}/>
 							</Grid>
-							<Grid item md={10}>
+							<Grid item md={10} className={classes.ReportMainInfoGridItem}>
 								<Typography className={classes.ReportInfoTitle}>{field.name}</Typography>
 								<Typography className={classes.ReportInfoText}>{dataActual}</Typography>
 							</Grid>
@@ -108,7 +109,9 @@ const FormatField = ({field, data}) => {
 
 		case 'linker':
 			return (
+				<div className={classes.ReportLinkButton}>
 					<Linker location={dataActual}>{field.name}</Linker>
+				</div>
 			)
 		case 'function':
 			return dataActual;

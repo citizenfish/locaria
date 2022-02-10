@@ -36,7 +36,7 @@ const Share = () => {
 
 	return (
 		<div>
-			<Button color="secondary" onClick={handleClickOpen} variant="contained" className={classes.ReportShareButton}>
+			<Button disableElevation color="secondary" onClick={handleClickOpen} variant="contained" className={classes.ReportShareButton}>
 				Share
 			</Button>
 			<Dialog

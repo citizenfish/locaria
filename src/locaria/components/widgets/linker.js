@@ -36,8 +36,8 @@ const Linker = ({children,location}) => {
 	};
 
 	return (
-		<div>
-			<Button size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
+		<>
+			<Button className={classes.linkerButton} size="small" color="secondary" onClick={handleClickOpen} variant="outlined">
 				{children||'Visit'}
 			</Button>
 			<Dialog
@@ -71,7 +71,7 @@ const Linker = ({children,location}) => {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</div>
+		</>
 	)
 }
 

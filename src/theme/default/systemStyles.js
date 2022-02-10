@@ -104,11 +104,47 @@ export default class UseStyles {
 				position: 'fixed',
 				zIndex: '150',
 				bottom: '40px',
+				justifyContent: 'space-between !important',
+				padding: '10px 0 !important',
 				[theme.breakpoints.up('md')]: {
 					right: 150
 				},
 				[theme.breakpoints.down('md')]: {
 					right: 'calc(50% - 150px)',
+					zIndex: 1200,
+					width: '100vw',
+					maxWidth: 'unset',
+					position: 'fixed',
+					left: 0,
+					bottom: 0,
+					borderRadius: 0,
+					padding: '0 !important',
+				}
+			},
+			NavMenuButton: {
+				flex: '0 !important',
+				padding: '10px !important',
+			},
+			NavSearchButton: {
+				backgroundColor: `${theme.palette.secondary.main} !important`,
+				position: 'relative',
+				flex: '0 !important',
+				display: 'flex !important',
+				borderRadius: '100px !important',
+				justifyContent: 'center !important',
+				alignItems: 'center !important',
+				padding: '0 !important',
+				height: '56px',
+				width: '56px',
+				minWidth: '56px !important',
+				marginTop: '10px',
+				marginBottom: '10px',
+				[theme.breakpoints.down('md')]: {
+					position: 'fixed !important',
+					left: '50%',
+					transform: 'translate(-50%, -28px)',
+					marginTop: '0px',
+					marginBottom: '0px',
 				}
 			},
 
@@ -196,6 +232,11 @@ export default class UseStyles {
 						left: 0,
 						height: '50%',
 						maxWidth: '100vw',
+						bottom: '56px',
+						borderBottomLeftRadius: '20px',
+						borderBottomRightRadius: '20px',
+						borderTopLeftRadius: '20px',
+						overflow: 'hidden',
 					}
 				},
 				height: '100%'
@@ -230,6 +271,7 @@ export default class UseStyles {
 
 			searchDrawBox: {
 				flex: 1,
+				color: `${theme.palette.primary.contrastText} !important`,
 			},
 
 			searchDrawResultList: {
@@ -240,7 +282,7 @@ export default class UseStyles {
 			},
 
 			searchDrawResults: {
-				backgroundColor: theme.palette.primary.main,
+				backgroundColor: theme.palette.primary.darker,
 				borderTopLeftRadius: '20px',
 				borderTopRightRadius: '20px',
 				flex: 1,
@@ -273,12 +315,15 @@ export default class UseStyles {
 			SearchDrawImage: {
 				width: '128px',
 				height: '128px',
-				marginRight: '20px'
+				marginRight: '10px'
 			},
 
 			SearchDrawNameText: {
 				color: theme.palette.primary.contrastText,
-				fontSize: '0.9rem !important'
+				fontSize: '0.9rem !important',
+				overflow: 'hidden',
+				textOverflow: 'ellipsis',
+				whiteSpace: 'nowrap',
 			},
 
 			SearchDrawDivider: {
@@ -288,7 +333,10 @@ export default class UseStyles {
 
 			SearchDrawShipText: {
 				color: alpha(theme.palette.primary.contrastText, 0.35),
-				fontSize: '0.8rem !important'
+				fontSize: '0.8rem !important',
+				textOverflow: 'ellipsis',
+				whiteSpace: 'nowrap',
+				overflow: 'hidden',
 			},
 
 			SearchDrawWrapper: {
@@ -298,7 +346,7 @@ export default class UseStyles {
 				overflow: 'hidden',
 				height: '128px',
 				marginBottom: '20px',
-				backgroundColor: `${theme.palette.primary.lighter} !important`
+				backgroundColor: `${theme.palette.primary.main} !important`
 			},
 
 			SearchDrawContent: {
@@ -307,26 +355,30 @@ export default class UseStyles {
 				flexDirection: 'column',
 				alignItems: 'flex-start',
 				justifyContent: 'stretch',
-				padding: '10px 10px 10px 0'
+				padding: '10px 10px 10px 0',
+				overflow: 'hidden',
 			},
 			SearchDrawContentSub: {
 				height: 90,
 				paddingLeft: '0px !important',
-				paddingRight: '0px !important'
+				paddingRight: '0px !important',
+				width: '100%',
 			},
 
 			SearchDrawButton: {
-				marginTop: '10px',
+				marginTop: '10px !important',
 				marginRight: '10px',
-				alignSelf: 'stretch'
+				alignSelf: 'stretch',
+				backgroundColor: `${theme.palette.secondary.main} !important`,
+				color: `${theme.palette.secondary.contrastText} !important`,
 			},
 
 			searchDrawAdvanced: {
-				marginBottom: 5
+				marginBottom: 25
 			},
 
 			searchDrawAdvancedButton: {
-				top: 5,
+				padding: 8,
 				position: 'relative'
 			},
 
@@ -366,7 +418,13 @@ export default class UseStyles {
 			mapContainerFull: {
 				position: "relative",
 				width: '100%',
-				height: '98vh'
+				height: '100vh',
+				[theme.breakpoints.down('md')]: {
+					height: 'calc(100vh - 56px)',
+					borderBottomLeftRadius: '20px',
+					borderBottomRightRadius: '20px',
+					overflow: 'hidden',
+				}
 			},
 			map: {
 				width: '100%',
@@ -391,10 +449,9 @@ export default class UseStyles {
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
 					borderTopRightRadius: '20px',
-
 					height: '100%',
 					color: theme.palette.icons.main,
-					backgroundColor: theme.palette.primary.main,
+					backgroundColor: theme.palette.primary.darker,
 					width: 'calc(100vw)',
 					[theme.breakpoints.up('md')]: {
 						maxWidth: leftWidth,
@@ -403,12 +460,15 @@ export default class UseStyles {
 					[theme.breakpoints.down('md')]: {
 						maxWidth: '100vw',
 						left: 0,
-
-
+						bottom: '56px',
+						height: 'calc(100% - 56px)',
+						borderTopRightRadius: '0px',
+						borderBottomLeftRadius: '20px',
+						borderBottomRightRadius: '20px',
+						overflow: 'hidden',
 					}
-				}
+				},
 			},
-
 			viewDrawHeader: {
 				padding: 10,
 				position: 'relative',
@@ -419,7 +479,7 @@ export default class UseStyles {
 
 			viewDrawScroll: {
 				overflowY: 'auto',
-				padding: 10
+				padding: 20
 			},
 
 			viewDrawTitle: {
@@ -431,7 +491,10 @@ export default class UseStyles {
 				position: 'absolute',
 
 			},
-
+            drawHeaderDivider: {
+				borderColor: `${theme.palette.primary.contrastText} !important`,
+				opacity: .26,
+			},
 			pageDialog: {
 				"& .MuiPaper-root": {
 					padding: 10
@@ -470,13 +533,9 @@ export default class UseStyles {
 				}
 			},
 			ReportProfileHeader: {
-
-				backgroundColor: `${theme.palette.primary.lighter} !important`,
-				padding: 10,
-				borderRadius: 20,
+				padding: '0 !important',
 				marginBottom: '10px',
 				overflow: 'hidden'
-
 			},
 			ReportProfileImageContainer: {
 				borderRadius: '10px',
@@ -485,27 +544,26 @@ export default class UseStyles {
 				flexDirection: 'row',
 			},
 			ReportProfileImage: {
-
-				width: '250px',
-				height: '250px',
+				maxWidth: '330px',
+				width: '100%',
 				borderRadius: '10px',
-				margin: '10px 10px 10px 0',
+				[theme.breakpoints.down('sm')]: {
+					maxWidth: 'unset',
+				}
 			},
 			ReportProfileTitle: {
 				fontWeight: 200,
-				fontSize: '1.2rem !important',
+				fontSize: '1.4rem !important',
 				marginTop: '10px !important',
 				marginBottom: '10px !important',
 				width: '100% !important',
-				padding: '5px !important'
 			},
 			ReportProfileText: {
 				fontWeight: 100,
-				padding: 10,
+				padding: 0,
 				color: alpha(theme.palette.primary.contrastText, 0.35),
 				width: '100%',
 				margin: 3
-
 			},
 			ReportMainInfo: {
 				[theme.breakpoints.up('md')]: {
@@ -522,7 +580,7 @@ export default class UseStyles {
 			},
 			ReportMainInfoExtra: {
 				[theme.breakpoints.up('md')]: {
-					paddingLeft: '20px'
+					paddingLeft: 0
 				},
 				[theme.breakpoints.down('md')]: {
 					paddingLeft: 0
@@ -531,12 +589,16 @@ export default class UseStyles {
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
-				margin: 10,
+				margin: '0 0 15px 0 !important',
 				color: alpha(theme.palette.primary.contrastText, 1)
 			},
 			ReportMainInfoAccordion: {
 				backgroundColor: `${theme.palette.primary.lighter} !important`,
-				marginBottom: 10
+				marginBottom: '20px !important',
+				borderRadius: '4px !important',
+			},
+			ReportMainInfoAccordionSummary: {
+				color: `${theme.palette.font1.main} !important`,
 			},
 			ReportMainInfoRow: {
 				display: 'flex',
@@ -544,25 +606,49 @@ export default class UseStyles {
 				justifyContent: 'space-between',
 				marginBottom: 10,
 			},
-
+			ReportMainInfoGrid: {
+				marginTop: '0 !important',
+				alignItems: 'center',
+			},
+			ReportMainInfoGridItem: {
+				paddingTop: '0 !important',
+			},
+			ReportInfoIcon: {
+				filter: 'invert(100%) sepia(100%) saturate(38%) hue-rotate(321deg) brightness(110%) contrast(110%)',
+			},
+			ReportIconRow: {
+				paddingLeft: '0 !important',
+				paddingRight: '0 !important',
+				margin: '5px 0 5px !important'
+			},
 			ReportInfoText: {
-				color: '#AAAAAA',
+				color: alpha(theme.palette.primary.contrastText, 0.35),
 				width: '100%'
 			},
 			ReportInfoTitle: {
 				width: '100%'
+			},
+			ReportLinkButton: {
+				width: 'calc(100% - 16px)',
+				display: 'flex',
+				marginTop: 10,
 			},
 			ReportShareButton: {
 				alignSelf: 'stretch',
 				top: 0,
 				width: "100%"
 			},
+			ReportInfoDivider: {
+				marginTop: '20px !important',
+				borderColor: `${theme.palette.primary.lighter} !important`,
+				opacity: .26,
+			},
 			ReportProfileShip: {
 				display: 'flex',
 				flexDirection: 'column',
 				marginBottom: '10px',
 				width: '97%',
-				backgroundColor: `${theme.palette.primary.lighter} !important`,
+				backgroundColor: `${theme.palette.primary.contrastText} !important`,
 				padding: 10,
 				borderRadius: 20,
 			},
@@ -592,6 +678,9 @@ export default class UseStyles {
 			  Other
 			 */
 
+			linkerButton: {
+				flex: 1,
+			},
 			sectionDesktop: {
 				display: 'none',
 				[theme.breakpoints.up('md')]: {
