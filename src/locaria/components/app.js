@@ -144,7 +144,7 @@ const App = () => {
 							<Route path="/Submit/:category" component={Submit}/>
 							<Route exact path="/:id_token?" component={Home}/>
 
-							<Route component={Error}/>
+							<Route component={Home}/>
 						</Switch>
 				</Router>
 			</LocariaContext.Provider>

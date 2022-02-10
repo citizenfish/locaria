@@ -73,6 +73,10 @@ const FormatField = ({field, data}) => {
 	}
 
 	switch (field.display) {
+		case 'titleFull':
+			return (
+				<Typography className={classes.ReportProfileTitle}>{field.name}: {dataActual}</Typography>
+			)
 		case 'title':
 			return (
 					<Typography className={classes.ReportProfileTitle}>{dataActual}</Typography>

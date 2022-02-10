@@ -11,6 +11,7 @@ import MapIcon from '@mui/icons-material/Map';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import InfoIcon from '@mui/icons-material/Info';
 
 const Map = forwardRef((props, ref) => {
 
@@ -31,8 +32,7 @@ const Map = forwardRef((props, ref) => {
 			"name": "xyz",
 			"type": "xyz",
 			"url": configs.mapXYZ,
-			"active": true,
-			"attributions": configs.mapAttribution
+			"active": true
 
 		});
 		ol.addLayer({
@@ -161,6 +161,13 @@ const Map = forwardRef((props, ref) => {
 					tooltipTitle={'Zoom Out'}
 					onClick={mapZoomOut}
 				/>
+				<SpeedDialAction
+					key={'attr'}
+					icon={<InfoIcon/>}
+					tooltipTitle={configs.mapAttribution}
+					tooltipOpen
+				/>
+
 
 			</SpeedDial>
 		</div>
