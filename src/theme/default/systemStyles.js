@@ -170,14 +170,24 @@ export default class UseStyles {
 				left: '50%',
 				transform: 'translate(-50%, -50%)',
 				maxWidth: 1000,
-				borderRadius: '10px 10px 10px 10px',
-				padding: 10,
+				borderRadius: '20px',
+				padding: 20,
+				overflow: 'hidden',
 				border: 0,
 				color: `${theme.palette.primary.contrastText}`,
 				outline: 'none'
-
 			},
-
+			navIntroInfo: {
+				borderRadius: '10px',
+				overflow: 'hidden',
+				boxShadow: '4px 8px 11px -7px rgb(0 0 0 / 31%)',
+			},
+			navIntroActions: {
+				paddingTop: 10,
+			},
+			preventShowCheckbox: {
+				marginBottom: 10,
+			},
 			/*
 				Profile speed dial on nav
 
