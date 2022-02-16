@@ -1,0 +1,12 @@
+{
+  "buildDir": "serverless",
+  "nodes":[
+	{
+	  "dir": "vpc",
+	  "outputs": {
+		"VPCREF": "!Ref VPC"
+	  }
+	}
+  ]
+}
+

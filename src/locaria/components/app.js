@@ -4,6 +4,7 @@ import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 import Home from "components/home";
 import Submit from 'components/submit';
 import Error from 'components/error';
+import Maintenance from 'components/maintenance';
 import AdminHome from "components/admin/adminHome";
 import AdminNew from "components/admin/adminNew";
 import AdminView from "components/admin/AdminView";
@@ -127,11 +128,24 @@ const App = () => {
 		}
 	}, []);
 
+	if(configs.siteMaintenance===true) {
+		return (
+			<Provider store={store}>
+				<LocariaContext.Provider value={userSettings}>
+					<Router>
+						<Switch>
+							<Route component={Maintenance}/>
+						</Switch>
+					</Router>
+				</LocariaContext.Provider>
+			</Provider>
+		)
+	} else {
 
-	return (
-		<Provider store={store}>
-			<LocariaContext.Provider value={userSettings}>
-				<Router>
+		return (
+			<Provider store={store}>
+				<LocariaContext.Provider value={userSettings}>
+					<Router>
 						<Switch>
 							<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
 							<AdminRoute path="/AdminNew/" user={user} component={AdminNew}/>
@@ -146,10 +160,11 @@ const App = () => {
 
 							<Route component={Home}/>
 						</Switch>
-				</Router>
-			</LocariaContext.Provider>
-		</Provider>
-	);
+					</Router>
+				</LocariaContext.Provider>
+			</Provider>
+		);
+	}
 };
 
 export default App;

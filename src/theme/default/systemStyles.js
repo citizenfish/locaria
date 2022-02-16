@@ -40,6 +40,17 @@ export default class UseStyles {
 				flexGrow: 1,
 			},
 
+			/*
+				Maintenance
+			 */
+
+			maintenance: {
+				width: "95vw",
+				height: "95vh",
+				margin: "30px",
+				padding: "10px"
+			},
+
 
 			/*
 			  Possibly legacy
