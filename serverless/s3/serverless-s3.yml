@@ -1,0 +1,565 @@
+service: locaria-api
+projectDir: ../../
+provider:
+  name: aws
+  profile: ${file(../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../locaria.json):${self:custom.stage}.region}
+
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+resources:
+  Resources:
+    # Website
+    StaticSite:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: locaria-${self:custom.stage}
+        WebsiteConfiguration:
+          IndexDocument: index.html
+    DataImportBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: BucketOwnerRead
+        BucketName: locaria-${self:custom.stage}-data
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - '*'
+              AllowedMethods: ["GET","POST","PUT" ]
+              AllowedOrigins:
+                - '*'
+              ExposedHeaders: []
+              Id: dataCORS
+              MaxAge: 3800
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: BucketOwnerRead
+        BucketName: ${file(../../locaria.json):${self:custom.stage}.imageDomain}
+    WebsiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { Ref: StaticSite }
+        PolicyDocument:
+          Statement:
+            - Action:
+                - "s3:GetObject"
+              Effect: Allow
+              Resource: { "Fn::Join": [ "", [ "arn:aws:s3:::", { Ref: StaticSite }, "/*" ] ] }
+              Principal:
+                AWS: { "Fn::Join": [ " ", [ "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity", { Ref: WebsiteOriginAccessIdentity } ] ] }
+    WebsiteOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: "CloudFrontOriginAccessIdentity for ${self:service}-${self:provider.stage}"
+    ImagesDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: ImageBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
+          CustomErrorResponses:
+            - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
+              ErrorCachingMinTTL: 1
+              ResponseCode: 200
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          Aliases:
+            - ${file(../../locaria.json):${self:custom.stage}.imageDomain}
+          ViewerCertificate:
+            AcmCertificateArn: ${file(../../locaria.json):${self:custom.stage}.certImagesARN}
+            MinimumProtocolVersion: TLSv1
+            SslSupportMethod: sni-only
+          Origins:
+            - Id: 'ImageBucketOrigin'
+              DomainName: { 'Fn::GetAtt': [ ImagesBucket, DomainName ] }
+              S3OriginConfig:
+                OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
+    WebsiteDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: WebsiteBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
+          CustomErrorResponses:
+            - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
+              ErrorCachingMinTTL: 1
+              ResponseCode: 200
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          Aliases:
+            - ${file(../../locaria.json):${self:custom.stage}.domain}
+          ViewerCertificate:
+            AcmCertificateArn: ${file(../../locaria.json):${self:custom.stage}.certARN}
+            MinimumProtocolVersion: TLSv1
+            SslSupportMethod: sni-only
+          Origins:
+            - Id: 'WebsiteBucketOrigin'
+              OriginPath: /main
+              DomainName: { 'Fn::GetAtt': [ StaticSite, DomainName ] }
+              S3OriginConfig:
+                OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
+    #    WebsiteDNSName:
+    #      Type: AWS::Route53::RecordSetGroup
+    #      Properties:
+    #        HostedZoneId: 'Z06171983OLSUA1GYRUP4'
+    #        RecordSets:
+    #          - Name: ${file(../../locaria.json):${self:custom.stage}.domain}
+    #            Type: A
+    #            AliasTarget:
+    #              HostedZoneId: Z2FDTNDATAQYW2
+    #              DNSName: !GetAtt [ WebsiteDistribution, DomainName ]
+    #              EvaluateTargetHealth: false
+    # VPC
+    VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: "10.0.0.0/16"
+    IP:
+      Type: AWS::EC2::EIP
+      Properties:
+        Domain: vpc
+    InternetGateway:
+      Type: AWS::EC2::InternetGateway
+    VPCGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId:
+          Ref: VPC
+        InternetGatewayId:
+          Ref: InternetGateway
+    NatGateway:
+      Type: AWS::EC2::NatGateway
+      Properties:
+        AllocationId:
+          Fn::GetAtt:
+            - IP
+            - AllocationId
+        SubnetId:
+          Ref: PublicSubnetA
+    PrivateSubnetA:
+      DependsOn: VPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: VPC
+        AvailabilityZone: ${self:provider.region}a
+        CidrBlock: "10.0.1.0/24"
+        Tags:
+          - Key: Name
+            Value: PrivateSubnetA
+    PrivateSubnetB:
+      DependsOn: VPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: VPC
+        AvailabilityZone: ${self:provider.region}b
+        CidrBlock: "10.0.3.0/24"
+        Tags:
+          - Key: Name
+            Value: PrivateSubnetB
+    PublicSubnetA:
+      DependsOn: VPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: VPC
+        AvailabilityZone: ${self:provider.region}a
+        CidrBlock: "10.0.2.0/24"
+        Tags:
+          - Key: Name
+            Value: PublicSubnetA
+    PrivateRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: VPC
+    PrivateRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId:
+          Ref: PrivateRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        NatGatewayId:
+          Ref: NatGateway
+    PublicRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: VPC
+    PublicRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId:
+          Ref: PublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: InternetGateway
+    SubnetRouteTableAssociationLambdaPrivateA:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PrivateSubnetA
+        RouteTableId:
+          Ref: PrivateRouteTable
+    SubnetRouteTableAssociationLambdaPrivateB:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PrivateSubnetB
+        RouteTableId:
+          Ref: PrivateRouteTable
+    SubnetRouteTableAssociationLambdaPublicA:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: PublicSubnetA
+        RouteTableId:
+          Ref: PublicRouteTable
+    ServerlessSecurityGroup:
+      DependsOn: VPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: SecurityGroup for Serverless Functions
+        VpcId:
+          Ref: VPC
+    ServerlessStorageSecurityGroup:
+      DependsOn: VPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for Redis Cluster
+        VpcId:
+          Ref: VPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '6379'
+            ToPort: '6379'
+            SourceSecurityGroupId:
+              Ref: ServerlessSecurityGroup
+    # Make some security for VPN
+    VPNSecurityGroup:
+      DependsOn: VPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for VPN
+        VpcId:
+          Ref: VPC
+        SecurityGroupIngress:
+          - IpProtocol: UDP
+            FromPort: '443'
+            ToPort: '443'
+            CidrIp: 0.0.0.0/0
+    ServerlessCacheSubnetGroup:
+      Type: AWS::ElastiCache::SubnetGroup
+      Properties:
+        Description: "Cache Subnet Group"
+        SubnetIds:
+          - Ref: PrivateSubnetA
+    ElasticCacheCluster:
+      DependsOn: ServerlessStorageSecurityGroup
+      Type: AWS::ElastiCache::CacheCluster
+      Properties:
+        AutoMinorVersionUpgrade: true
+        Engine: redis
+        CacheNodeType: cache.t2.small
+        NumCacheNodes: 1
+        VpcSecurityGroupIds:
+          - "Fn::GetAtt": ServerlessStorageSecurityGroup.GroupId
+        CacheSubnetGroupName:
+          Ref: ServerlessCacheSubnetGroup
+    FarGateSecurityGroup:
+      DependsOn: VPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for fargate
+        VpcId:
+          Ref: VPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '0'
+            ToPort: '5000'
+            CidrIp: 10.0.0.0/16
+          - IpProtocol: tcp
+            FromPort: '0'
+            ToPort: '5000'
+            CidrIp: 10.1.0.0/22
+    # Aurora
+    # 'lambda:InvokeFunction'
+    AuroraLambdaRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - rds.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: "lambda:InvokeFunction"
+                  Resource: '*'
+        Path: "/"
+    AuroraStorageSecurityGroup:
+      DependsOn: VPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for Aurora
+        VpcId:
+          Ref: VPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '3306'
+            ToPort: '3306'
+            CidrIp: 10.0.0.0/16
+          - IpProtocol: tcp
+            FromPort: '3306'
+            ToPort: '3306'
+            CidrIp: 10.1.0.0/22
+    AuroraSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupDescription: "Aurora Subnet Group"
+        SubnetIds:
+          - Ref: PrivateSubnetA
+          - Ref: PrivateSubnetB
+    AuroraRDSClusterParameter:
+      Type: AWS::RDS::DBClusterParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: ${file(../../locaria.json):${self:custom.stage}.auroraFamily}
+        Parameters:
+          max_connections: 5000
+    AuroraRDSInstanceParameter:
+      Type: AWS::RDS::DBParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: ${file(../../locaria.json):${self:custom.stage}.auroraFamily}
+        Parameters:
+          max_connections: 5000
+    AuroraRDSCluster:
+      Type: "AWS::RDS::DBCluster"
+      Properties:
+        MasterUsername: ${file(../../locaria.json):${self:custom.stage}.auroraMasterUser}
+        MasterUserPassword: ${file(../../locaria.json):${self:custom.stage}.auroraMasterPass}
+        DBSubnetGroupName:
+          Ref: AuroraSubnetGroup
+        Engine: aurora-postgresql
+        EngineMode: provisioned
+        EngineVersion: ${file(../../locaria.json):${self:custom.stage}.auroraVersion}
+        DatabaseName: ${file(../../locaria.json):${self:custom.stage}.auroraDatabaseName}
+        BackupRetentionPeriod: 3
+        DBClusterParameterGroupName:
+          Ref: AuroraRDSClusterParameter
+        VpcSecurityGroupIds:
+          - Fn::GetAtt: AuroraStorageSecurityGroup.GroupId
+    AuroraRDSInstance:
+      Type: "AWS::RDS::DBInstance"
+      Properties:
+        DBSubnetGroupName:
+          Ref: AuroraSubnetGroup
+        Engine: aurora-postgresql
+        EngineVersion: ${file(../../locaria.json):${self:custom.stage}.auroraVersion}
+        DBInstanceClass: "db.r5.large"
+        PubliclyAccessible: false
+        DBParameterGroupName:
+          Ref: AuroraRDSInstanceParameter
+        DBClusterIdentifier:
+          Ref: AuroraRDSCluster
+    #User pools Cognito
+    CognitoUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        MfaConfiguration: OFF
+        UserPoolName: locaria-pool
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: False
+            RequireNumbers: True
+            RequireSymbols: False
+            RequireUppercase: True
+    CognitoUserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: locaria-pool-client
+        GenerateSecret: False
+        UserPoolId:
+          Ref: CognitoUserPool
+        CallbackURLs:
+          - http://localhost:8080/
+          - http://demo1.nautoguide.com/
+        AllowedOAuthFlows:
+          - code
+          - implicit
+        SupportedIdentityProviders:
+          - COGNITO
+        AllowedOAuthScopes:
+          - openid
+          - email
+          - phone
+          - profile
+          - aws.cognito.signin.user.admin
+        AllowedOAuthFlowsUserPoolClient: true
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        CustomDomainConfig:
+          CertificateArn: ${file(../../locaria.json):${self:custom.stage}.cognitoCertARN}
+        Domain: ${file(../../locaria.json):${self:custom.stage}.cognitoDomainName}
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoUserGroupAdmin:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Admins
+        GroupName: Admins
+        Precedence: 0
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoUserGroupLoader:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Loader
+        GroupName: Loader
+        Precedence: 1
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoUserGroupModerator:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Moderator
+        GroupName: Moderator
+        Precedence: 2
+        UserPoolId:
+          Ref: CognitoUserPool
+    ECRLocariaRepo:
+      Type: AWS::ECR::Repository
+      Properties:
+        RepositoryName: "locaria-repo"
+        ImageScanningConfiguration:
+          ScanOnPush: "true"
+    ECSLocariaCluster:
+      Type: 'AWS::ECS::Cluster'
+      Properties:
+        ClusterName: "locaria-cluster"
+  Outputs:
+    postgresHost:
+      Value: { "Fn::GetAtt": [ AuroraRDSInstance, "Endpoint.Address" ] }
+    postgresPort:
+      Value: { "Fn::GetAtt": [ AuroraRDSInstance , Endpoint.Port ] }
+    stage:
+      Value: ${self:custom.stage}
+    cognitoPoolId:
+      Value: !Ref CognitoUserPool
+    poolClientId:
+      Value: !Ref CognitoUserPoolClient
+    cfdist:
+      Value: !Ref WebsiteDistribution
+    ecrRepoURI:
+      Value: !GetAtt ECRLocariaRepo.RepositoryUri
+
+
+functions:
+  PUT:
+    handler: functions/incoming.run
+    events:
+      - s3:
+          bucket: ${file(../../locaria.json):${self:custom.stage}.domain}-data
+          event: s3:ObjectCreated:Put
+          rules:
+            - prefix: "incoming/${self:custom.stage}"
+          existing: true
+
+  api:
+    handler: functions/api.run
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup,GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+        - Ref: PrivateSubnetB
+    events:
+      - http:
+          path: /
+          method: POST
+          cors: ${self:custom.cors}
+      - http:
+          path: /{proxy+}
+          method: GET
+          cors: ${self:custom.cors}
+
+  connectionHandler:
+    handler: functions/ws-api.run
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup,GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+        - Ref: PrivateSubnetB
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  defaultHandler:
+    handler: functions/ws-api.run
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup,GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+        - Ref: PrivateSubnetB
+    events:
+      - websocket:
+          route: $default
+  router:
+    handler: functions/router.run
+plugins:
+  - serverless-domain-manager
+  - serverless-export-env
+  - serverless-stack-output

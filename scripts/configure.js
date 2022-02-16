@@ -133,9 +133,9 @@ function sendSQLFiles(stage, configFile, callBack) {
 	let failed = 0;
 	let fileList = [];
 	const deployConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
-	deployConfig.subs={};
-	if(deployConfig.substitutions) {
-		if(fs.existsSync(deployConfig.substitutions)) {
+	deployConfig.subs = {};
+	if (deployConfig.substitutions) {
+		if (fs.existsSync(deployConfig.substitutions)) {
 			deployConfig.subs = JSON.parse(fs.readFileSync(deployConfig.substitutions, 'utf8'));
 		} else {
 			console.log(`substitutions file: ${deployConfig.substitutions} not found`);
@@ -143,7 +143,7 @@ function sendSQLFiles(stage, configFile, callBack) {
 			return;
 		}
 	}
-	deployConfig.config=configs.custom[stage];
+	deployConfig.config = configs.custom[stage];
 	client.connect((err) => {
 		if (err) {
 			console.error("DATABASE CONNECTION FAILURE: ", err.stack);
@@ -355,10 +355,48 @@ function deployWS(stage) {
 	});
 }
 
+function serverlessMakeVPC(stage) {
+	console.log('---VPC RUNNERS');
+
+		executeWithCatch(`serverless --stage ${stage} `, "serverless/vpc", () => {
+			deploySystemMain(stage);
+		}, () => {
+			deploySystemMain(stage);
+		});
+}
+
 function deployAPI(stage) {
-	const options = {
-		cwd: "api/"
-	};
+
+	let mode = configs['custom'][stage].mode;
+
+	readline.question(`Deploy ${stage} in mode ${mode}? [y/n]`, (cmd) => {
+		if (cmd === 'y') {
+			executeWithCatch('npm install', "api/", () => {
+
+				if (mode === 'multi') {
+					serverlessMakeVPC(stage);
+					//deploySystemMain(stage);
+
+				} else {
+					executeWithCatch(`sls create_domain --stage ${stage} --file serverless-single.yml`, "api/", () => {
+						deploySystemMain(stage);
+					}, () => {
+						deploySystemMain(stage);
+
+					})
+				}
+
+
+			}, () => {
+				deploySystemMain(stage);
+			});
+		} else {
+			console.log('Aborted');
+		}
+	});
+
+	return;
+
 	console.log('#npm install')
 	exec(`npm install`, options, (err, stdout, stderr) => {
 		if (err) {
@@ -368,11 +406,11 @@ function deployAPI(stage) {
 
 		} else {
 			console.log(stdout);
-			const cmdLine = `sls create_domain --stage ${stage}`;
+			const cmdLine = `sls create_domain --stage ${stage} --file serverless-single.yml`;
 			console.log(`#${cmdLine}`);
 			exec(cmdLine, options, (err, stdout, stderr) => {
 				console.log(stdout);
-				const cmdLine = `serverless deploy --stage ${stage}`;
+				const cmdLine = `serverless deploy --stage ${stage} --file serverless-single.yml`;
 				console.log(`#${cmdLine}`);
 				exec(cmdLine, options, (err, stdout, stderr) => {
 					console.log(stdout);
@@ -388,9 +426,9 @@ function deployAPI(stage) {
 	});
 }
 
-function executeWithCatch(cmd, success, fail, options) {
+function executeWithCatch(cmd, cwd, success, fail, options) {
 	options = Object.assign({
-		cwd: "./"
+		cwd: cwd
 	}, options);
 	console.log(`#${cmd}`);
 	exec(cmd, options, (err, stdout, stderr) => {
@@ -414,12 +452,12 @@ function deployWEB(stage) {
 	readline.question(`Path to use [${path}]?`, (cmd) => {
 		if (cmd)
 			path = cmd;
-		let dist=configs['custom'][stage].cfdist;
-		if(configs['custom'][stage].sites&&configs['custom'][stage].sites[path])
-			dist=configs['custom'][stage].sites[path];
-		executeWithCatch('webpack --config webpack.config.js', () => {
+		let dist = configs['custom'][stage].cfdist;
+		if (configs['custom'][stage].sites && configs['custom'][stage].sites[path])
+			dist = configs['custom'][stage].sites[path];
+		executeWithCatch('webpack --config webpack.config.js', "./", () => {
 			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
-			executeWithCatch(cmdLine, () => {
+			executeWithCatch(cmdLine, "./", () => {
 				deploySystemMain(stage);
 			}, () => {
 				deploySystemMain(stage);
@@ -479,6 +517,13 @@ const configQuestions = [
 		stage: true
 	},
 	{
+		details: "Deployment mode to use single|multi. Multi allows multiple sites per environment",
+		name: "mode",
+		text: "Deployment mide",
+		default: "single",
+		config: "custom"
+	},
+	{
 		details: "Which theme to use by default",
 		name: "theme",
 		text: "Theme name",
@@ -501,16 +546,15 @@ const configQuestions = [
 	},
 
 	{name: "region", text: "AWS region", default: "eu-west-1", config: "custom"},
-	{name: "cron", text: "Cron string to use for scraper", default: "cron(0/10 * ? * MON-FRI *)", config: "custom"},
-	{name: "domain", text: "Domain name to use for website", default: "api.vialocaria.co.uk", config: "custom"},
+	{name: "domain", text: "Domain name to use for website", default: "default.locaria.org", config: "custom"},
 	{
 		name: "imageDomain",
 		text: "Domain name to use for image hosting",
-		default: "images.vialocaria.co.uk",
+		default: "images.locaria.org",
 		config: "custom"
 	},
-	{name: "restdomain", text: "Domain name to use for rest api", default: "api.vialocaria.co.uk", config: "custom"},
-	{name: "wsdomain", text: "Domain name to use for websocket", default: "ws.vialocaria.co.uk", config: "custom"},
+	{name: "restdomain", text: "Domain name to use for rest api", default: "rest.locaria.org", config: "custom"},
+	{name: "wsdomain", text: "Domain name to use for websocket", default: "ws.locaria.org", config: "custom"},
 	{name: "certARN", text: "AWS cert ARN", default: "arn:aws:acm:us-east-1:xxxxxxxxxxxxxxxx", config: "custom"},
 	{
 		name: "certImagesARN",

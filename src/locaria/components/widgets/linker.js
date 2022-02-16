@@ -56,7 +56,7 @@ const Linker = ({children,location}) => {
 						<Grid container className={classes.root} spacing={2}>
 							<Grid item xs={12}>
 								<FormControl fullWidth>
-									<TextField id="outlined-basic" label="Link" variant="outlined" value={location} />
+									<TextField id="outlined-basic" variant="outlined" value={location} />
 								</FormControl>
 							</Grid>
 						</Grid>

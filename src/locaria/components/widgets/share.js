@@ -58,7 +58,7 @@ const Share = () => {
 						<Grid container className={classes.root} spacing={2}>
 							<Grid item xs={12}>
 								<FormControl fullWidth>
-									<TextField id="outlined-basic" label="Link" variant="outlined"
+									<TextField id="outlined-basic" variant="outlined"
 									           value={window.location.href} className={classes.dialogInput}/>
 								</FormControl>
 							</Grid>

@@ -206,9 +206,9 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 					<PageDialog></PageDialog>
                     <BottomNavigation className={classes.nav} id={"navMain"}>
 						<BottomNavigationAction className={classes.NavMenuButton} showLabel={false} icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
-						<BottomNavigationAction className={classes.NavSearchButton} showLabel={false} icon={<SearchIcon color="contrastIcons" fontSize="large"/>}
+	                    <BottomNavigationAction className={classes.NavSearchButton} showLabel={false} icon={<SearchIcon color="contrastIcons" fontSize="large"/>}
 												onClick={() => {toggleSearchWrapper()}}/>
-						<NavProfile/>
+	                    <NavProfile/>
 					</BottomNavigation>
 				</div>
 				<div>
