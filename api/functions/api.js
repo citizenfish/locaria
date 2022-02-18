@@ -12,6 +12,7 @@ let client = null;
 
 module.exports.run = (event, context, callback) => {
 
+
 	const conn = `pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
 
 	//let conn = process.env.postgres;

@@ -33,7 +33,7 @@ for f in files_to_process["files"]:
         print(f"Constructed filename {f['attributes']['path']}")
 
     # TODO make sure file exists in s3
-    print(f['attributes']['file_type'])
+    #print(f['attributes']['file_type'])
 
     update_file_status(db,schema,f['id'],{'status': 'FARGATE_PROCESSING', 'message' : f"Loading {f['attributes']['path'] if 'path' in f['attributes'] else f['attributes']['url']} to {f['table_name']}"})
 
@@ -42,7 +42,7 @@ for f in files_to_process["files"]:
                 result = process_file_csv(db,f)
         elif f['attributes']['file_type'] in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel.sheet.binary.macroEnabled.12','application/vnd.ms-excel', 'application/vnd.ms-excel.sheet.macroEnabled.12']:
                 result = process_file_xls(db,f)
-        elif f['attributes']['file_type'] in ['application/json']:
+        elif f['attributes']['file_type'] in ['json']:
                 result = process_file_json(db,f)
         elif f['attributes']['file_type'] == 'geopackage':
                 result = process_file_geopackage(db,f)

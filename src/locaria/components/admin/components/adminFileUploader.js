@@ -85,7 +85,7 @@ export default function AdminFileUploader(props) {
                              fileProgress == 0 && <Button variant="contained"
                                                           onClick={e => fileInput.current && fileInput.current.click() }
                                                           component="span">
-                                 Upload
+                                 Upload File
                              </Button>
                          }
                          { fileProgress > 0 && <Button variant="contained">Uploading ..</Button> }
