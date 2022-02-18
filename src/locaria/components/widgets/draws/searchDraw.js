@@ -158,6 +158,9 @@ const SearchDraw = forwardRef((props, ref) => {
 				</div>
 				<Divider/>
 				<div className={classes.searchDrawSearch}>
+					<MenuIcon color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
+						dispatch(openCategoryDraw());
+					}}/>
 					<InputBase
 						className={classes.searchDrawBox}
 						id="mySearch"
@@ -171,16 +174,15 @@ const SearchDraw = forwardRef((props, ref) => {
 						<SearchIcon className={classes.icons}  />
 					</IconButton>
 				</div>
-				<Container className={classes.searchDrawAdvanced}>
-					<MenuIcon color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
-						dispatch(openCategoryDraw());
-					}}/>
-					{categories.map((category) => (
+				{categories.length > 0 &&
+					<Container className={classes.searchDrawAdvanced}>
+						{categories.map((category) => (
 							<Chip label={category} onDelete={() => {
 								dispatch(deleteSearchCategory(category));
 							}}/>
 						))}
-				</Container>
+					</Container>
+				}
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>

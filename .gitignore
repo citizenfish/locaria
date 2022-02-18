@@ -105,3 +105,4 @@ typings/
 src/theme/builder
 src/theme/nmrn
 api/stack.json
+serverless/build

@@ -183,8 +183,7 @@ const Nav = () => {
 		<div className={classes.grow}>
 			<IntroModal/>
 			<BottomNavigation className={classes.nav} id={"navMain"}>
-
-				<BottomNavigationAction label="Menu" icon={<MenuIcon color="icons"/>}  onClick={handleDrawOpen}/>
+				<BottomNavigationAction className={classes.NavMenuButton} label="Menu" icon={<MenuIcon color="icons"/>}  onClick={handleDrawOpen}/>
 				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>} onClick={toggleSearchWrapper}/>
 				<NavProfile/>
 			</BottomNavigation>
