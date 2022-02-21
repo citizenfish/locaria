@@ -1,0 +1,137 @@
+service: locaria-s3
+projectDir: ../../../
+provider:
+  name: aws
+  profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../../locaria.json):${self:custom.stage}.region}
+
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+resources:
+  Resources:
+    # Website
+    StaticSite:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: locaria-${self:custom.stage}
+        WebsiteConfiguration:
+          IndexDocument: index.html
+    DataImportBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: BucketOwnerRead
+        BucketName: locaria-${self:custom.stage}-data
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - '*'
+              AllowedMethods: ["GET","POST","PUT" ]
+              AllowedOrigins:
+                - '*'
+              ExposedHeaders: []
+              Id: dataCORS
+              MaxAge: 3800
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: BucketOwnerRead
+        BucketName: locaria-${self:custom.stage}-images
+    WebsiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { Ref: StaticSite }
+        PolicyDocument:
+          Statement:
+            - Action:
+                - "s3:GetObject"
+              Effect: Allow
+              Resource: { "Fn::Join": [ "", [ "arn:aws:s3:::", { Ref: StaticSite }, "/*" ] ] }
+              Principal:
+                AWS: { "Fn::Join": [ " ", [ "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity", { Ref: WebsiteOriginAccessIdentity } ] ] }
+    WebsiteOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: "CloudFrontOriginAccessIdentity for ${self:service}-${self:provider.stage}"
+    ImagesDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: ImageBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
+          CustomErrorResponses:
+            - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
+              ErrorCachingMinTTL: 1
+              ResponseCode: 200
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          Aliases:
+            - ${file(../../../locaria.json):${self:custom.stage}.imageDomain}
+          ViewerCertificate:
+            AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.certImagesARN}
+            MinimumProtocolVersion: TLSv1
+            SslSupportMethod: sni-only
+          Origins:
+            - Id: 'ImageBucketOrigin'
+              DomainName: { 'Fn::GetAtt': [ ImagesBucket, DomainName ] }
+              S3OriginConfig:
+                OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
+    WebsiteDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: WebsiteBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
+          CustomErrorResponses:
+            - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
+              ErrorCachingMinTTL: 1
+              ResponseCode: 200
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          Aliases:
+            - ${file(../../../locaria.json):${self:custom.stage}.domain}
+          ViewerCertificate:
+            AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.certARN}
+            MinimumProtocolVersion: TLSv1
+            SslSupportMethod: sni-only
+          Origins:
+            - Id: 'WebsiteBucketOrigin'
+              OriginPath: /main
+              DomainName: { 'Fn::GetAtt': [ StaticSite, DomainName ] }
+              S3OriginConfig:
+                OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
+
+plugins:
+  - serverless-stack-output
