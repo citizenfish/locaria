@@ -14,9 +14,10 @@ const configJson = require(config);
 
 const main = () => {
 	const buildDir=`${configJson.buildDir}/build`;
-	const buildOutput=`${configJson.buildDir}/outputs.json`;
+	const buildOutput=`${configJson.buildDir}/outputs/outputs.json`;
+	const buildOutputSite=`${configJson.buildDir}/outputs/outputs-${site}.json`;
 	makeBuildDir(buildDir);
-	resetOutputs(buildOutput);
+	resetOutputs([buildOutput,buildOutputSite]);
 	let itemsArray=items.split(",");
 
 	for(let n in configJson.nodes) {
@@ -38,7 +39,10 @@ const main = () => {
 			}
 			npmInstall(buildDir);
 			deployNode(buildDir);
-			mergeOutputs(buildOutput, buildDir);
+			if(configJson.nodes[n].outputsSitePrefix)
+				mergeOutputs(buildOutputSite, buildDir);
+			else
+				mergeOutputs(buildOutput, buildDir);
 		} else {
 			console.log(`skipping ${configJson.nodes[n].dir}`);
 		}
@@ -46,11 +50,13 @@ const main = () => {
 
 }
 
-const resetOutputs = (file,kill=false) => {
-	if(fs.existsSync(file)!==true||kill===true) {
-		console.log(`Resetting outputs file ${file}`);
-		const fileData = {"VERSION": "0.1"};
-		fs.writeFileSync(file, JSON.stringify(fileData));
+const resetOutputs = (files,kill=false) => {
+	for(let f in files) {
+		if (fs.existsSync(files[f]) !== true || kill === true) {
+			console.log(`Resetting outputs file ${files[f]}`);
+			const fileData = {"VERSION": "0.1"};
+			fs.writeFileSync(files[f], JSON.stringify(fileData));
+		}
 	}
 }
 
