@@ -5,7 +5,6 @@ DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
     log_var BOOLEAN DEFAULT TRUE;
     ret_var JSONB;
-    logid_var BIGINT;
     version_var TEXT DEFAULT '0.2';
 BEGIN
 
@@ -71,10 +70,11 @@ BEGIN
 
 EXCEPTION WHEN OTHERS THEN
 
+    RAISE NOTICE 'ERROR %',SQLERRM;
 
     RETURN jsonb_build_object('route',           'public_api',
                              'error',           'request could not be completed',
-                             'response_code',   600) ||log(parameters,SQLERRM);
+                             'response_code',   600) ||locaria_core.log(parameters,SQLERRM);
 
 END;
 $$ LANGUAGE PLPGSQL;
