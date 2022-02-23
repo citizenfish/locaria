@@ -41,10 +41,10 @@ export default function AdminFileUploader(props) {
      }
 
     useEffect( () => {
+        console.log("REGISTER addFile handler")
         window.websocket.registerQueue("addFile", function (json) {
 
             let url = json.packet.url
-
             let config = {
                 onUploadProgress: function(progressEvent) {
                     let completed = Math.round( (progressEvent.loaded * 100) / progressEvent.total )
@@ -85,7 +85,7 @@ export default function AdminFileUploader(props) {
                              fileProgress == 0 && <Button variant="contained"
                                                           onClick={e => fileInput.current && fileInput.current.click() }
                                                           component="span">
-                                 Upload
+                                 Upload File
                              </Button>
                          }
                          { fileProgress > 0 && <Button variant="contained">Uploading ..</Button> }

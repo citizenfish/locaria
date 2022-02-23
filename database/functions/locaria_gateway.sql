@@ -43,6 +43,9 @@ BEGIN
          WHEN parameters->>'method' IN ('report') THEN
             ret_var = run_report(parameters);
 
+         WHEN parameters->>'method' IN ('get_parameters') THEN
+            ret_var = get_parameters(parameters, 'external');
+
          ELSE
             RETURN json_build_object('error', 'unsupported method');
     END CASE;

@@ -19,7 +19,6 @@ $$
     BEGIN
 
 
-
     EXECUTE query_var INTO table_var USING COALESCE(parameters->>'schema', 'locaria_uploads'), parameters->>'table', COALESCE(parameters->>'width', '10');
 
     query_var = $SQL$
@@ -34,7 +33,7 @@ $$
     EXECUTE format(query_var, COALESCE(parameters->>'schema', 'locaria_uploads'), parameters->>'table')
     INTO data_var
     USING COALESCE(parameters->>'limit', '100')::INTEGER,
-          COALESCE(parameters->>'offset', '0')::INTEGER
+          COALESCE(parameters->>'offset', '0')::INTEGER;
 
     RETURN jsonb_build_object('table', table_var, 'data', 'data_var');
 

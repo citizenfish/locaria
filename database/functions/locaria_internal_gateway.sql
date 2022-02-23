@@ -68,6 +68,9 @@ BEGIN
         WHEN parameters->>'method' IN ('update_moderation_status') THEN
             ret_var = update_moderation_status(parameters);
 
+        WHEN parameters->>'method' IN ('get_parameters') THEN
+            ret_var = get_parameters(parameters);
+
         ELSE
             RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');
         END CASE;

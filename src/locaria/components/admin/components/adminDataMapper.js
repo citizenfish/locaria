@@ -25,10 +25,10 @@ export default function AdminDataMapper(props) {
     const [category,setCategory] = useState('')
     const [cookies, setCookies] = useCookies(['location'])
     const [dataOffset,setDataOffset] = useState(0)
-    const [titleField, setTitleField] = useState('')
-    const [textField, setTextField] = useState('')
-    const [linkField, setLinkField] = useState('')
-    const [geocoder,setGeocoder] = useState('')
+    const [titleField, setTitleField] = useState('name')
+    const [textField, setTextField] = useState('description')
+    const [linkField, setLinkField] = useState('url')
+    const [geocoder,setGeocoder] = useState('postcode')
     const [xField,setXField] = useState('')
     const [yField,setYField] = useState('')
     const [postcodeField,setPostcodeField] = useState('postcode')
@@ -67,6 +67,7 @@ export default function AdminDataMapper(props) {
                                 }
                             ]
                         }
+                        console.log(geoJSON)
                         setMapData({display: true, geojson: geoJSON})
                     }
                 }}
@@ -80,7 +81,7 @@ export default function AdminDataMapper(props) {
         {field: 'id', headerName: 'ID', width: 50},
         {field : "title", headerName  : "Title", width: 300},
         {field : "text", headerName:   "Text", width : 200},
-        {field : "url", headerName:   "Link", width : 200},
+        {field : "url", headerName:   "Link", width : 400},
         {field : "geometry", headerName:   "Geocoded", renderCell: viewGeometry, width : 200}
     ]
 
