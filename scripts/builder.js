@@ -17,6 +17,8 @@ const {exec} = require('child_process');
 const configs = require('../../locaria.json');
 
 let config = {};
+let outputsSite;
+let outputs;
 
 const stage = process.argv[2];
 
@@ -24,6 +26,21 @@ console.log(`Building stage ${stage}`);
 if (configs[stage].theme) {
 	config = configs[stage];
 	console.log(`Using theme - ${configs[stage].theme}`);
+
+	let outputsFileName=`serverless/outputs/${stage}-outputs.json`;
+	if(!fs.existsSync(outputsFileName)) {
+		console.log(`${outputsFileName} does not exist, have you deployed?`);
+		process.exit(0);
+	}
+	outputs=fs.readFileSync(outputsFileName, 'utf8');
+
+	let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${configs[stage].theme}.json`;
+	if(!fs.existsSync(outputsSiteFileName)) {
+		console.log(`${outputsSiteFileName} does not exist, have you deployed?`);
+		process.exit(0);
+	}
+	outputsSite=JSON.parse(fs.readFileSync(outputsSiteFileName,'utf8'));
+
 	if (fs.existsSync(buildDir)) {
 		console.log(`cleaning build dir ${buildDir}`);
 		fsExtra.remove(buildDir, () => {
@@ -46,7 +63,7 @@ function doCopy() {
 		} else {
 
 			const resource = {
-				websocket: `wss://${config.wsdomain}`,
+				websocket: outputsSite.ServiceEndpointWebsocket,
 				cognitoURL: config.cognitoURL,
 				cognitoPoolId: config.cognitoPoolId,
 				poolClientId: config.poolClientId

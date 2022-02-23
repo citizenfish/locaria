@@ -37,7 +37,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: Ingress for Aurora
-        VpcId: ${file(../outputs.json):vpcId}
+        VpcId: ${file(../outputs/${self:custom.stage}-outputs.json):vpcId}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: '3306'
@@ -52,8 +52,8 @@ resources:
       Properties:
         DBSubnetGroupDescription: "Aurora Subnet Group"
         SubnetIds:
-          - ${file(../outputs.json):vpcPrivateSubnetA}
-          - ${file(../outputs.json):vpcPrivateSubnetB}
+          - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+          - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
     AuroraRDSClusterParameter:
       Type: AWS::RDS::DBClusterParameterGroup
       Properties:

@@ -6,7 +6,7 @@ const yaml =require('yaml');
 const config = process.argv[2]||'../serverless/multi.json';
 const stage = process.argv[3]||'multi';
 const items = process.argv[4]||'all';
-const site = process.argv[5]||'main'
+const theme = process.argv[5]||'main'
 
 const {spawnSync} = require('child_process');
 
@@ -14,8 +14,8 @@ const configJson = require(config);
 
 const main = () => {
 	const buildDir=`${configJson.buildDir}/build`;
-	const buildOutput=`${configJson.buildDir}/outputs/outputs.json`;
-	const buildOutputSite=`${configJson.buildDir}/outputs/outputs-${site}.json`;
+	const buildOutput=`${configJson.buildDir}/outputs/${stage}-outputs.json`;
+	const buildOutputSite=`${configJson.buildDir}/outputs/${stage}-outputs-${theme}.json`;
 	makeBuildDir(buildDir);
 	resetOutputs([buildOutput,buildOutputSite]);
 	let itemsArray=items.split(",");
@@ -76,7 +76,7 @@ const deployNode = (dir) => {
 		stdio: 'pipe',
 		env:{
 			SLS_INTERACTIVE_SETUP_ENABLE:1,
-			site:site
+			theme:theme
 		}
 	};
 	let result=spawnSync('serverless', ['deploy','--stage',stage],options);

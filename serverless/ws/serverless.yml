@@ -1,4 +1,4 @@
-service: locaria-ws-${env:site}
+service: locaria-ws-${env:theme}
 projectDir: ../../../
 provider:
   name: aws
@@ -6,11 +6,11 @@ provider:
   runtime: nodejs14.x
   region: ${file(../../../locaria.json):${self:custom.stage}.region}
   environment:
-    postgresHost: ${file(../outputs.json):postgresHost}
-    postgresPort: ${file(../outputs.json):postgresPort}
-    auroraDatabaseName: locaria-${env:site}
-    auroraMasterUser: ${file(../../locaria.json):${self:custom.stage}.auroraMasterUser}
-    auroraMasterPass: ${file(../../locaria.json):${self:custom.stage}.auroraMasterPass}
+    postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
+    postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
+    auroraDatabaseName: locaria-${env:theme}
+    auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
+    auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -20,10 +20,10 @@ functions:
     handler: ws-api.run
     vpc:
       securityGroupIds:
-        - ${file(../outputs.json):ServerlessSecurityGroup}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
       SubnetIds:
-        - ${file(../outputs.json):vpcPrivateSubnetA}
-        - ${file(../outputs.json):vpcPrivateSubnetB}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
     events:
       - websocket:
           route: $connect
@@ -33,10 +33,10 @@ functions:
     handler: ws-api.run
     vpc:
       securityGroupIds:
-        - ${file(../outputs.json):ServerlessSecurityGroup}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
       SubnetIds:
-        - ${file(../outputs.json):vpcPrivateSubnetA}
-        - ${file(../outputs.json):vpcPrivateSubnetB}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
     events:
       - websocket:
           route: $default

@@ -126,8 +126,32 @@ async function loadData() {
 
 }
 
-function sendSQLFiles(stage, configFile, callBack) {
-	let client = new pg.Client(configs.custom[stage].postgresConnection);
+function getSageOutputs(stage,site) {
+	let outputsFileName=`serverless/outputs/${stage}-outputs.json`;
+	if(site!==undefined)
+		outputsFileName=`serverless/outputs/${stage}-outputs-${site}.json`;
+	if(!fs.existsSync(outputsFileName)) {
+		console.log(`${outputsFileName} does not exist, have you deployed?`);
+		process.exit(0);
+	}
+	return JSON.parse(fs.readFileSync(outputsFileName, 'utf8'));
+}
+
+function sendSQLFiles(stage, theme,configFile, callBack) {
+
+	const outputs=getSageOutputs(stage);
+	//const conn=`pg://${configs.custom[stage].auroraMasterUser}:'${encodeURI(configs.custom[stage].auroraMasterPass)}'@${outputs.postgresHost}:${outputs.postgresPort}/locaria${theme}`;
+
+	const conn= {
+		user: configs.custom[stage].auroraMasterUser,
+		host: outputs.postgresHost,
+		database: `locaria${theme}`,
+		password: configs.custom[stage].auroraMasterPass,
+		port: outputs.postgresPort,
+	}
+
+	console.log(`Using: ${outputs.postgresHost}`);
+	let client = new pg.Client(conn);
 	let items = 0;
 	let skipped = 0;
 	let failed = 0;
@@ -448,15 +472,15 @@ function deployWEB(stage) {
 
 	/*const buf = fs.readFileSync('api/.env');
 	const config = dotenv.parse(buf)*/
-	let path = 'main';
-	readline.question(`Path to use [${path}]?`, (cmd) => {
+	let theme = 'main';
+	readline.question(`Theme to use [${theme}]?`, (cmd) => {
 		if (cmd)
-			path = cmd;
+			theme = cmd;
 		let dist = configs['custom'][stage].cfdist;
-		if (configs['custom'][stage].sites && configs['custom'][stage].sites[path])
-			dist = configs['custom'][stage].sites[path];
+		if (configs['custom'][stage].sites && configs['custom'][stage].sites[theme])
+			dist = configs['custom'][stage].sites[theme];
 		executeWithCatch('webpack --config webpack.config.js', "./", () => {
-			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=${configs['custom'][stage].domain} --region=${configs['custom'][stage].region} --path=${path}`;
+			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=locaria-${stage}-${theme} --region=${configs['custom'][stage].region} --theme=${theme}`;
 			executeWithCatch(cmdLine, "./", () => {
 				deploySystemMain(stage);
 			}, () => {
@@ -472,29 +496,21 @@ function deployWEB(stage) {
 }
 
 function deploySQL(stage) {
-	const options = {};
-	sendSQLFiles(stage, 'database/install.json', deploySystemMain);
-	const cmdLine = `grunt deploySQLFull --stage=${stage}`;
-	/*	console.log(`#${cmdLine}`);
-		exec(cmdLine, options, (err, stdout, stderr) => {
-			console.log(stdout);
-			console.log(err);
-			console.log(stderr);
-			deploySystemMain(stage);
-		});*/
+	let theme = 'main';
+	readline.question(`Theme to use [${theme}]?`, (cmd) => {
+		if (cmd)
+			theme = cmd;
+		sendSQLFiles(stage, theme,'database/install.json', deploySystemMain);
+	});
 }
 
 function upgradeSQL(stage) {
-
-	sendSQLFiles(stage, 'database/upgrade.json', deploySystemMain);
-
-
-	/*executeWithCatch(`grunt deploySQLupgrade --stage=${stage}`, () => {
-		deploySystemMain(stage);
-
-	}, () => {
-		deploySystemMain(stage);
-	});*/
+	let theme = 'main';
+	readline.question(`Theme to use [${theme}]?`, (cmd) => {
+		if (cmd)
+			theme = cmd;
+		sendSQLFiles(stage, theme,'database/upgrade.json', deploySystemMain);
+	});
 }
 
 function deleteConfig() {

@@ -47,6 +47,14 @@
 	  "functions": [
 		"ws-api.js"
 	  ]
+	},
+	{
+	  "dir": "cloudfront",
+	  "outputsSitePrefix": true,
+	  "outputs": {
+		"cfDist": "!Ref WebsiteDistribution"
+	  }
+
 	}
   ]
 }
