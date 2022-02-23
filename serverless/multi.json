@@ -1,11 +1,62 @@
 {
   "buildDir": "serverless",
-  "nodes":[
+  "nodes": [
+	{
+	  "dir": "s3",
+	  "outputs": {
+		"cfDist": "!Ref WebsiteDistribution"
+	  }
+	},
 	{
 	  "dir": "vpc",
 	  "outputs": {
-		"VPCREF": "!Ref VPC"
+		"vpcId": "!Ref VPC",
+		"vpcPrivateSubnetA": "!Ref PrivateSubnetA",
+		"vpcPrivateSubnetB": "!Ref PrivateSubnetB",
+		"ServerlessSecurityGroup": {
+		  "Fn::GetAtt": [
+			"ServerlessSecurityGroup",
+			"GroupId"
+		  ]
+		}
 	  }
+	},
+	{
+	  "dir": "aurora",
+	  "outputs": {
+		"postgresHost": {
+		  "Fn::GetAtt": [
+			"AuroraRDSInstance",
+			"Endpoint.Address"
+		  ]
+		},
+		"postgresPort": {
+		  "Fn::GetAtt": [
+			"AuroraRDSInstance",
+			"Endpoint.Port"
+		  ]
+		}
+	  }
+	},
+	{
+	  "dir": "ws",
+	  "outputsSitePrefix": true,
+	  "outputs": {
+		"websocket": "!Ref WebsocketsApi"
+	  },
+	  "functions": [
+		"ws-api.js",
+		"database.js",
+		"load_methods.js"
+	  ]
+	},
+	{
+	  "dir": "cloudfront",
+	  "outputsSitePrefix": true,
+	  "outputs": {
+		"cfDist": "!Ref WebsiteDistribution"
+	  }
+
 	}
   ]
 }

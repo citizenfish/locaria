@@ -1,0 +1,45 @@
+service: locaria-ws-${env:theme}
+projectDir: ../../../
+provider:
+  name: aws
+  profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../../locaria.json):${self:custom.stage}.region}
+  environment:
+    postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
+    postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
+    auroraDatabaseName: locaria${env:theme}
+    auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
+    auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+functions:
+  connectionHandler:
+    handler: ws-api.run
+    vpc:
+      securityGroupIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
+      subnetIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  defaultHandler:
+    handler: ws-api.run
+    vpc:
+      securityGroupIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
+      subnetIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
+    events:
+      - websocket:
+          route: $default
+
+plugins:
+  - serverless-stack-output

@@ -5,6 +5,8 @@ const yaml =require('yaml');
 
 const config = process.argv[2]||'../serverless/multi.json';
 const stage = process.argv[3]||'multi';
+const items = process.argv[4]||'all';
+const theme = process.argv[5]||'main'
 
 const {spawnSync} = require('child_process');
 
@@ -12,24 +14,58 @@ const configJson = require(config);
 
 const main = () => {
 	const buildDir=`${configJson.buildDir}/build`;
-	const copyFiles=["serverless.yml","package.json"];
+	const buildOutput=`${configJson.buildDir}/outputs/${stage}-outputs.json`;
+	const buildOutputSite=`${configJson.buildDir}/outputs/${stage}-outputs-${theme}.json`;
 	makeBuildDir(buildDir);
-	for(let n in configJson.nodes) {
+	resetOutputs([buildOutput,buildOutputSite]);
+	let itemsArray=items.split(",");
 
-		for(let f in copyFiles) {
-			const sourceFile=`${configJson.buildDir}/${configJson.nodes[n].dir}/${copyFiles[f]}`;
-			const destFile=`${buildDir}/${copyFiles[f]}`;
-			console.log(`Copying ${sourceFile}`);
-			fs.copyFileSync(sourceFile,destFile);
-			if(copyFiles[f]==='serverless.yml') {
-				console.log(`Updating ${sourceFile}`);
-				updateYaml(destFile,configJson.nodes[n].outputs);
+	for(let n in configJson.nodes) {
+		if(itemsArray.indexOf(configJson.nodes[n].dir)!==-1||itemsArray[0]==='all') {
+			console.log(`building ${configJson.nodes[n].dir}`);
+			let copyFiles=["serverless.yml","package.json"];
+			if(configJson.nodes[n].functions)
+				copyFiles=[...copyFiles,...configJson.nodes[n].functions];
+
+			for (let f in copyFiles) {
+				const sourceFile = `${configJson.buildDir}/${configJson.nodes[n].dir}/${copyFiles[f]}`;
+				const destFile = `${buildDir}/${copyFiles[f]}`;
+				console.log(`Copying ${sourceFile}`);
+				fs.copyFileSync(sourceFile, destFile);
+				if (copyFiles[f] === 'serverless.yml') {
+					console.log(`Updating ${sourceFile}`);
+					updateYaml(destFile, configJson.nodes[n].outputs,configJson.nodes[n].outputsSitePrefix);
+				}
 			}
+			npmInstall(buildDir);
+			deployNode(buildDir);
+			if(configJson.nodes[n].outputsSitePrefix)
+				mergeOutputs(buildOutputSite, buildDir);
+			else
+				mergeOutputs(buildOutput, buildDir);
+		} else {
+			console.log(`skipping ${configJson.nodes[n].dir}`);
 		}
-		npmInstall(buildDir);
-		deployNode(buildDir);
 	}
 
+}
+
+const resetOutputs = (files,kill=false) => {
+	for(let f in files) {
+		if (fs.existsSync(files[f]) !== true || kill === true) {
+			console.log(`Resetting outputs file ${files[f]}`);
+			const fileData = {"VERSION": "0.1"};
+			fs.writeFileSync(files[f], JSON.stringify(fileData));
+		}
+	}
+}
+
+const mergeOutputs = (file,dir) => {
+	const nodeFile=`${dir}/node.json`;
+	let fileDataNew = JSON.parse(fs.readFileSync(nodeFile, 'utf8'));
+	let fileDataOld = JSON.parse(fs.readFileSync(file, 'utf8'));
+	let newData={...fileDataNew,...fileDataOld};
+	fs.writeFileSync(file,JSON.stringify(newData));
 }
 
 const deployNode = (dir) => {
@@ -39,7 +75,8 @@ const deployNode = (dir) => {
 		shell: true,
 		stdio: 'pipe',
 		env:{
-			SLS_INTERACTIVE_SETUP_ENABLE:1
+			SLS_INTERACTIVE_SETUP_ENABLE:1,
+			theme:theme
 		}
 	};
 	let result=spawnSync('serverless', ['deploy','--stage',stage],options);
@@ -59,9 +96,10 @@ const npmInstall = (dir) => {
 	//console.log(result.stdout.toString());
 }
 
-const updateYaml = (file,outputs) => {
+const updateYaml = (file,outputs,prefix=false) => {
 
 	const customTags=["!Ref","!GetAtt"];
+
 
 	let fileData = fs.readFileSync(file, 'utf8')
 
@@ -73,7 +111,7 @@ const updateYaml = (file,outputs) => {
 			fileData=fileData.replace(matches[m],`"${matches[m]}"`);
 		}
 	}
-	let yamlParse=yaml.parse(fileData);
+	let yamlParse=yaml.parse(fileData,{version:"1.1"});
 
 	// Add our output configs
 	if(!yamlParse.custom) {
@@ -88,12 +126,14 @@ const updateYaml = (file,outputs) => {
 	if(!yamlParse.resources.Outputs) {
 		yamlParse.resources.Outputs={};
 	}
+
 	for(let o in outputs) {
-		yamlParse.resources.Outputs[o]={Value:outputs[o]};
+		let outputName=o;
+		yamlParse.resources.Outputs[outputName]={Value:outputs[o]};
 	}
 
 
-    let yamlString=yaml.stringify(yamlParse);
+    let yamlString=yaml.stringify(yamlParse,{version:"1.1"});
 
 	for(let t in customTags) {
 		const regExp=new RegExp(`\"${customTags[t]} (.*)\"`, "g");
@@ -102,7 +142,10 @@ const updateYaml = (file,outputs) => {
 			yamlString=yamlString.replace(matches[m],`${matches[m].replace(/\"/g,'')}`);
 		}
 	}
+
+
 	fs.writeFileSync(file,yamlString);
+	//console.log(yamlString);
 
 }
 

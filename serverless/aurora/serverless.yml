@@ -1,0 +1,102 @@
+service: locaria-aurora
+projectDir: ../../../
+provider:
+  name: aws
+  profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../../locaria.json):${self:custom.stage}.region}
+
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+resources:
+  Resources:
+    AuroraLambdaRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - rds.amazonaws.com
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: "lambda:InvokeFunction"
+                  Resource: '*'
+        Path: "/"
+    AuroraStorageSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Ingress for Aurora
+        VpcId: ${file(../outputs/${self:custom.stage}-outputs.json):vpcId}
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '3306'
+            ToPort: '3306'
+            CidrIp: 10.0.0.0/16
+          - IpProtocol: tcp
+            FromPort: '3306'
+            ToPort: '3306'
+            CidrIp: 10.1.0.0/22
+    AuroraSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupDescription: "Aurora Subnet Group"
+        SubnetIds:
+          - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+          - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
+    AuroraRDSClusterParameter:
+      Type: AWS::RDS::DBClusterParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: ${file(../../../locaria.json):${self:custom.stage}.auroraFamily}
+        Parameters:
+          max_connections: 5000
+    AuroraRDSInstanceParameter:
+      Type: AWS::RDS::DBParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: ${file(../../../locaria.json):${self:custom.stage}.auroraFamily}
+        Parameters:
+          max_connections: 5000
+    AuroraRDSCluster:
+      Type: "AWS::RDS::DBCluster"
+      Properties:
+        MasterUsername: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
+        MasterUserPassword: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
+        DBSubnetGroupName:
+          Ref: AuroraSubnetGroup
+        Engine: aurora-postgresql
+        EngineMode: provisioned
+        EngineVersion: ${file(../../../locaria.json):${self:custom.stage}.auroraVersion}
+        DatabaseName: locaria${env:site}
+        BackupRetentionPeriod: 3
+        DBClusterParameterGroupName:
+          Ref: AuroraRDSClusterParameter
+        VpcSecurityGroupIds:
+          - Fn::GetAtt: AuroraStorageSecurityGroup.GroupId
+    AuroraRDSInstance:
+      Type: "AWS::RDS::DBInstance"
+      Properties:
+        DBSubnetGroupName:
+          Ref: AuroraSubnetGroup
+        Engine: aurora-postgresql
+        EngineVersion: ${file(../../../locaria.json):${self:custom.stage}.auroraVersion}
+        DBInstanceClass: "db.r5.large"
+        PubliclyAccessible: false
+        DBParameterGroupName:
+          Ref: AuroraRDSInstanceParameter
+        DBClusterIdentifier:
+          Ref: AuroraRDSCluster
+
+plugins:
+  - serverless-stack-output
