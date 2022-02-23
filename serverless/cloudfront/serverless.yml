@@ -1,0 +1,80 @@
+service: locaria-s3
+projectDir: ../../../
+provider:
+  name: aws
+  profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../../locaria.json):${self:custom.stage}.region}
+
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+resources:
+  Resources:
+    # Website
+    StaticSite:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: locaria-${self:custom.stage}-${env:theme}
+        WebsiteConfiguration:
+          IndexDocument: index.html
+    WebsiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { Ref: StaticSite }
+        PolicyDocument:
+          Statement:
+            - Action:
+                - "s3:GetObject"
+              Effect: Allow
+              Resource: { "Fn::Join": [ "", [ "arn:aws:s3:::", { Ref: StaticSite }, "/*" ] ] }
+              Principal:
+                AWS: { "Fn::Join": [ " ", [ "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity", { Ref: WebsiteOriginAccessIdentity } ] ] }
+    WebsiteOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: "CloudFrontOriginAccessIdentity for ${self:service}-${self:provider.stage}"
+    WebsiteDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: WebsiteBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
+          CustomErrorResponses:
+            - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
+              ErrorCachingMinTTL: 1
+              ResponseCode: 200
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          Aliases:
+            - ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}
+          ViewerCertificate:
+            AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.certARN}
+            MinimumProtocolVersion: TLSv1
+            SslSupportMethod: sni-only
+          Origins:
+            - Id: 'WebsiteBucketOrigin'
+              OriginPath: /main
+              DomainName: { "Fn::GetAtt": [ "StaticSite", "DomainName" ] }
+              S3OriginConfig:
+                OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
+
+plugins:
+  - serverless-stack-output

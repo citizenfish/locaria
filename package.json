@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"scripts": {
 		"configure": "node scripts/configure.js",
-		"build:new": "node scripts/builder.js new",
+		"build:multi:main": "node scripts/builder.js multi main",
 		"runLocalSite": "webpack serve",
 		"testApi": "grunt apiTest --url=http://localhost:3000",
 		"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"
@@ -42,9 +42,9 @@
 		"webpack": "^5.47.1",
 		"webpack-cli": "^4.7.2",
 		"webpack-dev-server": "^3.11.2",
-		"@reduxjs/toolkit": "^1.7.2",
-		"react-redux": "^7.2.6",
-		"yaml": "^1.10.0",
+	  	"@reduxjs/toolkit": "^1.7.2",
+	  	"react-redux": "^7.2.6",
+		"yaml": "^2.0.0-10",
 		"yauzl": "^2.10.0"
 	},
 	"devDependencies": {
