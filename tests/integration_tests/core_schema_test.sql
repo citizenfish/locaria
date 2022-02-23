@@ -27,6 +27,7 @@ $$
         PERFORM id FROM search_views_union;
         PERFORM id FROM base_table;
         PERFORM id from imports;
+
         --Database Compare Checks (If required)
         BEGIN
 

@@ -15,6 +15,22 @@ def database_connect():
         print("Cannot connect to database ... exiting", error)
         exit()
 
+def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
+
+    try:
+        print(f"Retrieving parameters : {parameter_name}")
+        q_params = {"method" : "get_parameters"}
+        if parameter_name != None:
+            q_params["parameter_name"] = parameter_name
+
+        parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS p", [json.dumps(q_params)])
+        ret = parameters.fetchone()[0]
+        return ret
+
+    except Exception as error:
+        print("Cannot get parameter", error)
+        exit()
+
 def update_file_status(db,schema,id,update):
     update["method"] = "update_file"
     update["id"] = id
