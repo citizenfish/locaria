@@ -64,7 +64,7 @@ resources:
           PriceClass: 'PriceClass_100'
           HttpVersion: 'http2'
           Aliases:
-            - ${file(../../../locaria.json):${self:custom.stage}.domain}
+            - ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}
           ViewerCertificate:
             AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.certARN}
             MinimumProtocolVersion: TLSv1

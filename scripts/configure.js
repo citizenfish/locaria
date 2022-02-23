@@ -126,10 +126,10 @@ async function loadData() {
 
 }
 
-function getSageOutputs(stage,site) {
+function getSageOutputs(stage,theme) {
 	let outputsFileName=`serverless/outputs/${stage}-outputs.json`;
-	if(site!==undefined)
-		outputsFileName=`serverless/outputs/${stage}-outputs-${site}.json`;
+	if(theme!==undefined)
+		outputsFileName=`serverless/outputs/${stage}-outputs-${theme}.json`;
 	if(!fs.existsSync(outputsFileName)) {
 		console.log(`${outputsFileName} does not exist, have you deployed?`);
 		process.exit(0);
@@ -260,43 +260,43 @@ function deploySystem() {
 	readline.question(`Stage to deploy [${stage}]?`, (cmd) => {
 		if (cmd)
 			stage = cmd;
-		deploySystemMain(stage);
+		let theme = 'main';
+		readline.question(`Theme to use [${theme}]?`, (cmd) => {
+			if (cmd)
+				theme = cmd;
+			deploySystemMain(stage, theme);
+		});
 	});
 }
 
-function deploySystemMain(stage) {
+function deploySystemMain(stage,theme) {
 	reloadConfig();
-	readline.question(`Deploy command for stage ${stage} [h for help]?`, (cmd) => {
+	readline.question(`Deploy command for ${stage}:${theme} [h for help]?`, (cmd) => {
 		switch (cmd) {
 			case 'h':
-				console.log('api - Deploy API');
+				console.log('stage - Deploy stage');
+				console.log('node - Deploy a single stage node');
+				console.log('web - Deploy a themed build');
 				console.log('sql - Deploy SQL');
 				console.log('usql - Upgrade SQL');
-				console.log('web - Deploy Web interface');
-				console.log('scrape - Deploy scraper');
-				console.log('ws - Deploy websocket');
 				console.log('tests - Run Tests');
 				console.log('q - Exit deploy mode');
-			case 'all':
-				deploySystemMain(stage);
+				deployStage(stage,theme);
 				break;
-			case 'scrape':
-				deployScrape(stage);
+			case 'stage':
+				deployStage(stage,theme);
 				break;
-			case 'api':
-				deployAPI(stage);
+			case 'node':
+				deployStageNode(stage,theme);
 				break;
 			case 'web':
-				deployWEB(stage);
+				deployWEB(stage,theme);
 				break;
 			case 'sql':
 				deploySQL(stage);
 				break;
 			case 'usql':
 				upgradeSQL(stage);
-				break;
-			case 'ws':
-				deployWS(stage);
 				break;
 			case 'tests':
 				runTests(stage);
@@ -305,8 +305,8 @@ function deploySystemMain(stage) {
 				commandLoop();
 				break;
 			default:
-				console.log(`Unknown mode [${cmd}]`);
-				commandLoop();
+				console.log(`Unknown command [${cmd}]`);
+				deploySystemMain(stage,theme)
 				break;
 		}
 	});
@@ -325,91 +325,35 @@ function runTests(stage) {
 	});
 }
 
-function deployScrape(stage) {
-	const options = {
-		cwd: "scrape/"
-	};
-	console.log('#npm install')
-	exec(`npm install`, options, (err, stdout, stderr) => {
-		if (err) {
-			console.log('npm install FAILED!');
-			console.log(stderr);
-			deploySystemMain(stage);
 
-		} else {
-			console.log(stdout);
-			const cmdLine = `serverless deploy --stage ${stage}`;
-			console.log(`#${cmdLine}`);
-			exec(cmdLine, options, (err, stdout, stderr) => {
-				console.log(stdout);
-				deploySystemMain(stage);
-			});
-		}
-	});
-}
 
-function deployWS(stage) {
-	const options = {
-		cwd: "websocket/"
-	};
-	console.log('#npm install')
-	exec(`npm install`, options, (err, stdout, stderr) => {
-		if (err) {
-			console.log('npm install FAILED!');
-			console.log(stderr);
-			deploySystemMain(stage);
-
-		} else {
-			console.log(stdout);
-			const cmdLine = `sls create_domain --stage ${stage}`;
-			console.log(`#${cmdLine}`);
-			exec(cmdLine, options, (err, stdout, stderr) => {
-				console.log(stdout);
-				const cmdLine = `serverless deploy --stage ${stage} --overwrite`;
-				console.log(`#${cmdLine}`);
-				exec(cmdLine, options, (err, stdout, stderr) => {
-					console.log(stdout);
-					deploySystemMain(stage);
-				});
-			});
-		}
-	});
-}
-
-function serverlessMakeVPC(stage) {
-	console.log('---VPC RUNNERS');
-
-		executeWithCatch(`serverless --stage ${stage} `, "serverless/vpc", () => {
-			deploySystemMain(stage);
-		}, () => {
-			deploySystemMain(stage);
-		});
-}
-
-function deployAPI(stage) {
-
-	let mode = configs['custom'][stage].mode;
-
-	readline.question(`Deploy ${stage} in mode ${mode}? [y/n]`, (cmd) => {
-		if (cmd === 'y') {
-			executeWithCatch('npm install', "api/", () => {
-
-				if (mode === 'multi') {
-					serverlessMakeVPC(stage);
-					//deploySystemMain(stage);
-
-				} else {
-					executeWithCatch(`sls create_domain --stage ${stage} --file serverless-single.yml`, "api/", () => {
-						deploySystemMain(stage);
-					}, () => {
-						deploySystemMain(stage);
-
-					})
-				}
-
+function deployStageNode(stage,theme) {
+	let node='cloudfront';
+	readline.question(`node to deploy on stage ${stage}, theme ${theme}? [${node}]`, (cmd) => {
+		if (cmd)
+			node=cmd;
+			executeWithCatch(`node scripts/serverlessStageBuilder.js ../serverless/multi.json ${stage} ${node} ${theme}`, "./", () => {
+				console.log('Done')
+				deploySystemMain(stage, theme);
 
 			}, () => {
-				deploySystemMain(stage);
+				deploySystemMain(stage, theme);
+			});
+
+	});
+}
+
+
+function deployStage(stage,theme) {
+
+	readline.question(`Deploy entire base stage ${stage}? [y/n]`, (cmd) => {
+		if (cmd === 'y') {
+			executeWithCatch(`node scripts/serverlessStageBuilder.js ../serverless/multi.json ${stage} all ${theme}`, "./", () => {
+				console.log('Done')
+				deploySystemMain(stage,theme);
+
+			}, () => {
+				deploySystemMain(stage,theme);
 			});
 		} else {
 			console.log('Aborted');
@@ -418,6 +362,7 @@ function deployAPI(stage) {
 
 	return;
 
+	// OLDS
 	console.log('#npm install')
 	exec(`npm install`, options, (err, stdout, stderr) => {
 		if (err) {
@@ -465,29 +410,24 @@ function executeWithCatch(cmd, cwd, success, fail, options) {
 	});
 }
 
-function deployWEB(stage) {
+function deployWEB(stage,theme) {
 
 	/*const buf = fs.readFileSync('api/.env');
 	const config = dotenv.parse(buf)*/
-	let theme = 'main';
-	readline.question(`Theme to use [${theme}]?`, (cmd) => {
-		if (cmd)
-			theme = cmd;
-		let dist = configs['custom'][stage].cfdist;
-		if (configs['custom'][stage].sites && configs['custom'][stage].sites[theme])
-			dist = configs['custom'][stage].sites[theme];
-		executeWithCatch('webpack --config webpack.config.js', "./", () => {
+	const outputs=getSageOutputs(stage,theme);
+		let dist = outputs.cfDist;
+
+		executeWithCatch(`node scripts/builder.js ${stage} ${theme}`, "./", () => {
 			const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=locaria-${stage}-${theme} --region=${configs['custom'][stage].region} --theme=${theme}`;
 			executeWithCatch(cmdLine, "./", () => {
-				deploySystemMain(stage);
+				deploySystemMain(stage,theme);
 			}, () => {
-				deploySystemMain(stage);
+				deploySystemMain(stage,theme);
 			})
 		}, () => {
-			deploySystemMain(stage);
+			deploySystemMain(stage,theme);
 		});
 
-	});
 
 
 }

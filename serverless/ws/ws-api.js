@@ -8,24 +8,31 @@
 'use strict';
 const Database = require("./database");
 const AWS = require('aws-sdk');
-const {uuid} = require('uuidv4');
+const { v4: uuidv4 } = require('uuid');
 const jwkToPem = require('jwk-to-pem');
 const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
 
 //data load api
 
-const {update_file,delete_file,get_files} = require('./data_loader/load_methods.js');
+const {update_file,delete_file,get_files} = require('./load_methods.js');
 const MAX_BYTES = 50000;
 
 
 module.exports.run = (event, context, callback) => {
 	let client = null;
 
-	const conn = `pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
+	//const conn = `pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
+	const conn= {
+		user: process.env.auroraMasterUser,
+		host: process.env.postgresHost,
+		database: process.env.auroraDatabaseName,
+		password: process.env.auroraMasterPass,
+		port: process.env.postgresPort,
+	}
 	console.log(conn);
 	//let conn = process.env.postgres;
-	const suuid = uuid();
+	const suuid = uuidv4();
 
 	const connectionId = event.requestContext.connectionId;
 	const eventType = event.requestContext.eventType;

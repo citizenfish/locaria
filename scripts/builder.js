@@ -21,11 +21,12 @@ let outputsSite;
 let outputs;
 
 const stage = process.argv[2];
+const theme = process.argv[3]||'main';
 
-console.log(`Building stage ${stage}`);
-if (configs[stage].theme) {
+console.log(`Building stage ${stage} theme ${theme}`);
+//console.log(configs);
+if (configs[stage].themes[theme]) {
 	config = configs[stage];
-	console.log(`Using theme - ${configs[stage].theme}`);
 
 	let outputsFileName=`serverless/outputs/${stage}-outputs.json`;
 	if(!fs.existsSync(outputsFileName)) {
@@ -34,7 +35,7 @@ if (configs[stage].theme) {
 	}
 	outputs=fs.readFileSync(outputsFileName, 'utf8');
 
-	let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${configs[stage].theme}.json`;
+	let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${theme}.json`;
 	if(!fs.existsSync(outputsSiteFileName)) {
 		console.log(`${outputsSiteFileName} does not exist, have you deployed?`);
 		process.exit(0);
@@ -50,11 +51,11 @@ if (configs[stage].theme) {
 		doCopy();
 	}
 } else {
-	console.log(`No such config ${stage}`);
+	console.log(`No such config ${stage} ${theme}`);
 }
 
 function doCopy() {
-	const srcPath = config.themeDir + config.theme;
+	const srcPath = config.themeDir + theme;
 	console.log(`cp ${srcPath} -> ${buildDir}`);
 	fsExtra.copy(srcPath, buildDir, function (err) {
 		if (err) {

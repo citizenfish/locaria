@@ -45,7 +45,9 @@
 		"websocket": "!Ref WebsocketsApi"
 	  },
 	  "functions": [
-		"ws-api.js"
+		"ws-api.js",
+		"database.js",
+		"load_methods.js"
 	  ]
 	},
 	{

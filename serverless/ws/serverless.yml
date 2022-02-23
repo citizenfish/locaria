@@ -8,7 +8,7 @@ provider:
   environment:
     postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
     postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
-    auroraDatabaseName: locaria-${env:theme}
+    auroraDatabaseName: locaria${env:theme}
     auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
 
@@ -21,7 +21,7 @@ functions:
     vpc:
       securityGroupIds:
         - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
-      SubnetIds:
+      subnetIds:
         - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
         - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
     events:
@@ -34,7 +34,7 @@ functions:
     vpc:
       securityGroupIds:
         - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
-      SubnetIds:
+      subnetIds:
         - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
         - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
     events:
