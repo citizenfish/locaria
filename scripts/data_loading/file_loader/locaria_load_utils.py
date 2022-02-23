@@ -49,18 +49,27 @@ def process_file_json(db,file):
         file['attributes']['path'] = tempfile.gettempdir() + f"/{file['id']}.json"
         from custom_loaders import custom_loader_main
         filename = custom_loader_main(file['attributes']['custom_loader'],db,file)
-        file['filename'] = filename
+        if 'status' in filename and filename['status'] == 'ERROR':
+            return filename
+        file['filename'] = filename['path']
         parameters = ['-lco', 'ID_GENERATE=YES']
         return process_file_generic(db,file,parameters)
 
-    return {'status' : 'REGISTERED', 'filename' : filename}
-    #return process_file_generic(db,file, parameters)
+    parameters = ['-lco', 'ID_GENERATE=YES']
+    return process_file_generic(db, file, parameters)
 
 def process_file_geopackage(db,file):
     print(f"GEOPACKAGE PROCESSING  {file['id']}")
+    parameters=[]
     return process_file_generic(db,file, parameters)
 
-def process_file_generic(db,file,parameters):
+def process_file_gpx(db,file):
+     print(f"GPX PROCESSING  {file['id']}")
+     parameters=[]
+     file['attributes']['layer'] ='waypoints'
+     return process_file_generic(db,file, parameters)
+
+def process_file_generic(db,file,parameters=[]):
     print("GENERIC PROCESSING")
     parameters.extend(['-lco', 'GEOMETRY_NAME=wkb_geometry', '--config', 'PG_USE_COPY', 'YES', '-overwrite', '-t_srs', 'EPSG:4326'])
 
@@ -70,8 +79,6 @@ def process_file_generic(db,file,parameters):
 
     if "s_srs" in file['attributes']:
         parameters.extend(['-s_srs', file["s_srs"]])
-    else:
-        parameters.extend(['-s_srs', 'EPSG:4326'])
 
     log_parameters = parameters[:]
     ogr = ogr_loader(file,parameters)

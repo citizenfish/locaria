@@ -5,8 +5,47 @@ import json
 def custom_loader_main(func,db,file):
     if func == 'planning_loader':
         return planning_loader(db,file)
+    elif func == 'flood_loader':
+        return flood_loader(db,file)
     else:
         return 'ERROR'
+
+def flood_loader(db,file):
+    print ("Flood Loader")
+
+    base_url = 'https://environment.data.gov.uk/flood-monitoring/id/'
+    if not 'name' in file['attributes']:
+        return {'status' : 'ERROR', 'result' : 'Missing county', 'message' : 'Missing county for flood_loader'}
+
+    path = file['attributes']['path']
+    url = f"{base_url}floods?county={file['attributes']['county']}"
+    req = requests.get(url)
+    req_data = req.json()
+    data = req_data['items']
+    print(data)
+    if len(data) > 0:
+        #format as geojson
+        geojson = {'type' : 'FeatureCollection'}
+        features = []
+        # get floodarea centroid
+        for f in data:
+            url = f"{base_url}floodAreas/{f['floodAreaID']}"
+            req = requests.get(url)
+            station = req.json()
+            f['longitude'] = station['items']['long']
+            f['latitude'] = station['items']['lat']
+            f['url'] = f['@id']
+            features.extend([{'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [f['longitude'],f['latitude']]}, 'properties' : f}])
+
+        geojson['features'] = features
+        print(f"Writing to {path}")
+        with open(path, 'w') as p:
+            json.dump(geojson,p)
+
+    else:
+        return {'status' : 'ERROR', 'result' : 'No flood data', 'message' : 'No flood data'}
+
+    return {'path': path}
 
 def planning_loader(db,file):
     base_url = file['attributes']['url']
@@ -60,6 +99,8 @@ def planning_loader(db,file):
         geojson = {'type' : 'FeatureCollection'}
         features = []
         for f in data:
+           # f['text'] = f['message']
+           # f['title'] = f['description']
             features.extend([{'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [f['location_x'], f['location_y']]}, 'properties' : f}])
         geojson['features'] = features
 
@@ -67,4 +108,4 @@ def planning_loader(db,file):
         with open(path, 'w') as p:
             json.dump(geojson,p)
 
-    return path
+    return {'path': path}

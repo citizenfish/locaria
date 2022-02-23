@@ -8,13 +8,14 @@ import Button from '@mui/material/Button'
 import AdminFileDetails from "./adminFileDetails";
 import AdminDataMapper from "./adminDataMapper";
 import AdminPlanningLoader from "./adminPlanningLoader";
+import AdminFloodMonitoringLoader from "./adminFloodMonitoringLoader";
 import Typography from "@mui/material/Typography";
 
 //Details of file we are going to map
 let fileDetailsData = {}
 
 //How often we poll for file updates,default is 30 seconds
-let defaultRefreshInterval = 30000
+let defaultRefreshInterval = 31000
 
 export default function AdminUpload(props) {
 
@@ -176,6 +177,13 @@ export default function AdminUpload(props) {
                      <AdminPlanningLoader
                          forceRefresh = {setTime}
                      />
+             }
+
+             {
+                 mapFileDetails === null && open === false  &&
+                 <AdminFloodMonitoringLoader
+                     forceRefresh = {setTime}
+                 />
              }
 
          </div>

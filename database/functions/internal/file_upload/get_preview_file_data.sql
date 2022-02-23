@@ -10,8 +10,8 @@ $$
         query TEXT DEFAULT $SQL$
                 (SELECT ogc_fid::BIGINT,
                 row_to_json(T.*)::JSONB -'wkb_geometry' AS attributes,
-                wkb_geometry
-                FROM %s T
+                ST_TRANSFORM(wkb_geometry,4326) AS wkb_geometry
+                FROM %1$s T
                 OFFSET $1
                 LIMIT $2) SUB
         $SQL$;
@@ -45,22 +45,22 @@ BEGIN
 
 
     --cope with missing geometry field
-    IF NOT EXISTS (SELECT 1
-                   FROM information_schema.columns
-                   WHERE table_schema='locaria_uploads' AND table_name=parameters->>'table' AND column_name='wkb_geometry') THEN
+    IF (SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema='locaria_uploads' AND table_name= REPLACE(parameters->>'table','locaria_uploads.','') AND column_name='wkb_geometry')  IS NULL THEN
 
         IF COALESCE(parameters->>'_geocoder_type','') != '' THEN
 
         --attempt  geocoding
-        header = REPLACE(header, 'wkb_geometry', $SQL$(geocoder($3 || attributes)->0->>'wkb_geometry')::GEOMETRY AS wkb_geometry$SQL$);
-        query = $SQL$
-                (SELECT  ogc_fid::BIGINT,
-                         row_to_json(T.*)::JSONB -'wkb_geometry' AS attributes
-                         FROM %1$s T
-                         OFFSET $1
-                         LIMIT $2
-                ) SUB
-                $SQL$;
+            header = REPLACE(header, 'wkb_geometry', $SQL$(geocoder($3 || attributes)->0->>'wkb_geometry')::GEOMETRY AS wkb_geometry$SQL$);
+            query = $SQL$
+                    (SELECT  ogc_fid::BIGINT,
+                             row_to_json(T.*)::JSONB -'wkb_geometry' AS attributes
+                             FROM %1$s T
+                             OFFSET $1
+                             LIMIT $2
+                    ) SUB
+                    $SQL$;
         ELSE
             query = $SQL$
                 (SELECT ogc_fid::BIGINT,
@@ -76,6 +76,9 @@ BEGIN
 
     limit_var = COALESCE(parameters->>'limit', limit_var::TEXT)::INTEGER;
     offset_var = COALESCE(parameters->>'offset', offset_var::TEXT)::INTEGER;
+
+    RAISE NOTICE '%', header;
+    RAISE NOTICE '%',query;
 
     RETURN QUERY EXECUTE format(
         header||query, table_var,title_field_var,text_field_var,url_field_var

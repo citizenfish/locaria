@@ -4,6 +4,7 @@ CREATE  TABLE locaria_core.parameters(
     id              BIGSERIAL PRIMARY KEY,
     parameter_name  TEXT,
     parameter       JSONB,
+    acl             TEXT DEFAULT 'internal',
     last_updated    TIMESTAMP DEFAULT NOW(),
     CONSTRAINT parameter_name_unique UNIQUE (parameter_name)
 
