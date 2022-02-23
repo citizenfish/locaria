@@ -7,13 +7,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import AdminFileDetails from "./adminFileDetails";
 import AdminDataMapper from "./adminDataMapper";
-
+import AdminPlanningLoader from "./adminPlanningLoader";
+import AdminFloodMonitoringLoader from "./adminFloodMonitoringLoader";
+import Typography from "@mui/material/Typography";
 
 //Details of file we are going to map
 let fileDetailsData = {}
 
 //How often we poll for file updates,default is 30 seconds
-let defaultRefreshInterval = 30000
+let defaultRefreshInterval = 31000
 
 export default function AdminUpload(props) {
 
@@ -28,6 +30,8 @@ export default function AdminUpload(props) {
     const [time, setTime] = useState(Date.now());
     //hook used to display the data mapping component
     const [mapFileDetails,setMapFileDetails] = useState(null)
+    //hook used to display planning loader component
+    const [planningLoader, setPlanningLoader] = useState(false)
 
     useEffect(() => {
         //This hook manages the refresh of the files display every X seconds
@@ -44,11 +48,6 @@ export default function AdminUpload(props) {
         fileDetailsData = params
         setOpen(true)
     };
-/*    const closeFileDetails = () => {
-        //When we close the file details panel
-        setOpen(false)
-    };
-*/
 
     const viewButton = (params) => {
         //The View file details button shown in the file listing
@@ -56,11 +55,14 @@ export default function AdminUpload(props) {
 
             <Button
                 variant="contained"
-                color={params.value.status== 'FARGATE_PROCESSED'? "primary" : "secondary"}
+                color={params.value.status== 'FARGATE_PROCESSED'? "primary" :
+                        params.value.status === 'ERROR' ? "error" :
+                           (params.value.status === 'REGISTERED' || params.value.status === 'FARGATE_PROCESSING') ? 'secondary'
+                               :"success"}
                 size="small"
                 onClick ={() => showFileDetails(params.value)}
             >
-                {params.value.status== 'FARGATE_PROCESSED'? "IMPORT" : "DETAILS"}
+                {params.value.status === 'FARGATE_PROCESSED'? "IMPORT" : "DETAILS"}
             </Button>
 
         )
@@ -152,9 +154,13 @@ export default function AdminUpload(props) {
 
              {
                  mapFileDetails === null && open === false &&
+                 <>
+
                      <AdminFileUploader
                          forceRefresh = {setTime}
                      />
+                 </>
+
              }
 
              {
@@ -164,6 +170,20 @@ export default function AdminUpload(props) {
                         open = {setMapFileDetails}
                      />
 
+             }
+
+             {
+                 mapFileDetails === null && open === false  &&
+                     <AdminPlanningLoader
+                         forceRefresh = {setTime}
+                     />
+             }
+
+             {
+                 mapFileDetails === null && open === false  &&
+                 <AdminFloodMonitoringLoader
+                     forceRefresh = {setTime}
+                 />
              }
 
          </div>

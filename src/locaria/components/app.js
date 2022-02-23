@@ -147,11 +147,11 @@ const App = () => {
 				<LocariaContext.Provider value={userSettings}>
 					<Router>
 						<Switch>
-							<AdminRoute path="/Admin/" user={user} component={AdminHome}/>
-							<AdminRoute path="/AdminNew/" user={user} component={AdminNew}/>
-							<AdminRoute path="/AdminView/:feature" user={user} component={AdminView}/>
-							<AdminRoute path="/AdminData/" user={user} component={AdminData}/>
-							<AdminRoute path="/AdminLoader/" user={user} component={AdminLoader}/>
+							<Route path="/Admin/" user={user} component={AdminHome}/>
+							<Route path="/AdminNew/" user={user} component={AdminNew}/>
+							<Route path="/AdminView/:feature" user={user} component={AdminView}/>
+							<Route path="/AdminData/" user={user} component={AdminData}/>
+							<Route path="/AdminLoader/" user={user} component={AdminLoader}/>
 
 							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Search/:text?" component={Home}/>

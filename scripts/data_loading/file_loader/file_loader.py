@@ -33,16 +33,16 @@ for f in files_to_process["files"]:
         print(f"Constructed filename {f['attributes']['path']}")
 
     # TODO make sure file exists in s3
-    print(f['attributes']['file_type'])
+    #print(f['attributes']['file_type'])
 
     update_file_status(db,schema,f['id'],{'status': 'FARGATE_PROCESSING', 'message' : f"Loading {f['attributes']['path'] if 'path' in f['attributes'] else f['attributes']['url']} to {f['table_name']}"})
 
-    if 'file_type' in f['attributes']:
+    if 'file_type' in f['attributes'] and f['attributes']['file_type'] != '':
         if f['attributes']['file_type'] in ['text/csv', 'application/csv']:
                 result = process_file_csv(db,f)
         elif f['attributes']['file_type'] in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel.sheet.binary.macroEnabled.12','application/vnd.ms-excel', 'application/vnd.ms-excel.sheet.macroEnabled.12']:
                 result = process_file_xls(db,f)
-        elif f['attributes']['file_type'] in ['application/json']:
+        elif f['attributes']['file_type'] in ['json']:
                 result = process_file_json(db,f)
         elif f['attributes']['file_type'] == 'geopackage':
                 result = process_file_geopackage(db,f)
@@ -51,7 +51,7 @@ for f in files_to_process["files"]:
     else:
 
         #extension = os.path.splitext(f['attributes']['path'])[1].lower().replace('.','')
-        extension = f['ext']
+        extension = f['attributes']['ext']
         if re.match('^xl',extension):
             result = process_file_xls(db,f)
         elif re.match('^cs|tx',extension):
@@ -60,6 +60,8 @@ for f in files_to_process["files"]:
             result = process_file_geopackage(db,f)
         elif re.match('^js|ge', extension):
             result = process_file_json(db,f)
+        elif re.match('^gpx', extension):
+            result = process_file_gpx(db,f)
         else:
             result = process_file_generic(db,f)
 

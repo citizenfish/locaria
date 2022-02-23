@@ -80,8 +80,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-aws-s3');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-http');
-
-
 	grunt.registerTask('runTests', ['pgsql:tests']);
 	grunt.registerTask('deploySQLFull', ['pgsql:full']);
 	grunt.registerTask('deploySQLupgrade', ['pgsql:upgrade']);

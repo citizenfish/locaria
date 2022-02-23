@@ -202,15 +202,12 @@ function sendSQLFiles(stage, theme,configFile, callBack) {
 			console.log('Running: ' + f);
 			let fileData = fs.readFileSync(f, 'utf8');
 
-			//replace any variables in SQL
-			//for (let i in options.substitutions) {
-			//	let reg = new RegExp('__' + i + '__', 'g');
-			//	fileData = fileData.replace(reg, options.substitutions[i])
-			//}
 
 			let match;
-			let vars = /\{\{subs\.(.*?)\}\}/g;
+			//let vars = /\{\{subs\.(.*?)\}\}/gm;
+			let vars = RegExp('\{\{subs\.(.*?)\}\}', 'g')
 			while (match = vars.exec(fileData)) {
+				console.log(`${match[0]} : ${deployConfig.subs[match[1]]}`)
 				fileData = fileData.replace(match[0], deployConfig.subs[match[1]]);
 			}
 

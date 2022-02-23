@@ -54,14 +54,14 @@ const IntroModal = () => {
 					container
 					spacing={0}
 					direction="column"
-
+					className={classes.navIntroInfo}
 				>
 					{configs.intro}
 				</Grid>
-				<FormGroup>
-					<FormControlLabel control={<Checkbox color="secondary" id={"dismiss"} onChange={handleChange}/>}
+				<FormGroup className={classes.navIntroActions}>
+					<FormControlLabel className={classes.preventShowCheckbox} control={<Checkbox color="secondary" id={"dismiss"} onChange={handleChange}/>}
 					                  label="Don't show again"/>
-					<Button size="small" color="secondary" variant="outlined" onClick={closeIntro}>Get
+					<Button disableElevation size="small" color="secondary" variant="contained" onClick={closeIntro}>Get
 						Started</Button>
 				</FormGroup>
 			</Box>

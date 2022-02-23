@@ -1,7 +1,7 @@
 {
   "stopOnError": true,
   "tables": [
-	"database/reports/*"
+    "tests/integration_tests/core_schema_test.sql"
   ],
   "substitutions": "../tests.json"
 }
