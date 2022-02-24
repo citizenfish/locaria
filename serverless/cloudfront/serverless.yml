@@ -66,12 +66,12 @@ resources:
           Aliases:
             - ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}
           ViewerCertificate:
-            AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.certARN}
+            AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.certARN}
             MinimumProtocolVersion: TLSv1
             SslSupportMethod: sni-only
           Origins:
             - Id: 'WebsiteBucketOrigin'
-              OriginPath: /main
+              OriginPath: /${env:theme}
               DomainName: { "Fn::GetAtt": [ "StaticSite", "DomainName" ] }
               S3OriginConfig:
                 OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
