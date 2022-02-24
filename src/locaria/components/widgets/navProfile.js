@@ -16,11 +16,11 @@ const NavProfile = () => {
 	const [cookies, setCookies] = useCookies(['location']);
 
 	const handleLogin = function () {
-		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
+		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 	}
 
 	const handleSignup = function () {
-		window.location = `https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
+		window.location = `https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 	}
 
 	const handleLogout = function () {
