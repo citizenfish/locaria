@@ -21,6 +21,7 @@ BEGIN
     CREATE EXTENSION IF NOT EXISTS pg_trgm;
     CREATE EXTENSION IF NOT EXISTS aws_commons;
     CREATE EXTENSION IF NOT EXISTS aws_s3;
+    CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
 
     --Create schema for search functions, data and views.
     RAISE NOTICE 'CREATING CORE SCHEMA';
