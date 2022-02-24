@@ -64,7 +64,7 @@ const mergeOutputs = (file,dir) => {
 	const nodeFile=`${dir}/node.json`;
 	let fileDataNew = JSON.parse(fs.readFileSync(nodeFile, 'utf8'));
 	let fileDataOld = JSON.parse(fs.readFileSync(file, 'utf8'));
-	let newData={...fileDataNew,...fileDataOld};
+	let newData={...fileDataOld,...fileDataNew};
 	fs.writeFileSync(file,JSON.stringify(newData));
 }
 

@@ -65,9 +65,9 @@ function doCopy() {
 
 			const resource = {
 				websocket: outputsSite.ServiceEndpointWebsocket,
-				cognitoURL: config.cognitoURL,
-				cognitoPoolId: config.cognitoPoolId,
-				poolClientId: config.poolClientId
+				cognitoURL: `auth.${config.themes[theme].domain}`,
+				cognitoPoolId: outputsSite.cognitoPoolId,
+				poolClientId: outputsSite.poolClientId
 			}
 			fs.writeFileSync(`${buildDir}/resources.json`, JSON.stringify(resource));
 			const cmdLine = `webpack --config webpack.config.js`;

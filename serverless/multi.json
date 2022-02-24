@@ -39,6 +39,15 @@
 	  }
 	},
 	{
+	  "dir": "cognito",
+	  "outputsSitePrefix": true,
+	  "outputs": {
+		"cognitoPoolId": "!Ref CognitoUserPool",
+		"poolClientId": "!Ref CognitoUserPoolClient"
+	  }
+
+	},
+	{
 	  "dir": "ws",
 	  "outputsSitePrefix": true,
 	  "outputs": {
@@ -55,15 +64,6 @@
 	  "outputsSitePrefix": true,
 	  "outputs": {
 		"cfDist": "!Ref WebsiteDistribution"
-	  }
-
-	},
-	{
-	  "dir": "cognito",
-	  "outputsSitePrefix": true,
-	  "outputs": {
-		"cognitoPoolId": "!Ref CognitoUserPool",
-		"poolClientId": "!Ref CognitoUserPoolClient"
 	  }
 
 	}
