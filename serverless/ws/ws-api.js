@@ -50,7 +50,7 @@ module.exports.run = (event, context, callback) => {
 
 	const apiClient = new AWS.ApiGatewayManagementApi({
 		apiVersion: '2018-11-29',
-		endpoint: 'https://' + event.requestContext.domainName
+		endpoint: 'https://' + event.requestContext.domainName+ '/' + event.requestContext.stage
 	});
 	/**
 	 *  Connect to the database

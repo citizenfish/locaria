@@ -1,0 +1,9 @@
+{
+	"name": "locaria-cognito",
+	"version": "1.0.0",
+	"description": "Locaria cognito",
+	"devDependencies": {
+		"serverless-stack-output": "^0.2.3",
+		"serverless": "^2.66.1"
+	}
+}
