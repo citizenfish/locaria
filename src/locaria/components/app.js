@@ -94,7 +94,7 @@ const App = () => {
 					const diff = exp - (start + 60000);
 					console.log(`Expires ${diff / 60000}`);
 					setTimeout(function () {
-						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
+						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 					}, diff);
 				}
 

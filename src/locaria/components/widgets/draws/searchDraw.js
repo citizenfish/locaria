@@ -32,6 +32,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		const classes = useStyles();
 		const [moreResults, setMoreResults] = React.useState(false);
 		const [searchResults, setSearchResults] = React.useState([]);
+		const [locationResults, setLocationResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
 
 		let {text} = useParams();
@@ -67,10 +68,13 @@ const SearchDraw = forwardRef((props, ref) => {
 
 		React.useEffect(() => {
 
-			window.websocket.registerQueue("searchLoader", function (json) {
-				setMoreResults(json.packet.features.length === configs.searchLimit);
-				const newResults = searchResults.concat(json.packet.features);
+			window.websocket.registerQueue("searchBulk", function (json) {
+				setMoreResults(json.searchLoader.packet.features.length === configs.searchLimit);
+				const newResults = searchResults.concat(json.searchLoader.packet.features);
 				setSearchResults(newResults);
+				console.log(json.locationLoader);
+				if(json.locationLoader.packet.features)
+					setLocationResults(json.locationLoader.packet.features);
 				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
 				props.mapRef.current.zoomToLayerExtent("data");
 
@@ -99,7 +103,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				offset = 0;
 			}
 
-			let packet = {
+			let packetSearch = {
 				"queue": "searchLoader",
 				"api": "api",
 				"data": {
@@ -112,24 +116,23 @@ const SearchDraw = forwardRef((props, ref) => {
 			};
 
 			if(newSearchValue===''&&categories.length===0) {
-				packet.data.tags=['featured'];
+				packetSearch.data.tags=['featured'];
 			}
 
-
-			if (configs.homeMode !== "Search") {
-				newSearchValue = newSearchValue.toUpperCase();
-				document.getElementById('mySearch').value = newSearchValue;
-				packet = {
-					"queue": "searchLoader",
-					"api": "api",
-					"data": {
-						"method": "location_search",
-						"address": newSearchValue
-					}
+			let packetLocation={
+				"queue": "locationLoader",
+				"api": "api",
+				"data": {
+					"method": "address_search",
+					"address": newSearchValue
 				}
 			}
 			myContext.updateHomeSearch(newSearchValue);
-			window.websocket.send(packet);
+			window.websocket.sendBulk('searchBulk',[
+				packetSearch,
+				packetLocation
+			]);
+			//window.websocket.send(packet);
 		}
 
 		const inViewEvent = function (event) {
@@ -186,6 +189,9 @@ const SearchDraw = forwardRef((props, ref) => {
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
+							{locationResults.length>0? [locationResults[0]].map((item, index) => (
+								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
+							)):null}
 							{searchResults.map((item, index) => (
 								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
 							))}

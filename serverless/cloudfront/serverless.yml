@@ -16,10 +16,18 @@ resources:
     StaticSite:
       Type: AWS::S3::Bucket
       Properties:
-        AccessControl: PublicRead
+        AccessControl: BucketOwnerRead
         BucketName: locaria-${self:custom.stage}-${env:theme}
-        WebsiteConfiguration:
-          IndexDocument: index.html
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - '*'
+              AllowedMethods: [ "GET","POST","PUT" ]
+              AllowedOrigins:
+                - '*'
+              ExposedHeaders: [ ]
+              Id: dataCORS
+              MaxAge: 3800
     WebsiteBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
