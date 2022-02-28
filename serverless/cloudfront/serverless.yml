@@ -1,4 +1,4 @@
-service: locaria-s3
+service: locaria-cloudfront-${env:theme}
 projectDir: ../../../
 provider:
   name: aws

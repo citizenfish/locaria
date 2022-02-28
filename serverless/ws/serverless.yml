@@ -11,6 +11,7 @@ provider:
     auroraDatabaseName: locaria${env:theme}
     auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
+    pool: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}.json):cognitoPoolId}
 
 custom:
   stage: ${opt:stage, self:provider.stage}

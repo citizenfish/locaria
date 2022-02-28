@@ -39,6 +39,15 @@
 	  }
 	},
 	{
+	  "dir": "cognito",
+	  "outputsSitePrefix": true,
+	  "outputs": {
+		"cognitoPoolId": "!Ref CognitoUserPool",
+		"poolClientId": "!Ref CognitoUserPoolClient"
+	  }
+
+	},
+	{
 	  "dir": "ws",
 	  "outputsSitePrefix": true,
 	  "outputs": {

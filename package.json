@@ -4,6 +4,7 @@
 	"scripts": {
 		"configure": "node scripts/configure.js",
 		"build:multi:main": "node scripts/builder.js multi main",
+		"build:multi:nmrn": "node scripts/builder.js multi nmrn",
 		"runLocalSite": "webpack serve",
 		"testApi": "grunt apiTest --url=http://localhost:3000",
 		"clean": "rmdir /s /Q node_modules;rmdir /s /Q websocket\\node_modules;rmdir /s /Q api\\node_modules"

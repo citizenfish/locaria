@@ -1,0 +1,87 @@
+service: locaria-cognito-${env:theme}
+projectDir: ../../../
+provider:
+  name: aws
+  profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../../locaria.json):${self:custom.stage}.region}
+
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+resources:
+  Resources:
+    CognitoUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        MfaConfiguration: "OFF"
+        UserPoolName: locaria-pool-${env:theme}
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: False
+            RequireNumbers: True
+            RequireSymbols: False
+            RequireUppercase: True
+    CognitoUserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: locaria-pool-client-${env:theme}
+        GenerateSecret: False
+        UserPoolId:
+          Ref: CognitoUserPool
+        CallbackURLs:
+          - http://localhost/
+          - https://${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}/
+        AllowedOAuthFlows:
+          - code
+          - implicit
+        SupportedIdentityProviders:
+          - COGNITO
+        AllowedOAuthScopes:
+          - openid
+          - email
+          - phone
+          - profile
+          - aws.cognito.signin.user.admin
+        AllowedOAuthFlowsUserPoolClient: true
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        CustomDomainConfig:
+          CertificateArn: ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.certARN}
+        Domain: auth.${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoUserGroupAdmin:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Admins
+        GroupName: Admins
+        Precedence: 0
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoUserGroupLoader:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Loader
+        GroupName: Loader
+        Precedence: 1
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoUserGroupModerator:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Moderator
+        GroupName: Moderator
+        Precedence: 2
+        UserPoolId:
+          Ref: CognitoUserPool
+
+plugins:
+  - serverless-stack-output
