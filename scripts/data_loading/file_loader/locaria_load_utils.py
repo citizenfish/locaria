@@ -1,9 +1,9 @@
 import psycopg
 import os,subprocess
 import json
-import boto3
-from urllib.parse import urlparse
-import tempfile
+#import boto3
+#from urllib.parse import urlparse
+#import tempfile
 
 
 def database_connect():
@@ -15,11 +15,24 @@ def database_connect():
         print("Cannot connect to database ... exiting", error)
         exit()
 
+def post_process_report(db,file, schema = 'locaria_core'):
+    try:
+        print(f"Running report {file['report_name']}")
+        q_params = {"method" : "report", "report_name" : file["report_name"]}
+        parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS p", [json.dumps(q_params)])
+        ret = parameters.fetchone()[0]
+        return ret
+
+    except Exception as error:
+        print("Cannot run report", error)
+        return {'error' : f"SQL error when running {file['report_name']}", "sql_error" : error}
+
 def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
 
     try:
         print(f"Retrieving parameters : {parameter_name}")
         q_params = {"method" : "get_parameters"}
+
         if parameter_name != None:
             q_params["parameter_name"] = parameter_name
 
@@ -59,20 +72,14 @@ def process_file_xls(db,file):
 
 def process_file_json(db,file):
     print(f"JSON PROCESSING  {file['id']}")
-    filename = ''
-
-    if 'custom_loader' in file['attributes']:
-        file['attributes']['path'] = tempfile.gettempdir() + f"/{file['id']}.json"
-        from custom_loaders import custom_loader_main
-        filename = custom_loader_main(file['attributes']['custom_loader'],db,file)
-        if 'status' in filename and filename['status'] == 'ERROR':
-            return filename
-        file['filename'] = filename['path']
-        parameters = ['-lco', 'ID_GENERATE=YES']
-        return process_file_generic(db,file,parameters)
-
     parameters = ['-lco', 'ID_GENERATE=YES']
     return process_file_generic(db, file, parameters)
+
+#def custom_loader(db,file):
+#     print(f"CUSTOM LOADER  {file['id']}")
+#     from custom_loaders import custom_loader_main
+#     filename = custom_loader_main(file['attributes']['custom_loader'],db,file)
+#     return {'status' : 'CUSTOM LOADER', 'result' : filename}
 
 def process_file_geopackage(db,file):
     print(f"GEOPACKAGE PROCESSING  {file['id']}")
@@ -99,7 +106,6 @@ def process_file_generic(db,file,parameters=[]):
     log_parameters = parameters[:]
     ogr = ogr_loader(file,parameters)
     return ogr
-    #return {"status" : ogr["status"], "log_message" : {"message" : ogr["message"], "parameters" : log_parameters, "result" : ogr["result"]}}
 
 def get_file_from_url(url, format='json'):
     data = request.get(url)
@@ -110,35 +116,16 @@ def get_file_from_url(url, format='json'):
 
 def ogr_loader(file, parameters):
 
+    #TODO ogr2ogr version check we must have gdal > 3.4
+
     if not 'table_name' in file:
         return {'status' : 'ERROR', 'result' : 'Missing table_name definition for ogr_loader'}
 
-    if not 'path' in file['attributes']:
-        return {'status' : 'ERROR', 'result' : 'Missing path for ogr_loader'}
+    # Set up our variables for ogr2ogr command, TODO use peer authentication from FARGATE
 
-    # Set up our variables for ogr2ogr command
-    pgConn = urlparse(os.environ['LOCARIADB'])
     command = ['ogr2ogr']
-    ogrConn = f"PG:dbname={pgConn.path[1:]} user={pgConn.username} password={pgConn.password} host={pgConn.hostname} port={pgConn.port}"
-
+    ogrConn = os.environ['LOCARIADB']
     filename = file['filename'] if 'filename' in file else  f"/vsis3/{file['attributes']['path']}"
-
-    #Can use GDAL driver or boto3 to get file from s3, gdal is default, boto3 added as option in case gdal break things and also to allow local debug if needed
-    if 's3_driver' in file['attributes'] and file['attributes']['s3_driver'] == 'boto3':
-        filename = f"s3://{file['attributes']['path']}"
-        #download file to tmp filename we need to preserve extension for ogr2ogr
-        print(f"Downloading from s3 {filename}")
-        s3file = urlparse(filename)
-        tmp_dir = tempfile.gettempdir()
-        tmp_file = os.path.basename(s3file.path)
-        filename = f"{tmp_dir}/{tmp_file}"
-        s3 = boto3.client('s3')
-        with open(filename,'wb') as f:
-            #note we need to strip leading slash from s3 path
-            s3.download_fileobj(s3file.netloc, s3file.path.strip('/'), f)
-    else:
-        print(f"Using GDAL driver to access file")
-
     parameters.extend(['-nln', file['table_name'],'-f', 'PostgreSQL',ogrConn, filename])
     command.extend(parameters)
 
@@ -146,7 +133,7 @@ def ogr_loader(file, parameters):
         command.extend([file['attributes']['layer']])
 
     print(f"Running ogr2ogr on {filename}")
-    #print(' '.join(command))
+    print(' '.join(command))
 
     try:
         result = subprocess.run(command,check=True, capture_output=True)
