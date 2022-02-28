@@ -47,6 +47,9 @@ BEGIN
         WHEN parameters ->> 'method' IN ('delete_file') THEN
             ret_var = delete_file(parameters);
 
+        WHEN parameters->>'method' IN ('report') THEN
+            ret_var = run_report(parameters, TRUE);
+
         WHEN parameters ->> 'method' IN ('view_report') THEN
             ret_var = view_report(parameters);
 

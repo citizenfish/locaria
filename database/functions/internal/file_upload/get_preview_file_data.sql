@@ -44,10 +44,16 @@ BEGIN
     url_field_var  = COALESCE(parameters->>'url_field', url_field_var);
 
 
-    --cope with missing geometry field
-    IF (SELECT 1
+    --cope with missing geometry field as load process has failed to geocode
+    IF (
+        SELECT 1
         FROM information_schema.columns
-        WHERE table_schema='locaria_uploads' AND table_name= REPLACE(parameters->>'table','locaria_uploads.','') AND column_name='wkb_geometry')  IS NULL THEN
+        WHERE table_schema='locaria_uploads' AND table_name= REPLACE(parameters->>'table','locaria_uploads.','') AND column_name='wkb_geometry'
+        )  IS NULL
+        --we can force an override and use our geocoder rather than the auto geocoding on load
+        OR COALESCE(parameters->>'override_geometry', 'false')::BOOLEAN
+
+        THEN
 
         IF COALESCE(parameters->>'_geocoder_type','') != '' THEN
 

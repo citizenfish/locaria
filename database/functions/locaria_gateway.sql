@@ -40,7 +40,7 @@ BEGIN
             ret_var = reverse_geocoder(parameters);
 
          WHEN parameters->>'method' IN ('report') THEN
-            ret_var = run_report(parameters);
+            ret_var = run_report(parameters, FALSE);
 
          WHEN parameters->>'method' IN ('get_parameters') THEN
             ret_var = get_parameters(parameters, 'external');

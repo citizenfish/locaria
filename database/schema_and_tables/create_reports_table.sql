@@ -4,6 +4,7 @@ CREATE  TABLE locaria_core.reports(
     id                  BIGSERIAL PRIMARY KEY,
     report_name         TEXT,
     report_parameters   JSONB,
+    admin_privilege     BOOLEAN DEFAULT FALSE,
     last_updated        TIMESTAMP DEFAULT NOW()
 
 );

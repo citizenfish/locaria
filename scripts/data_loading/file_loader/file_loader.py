@@ -4,6 +4,7 @@ import os
 import re
 import time
 import boto3
+import tempfile
 
 debug = 0
 schema = 'locaria_core' if len(sys.argv) < 3  else sys.argv[2]
@@ -16,43 +17,68 @@ print("Database connection established")
 parameters = get_parameters(db,"file_upload")
 files_to_process = get_files_to_process(db,schema)
 
+
 count = 0
 
 for f in files_to_process["files"]:
     count += 1
     start_time = time.time()
 
+    # Mandatory extension which tells us which loader to use
+    extension = f['attributes'].get('ext', 'csv')
+    # Any SQL to run after load
+    post_process_report = f['attributes'].get('post_process_report', '')
+
     # A file needs a url or S3 path if we are to process it
-    if not 'path' in f['attributes'] and not 'url' in f['attributes']:
-        update_file_status(db,schema,f['id'],{'status': 'FARGATE_ERROR', 'log_message' : {'error' : 'Missing file path or url'}})
+    if not 'path' in f['attributes'] and not 'url' in f['attributes'] and not "custom_loader" in f['attributes']:
+        update_file_status(db,schema,f['id'],{'status': 'FARGATE_ERROR', 'log_message' : {'error' : 'Missing file path, url or custom loader'}})
         continue
 
-    f['table_name'] = f"{upload_schema}.{table_name_mask}{f['id']}"
-
-    # When loading from web client the record is created and then file uploaded, file has filename "id"
-    # We need to check that it is there before processing
-
-    if 'id_as_filename' in f['attributes']:
-        f['attributes']['path'] = f"{f['attributes']['bucket']}/{f['attributes']['path']}{f['id']}.{f['attributes']['ext']}"
-        print(f"Constructed filename {f['attributes']['path']}")
-
-    # Make sure file exists in s3 for everything bar json api calls
-    if "path" in f["attributes"]:
-        path = file['attributes']['path']
-        s3 = boto3.resource('s3')
-        for bucket_list in s3.Bucket(f['attributes']['bucket']).objects.filter(Prefix=path):
-            if not path in bucket_list:
-                update_file_status(db,schema,f['id'],{'log_message' : {'s3_status' : 'File not yet present in S3'}})
-                continue
-            else:
-                update_file_status(db,schema,f['id'],{'log_message' : {'s3_status' : 'File found in S3'}})
-
-    update_file_status(db,schema,f['id'],{'status': 'FARGATE_PROCESSING', 'message' : f"Loading {f['attributes']['path'] if 'path' in f['attributes'] else f['attributes']['url']} to {f['table_name']}"})
+    # The table we are loading to, can only be in uploads schema
+    table_name = f['attributes'].get('table_name', f"{table_name_mask}{f['id']}")
+    f['table_name'] = f"{upload_schema}.{table_name}"
 
     # Add any parameters to file structure so passed to processing functions
     f["parameters"] = parameters if "error" not in parameters else {}
 
-    extension = f['attributes']['ext'] if "ext" in f["attributes"] else os.path.splitext(f['attributes']['path'])[1].lower().replace('.','')
+    # Custom loaders pull their data directly from API calls and do not need files in S3
+    if 'custom_loader' in f['attributes']:
+
+        # We need a temporary directory and filename to download to
+        f["attributes"]["tmp_dir"] = tempfile.gettempdir()
+        f['attributes']['path'] = f["attributes"]["tmp_dir"] + f"/{f['id']}.{extension}"
+
+        from custom_loaders import custom_loader_main
+        # custom loaders should do their stuff and then create a file which is referenced in "path"
+        custom_loader_result = custom_loader_main(db,f)
+        if custom_loader_result.get('status', '') == 'ERROR':
+            update_file_status(db,schema,f['id'],{'status': 'ERROR', 'log_message' : {'custom_loader_error' : custom_loader_result}})
+
+        f['filename'] = custom_loader_result['path']
+    else:
+        # We are now expecting file to be in S3 so must have a bucket
+        if not 'bucket' in f['attributes']:
+            update_file_status(db,schema,f['id'],{'status': 'FARGATE_ERROR', 'log_message' : {'error' : 'Missing file bucket'}})
+            continue
+
+        # When loading from web client the record is created and then file uploaded, file has filename "id"
+        if 'id_as_filename' in f['attributes']:
+            f['attributes']['path'] = f"{f['attributes']['bucket']}/{f['attributes']['path']}{f['id']}.{extension}"
+            print(f"Constructed filename {f['attributes']['path']}")
+
+        # Make sure file exists in s3 for everything bar json api calls
+        if "path" in f["attributes"]:
+            path = f['attributes']['path']
+            s3 = boto3.resource('s3')
+            for bucket_list in s3.Bucket(f['attributes']['bucket']).objects.filter(Prefix=path):
+                if not path in bucket_list:
+                    update_file_status(db,schema,f['id'],{'log_message' : {'s3_status' : 'File not yet present in S3'}})
+                    continue
+                else:
+                    update_file_status(db,schema,f['id'],{'log_message' : {'s3_status' : 'File found in S3'}})
+
+    update_file_status(db,schema,f['id'],{'status': 'FARGATE_PROCESSING', 'message' : f"Loading {f['attributes']['path'] if 'path' in f['attributes'] else f['attributes']['url']} to {f['table_name']}"})
+
     if re.match('^xl',extension):
         result = process_file_xls(db,f)
     elif re.match('^cs|tx',extension):
@@ -68,6 +94,10 @@ for f in files_to_process["files"]:
 
     if result['status'] == 'FARGATE_PROCESSED':
         result['attributes'] = {'table_name' : f['table_name'], 'processing_time' : round(time.time() - start_time,2), 'record_count' : get_record_count(db, f['table_name'])}
+
+    if post_process_report != '':
+        f['report_name'] = post_process_report
+        result['attributes']['post_process_report_output'] = post_process_report(db,f)
 
     update_file_status(db,schema,f['id'],result)
     print(f"Processed file {f['id']}")

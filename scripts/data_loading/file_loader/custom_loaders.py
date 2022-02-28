@@ -1,14 +1,65 @@
 import requests
 import time
 import json
+#import tempfile
+import re
+from zipfile import ZipFile
 
-def custom_loader_main(func,db,file):
+def custom_loader_main(db,file):
+    func = file["attributes"]["custom_loader"]
     if func == 'planning_loader':
         return planning_loader(db,file)
     elif func == 'flood_loader':
         return flood_loader(db,file)
+    elif func == 'os_opendata':
+        return os_opendata_loader(db, file)
     else:
         return 'ERROR'
+
+def os_opendata_loader(db,file):
+
+    url = file['parameters'].get('os_opendata_api_url','https://api.os.uk/downloads/v1/products')
+    os_products = requests.get(url).json()
+
+    # First we get a list of all products, then extract the download url from the one we want
+    downloadURL = ''
+    for product in os_products:
+        if product['id'] == file["attributes"]["product"]:
+            product_details = requests.get(product['url']).json()
+            format_list = requests.get(product_details["downloadsUrl"]).json()
+            format = file["attributes"].get("format", "GeoPackage")
+            for formats in format_list:
+                if formats["format"] == format:
+                    print(formats)
+                    downloadURL = formats['url']
+
+    # Now get a temp dir and download zip file to it
+    tmp_dir = file["attributes"]["tmp_dir"]
+    print(f"Downloading from {downloadURL} to temporary directory: {tmp_dir}")
+    osData = requests.get(downloadURL)
+    tmpZipFile = f"{tmp_dir}/osData.zip"
+    with open(tmpZipFile, 'wb') as f:
+        f.write(osData.content)
+
+    # OS Zip files contain all sorts of stuff we are not interested in
+    with ZipFile(tmpZipFile) as extractor:
+        extractor.extractall(tmp_dir)
+        zipList = extractor.namelist()
+
+    # Look for gpkg by default but can be overridden
+    searchExt = '\.' + file["attributes"].get('ext', 'gpkg')
+
+    retFileName = ''
+    for unZippedFile in zipList:
+        if re.search(searchExt, unZippedFile):
+            retFileName = tmp_dir + "/" + unZippedFile
+            break
+
+    if(retFileName) == '':
+        return {'status' : 'ERROR', 'result' : 'OS LOADER', 'message' : 'Extension not found in OS zipfile'}
+
+    print(retFileName)
+    return {'path' : retFileName}
 
 def flood_loader(db,file):
     print ("Flood Loader")
