@@ -160,7 +160,8 @@ export default class UseStyles {
 			},
 
 			introModal: {
-				outline: 'none'
+				outline: 'none',
+				margin: '50px'
 			},
 
 			navIntroBox: {
@@ -251,7 +252,7 @@ export default class UseStyles {
 					},
 					[theme.breakpoints.down('md')]: {
 						left: 0,
-						height: '50%',
+						height: '80%',
 						maxWidth: '100vw',
 						bottom: '56px',
 						borderBottomLeftRadius: '20px',

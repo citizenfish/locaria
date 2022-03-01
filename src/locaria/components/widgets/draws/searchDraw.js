@@ -53,7 +53,7 @@ const SearchDraw = forwardRef((props, ref) => {
 						doSearch('new');
 					}
 				} else {
-					history.push(`/`);
+					history.push(`/Map`);
 					props.updateMap();
 
 				}
