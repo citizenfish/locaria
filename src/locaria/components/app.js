@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Home from "components/home";
+import Landing from "components/landing";
 import Submit from 'components/submit';
 import Error from 'components/error';
 import Maintenance from 'components/maintenance';
@@ -94,7 +95,7 @@ const App = () => {
 					const diff = exp - (start + 60000);
 					console.log(`Expires ${diff / 60000}`);
 					setTimeout(function () {
-						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
+						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 					}, diff);
 				}
 
@@ -155,7 +156,9 @@ const App = () => {
 
 							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Search/:text?" component={Home}/>
+							<Route path="/Map" component={Home}/>
 							<Route path="/Submit/:category" component={Submit}/>
+							<Route path="/" component={configs.landing? Landing:Home}></Route>
 							<Route exact path="/:id_token?" component={Home}/>
 
 							<Route component={Home}/>

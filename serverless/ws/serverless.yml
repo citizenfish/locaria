@@ -12,6 +12,26 @@ provider:
     auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
     pool: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}.json):cognitoPoolId}
+    importBucket: locaria-${self:custom.stage}-${env:theme}
+    region: ${file(../../../locaria.json):${self:custom.stage}.region}
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - s3:*
+          Resource:
+            - arn:aws:s3:::*
+        - Effect: 'Allow'
+          Action:
+            - cloudfront:*
+          Resource:
+            - "*"
+        - Effect: 'Allow'
+          Action:
+            - execute-api:Invoke
+          Resource:
+            - "*"
 
 custom:
   stage: ${opt:stage, self:provider.stage}

@@ -3,6 +3,7 @@ import {Divider, Drawer, ListItem, ListItemIcon, ListItemText} from "@mui/materi
 import Box from "@mui/material/Box";
 import {Link} from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
+import MapIcon from '@mui/icons-material/Map';
 import {configs, channels, pages} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
@@ -43,12 +44,20 @@ const MenuDraw = function () {
 					onKeyDown={()=>{dispatch(closeMenuDraw())}}
 				>
 
-					<ListItem button key={'Home'} component={Link} to={`/`}>
+					{configs.landing? <ListItem button key={'Intro'} component={Link} to={`/`}>
 						<ListItemIcon>
 							<HomeIcon/>
 						</ListItemIcon>
 						<ListItemText primary={'Home'}/>
+					</ListItem> : <></>}
+
+					<ListItem button key={'Map'} component={Link} to={`/Map`}>
+						<ListItemIcon>
+							<MapIcon/>
+						</ListItemIcon>
+						<ListItemText primary={'Map'}/>
 					</ListItem>
+
 
 					<Divider/>
 
