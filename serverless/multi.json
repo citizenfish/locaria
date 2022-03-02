@@ -66,6 +66,16 @@
 		"cfDist": "!Ref WebsiteDistribution"
 	  }
 
+	},
+	{
+	  "dir": "events",
+	  "outputsSitePrefix": true,
+	  "outputs": {
+
+	  },
+	  "functions": [
+		"incoming.js"
+	  ]
 	}
   ]
 }

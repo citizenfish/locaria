@@ -37,7 +37,11 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 						            variant="h5">{properties['local_type']}</Typography>
 						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
 							dispatch(openViewDraw(properties.fid));
-						}}>View</Button>
+						}}>Show</Button>
+						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
+							dispatch(openViewDraw(properties.fid));
+						}}>My Location</Button>
+
 					</div>
 				</Paper>
 			)

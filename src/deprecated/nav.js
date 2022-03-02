@@ -27,7 +27,6 @@ import {ViewDraw} from "../locaria/components/widgets/draws/viewDraw";
 const Nav = () => {
 	const classes = useStyles();
 	const [leftDraw, setLeftDraw] = React.useState(false);
-	const [cookies, setCookies] = useCookies(['location']);
 
 	const location = useLocation();
 	let {feature} = useParams();
@@ -58,25 +57,6 @@ const Nav = () => {
 
 
 
-
-	function handleKeyDown(e) {
-		if (e.key === 'Enter') {
-			let postcode = document.getElementById('myPostcode').value;
-			postcode = postcode.toUpperCase();
-			document.getElementById('myPostcode').value = postcode;
-
-			window.websocket.send({
-				"queue": "postcode",
-				"api": "api",
-				"data": {
-					"method": "address_search",
-					"address": postcode
-				}
-			});
-
-		}
-
-	}
 
 	function channelDisplay(channel) {
 		if (channel.type === 'Report' && channel.noCategory !== undefined && channel.noCategory === true)
@@ -144,31 +124,6 @@ const Nav = () => {
 		);
 	}
 
-
-	function LocationSearch() {
-		if (configs.navShowHome !== false) {
-			return (
-				<div className={classes.search}>
-					<div className={classes.searchIcon}>
-						<SearchIcon/>
-					</div>
-					<InputBase
-						placeholder="Postcode…"
-						classes={{
-							root: classes.inputRoot,
-							input: classes.inputInput,
-						}}
-						inputProps={{'aria-label': 'search'}}
-						defaultValue={cookies.postcode ? cookies.postcode : configs.defaultPostcode}
-						onKeyPress={handleKeyDown}
-						id="myPostcode"
-					/>
-				</div>
-			)
-		} else {
-			return (<Box sx={{flexGrow: 1}}/>)
-		}
-	}
 
 	const toggleSearchWrapper=function() {
 		viewRef.current.closeViewDraw();

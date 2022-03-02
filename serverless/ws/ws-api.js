@@ -30,19 +30,17 @@ module.exports.run = (event, context, callback) => {
 		password: process.env.auroraMasterPass,
 		port: process.env.postgresPort,
 	}
-	console.log(conn);
-	//let conn = process.env.postgres;
 	const suuid = uuidv4();
 
 	const connectionId = event.requestContext.connectionId;
 	const eventType = event.requestContext.eventType;
-	console.log(`EVENT: ${eventType}`);
-	console.log(`ID: ${connectionId}`);
+	//console.log(`EVENT: ${eventType}`);
+	//console.log(`ID: ${connectionId}`);
 
 
 	context.callbackWaitsForEmptyEventLoop = false;
 
-	console.log(event.requestContext);
+	//console.log(event.requestContext);
 	/*	const apiClient = new AWS.ApiGatewayManagementApi({
 			apiVersion: '2018-11-29',
 			endpoint: 'https://' + event.requestContext.domainName + '/' + event.requestContext.stage
@@ -228,6 +226,7 @@ module.exports.run = (event, context, callback) => {
 							}
 						} else {
 							payload.packet['response_code'] = 313;
+							console.log(`tokenPacket['cognito:groups'] does not contain Loader!`);
 							sendToClient(payload);
 						}
 					},
@@ -270,7 +269,7 @@ module.exports.run = (event, context, callback) => {
 		if(packet.data.file_attributes===undefined)
 			packet.data={};
 		packet.data.file_attributes.bucket=process.env.importBucket;
-		packet.data.file_attributes.path=`incoming/${process.env.stage}/`;
+		packet.data.file_attributes.path=`incoming/`;
 		packet.data.file_attributes.id_as_filename=true;
 
 		let qarguments= [packet.data];
@@ -290,7 +289,7 @@ module.exports.run = (event, context, callback) => {
 				} else {
 
 					let s3 = new AWS.S3();
-					let filePath = `incoming/${process.env.stage}/${result.rows[0]['locaria_internal_gateway']['id']}.${packet.data.file_attributes.ext}`;
+					let filePath = `incoming/${result.rows[0]['locaria_internal_gateway']['id']}.${packet.data.file_attributes.ext}`;
 
 					let s3parameters = {
 						Bucket: process.env.importBucket,

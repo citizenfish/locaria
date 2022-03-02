@@ -22,7 +22,7 @@ const AdminNew= () => {
 
 	if(cookies['id_token'] === undefined ||
 	   cookies['id_token'] === "null") {
-		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=http://localhost:8080/`;
+		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 	}
 
 	return (
