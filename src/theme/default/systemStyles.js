@@ -27,6 +27,8 @@ export default class UseStyles {
 					outline: '1px solid slategrey'
 				}
 			},
+
+
 			/*
 				Defaults
 			 */
@@ -51,6 +53,16 @@ export default class UseStyles {
 				padding: "10px"
 			},
 
+			/*
+				Landing page
+			 */
+
+			landingCallToAction: {
+				width: "100vw",
+				height: "10vh",
+				backgroundColor: theme.palette.primary.darker,
+				fontColor: theme.palette.text.primary
+			},
 
 			/*
 			  Possibly legacy
@@ -145,17 +157,12 @@ export default class UseStyles {
 				justifyContent: 'center !important',
 				alignItems: 'center !important',
 				padding: '0 !important',
-				height: '56px',
-				width: '56px',
-				minWidth: '56px !important',
-				marginTop: '10px',
-				marginBottom: '10px',
+				//height: '56px',
+				//width: '56px',
+				//minWidth: '56px !important',
 				[theme.breakpoints.down('md')]: {
-					position: 'fixed !important',
-					left: '50%',
-					transform: 'translate(-50%, -28px)',
-					marginTop: '0px',
-					marginBottom: '0px',
+					marginTop: '10px !important',
+					marginBottom: '10px !important',
 				}
 			},
 
@@ -175,7 +182,7 @@ export default class UseStyles {
 				padding: 20,
 				overflow: 'hidden',
 				border: 0,
-				color: `${theme.palette.primary.contrastText}`,
+				color: theme.palette.text.primary,
 				outline: 'none'
 			},
 			navIntroInfo: {
@@ -195,7 +202,8 @@ export default class UseStyles {
 			 */
 
 			profileDial: {
-				position: 'relative', bottom: 11, right: 16, marginLeft: '30px',
+				position: 'relative',
+				marginLeft: '30px',
 				"& .MuiFab-root": {
 					boxShadow: '0px 0px 0px 0px !important'
 				}
@@ -205,7 +213,7 @@ export default class UseStyles {
 			dialog: {
 				"& .MuiPaper-root": {
 					backgroundColor: theme.palette.primary.main,
-					color: alpha(theme.palette.primary.contrastText, 1)
+					color: alpha(theme.palette.text.primary, 1)
 				}
 			},
 
@@ -293,7 +301,7 @@ export default class UseStyles {
 
 			searchDrawBox: {
 				flex: 1,
-				color: `${theme.palette.primary.contrastText} !important`,
+				color: `${theme.palette.text.primary} !important`,
 			},
 
 			searchDrawResultList: {
@@ -341,7 +349,7 @@ export default class UseStyles {
 			},
 
 			SearchDrawNameText: {
-				color: theme.palette.primary.contrastText,
+				color: theme.palette.text.primary,
 				fontSize: '0.9rem !important',
 				overflow: 'hidden',
 				textOverflow: 'ellipsis',
@@ -354,7 +362,7 @@ export default class UseStyles {
 			},
 
 			SearchDrawShipText: {
-				color: alpha(theme.palette.primary.contrastText, 0.35),
+				color: alpha(theme.palette.text.primary, 0.35),
 				fontSize: '0.8rem !important',
 				textOverflow: 'ellipsis',
 				whiteSpace: 'nowrap',
@@ -392,7 +400,7 @@ export default class UseStyles {
 				marginRight: '10px',
 				alignSelf: 'stretch',
 				backgroundColor: `${theme.palette.secondary.main} !important`,
-				color: `${theme.palette.secondary.contrastText} !important`,
+				color: `${theme.palette.text.primary} !important`,
 			},
 
 			searchDrawAdvanced: {
@@ -514,7 +522,7 @@ export default class UseStyles {
 
 			},
             drawHeaderDivider: {
-				borderColor: `${theme.palette.primary.contrastText} !important`,
+				borderColor: `${theme.palette.text.primary} !important`,
 				opacity: .26,
 			},
 			pageDialog: {
@@ -583,7 +591,7 @@ export default class UseStyles {
 			ReportProfileText: {
 				fontWeight: 100,
 				padding: 0,
-				color: alpha(theme.palette.primary.contrastText, 0.35),
+				color: alpha(theme.palette.text.primary, 0.35),
 				width: '100%',
 				margin: 3
 			},
@@ -612,7 +620,7 @@ export default class UseStyles {
 				flexDirection: 'column',
 				justifyContent: 'space-between',
 				margin: '0 0 15px 0 !important',
-				color: alpha(theme.palette.primary.contrastText, 1)
+				color: alpha(theme.palette.text.primary, 1)
 			},
 			ReportMainInfoAccordion: {
 				backgroundColor: `${theme.palette.primary.lighter} !important`,
@@ -644,7 +652,7 @@ export default class UseStyles {
 				margin: '5px 0 5px !important'
 			},
 			ReportInfoText: {
-				color: alpha(theme.palette.primary.contrastText, 0.35),
+				color: alpha(theme.palette.text.primary, 0.35),
 				width: '100%'
 			},
 			ReportInfoTitle: {
@@ -670,7 +678,7 @@ export default class UseStyles {
 				flexDirection: 'column',
 				marginBottom: '10px',
 				width: '97%',
-				backgroundColor: `${theme.palette.primary.contrastText} !important`,
+				backgroundColor: `${theme.palette.text.primary} !important`,
 				padding: 10,
 				borderRadius: 20,
 			},
