@@ -139,7 +139,7 @@ const Nav = () => {
 			<IntroModal/>
 			<BottomNavigation className={classes.nav} id={"navMain"}>
 				<BottomNavigationAction className={classes.NavMenuButton} label="Menu" icon={<MenuIcon color="icons"/>}  onClick={handleDrawOpen}/>
-				<BottomNavigationAction label="Search"  icon={<SearchIcon color="secondary" fontSize="large"/>} onClick={toggleSearchWrapper}/>
+				<BottomNavigationAction className={classes.NavSearchButton} label="Search"  icon={<SearchIcon color="secondary"/>} onClick={toggleSearchWrapper}/>
 				<NavProfile/>
 			</BottomNavigation>
 			<SearchDraw ref={searchRef} viewWrapper={openViewWrapper}/>
