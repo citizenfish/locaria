@@ -35,5 +35,9 @@ $SQL$
 
         SELECT jsonb_build_object('opennames_post_process', 'success');
 
+        UPDATE parameters
+        SET parameter = parameter || jsonb_build_object('opennames_version', ($1::JSONB)->>'version')
+        WHERE parameter_name ='opennames_loader';
+
 $SQL$),
 TRUE;
