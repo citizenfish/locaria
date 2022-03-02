@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 import App from './components/App';
 import {theme,configs, resources} from "themeLocaria";
 import {ThemeProvider} from '@mui/material/styles';
+import CssBaseline from "@mui/material/CssBaseline";
 
 
 import '@fontsource/roboto/300.css';
@@ -46,6 +47,7 @@ function errored(event) {
 function Main() {
 	return (
 		<ThemeProvider theme={theme}>
+			<CssBaseline />
 			<App/>
 		</ThemeProvider>
 	)

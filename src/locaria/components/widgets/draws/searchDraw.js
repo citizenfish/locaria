@@ -14,7 +14,7 @@ import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useHistory, useParams} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
-import {closeSearchDraw, deleteSearchCategory} from "../../redux/slices/searchDrawSlice";
+import {closeSearchDraw, deleteSearchCategory, openSearchDraw} from "../../redux/slices/searchDrawSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 import Chip from "@mui/material/Chip";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -45,12 +45,10 @@ const SearchDraw = forwardRef((props, ref) => {
 			} else {
 				if (open === true) {
 					dispatch(closeViewDraw());
-					history.push(`/Search/`);
 					props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
 					props.mapRef.current.zoomToLayerExtent("data");
-					if (text !== undefined) {
-						document.getElementById('mySearch').value = text;
-						doSearch('new');
+					if (text === undefined) {
+						history.push(`/Search/`);
 					}
 				} else {
 					history.push(`/Map`);
@@ -161,7 +159,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				</div>
 				<Divider/>
 				<div className={classes.searchDrawSearch}>
-					<MenuIcon color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
+					<MenuIcon fontSize="large" color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
 						dispatch(openCategoryDraw());
 					}}/>
 					<InputBase

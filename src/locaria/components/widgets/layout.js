@@ -33,13 +33,15 @@ import PageDialog from "./dialogs/pageDialog";
 const Layout = ({children, map, update, fullscreen = false}) => {
 	const mapRef = useRef();
 	const location = useLocation();
+	// params?
+
+	let {category} = useParams();
 	let {feature} = useParams();
 	const classes = useStyles();
 
 	const dispatch = useDispatch()
 
 
-	const [leftDraw, setLeftDraw] = React.useState(false);
 	const [openError, setOpenError] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
 	const [resolutions, setResolutions] = React.useState(undefined);
@@ -47,6 +49,9 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 
 	const [cookies, setCookies] = useCookies(['location']);
+
+
+
 
 
 	const handleFeatureSelected = function (features,geojsonFeatures) {
@@ -100,7 +105,10 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	React.useEffect(() => {
 
 		if (location.pathname.match('^/Search/.*')) {
-			dispatch(openSearchDraw());
+			if(category)
+				dispatch(openSearchDraw({categories:[category]}));
+			else
+				dispatch(openSearchDraw());
 
 		}
 		if (feature) {

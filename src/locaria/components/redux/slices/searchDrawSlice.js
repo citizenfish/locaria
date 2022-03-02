@@ -21,11 +21,14 @@ export const searchDrawSlice = createSlice({
 		deleteSearchCategory: (state,action) => {
 			if(state.categories.indexOf(action.payload)!==-1)
 			state.categories.splice(state.categories.indexOf(action.payload),1);
+		},
+		clearSearchCategory: (state) => {
+			state.categories=[];
 		}
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const { openSearchDraw, closeSearchDraw, toggleSearchDraw,deleteSearchCategory } = searchDrawSlice.actions
+export const { openSearchDraw, closeSearchDraw, toggleSearchDraw,deleteSearchCategory,clearSearchCategory } = searchDrawSlice.actions
 
 export default searchDrawSlice.reducer
