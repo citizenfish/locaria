@@ -1,10 +1,6 @@
 import psycopg
 import os,subprocess
 import json
-#import boto3
-#from urllib.parse import urlparse
-#import tempfile
-
 
 def database_connect():
     try:
@@ -15,10 +11,12 @@ def database_connect():
         print("Cannot connect to database ... exiting", error)
         exit()
 
-def post_process_report(db,file, schema = 'locaria_core'):
+def run_post_process_report(db, file, schema = 'locaria_core'):
     try:
         print(f"Running report {file['report_name']}")
         q_params = {"method" : "report", "report_name" : file["report_name"]}
+        q_params.update(file)
+
         parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS p", [json.dumps(q_params)])
         ret = parameters.fetchone()[0]
         return ret
@@ -48,7 +46,6 @@ def update_file_status(db,schema,id,update):
     update["method"] = "update_file"
     update["id"] = id
     files = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS files", [json.dumps(update)])
-    # Remember to commit write transactions with psycopg
     db.commit()
     return files.fetchone()[0]
 
@@ -75,25 +72,20 @@ def process_file_json(db,file):
     parameters = ['-lco', 'ID_GENERATE=YES']
     return process_file_generic(db, file, parameters)
 
-#def custom_loader(db,file):
-#     print(f"CUSTOM LOADER  {file['id']}")
-#     from custom_loaders import custom_loader_main
-#     filename = custom_loader_main(file['attributes']['custom_loader'],db,file)
-#     return {'status' : 'CUSTOM LOADER', 'result' : filename}
 
 def process_file_geopackage(db,file):
-    print(f"GEOPACKAGE PROCESSING  {file['id']}")
+    print(f"GEOPACKAGE PROCESSING {file['id']}")
     parameters=[]
     return process_file_generic(db,file, parameters)
 
 def process_file_gpx(db,file):
-     print(f"GPX PROCESSING  {file['id']}")
+     print(f"GPX PROCESSING {file['id']}")
      parameters=[]
      file['attributes']['layer'] ='waypoints'
      return process_file_generic(db,file, parameters)
 
 def process_file_generic(db,file,parameters=[]):
-    print("GENERIC PROCESSING")
+    print(f"GENERIC PROCESSING {file['id']}")
     parameters.extend(['-lco', 'GEOMETRY_NAME=wkb_geometry', '--config', 'PG_USE_COPY', 'YES', '-overwrite', '-t_srs', 'EPSG:4326'])
 
     #skipfailures forces pg to commit 1 transaction per record and slows it right down
@@ -116,7 +108,7 @@ def get_file_from_url(url, format='json'):
 
 def ogr_loader(file, parameters):
 
-    #TODO ogr2ogr version check we must have gdal > 3.4
+    # TODO ogr2ogr version check we must have gdal > 3.4
 
     if not 'table_name' in file:
         return {'status' : 'ERROR', 'result' : 'Missing table_name definition for ogr_loader'}
@@ -125,7 +117,8 @@ def ogr_loader(file, parameters):
 
     command = ['ogr2ogr']
     ogrConn = os.environ['LOCARIADB']
-    filename = file['filename'] if 'filename' in file else  f"/vsis3/{file['attributes']['path']}"
+
+    filename = file.get('filename', f"/vsis3/{file['attributes']['path']}")
     parameters.extend(['-nln', file['table_name'],'-f', 'PostgreSQL',ogrConn, filename])
     command.extend(parameters)
 

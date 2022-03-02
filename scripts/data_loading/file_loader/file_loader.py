@@ -49,12 +49,16 @@ for f in files_to_process["files"]:
         f['attributes']['path'] = f["attributes"]["tmp_dir"] + f"/{f['id']}.{extension}"
 
         from custom_loaders import custom_loader_main
-        # custom loaders should do their stuff and then create a file which is referenced in "path"
-        custom_loader_result = custom_loader_main(db,f)
-        if custom_loader_result.get('status', '') == 'ERROR':
-            update_file_status(db,schema,f['id'],{'status': 'ERROR', 'log_message' : {'custom_loader_error' : custom_loader_result}})
 
-        f['filename'] = custom_loader_result['path']
+        # custom loaders should do their stuff and then create a file
+        custom_loader_result = custom_loader_main(db,f)
+        status = custom_loader_result.get('status', '')
+        if status in ('ERROR', 'CANCELLED'):
+            update_file_status(db,schema,f['id'],{'status': status, 'log_message' : {'custom_loader_error' : custom_loader_result}})
+            continue
+
+        f.update(custom_loader_result)
+
     else:
         # We are now expecting file to be in S3 so must have a bucket
         if not 'bucket' in f['attributes']:
@@ -97,7 +101,7 @@ for f in files_to_process["files"]:
 
     if post_process_report != '':
         f['report_name'] = post_process_report
-        result['attributes']['post_process_report_output'] = post_process_report(db,f)
+        result['attributes']['post_process_report_output'] = run_post_process_report(db,f)
 
     update_file_status(db,schema,f['id'],result)
     print(f"Processed file {f['id']}")

@@ -33,7 +33,10 @@ $SQL$
 
         REFRESH MATERIALIZED VIEW CONCURRENTLY locaria_data.location_search_view;
 
-        SELECT jsonb_build_object('opennames_post_process', 'success');
+        UPDATE parameters
+        SET parameter = parameter || jsonb_build_object('opennames_version', ($1::JSONB)->>'version')
+        WHERE parameter_name ='opennames_loader';
 
+        SELECT jsonb_build_object('opennames_post_process', ($1::JSONB)->>'version');
 $SQL$),
 TRUE;
