@@ -19,7 +19,6 @@ def custom_loader_main(db,file):
 def os_opendata_loader(db,file):
 
     parameters = get_parameters(db,"opennames_loader")['opennames_loader']
-    print(parameters)
     url = parameters.get('os_opendata_api_url','https://api.os.uk/downloads/v1/products')
     os_products = requests.get(url).json()
 
@@ -31,9 +30,9 @@ def os_opendata_loader(db,file):
             # Next we have to get details of the product we require
             product_details = requests.get(product['url']).json()
             #Check whether this version is already loaded
-            version  = parameters.get('opennames_version', '')
-            if version == product_details['version']:
-                return {'status' : 'CANCELLED', 'result' : 'OS LOADER', 'message' : f"Version {version} already loaded"}
+            lastVersion  = parameters.get('opennames_version', '')
+            if lastVersion == product_details['version']:
+                return {'status' : 'CANCELLED', 'result' : 'OS LOADER', 'message' : f"Version {lastVersion} already loaded"}
 
             print(f"Loading version {product_details['version']}")
             # Finally we have to get a download url for the format we are interest in
@@ -41,7 +40,7 @@ def os_opendata_loader(db,file):
             format = file["attributes"].get("format", "GeoPackage")
             for formats in format_list:
                 if formats["format"] == format:
-                    print(f" Loading format {format}")
+                    print(f"Loading format {format}")
                     downloadURL = formats['url']
                     break
 
@@ -71,7 +70,7 @@ def os_opendata_loader(db,file):
         return {'status' : 'ERROR', 'result' : 'OS LOADER', 'message' : 'Extension not found in OS zipfile'}
 
     print(retFileName)
-    return {'filename' : retFileName, 'version' : version}
+    return {'filename' : retFileName, 'version' : product_details['version']}
 
 def flood_loader(db,file):
     print ("Flood Loader")

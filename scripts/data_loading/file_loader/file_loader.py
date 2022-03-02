@@ -49,7 +49,8 @@ for f in files_to_process["files"]:
         f['attributes']['path'] = f["attributes"]["tmp_dir"] + f"/{f['id']}.{extension}"
 
         from custom_loaders import custom_loader_main
-        # custom loaders should do their stuff and then create a file which is referenced in "path"
+
+        # custom loaders should do their stuff and then create a file
         custom_loader_result = custom_loader_main(db,f)
         status = custom_loader_result.get('status', '')
         if status in ('ERROR', 'CANCELLED'):
@@ -87,8 +88,7 @@ for f in files_to_process["files"]:
     elif re.match('^cs|tx',extension):
         result = process_file_csv(db,f)
     elif re.match('^gpk',extension):
-        #result = process_file_geopackage(db,f)
-        result = {'status' : "REGISTERED", 'attributes' :{}}
+        result = process_file_geopackage(db,f)
     elif re.match('^js|ge', extension):
         result = process_file_json(db,f)
     elif re.match('^gpx', extension):
