@@ -8,6 +8,7 @@ import {useStyles} from "stylesLocaria";
 import {Container, Divider} from "@mui/material";
 import {useDispatch} from 'react-redux'
 import {openViewDraw} from "../../../redux/slices/viewDrawSlice";
+import Grid from "@mui/material/Grid";
 
 const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
@@ -27,7 +28,7 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 		case 'location':
 			return (
 				<Paper elevation={0} className={classes.SearchDrawWrapper}>
-					<CardImageLoader defaultImage={configs.defaultImage}/>
+					<CardImageLoader defaultImage={configs.locationIcon}/>
 					<div className={classes.SearchDrawContent}>
 						<Typography className={classes.SearchDrawNameText}
 						            variant="h5">{properties.address}</Typography>
@@ -35,13 +36,20 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 
 						<Typography className={classes.SearchDrawShipText}
 						            variant="h5">{properties['local_type']}</Typography>
-						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
-							dispatch(openViewDraw(properties.fid));
-						}}>Show</Button>
-						<Button variant="contained" className={classes.SearchDrawButton} onClick={() => {
-							dispatch(openViewDraw(properties.fid));
-						}}>My Location</Button>
 
+
+						<Grid container spacing={1} justifyContent="center">
+							<Grid item md={6}>
+								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation} onClick={() => {
+									dispatch(openViewDraw(properties.fid));
+								}}>Locate</Button>
+							</Grid>
+							<Grid item md={6}>
+								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation} onClick={() => {
+									dispatch(openViewDraw(properties.fid));
+								}}>My Location</Button>
+							</Grid>
+						</Grid>
 					</div>
 				</Paper>
 			)

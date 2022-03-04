@@ -25,7 +25,7 @@ import Multi from "./multi";
 
 import { useSelector, useDispatch } from 'react-redux'
 import { openSearchDraw ,toggleSearchDraw} from '../redux/slices/searchDrawSlice'
-import { openViewDraw} from '../redux/slices/viewDrawSlice'
+import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawSlice'
 import { openMultiSelect} from '../redux/slices/multiSelectSlice'
 import { openMenuDraw} from '../redux/slices/menuDrawSlice'
 import PageDialog from "./dialogs/pageDialog";
@@ -37,21 +37,46 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	let {category} = useParams();
 	let {feature} = useParams();
+	let {search} = useParams();
 	const classes = useStyles();
 
 	const dispatch = useDispatch()
+	const history = useHistory();
 
 
 	const [openError, setOpenError] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
 	const [resolutions, setResolutions] = React.useState(undefined);
 	const viewDrawOpen = useSelector((state) => state.viewDraw.open);
+	const searchDrawOpen = useSelector((state) => state.searchDraw.open);
+	const open = useSelector((state) => state.layout.open);
 
 
 	const [cookies, setCookies] = useCookies(['location']);
 
+	const isInitialMount = useRef(true);
 
+	React.useEffect(() => {
+		if (isInitialMount.current) {
+			isInitialMount.current = false;
+		} else {
+			if (open === true) {
+				history.push(`/Map`);
+				forceMapRefresh();
+			}
+		}
 
+		window.websocket.registerQueue("homeLoader", function (json) {
+			if (map === true && open === true) {
+				mapRef.current.addGeojson(json.packet)
+			}
+		});
+
+		return () => {
+			window.websocket.removeQueue("homeLoader");
+		}
+
+	}, [open]);
 
 
 	const handleFeatureSelected = function (features,geojsonFeatures) {
@@ -67,7 +92,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	}
 
 	const forceMapRefresh = () => {
-		if(resolutions!==undefined&&viewDrawOpen===false) {
+		if(resolutions!==undefined&&viewDrawOpen===false&&searchDrawOpen===false) {
 			updateMap(resolutions);
 			console.log('Forced refresh');
 
@@ -76,13 +101,12 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	const onZoomChange = (newRes) => {
 		console.log('Zoom refresh');
+		console.log(newRes);
 		setResolutions(newRes);
 	}
 
 	React.useEffect(() => {
-		if (resolutions !== undefined && location.pathname !== '/Search/' && feature==undefined) {
-			updateMap(resolutions);
-		}
+		forceMapRefresh();
 
 	}, [resolutions]);
 
@@ -105,10 +129,11 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	React.useEffect(() => {
 
 		if (location.pathname.match('^/Search/.*')) {
-			if(category)
-				dispatch(openSearchDraw({categories:[category]}));
-			else
+			if(category) {
+					dispatch(openSearchDraw({categories: JSON.parse(category),search:search}));
+			} else {
 				dispatch(openSearchDraw());
+			}
 
 		}
 		if (feature) {
@@ -116,7 +141,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 		}
 
-		if (map === true) {
+		if (map === true  ) {
 			if (configs.cluster === undefined || configs.cluster === false) {
 				window.websocket.send({
 					"queue": "homeLoader",
@@ -140,11 +165,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		}
 
 
-		window.websocket.registerQueue("homeLoader", function (json) {
-			if (map === true) {
-				mapRef.current.addGeojson(json.packet)
-			}
-		});
+
 
 		window.websocket.registerQueue("postcode", function (json) {
 			if (json.packet.features.length > 0) {
@@ -167,7 +188,6 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 		return () => {
 			window.websocket.removeQueue("postcode");
-			window.websocket.removeQueue("homeLoader");
 		}
 
 	}, [map]);
