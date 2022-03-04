@@ -29,7 +29,7 @@ const ChannelSelect = () => {
 											{chan.description}
 										</Typography>
 										<Button size="medium" color="secondary" variant="outlined" onClick={() => {
-												history.push(`/Search/${channel}`)
+												history.push(`/Search/["${channel}"]/`)
 										}}>
 											EXPLORE
 										</Button>

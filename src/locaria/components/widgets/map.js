@@ -134,42 +134,51 @@ const Map = forwardRef((props, ref) => {
 		ol.animateZoom({inc:-1});
 	}
 
+	const MapSpeedDial = () => {
+		if(props.speedDial===false)
+			return <></>;
+
+		return (
+		<SpeedDial
+			ariaLabel="SpeedDial basic example"
+			icon={<MapIcon fontSize="medium"/>}
+			className={classes.mapDial}
+			direction={'down'}
+		>
+
+			<SpeedDialAction
+				key={'reset'}
+				icon={<RestartAltIcon/>}
+				tooltipTitle={'Reset Map'}
+				onClick={mapReset}
+			/>
+			<SpeedDialAction
+				key={'zoomIn'}
+				icon={<ZoomInIcon/>}
+				tooltipTitle={'Zoom In'}
+				onClick={mapZoomIn}
+			/>
+			<SpeedDialAction
+				key={'zoomOut'}
+				icon={<ZoomOutIcon/>}
+				tooltipTitle={'Zoom Out'}
+				onClick={mapZoomOut}
+			/>
+			<SpeedDialAction
+				key={'attr'}
+				icon={<InfoIcon/>}
+				tooltipTitle={configs.mapAttribution}
+				tooltipOpen
+			/>
+
+
+		</SpeedDial>
+		)
+	}
+
 	return (
 		<div id="map" className={classes.mapView}>
-			<SpeedDial
-				ariaLabel="SpeedDial basic example"
-				icon={<MapIcon fontSize="medium"/>}
-				className={classes.mapDial}
-				direction={'down'}
-			>
-
-				<SpeedDialAction
-					key={'reset'}
-					icon={<RestartAltIcon/>}
-					tooltipTitle={'Reset Map'}
-					onClick={mapReset}
-				/>
-				<SpeedDialAction
-					key={'zoomIn'}
-					icon={<ZoomInIcon/>}
-					tooltipTitle={'Zoom In'}
-					onClick={mapZoomIn}
-				/>
-				<SpeedDialAction
-					key={'zoomOut'}
-					icon={<ZoomOutIcon/>}
-					tooltipTitle={'Zoom Out'}
-					onClick={mapZoomOut}
-				/>
-				<SpeedDialAction
-					key={'attr'}
-					icon={<InfoIcon/>}
-					tooltipTitle={configs.mapAttribution}
-					tooltipOpen
-				/>
-
-
-			</SpeedDial>
+			<MapSpeedDial/>
 		</div>
 	)
 });

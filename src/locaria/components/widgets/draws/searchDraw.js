@@ -14,11 +14,12 @@ import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useHistory, useParams} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
-import {closeSearchDraw, deleteSearchCategory, openSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {closeSearchDraw, deleteSearchCategory, openSearchDraw, setSearch} from "../../redux/slices/searchDrawSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 import Chip from "@mui/material/Chip";
 import MenuIcon from "@mui/icons-material/Menu";
 import {openCategoryDraw} from "../../redux/slices/categoryDrawSlice";
+import {openLayout,closeLayout} from "../../redux/slices/layoutSlice";
 
 
 const SearchDraw = forwardRef((props, ref) => {
@@ -28,6 +29,8 @@ const SearchDraw = forwardRef((props, ref) => {
 
 		const open = useSelector((state) => state.searchDraw.open);
 		const categories = useSelector((state) => state.searchDraw.categories);
+		const search = useSelector((state) => state.searchDraw.search);
+
 
 		const classes = useStyles();
 		const [moreResults, setMoreResults] = React.useState(false);
@@ -35,7 +38,6 @@ const SearchDraw = forwardRef((props, ref) => {
 		const [locationResults, setLocationResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
 
-		let {text} = useParams();
 
 		const isInitialMount = useRef(true);
 
@@ -44,24 +46,37 @@ const SearchDraw = forwardRef((props, ref) => {
 				isInitialMount.current = false;
 			} else {
 				if (open === true) {
+					history.push(`/Search/${JSON.stringify(categories)}/${search}`);
 					dispatch(closeViewDraw());
+					dispatch(closeLayout());
 					props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
 					props.mapRef.current.zoomToLayerExtent("data");
-					if (text === undefined) {
-						history.push(`/Search/`);
-					}
+					if(searchResults.length===0)
+						doSearch('new');
+
 				} else {
-					history.push(`/Map`);
-					props.updateMap();
+					dispatch(openLayout());
+					//history.push(`/Map`);
+					//props.updateMap();
 
 				}
 			}
 		}, [open]);
 
 		React.useEffect(() => {
-			doSearch('new');
+			if(open===true) {
+				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
+				doSearch('new');
+			}
+		}, [categories]);
 
-		},[categories]);
+
+		React.useEffect(() => {
+			if(open===true) {
+				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
+				doSearch('new');
+			}
+		}, [search]);
 
 
 		React.useEffect(() => {
@@ -70,9 +85,13 @@ const SearchDraw = forwardRef((props, ref) => {
 				setMoreResults(json.searchLoader.packet.features.length === configs.searchLimit);
 				const newResults = searchResults.concat(json.searchLoader.packet.features);
 				setSearchResults(newResults);
-				console.log(json.locationLoader);
-				if(json.locationLoader.packet.features)
+				//console.log(json.locationLoader);
+				if (json.locationLoader.packet.features) {
 					setLocationResults(json.locationLoader.packet.features);
+					props.mapRef.current.addGeojson({"features": json.locationLoader.packet.features, type: "FeatureCollection"},"location",true);
+					//props.mapRef.current.addGeojson({"features": json.locationLoader.packet.features[0], type: "FeatureCollection"},"location",true);
+
+				}
 				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
 				props.mapRef.current.zoomToLayerExtent("data");
 
@@ -87,14 +106,19 @@ const SearchDraw = forwardRef((props, ref) => {
 
 		function handleKeyDown(e) {
 			if (e.key === 'Enter') {
-				doSearch('new');
-
+				setNewSearch();
 			}
+		}
 
+		function setNewSearch() {
+			let newSearchValue = document.getElementById('mySearch').value;
+			dispatch(setSearch({search: newSearchValue}));
 		}
 
 		function doSearch(mode = 'new') {
-			let newSearchValue = document.getElementById('mySearch').value;
+			if(open!==true)
+				return;
+			//let newSearchValue = document.getElementById('mySearch').value;
 			let offset = searchResults.length;
 			if (mode === 'new') {
 				setSearchResults([]);
@@ -106,27 +130,27 @@ const SearchDraw = forwardRef((props, ref) => {
 				"api": "api",
 				"data": {
 					"method": "search",
-					"category": categories.length>0? categories:configs.homeCategorySearch,
-					"search_text": newSearchValue,
+					"category": categories.length > 0 ? categories : configs.homeCategorySearch,
+					"search_text": search,
 					"limit": configs.searchLimit,
 					"offset": offset
 				}
 			};
 
-			if(newSearchValue===''&&categories.length===0) {
-				packetSearch.data.tags=['featured'];
+			if (search === '' && categories.length === 0) {
+				packetSearch.data.tags = ['featured'];
 			}
 
-			let packetLocation={
+			let packetLocation = {
 				"queue": "locationLoader",
 				"api": "api",
 				"data": {
 					"method": "address_search",
-					"address": newSearchValue
+					"address": search
 				}
 			}
-			myContext.updateHomeSearch(newSearchValue);
-			window.websocket.sendBulk('searchBulk',[
+			myContext.updateHomeSearch(search);
+			window.websocket.sendBulk('searchBulk', [
 				packetSearch,
 				packetLocation
 			]);
@@ -141,8 +165,6 @@ const SearchDraw = forwardRef((props, ref) => {
 		}
 
 
-
-
 		return (
 			<Drawer
 				anchor="bottom"
@@ -152,7 +174,9 @@ const SearchDraw = forwardRef((props, ref) => {
 			>
 				<div className={classes.searchDrawHeader}>
 					<Typography className={classes.searchDrawTitle} variant={'h5'}>{configs.searchTitle}</Typography>
-					<IconButton onClick={()=>{dispatch(closeSearchDraw());}} className={classes.searchDrawClose} type="submit"
+					<IconButton onClick={() => {
+						dispatch(closeSearchDraw());
+					}} className={classes.searchDrawClose} type="submit"
 					            aria-label="search">
 						<CloseIcon className={classes.icons}/>
 					</IconButton>
@@ -170,26 +194,26 @@ const SearchDraw = forwardRef((props, ref) => {
 						onKeyDown={handleKeyDown}
 					/>
 					<IconButton onClick={() => {
-						doSearch('new')
+						setNewSearch();
 					}} type="submit" aria-label="search">
-						<SearchIcon className={classes.icons}  />
+						<SearchIcon className={classes.icons}/>
 					</IconButton>
 				</div>
 				{categories.length > 0 &&
-					<Container className={classes.searchDrawAdvanced}>
-						{categories.map((category) => (
-							<Chip label={category} onDelete={() => {
-								dispatch(deleteSearchCategory(category));
-							}}/>
-						))}
-					</Container>
+				<Container className={classes.searchDrawAdvanced}>
+					{categories.map((category) => (
+						<Chip label={category} onDelete={() => {
+							dispatch(deleteSearchCategory(category));
+						}}/>
+					))}
+				</Container>
 				}
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
-							{locationResults.length>0? [locationResults[0]].map((item, index) => (
+							{locationResults.length > 0 ? [locationResults[0]].map((item, index) => (
 								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
-							)):null}
+							)) : null}
 							{searchResults.map((item, index) => (
 								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
 							))}
