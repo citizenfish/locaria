@@ -64,6 +64,24 @@ export default class UseStyles {
 				fontColor: theme.palette.text.primary
 			},
 
+			landingLocation:{
+			//	marginTop: "20px !important"
+			},
+
+			landingLocationGrid: {
+				textAlign: "center",
+				width: "100%"
+			},
+
+			landingLocationPod: {
+				height: 250,
+				margin: 10,
+				border: `1px solid ${theme.palette.primary.main}`,
+				borderRadius: `10px 10px 10px 10px`,
+				padding: 10,
+				backgroundColor: `${theme.palette.secondary.lighter} !important`
+			},
+
 			/*
 			  Possibly legacy
 			 */
@@ -403,6 +421,12 @@ export default class UseStyles {
 				color: `${theme.palette.text.primary} !important`,
 			},
 
+			SearchDrawButtonLocation: {
+				margin: "10px !important",
+				backgroundColor: `${theme.palette.secondary.main} !important`,
+				color: `${theme.palette.text.primary} !important`,
+			},
+
 			searchDrawAdvanced: {
 				marginBottom: 25
 			},
@@ -425,10 +449,9 @@ export default class UseStyles {
 				padding: 10,
 				margin: 10,
 				'& img': {
-					width: '250px',
-					height: '250px'
+					width: '100%'
 				},
-				backgroundColor: `${theme.palette.primary.lighter} !important`
+				backgroundColor: `${theme.palette.secondary.lighter} !important`
 
 			},
 
