@@ -38,12 +38,14 @@ for f in files_to_process["files"]:
     table_name = f['attributes'].get('table_name', f"{table_name_mask}{f['id']}")
     f['table_name'] = f"{upload_schema}.{table_name}"
 
+
     # Add any parameters to file structure so passed to processing functions
     f["parameters"] = parameters if "error" not in parameters else {}
 
     # Custom loaders pull their data directly from API calls and do not need files in S3
     if 'custom_loader' in f['attributes']:
 
+        f['schema'] = upload_schema
         # We need a temporary directory and filename to download to
         f["attributes"]["tmp_dir"] = tempfile.gettempdir()
         f['attributes']['path'] = f["attributes"]["tmp_dir"] + f"/{f['id']}.{extension}"
@@ -53,7 +55,7 @@ for f in files_to_process["files"]:
         # custom loaders should do their stuff and then create a file
         custom_loader_result = custom_loader_main(db,f)
         status = custom_loader_result.get('status', '')
-        if status in ('ERROR', 'CANCELLED'):
+        if status in ('ERROR', 'CANCELLED', 'REGISTERED'):
             update_file_status(db,schema,f['id'],{'status': status, 'log_message' : {'custom_loader_error' : custom_loader_result}})
             continue
 
