@@ -30,7 +30,7 @@ BEGIN
 	    SELECT json_build_object('type','FeatureCollection',
                              'features', COALESCE(json_agg(
                                             json_build_object('type',        'Feature',
-                                                              'properties',  attributes || jsonb_build_object('rank', search_rank),
+                                                              'properties',  attributes || jsonb_build_object('rank', search_rank, 'featureType', 'location'),
                                                               'geometry',    ST_ASGEOJSON(wkb_geometry,4326)::JSON)
                                             ), json_build_array())
                             )
