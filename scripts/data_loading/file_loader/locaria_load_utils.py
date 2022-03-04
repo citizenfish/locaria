@@ -84,9 +84,9 @@ def process_file_gpx(db,file):
      file['attributes']['layer'] ='waypoints'
      return process_file_generic(db,file, parameters)
 
-def process_file_generic(db,file,parameters=[]):
+def process_file_generic(db,file,parameters):
     print(f"GENERIC PROCESSING {file['id']}")
-    parameters.extend(['-lco', 'GEOMETRY_NAME=wkb_geometry', '--config', 'PG_USE_COPY', 'YES', '-overwrite', '-t_srs', 'EPSG:4326'])
+    parameters.extend(['-oo','FLATTEN_NESTED_ATTRIBUTES = YES','-lco', 'GEOMETRY_NAME=wkb_geometry', '--config', 'PG_USE_COPY', 'YES', '-overwrite', '-t_srs', 'EPSG:4326'])
 
     #skipfailures forces pg to commit 1 transaction per record and slows it right down
     if "skipfailures" in file['attributes'] and file['attributes']['skipfailures'] == 'true':
@@ -95,9 +95,23 @@ def process_file_generic(db,file,parameters=[]):
     if "s_srs" in file['attributes']:
         parameters.extend(['-s_srs', file["s_srs"]])
 
-    log_parameters = parameters[:]
-    ogr = ogr_loader(file,parameters)
-    return ogr
+    if 'multifile' in file:
+        print("Loading multiple files")
+        print(file['multifile'])
+        ret = []
+        count = 0
+        for f in file['multifile']:
+            file['filename'] = f['path']
+            # the custom loader can dictate tablename or simply use
+            file['table_name'] = f.get('table', file['table_name'] + f"_{count}")
+            count += 1
+            ret.append(ogr_loader(file, parameters))
+
+        return {'status' : 'REGISTERED', 'result' : ret, 'message' : 'OGR SUCCESS - Multi'}
+    else:
+        log_parameters = parameters[:]
+        ogr = ogr_loader(file,parameters)
+        return ogr
 
 def get_file_from_url(url, format='json'):
     data = request.get(url)
@@ -109,6 +123,8 @@ def get_file_from_url(url, format='json'):
 def ogr_loader(file, parameters):
 
     # TODO ogr2ogr version check we must have gdal > 3.4
+    # Important to dereference parameters as called multiple times
+    ogr_parameters = parameters.copy()
 
     if not 'table_name' in file:
         return {'status' : 'ERROR', 'result' : 'Missing table_name definition for ogr_loader'}
@@ -119,14 +135,17 @@ def ogr_loader(file, parameters):
     ogrConn = os.environ['LOCARIADB']
 
     filename = file.get('filename', f"/vsis3/{file['attributes']['path']}")
-    parameters.extend(['-nln', file['table_name'],'-f', 'PostgreSQL',ogrConn, filename])
-    command.extend(parameters)
+    if 'ogr_parameters' in file['attributes']:
+        ogr_parameters.extend(file['attributes']['ogr_parameters'])
+
+    ogr_parameters.extend(['-nln', file['table_name'],'-f', 'PostgreSQL',ogrConn, filename])
+    command.extend(ogr_parameters)
 
     if 'layer' in file['attributes']:
         command.extend([file['attributes']['layer']])
 
-    print(f"Running ogr2ogr on {filename}")
-    print(' '.join(command))
+    print(f"**********Running ogr2ogr on {filename} with table {file['table_name']}************")
+    #print(' '.join(command))
 
     try:
         result = subprocess.run(command,check=True, capture_output=True)

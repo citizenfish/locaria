@@ -30,6 +30,7 @@ BEGIN
         SET SESSION ROLE locaria_report_user;
     END IF;
 
+    RAISE NOTICE '%',query_var;
 
     EXECUTE query_var
     USING search_parameters
