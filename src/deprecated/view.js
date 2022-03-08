@@ -66,7 +66,7 @@ const View = () => {
 				]
 			});
 			mapRef.current.addGeojson(view, "data", false)
-			mapRef.current.zoomToLayerExtent("data");
+			mapRef.current.zoomToLayersExtent(["data"]);
 		}
 
 		window.websocket.registerQueue("viewLoader", function (json) {

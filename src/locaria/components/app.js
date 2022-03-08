@@ -40,9 +40,6 @@ const App = () => {
 			sameSite: true
 		});
 	}
-	if (cookies.postcode === undefined) {
-		setCookies('postcode', configs.defaultPostcode, {path: '/', sameSite: true});
-	}
 	if (cookies.distanceSelect === undefined) {
 		setCookies('distanceSelect', configs.defaultDistanceSelect, {path: '/', sameSite: true});
 	}

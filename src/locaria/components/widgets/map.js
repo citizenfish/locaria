@@ -36,6 +36,12 @@ const Map = forwardRef((props, ref) => {
 
 		});
 		ol.addLayer({
+			"name": "home",
+			"type": "vector",
+			"active": true,
+			"style": locationStyle
+		});
+		ol.addLayer({
 			"name": "location",
 			"type": "vector",
 			"active": true,
@@ -69,13 +75,13 @@ const Map = forwardRef((props, ref) => {
 			decodeCoords(flatCoordinates) {
 				return ol.decodeCoords(flatCoordinates, 'EPSG:3857', 'EPSG:4326');
 			},
-			zoomToLayerExtent(layer, buffer) {
+			zoomToLayersExtent(layers, buffer) {
 				buffer = buffer || configs.mapBuffer;
-				ol.zoomToLayerExtent({"layer": layer, "buffer": buffer});
+				ol.zoomToLayersExtent({"layers": layers, "buffer": buffer});
 			},
 			zoomToExtent(extent, buffer) {
 				buffer = buffer || configs.mapBuffer;
-				ol.zoomToLayerExtent({"layer": "data", "buffer": buffer, "extent": extent});
+				ol.zoomToLayersExtent({"layers": ["data"], "buffer": buffer, "extent": extent});
 			},
 			flyTo(coordinate,zoom,projection) {
 				ol.flyTo({"coordinate":coordinate,"zoom":zoom,"projection":projection});
@@ -98,11 +104,11 @@ const Map = forwardRef((props, ref) => {
 			addGeojson(json, layer = "data", clear = true) {
 				ol.addGeojson({"layer": layer, "geojson": json, "clear": clear});
 			},
-			markHome(location, layer = "location") {
+			markHome(location) {
 				setLocation(location);
-				ol.clearLayer({"layer": "location"});
+				ol.clearLayer({"layer": "home"});
 				ol.addGeojson({
-					"layer": layer,
+					"layer": "home",
 					"geojson": {
 						"type": "FeatureCollection",
 						"features": [
@@ -112,7 +118,9 @@ const Map = forwardRef((props, ref) => {
 									"coordinates": location
 								},
 								"type": "Feature",
-								"properties": {}
+								"properties": {
+									"featureType":"home"
+								}
 							}
 						]
 					}

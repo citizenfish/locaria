@@ -5,6 +5,39 @@ import marker from 'themeDefault/images/marker.svg';
 import {configs, channels} from "themeLocaria";
 
 export function locationStyle(feature, resolution) {
+
+	let type=feature.get('featureType');
+	console.log(type);
+	if (type === 'home') {
+		return [
+			new Style({
+				image: new Icon({
+					src: markerHome,
+					size: [40, 70],
+					zIndex: 100,
+					anchorOrigin: 'top-left',
+					anchor: [0.5, 0.5],
+					anchorXUnits: 'fraction',
+					anchorYUnits: 'fraction',
+
+
+				}),
+				text: new Text({
+					text: 'Your location',
+					font: 'bold 11px "Soleil"',
+					textBaseline: 'bottom',
+					offsetY: 15,
+					fill: new Fill({
+						color: '#000000'
+					}),
+					stroke: new Stroke({
+						color: '#FFFFFF',
+						width: 3.5
+					})
+				})
+			})
+		]
+	}
 	return [
 		new Style({
 			image: new Icon({
@@ -21,6 +54,9 @@ export function locationStyle(feature, resolution) {
 			})
 		})
 	]
+	
+	
+
 }
 
 export function viewStyle(feature, resolution) {
@@ -62,36 +98,7 @@ export function viewStyle(feature, resolution) {
 		return style;
 	}
 
-	if (category === 'location') {
-		return [
-			new Style({
-				image: new Icon({
-					src: markerHome,
-					size: [40, 70],
-					zIndex: 100,
-					anchorOrigin: 'top-left',
-					anchor: [0.5, 0.5],
-					anchorXUnits: 'fraction',
-					anchorYUnits: 'fraction',
-
-
-				}),
-				text: new Text({
-					text: 'Your location',
-					font: 'bold 11px "Soleil"',
-					textBaseline: 'bottom',
-					offsetY: 15,
-					fill: new Fill({
-						color: '#000000'
-					}),
-					stroke: new Stroke({
-						color: '#FFFFFF',
-						width: 3.5
-					})
-				})
-			})
-		]
-	}
+	
 
 	let channel = channels.getChannelProperties(category);
 

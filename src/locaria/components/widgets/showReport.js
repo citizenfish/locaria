@@ -42,7 +42,7 @@ const ShowReport = ({viewData, fid, mapRef}) => {
 
 
 		}
-		mapRef.current.zoomToLayerExtent("data");
+		mapRef.current.zoomToLayersExtent(["data"]);
 
 	}
 
