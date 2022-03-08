@@ -397,6 +397,15 @@ export default class UseStyles {
 				backgroundColor: `${theme.palette.primary.main} !important`
 			},
 
+			SearchDrawMore: {
+				display: 'flex',
+				flexDirection: 'row',
+				borderRadius: '10px',
+				overflow: 'hidden',
+				marginBottom: '20px',
+				backgroundColor: `${theme.palette.primary.main} !important`
+			},
+
 			SearchDrawContent: {
 				flex: 1,
 				display: 'flex',

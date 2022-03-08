@@ -14,13 +14,21 @@ import {InView} from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useHistory, useParams} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
-import {closeSearchDraw, deleteSearchCategory, openSearchDraw, setSearch} from "../../redux/slices/searchDrawSlice";
+import {
+	closeSearchDraw,
+	deleteSearchCategory,
+	openSearchDraw,
+	setSearch,
+	toggleLocationShow
+} from "../../redux/slices/searchDrawSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 import Chip from "@mui/material/Chip";
 import MenuIcon from "@mui/icons-material/Menu";
 import {openCategoryDraw} from "../../redux/slices/categoryDrawSlice";
-import {openLayout,closeLayout} from "../../redux/slices/layoutSlice";
 
+import {openLayout,closeLayout} from "../../redux/slices/layoutSlice";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Paper from "@mui/material/Paper";
 
 const SearchDraw = forwardRef((props, ref) => {
 		const history = useHistory();
@@ -30,6 +38,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		const open = useSelector((state) => state.searchDraw.open);
 		const categories = useSelector((state) => state.searchDraw.categories);
 		const search = useSelector((state) => state.searchDraw.search);
+		const locationShow = useSelector((state) => state.searchDraw.locationShow);
 
 
 		const classes = useStyles();
@@ -50,7 +59,7 @@ const SearchDraw = forwardRef((props, ref) => {
 					dispatch(closeViewDraw());
 					dispatch(closeLayout());
 					props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
-					props.mapRef.current.zoomToLayerExtent("data");
+					props.mapRef.current.zoomToLayersExtent(["data","location","home"]);
 					if(searchResults.length===0)
 						doSearch('new');
 
@@ -78,6 +87,30 @@ const SearchDraw = forwardRef((props, ref) => {
 			}
 		}, [search]);
 
+		React.useEffect(() => {
+			console.log('locationResults change')
+			if(open===true) {
+
+				if (locationShow) {
+					props.mapRef.current.addGeojson({
+						"features": locationResults,
+						type: "FeatureCollection"
+					}, "location", true);
+
+				} else {
+					props.mapRef.current.addGeojson({
+						"features": [locationResults[0]],
+						type: "FeatureCollection"
+					}, "location", true);
+
+				}
+				props.mapRef.current.zoomToLayersExtent(["data","location","home"]);
+
+			}
+
+
+		}, [locationResults,locationShow]);
+
 
 		React.useEffect(() => {
 
@@ -88,12 +121,9 @@ const SearchDraw = forwardRef((props, ref) => {
 				//console.log(json.locationLoader);
 				if (json.locationLoader.packet.features) {
 					setLocationResults(json.locationLoader.packet.features);
-					props.mapRef.current.addGeojson({"features": json.locationLoader.packet.features, type: "FeatureCollection"},"location",true);
-					//props.mapRef.current.addGeojson({"features": json.locationLoader.packet.features[0], type: "FeatureCollection"},"location",true);
-
 				}
 				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
-				props.mapRef.current.zoomToLayerExtent("data");
+				props.mapRef.current.zoomToLayersExtent(["data","location","home"]);
 
 			});
 
@@ -164,6 +194,41 @@ const SearchDraw = forwardRef((props, ref) => {
 			}
 		}
 
+		const LocationResults = () => {
+			if(locationResults.length) {
+				if(locationShow) {
+					return (
+						<>
+							{locationResults.map((item, index) => (
+						<SearchDrawCard more={true} key={index} {...item} mapRef={props.mapRef}/>
+							))}
+							<div className={classes.SearchDrawMore} onClick={()=>{
+								dispatch(toggleLocationShow());
+							}}>
+								Less locations
+								<ExpandMoreIcon></ExpandMoreIcon>
+							</div>
+						</>
+					)
+				} else {
+					return (
+						<>
+							{[locationResults[0]].map((item, index) => (
+								<SearchDrawCard more={true} key={index} {...item} mapRef={props.mapRef}/>
+							))}
+							<div className={classes.SearchDrawMore} onClick={()=>{
+								dispatch(toggleLocationShow());
+							}}>
+								More locations
+								<ExpandMoreIcon></ExpandMoreIcon>
+							</div>
+						</>
+					)
+				}
+
+			}
+			return <></>
+		}
 
 		return (
 			<Drawer
@@ -211,9 +276,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
-							{locationResults.length > 0 ? [locationResults[0]].map((item, index) => (
-								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
-							)) : null}
+							<LocationResults></LocationResults>
 							{searchResults.map((item, index) => (
 								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
 							))}

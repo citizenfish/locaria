@@ -1475,11 +1475,11 @@ export default class Openlayers {
 	 * @example
 	 * openlayers.zoomToLayerExtent({"map":"map_1","layer":"data"});
 	 */
-	zoomToLayerExtent(options) {
+	zoomToLayersExtent(options) {
 		let self = this;
 		options = Object.assign({
 			"map": "default",
-			"layer": "default",
+			"layers": ["default"],
 			"buffer": 100,
 			"unit": "meters"
 		}, options);
@@ -1488,19 +1488,27 @@ export default class Openlayers {
 		 */
 		let map = self.maps[options.map].object;
 		let view = map.getView();
-		let layer = self.maps[options.map].layers[options.layer];
-		let source = layer.getSource();
-		/*
-		 * Get the extent of the features and fit them
-		 */
 
 
 		let featuresBbox;
+
 		if (options.extent) {
 			featuresBbox = options.extent;
 		} else {
-			let features = source.getFeatures();
+			let features=[];
+			for (let l in options.layers) {
+				let layer = self.maps[options.map].layers[options.layers[l]];
+				let source = layer.getSource();
+				/*
+				 * Get the extent of the features and fit them
+				 */
 
+
+				features = [...features,...source.getFeatures()];
+
+
+
+			}
 			if (features.length > 0) {
 
 				let featuresGeojson = new GeoJSON({

@@ -13,6 +13,7 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import {useHistory} from "react-router-dom";
+import {useCookies} from "react-cookie";
 
 
 
@@ -22,6 +23,9 @@ const Landing = () => {
 	const mapRef = useRef();
 
 	const history = useHistory();
+
+	const [cookies, setCookies] = useCookies(['location']);
+
 
 	function handleKeyDown(e) {
 		if (e.key === 'Enter') {
@@ -33,6 +37,12 @@ const Landing = () => {
 		let newSearchValue = document.getElementById('mySearch').value;
 		history.push(`/Search/[]/${newSearchValue}`);
 	}
+
+	React.useEffect(() => {
+		mapRef.current.markHome(cookies.location);
+		mapRef.current.zoomToLayersExtent(["data","location","home"]);
+
+	});
 
 	return (
 			<>

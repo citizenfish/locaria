@@ -11,7 +11,7 @@ export default function AdminViewItemsMap(props) {
 
     useEffect(() =>{
         mapRef.current.addGeojson(props.mapData.geojson)
-        mapRef.current.zoomToLayerExtent("data")
+        mapRef.current.zoomToLayersExtent(["data"])
     },[mapData])
 
     return(
