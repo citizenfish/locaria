@@ -69,7 +69,7 @@ def process_file_xls(db,file):
 
 def process_file_json(db,file):
     print(f"JSON PROCESSING  {file['id']}")
-    parameters = ['-lco', 'ID_GENERATE=YES']
+    parameters = []
     return process_file_generic(db, file, parameters)
 
 
@@ -86,7 +86,10 @@ def process_file_gpx(db,file):
 
 def process_file_generic(db,file,parameters):
     print(f"GENERIC PROCESSING {file['id']}")
-    parameters.extend(['-oo','FLATTEN_NESTED_ATTRIBUTES = YES','-lco', 'GEOMETRY_NAME=wkb_geometry', '--config', 'PG_USE_COPY', 'YES', '-overwrite', '-t_srs', 'EPSG:4326'])
+    parameters.extend(['-lco','FID=ogc_fid', '-lco', 'GEOMETRY_NAME=wkb_geometry', '--config', 'PG_USE_COPY', 'YES', '-overwrite', '-t_srs', 'EPSG:4326'])
+
+    if 'flatten' in file and file['flatten']:
+        parameters.extend(['-oo','FLATTEN_NESTED_ATTRIBUTES=YES'])
 
     #skipfailures forces pg to commit 1 transaction per record and slows it right down
     if "skipfailures" in file['attributes'] and file['attributes']['skipfailures'] == 'true':
@@ -101,15 +104,21 @@ def process_file_generic(db,file,parameters):
         ret = []
         count = 0
         for f in file['multifile']:
+            mparameters = []
+            if 'flatten' in f and f['flatten']:
+                mparameters = parameters.copy()
+                mparameters.extend(['-oo','FLATTEN_NESTED_ATTRIBUTES=YES'])
+            else:
+                mparameters = parameters.copy()
             file['filename'] = f['path']
             # the custom loader can dictate tablename or simply use
             file['table_name'] = f.get('table', file['table_name'] + f"_{count}")
             count += 1
-            ret.append(ogr_loader(file, parameters))
+            ret.append(ogr_loader(file, mparameters))
 
-        return {'status' : 'REGISTERED', 'result' : ret, 'message' : 'OGR SUCCESS - Multi'}
+        return {'status' : 'FARGATE_PROCESSED', 'result' : ret, 'message' : 'OGR SUCCESS - Multi'}
     else:
-        log_parameters = parameters[:]
+        #log_parameters = parameters[:]
         ogr = ogr_loader(file,parameters)
         return ogr
 
@@ -125,7 +134,7 @@ def ogr_loader(file, parameters):
     # TODO ogr2ogr version check we must have gdal > 3.4
     # Important to dereference parameters as called multiple times
     ogr_parameters = parameters.copy()
-
+    print(parameters)
     if not 'table_name' in file:
         return {'status' : 'ERROR', 'result' : 'Missing table_name definition for ogr_loader'}
 
