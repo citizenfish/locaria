@@ -1,5 +1,4 @@
 --Run a system report
-DROP FUNCTION IF EXISTS locaria_core.run_report(search_parameters JSONB);
 
 CREATE OR REPLACE FUNCTION locaria_core.run_report(search_parameters JSONB, admin_privilege_parameter BOOLEAN DEFAULT FALSE) RETURNS JSONB AS
 $$
@@ -30,7 +29,7 @@ BEGIN
         SET SESSION ROLE locaria_report_user;
     END IF;
 
-    RAISE NOTICE '%',query_var;
+    RAISE NOTICE '%', current_user;
 
     EXECUTE query_var
     USING search_parameters
