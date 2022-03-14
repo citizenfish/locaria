@@ -151,7 +151,7 @@ const Map = forwardRef((props, ref) => {
 			ariaLabel="SpeedDial basic example"
 			icon={<MapIcon fontSize="medium"/>}
 			className={classes.mapDial}
-			direction={'down'}
+			direction={'up'}
 		>
 
 			<SpeedDialAction

@@ -24,6 +24,8 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	}
 
 	const channel = channels.getChannelProperties(properties.category);
+	if(channel===undefined)
+		return <></>
 
 	switch (properties.featureType) {
 		case 'location':

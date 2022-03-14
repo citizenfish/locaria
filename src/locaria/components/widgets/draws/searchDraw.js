@@ -6,7 +6,8 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import React, {forwardRef, useContext, useImperativeHandle, useRef} from "react";
 import {useStyles} from "stylesLocaria";
-import {configs, theme} from "themeLocaria";
+import {configs, theme,channels} from "themeLocaria";
+
 import LocariaContext from "../../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
 import SearchDrawCard from "./cards/searchDrawCard";
@@ -39,6 +40,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		const categories = useSelector((state) => state.searchDraw.categories);
 		const search = useSelector((state) => state.searchDraw.search);
 		const locationShow = useSelector((state) => state.searchDraw.locationShow);
+		const resolutions = useSelector((state) => state.layout.resolutions);
 
 
 		const classes = useStyles();
@@ -46,6 +48,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		const [searchResults, setSearchResults] = React.useState([]);
 		const [locationResults, setLocationResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
+
 
 
 		const isInitialMount = useRef(true);
@@ -166,6 +169,15 @@ const SearchDraw = forwardRef((props, ref) => {
 					"offset": offset
 				}
 			};
+
+
+			let channel=channels.getChannelProperties(categories[0]);
+			if(channel&&channel.searchReport) {
+				packetSearch.data.method="report";
+				packetSearch.data.report_name =channel.searchReport;
+				packetSearch.data.cluster=true;
+				packetSearch.data.bbox=`${resolutions.extent4326[0]} ${resolutions.extent4326[1]},${resolutions.extent4326[2]} ${resolutions.extent4326[3]}`;
+			}
 
 			if (search === '' && categories.length === 0) {
 				packetSearch.data.tags = ['featured'];

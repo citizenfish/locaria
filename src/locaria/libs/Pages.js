@@ -9,7 +9,7 @@ export default class Pages {
 		let list=[];
 		for (let p in this.pages) {
 			if(this.pages[p].options.addToMenu===true) {
-				list.push({title:this.pages[p].options.title,page:p,icon:this.pages[p].options.icon})
+				list.push(this.pages[p].options);
 			}
 		}
 		return list;
@@ -18,7 +18,9 @@ export default class Pages {
 	addPage(id,options,data) {
 		options= Object.assign({
 			addToMenu:true,
-			title:"Page title"
+			title:"Page title",
+			type:"page",
+			id:id
 		},options);
 		this.pages[id]={
 			data:data,
@@ -28,5 +30,9 @@ export default class Pages {
 
 	getPageData(id) {
 		return this.pages[id].data;
+	}
+
+	getPage(id) {
+		return this.pages[id];
 	}
 }

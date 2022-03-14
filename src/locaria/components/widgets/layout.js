@@ -28,8 +28,10 @@ import { openSearchDraw ,toggleSearchDraw} from '../redux/slices/searchDrawSlice
 import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawSlice'
 import { openMultiSelect} from '../redux/slices/multiSelectSlice'
 import { openMenuDraw} from '../redux/slices/menuDrawSlice'
-import PageDialog from "./dialogs/pageDialog";
-import {setLocation} from "../redux/slices/layoutSlice";
+import PageDraw from "./draws/pageDraw";
+import {setLocation, setResolutions} from "../redux/slices/layoutSlice";
+import Typography from "@mui/material/Typography";
+import {openPageDialog} from "../redux/slices/pageDialogSlice";
 
 const Layout = ({children, map, update, fullscreen = false}) => {
 	const mapRef = useRef();
@@ -37,6 +39,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	// params?
 
 	let {category} = useParams();
+	let {pageId} = useParams();
 	let {feature} = useParams();
 	let {search} = useParams();
 	const classes = useStyles();
@@ -47,11 +50,12 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	const [openError, setOpenError] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
-	const [resolutions, setResolutions] = React.useState(undefined);
 	const viewDrawOpen = useSelector((state) => state.viewDraw.open);
 	const searchDrawOpen = useSelector((state) => state.searchDraw.open);
 	const open = useSelector((state) => state.layout.open);
 	const homeLocation = useSelector((state) => state.layout.homeLocation);
+
+	const resolutions = useSelector((state) => state.layout.resolutions);
 
 
 	const [cookies, setCookies] = useCookies(['location']);
@@ -104,7 +108,8 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	const onZoomChange = (newRes) => {
 		console.log('Zoom refresh');
 		console.log(newRes);
-		setResolutions(newRes);
+		dispatch(setResolutions(newRes));
+		//setResolutions(newRes);
 	}
 
 	React.useEffect(() => {
@@ -113,8 +118,15 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	}, [resolutions]);
 
 	React.useEffect(() => {
+		if(pageId) {
+			dispatch(openPageDialog(pageId));
+		}
 
-		if(homeLocation!==false&&homeLocation!==undefined&&map===true) {
+	}, [pageId]);
+
+	React.useEffect(() => {
+
+		if(homeLocation!==false&&homeLocation!==undefined&&map===true&&configs.location!==false) {
 			mapRef.current.markHome(homeLocation);
 			setCookies('location', homeLocation,{path: '/', sameSite: true});
 		}
@@ -130,7 +142,8 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 				"category": configs.homeCategorySearch,
 				"bbox": `${newRes.extent4326[0]} ${newRes.extent4326[1]},${newRes.extent4326[2]} ${newRes.extent4326[3]}`,
 				"cluster": newRes.resolution >= configs.clusterCutOff,
-				"cluster_width": Math.floor(configs.clusterWidthMod * newRes.resolution)
+				"cluster_width": Math.floor(configs.clusterWidthMod * newRes.resolution),
+				"cluster_algorithm": configs.clusterAlgorithm
 			}
 		};
 		window.websocket.send(packet);
@@ -147,6 +160,11 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			}
 
 		}
+
+
+
+
+
 		if (feature) {
 			dispatch(openViewDraw(feature));
 
@@ -216,10 +234,11 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
 					<CategoryDraw></CategoryDraw>
-					<PageDialog></PageDialog>
+					<PageDraw></PageDraw>
                     <BottomNavigation className={classes.nav} id={"navMain"}>
-						<BottomNavigationAction className={classes.NavMenuButton} showLabel={false} icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
-	                    <BottomNavigationAction className={classes.NavSearchButton} showLabel={false} icon={<SearchIcon color="contrastIcons" fontSize="large"/>}
+						<BottomNavigationAction className={classes.NavMenuButton}  icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
+	                    <div  style={{backgroundImage: `url(${configs.siteLogo})`}} className={classes.NavSiteLogo}/>
+	                    <BottomNavigationAction className={classes.NavSearchButton}  icon={<SearchIcon color="contrastIcons" fontSize="large"/>}
 												onClick={() => {toggleSearchWrapper()}}/>
 	                    <NavProfile/>
 					</BottomNavigation>

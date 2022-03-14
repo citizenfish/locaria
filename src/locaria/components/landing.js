@@ -14,6 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import {useHistory} from "react-router-dom";
 import {useCookies} from "react-cookie";
+import {Footer} from "./widgets/footer";
 
 
 
@@ -87,6 +88,7 @@ const Landing = () => {
 					</Grid>
 				</Grid>
 				<ChannelSelect></ChannelSelect>
+				<Footer></Footer>
 			</>
 		)
 };

@@ -153,6 +153,7 @@ const App = () => {
 
 							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Search/:category?/:search?" component={Home}/>
+							<Route path="/Page/:pageId" component={Home}/>
 							<Route path="/Map" component={Home}/>
 							<Route path="/Submit/:category" component={Submit}/>
 							<Route path="/" component={configs.landing? Landing:Home}></Route>

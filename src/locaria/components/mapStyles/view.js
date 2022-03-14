@@ -139,8 +139,6 @@ export function viewStyle(feature, resolution) {
 		]
 	} else {
 		let fill = [255, 0, 0, 0.3];
-		if (type === '|')
-			fill = [0, 255, 0, 0.3];
 		return [
 			new Style({
 				stroke: new Stroke({

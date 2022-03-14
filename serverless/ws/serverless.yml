@@ -5,6 +5,8 @@ provider:
   profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
   runtime: nodejs14.x
   region: ${file(../../../locaria.json):${self:custom.stage}.region}
+  memorySize: 512
+  timeout: 30
   environment:
     postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
     postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
