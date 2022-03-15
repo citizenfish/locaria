@@ -11,7 +11,7 @@ import Slide from '@mui/material/Slide';
 import {useSelector, useDispatch} from 'react-redux'
 
 import {useStyles} from "stylesLocaria";
-import SearchDrawCard from "./draws/cards/searchDrawCard";
+import ViewFeature from "./draws/cards/viewFeature";
 import {closeMultiSelect} from "../redux/slices/multiSelectSlice";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -45,7 +45,7 @@ const Multi = forwardRef((props, ref) => {
 			<DialogContent>
 				<DialogContentText id="alert-dialog-slide-description" component="div">
 					{features.map((item, index) => (
-						<SearchDrawCard key={index} {...item} mapRef={props.mapRef} />
+						<ViewFeature key={index} {...item} mapRef={props.mapRef} />
 					))}
 				</DialogContentText>
 			</DialogContent>

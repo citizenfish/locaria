@@ -185,7 +185,7 @@ const Map = forwardRef((props, ref) => {
 	}
 
 	return (
-		<div id="map" className={classes.mapView}>
+		<div id="map" className={classes[props.className]}>
 			<MapSpeedDial/>
 		</div>
 	)

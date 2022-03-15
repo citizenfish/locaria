@@ -75,7 +75,7 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 								if (closeWrapper)
 									closeWrapper();
 								mapRef.current.clearHighlighted("default", "data");
-								dispatch(openViewDraw(properties.fid));
+								dispatch(openViewDraw({fid:properties.fid,category:properties.category}));
 							}}>View</Button>
 						</div>
 					</Paper>

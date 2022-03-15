@@ -26,7 +26,7 @@ import {useCookies} from "react-cookie";
 
 import Distance from "libs/Distance";
 
-import SearchDistance from "../locaria/components/search/SearchDistance";
+import FilterDistance from "../locaria/components/search/FilterDistance";
 import SearchRange from "../locaria/components/search/SearchRange";
 import SearchTags from "../locaria/components/search/SearchTags";
 
@@ -203,14 +203,14 @@ const Category = () => {
 	const showSearch = () => {
 		if (channel.search === undefined) {
 			return (
-				<SearchDistance changeFunction={handleFilterChange}
+				<FilterDistance changeFunction={handleFilterChange}
 				                currentValue={location.distance} min={1} max={1000}/>
 			)
 		} else {
 			return (
 				channel.search.map(function (item, index) {
 					if (item.component === 'SearchDistance') {
-						return (<SearchDistance key={index} changeFunction={handleFilterChange} min={item.min}
+						return (<FilterDistance key={index} changeFunction={handleFilterChange} min={item.min}
 						                        max={item.max}
 						                        currentValue={location.distance}/>)
 					}

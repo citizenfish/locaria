@@ -92,7 +92,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			if(features.length>1)  {
 				dispatch(openMultiSelect(geojsonFeatures.features));
 			} else {
-				dispatch(openViewDraw(features[0].get('fid')));
+				dispatch(openViewDraw({fid:features[0].get('fid'),category:features[0].get('category')}));
 			}
 		}
 	}
@@ -166,7 +166,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 
 		if (feature) {
-			dispatch(openViewDraw(feature));
+			dispatch(openViewDraw({fid:feature,category:category}));
 
 		}
 
@@ -259,7 +259,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		if (map === true) {
 			return (
 				<div className={fullscreen ? classes.mapContainerFull : classes.mapContainer}>
-					<Map ref={mapRef} onFeatureSeleted={handleFeatureSelected}
+					<Map className={'mapView'} ref={mapRef} onFeatureSeleted={handleFeatureSelected}
 					     onZoomChange={configs.cluster ? onZoomChange : undefined}/>
 				</div>
 			)

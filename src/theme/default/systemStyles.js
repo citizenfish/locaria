@@ -547,6 +547,17 @@ export default class UseStyles {
 					}
 				},
 			},
+
+			viewDrawFull:{
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					color: theme.palette.icons.main,
+					backgroundColor: theme.palette.primary.darker,
+					width: 'calc(100vw)',
+					height: 'calc(100% - 56px)',
+				},
+			},
+
 			viewDrawHeader: {
 				padding: 10,
 				position: 'relative',
@@ -617,6 +628,10 @@ export default class UseStyles {
 					maxWidth: 'calc(100vw - 40px)',
 					paddingBottom: '20px'
 				}
+			},
+			ReportMap: {
+				height: "50vh",
+				width: "100%"
 			},
 			ReportProfileHeader: {
 				padding: '0 !important',
