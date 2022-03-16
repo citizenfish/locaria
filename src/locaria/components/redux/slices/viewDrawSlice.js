@@ -6,7 +6,8 @@ export const viewDrawSlice = createSlice({
 		open: false,
 		category: false,
 		fid: false,
-		position: 0
+		position: 0,
+		more: false
 	},
 	reducers: {
 		openViewDraw: (state, action) => {
@@ -18,13 +19,14 @@ export const viewDrawSlice = createSlice({
 			state.open = false;
 			state.fid = false;
 		},
-		moreResults: (state) => {
-
+		setPosition: (state,action) => {
+			state.position=action.payload.position;
+			state.more=action.payload.more;
 		}
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const {openViewDraw, closeViewDraw,moreResults} = viewDrawSlice.actions
+export const {openViewDraw, closeViewDraw,setPosition} = viewDrawSlice.actions
 
 export default viewDrawSlice.reducer
