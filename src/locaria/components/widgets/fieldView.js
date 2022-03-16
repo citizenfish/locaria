@@ -54,7 +54,7 @@ const FormatFields = ({fields, data}) => {
 	if (fields && fields.length > 0) {
 		return (<Grid container spacing={2} className={classes.ReportMainInfoExtra}>
 			{fields.map(value => (
-				<FormatField field={value} data={data}></FormatField>
+				<FormatField field={value} data={data} key={value.key}></FormatField>
 			))}
 		</Grid>);
 	}

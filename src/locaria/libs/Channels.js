@@ -25,7 +25,12 @@ export default class Channels {
 	}
 
 	getChannelProperties(channel) {
-		return this.channels[channel];
+		if(this.channels[channel]) {
+			return this.channels[channel];
+		} else {
+			console.log(`Request for [${channel}] that doesn't exits`);
+			return undefined;
+		}
 	}
 
 	getChannelMapIcon(channel,tags) {

@@ -1,7 +1,5 @@
 import React from 'react';
-import CardMedia from "@mui/material/CardMedia";
 import {useStyles} from "stylesLocaria";
-import SearchDrawCard from "./draws/cards/searchDrawCard";
 
 
 const CardImageLoader = ({images, defaultImage, defaultTitle = 'Search', className, gallery = false}) => {

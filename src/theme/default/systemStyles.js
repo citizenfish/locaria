@@ -82,6 +82,41 @@ export default class UseStyles {
 				backgroundColor: `${theme.palette.secondary.lighter} !important`
 			},
 
+
+			footer: {
+				width: "100%",
+				padding: 20,
+				backgroundColor: theme.palette.primary.darker,
+				fontColor: theme.palette.text.primary,
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "center",
+				justifyContent: "center"
+			},
+
+			footerLogo: {
+				width: 80,
+				height: 80,
+				display: "inline-block",
+				backgroundSize: "contain",
+				marginBottom: 5
+			},
+
+			footerLi: {
+				float: "left",
+				padding: 10,
+				textDecoration: "none",
+				listStyle: "none"
+			},
+
+			footerBy: {
+				"& a": {
+					textDecoration: "none",
+					color: theme.palette.text.primary
+				}
+
+			},
+
 			/*
 			  Possibly legacy
 			 */
@@ -140,27 +175,25 @@ export default class UseStyles {
 
 			"nav": {
 				backgroundColor: `${theme.palette.primary.main} !important`,
-				borderRadius: '10px',
-				width: '300px',
+				//borderRadius: '10px',
+				width: '100vw',
 				position: 'fixed',
 				zIndex: '150',
-				bottom: '40px',
+				top: 0,
 				justifyContent: 'space-between !important',
 				padding: '10px 0 !important',
-				[theme.breakpoints.up('md')]: {
-					right: 150
-				},
-				[theme.breakpoints.down('md')]: {
-					right: 'calc(50% - 150px)',
-					zIndex: 1200,
-					width: '100vw',
-					maxWidth: 'unset',
-					position: 'fixed',
-					left: 0,
-					bottom: 0,
-					borderRadius: 0,
-					padding: '0 !important',
-				}
+
+			},
+			NavSiteLogo: {
+				width: "calc(100% - 120px)",
+				height: 40,
+				borderLeft: "2px solid white",
+				borderRight: "2px solid white",
+				backgroundRepeat: "no-repeat",
+				backgroundSize: "auto 30px",
+				backgroundPosition: "center",
+				padding: '10px !important',
+				marginRight: 20
 			},
 			NavMenuButton: {
 				flex: '0 !important',
@@ -175,13 +208,7 @@ export default class UseStyles {
 				justifyContent: 'center !important',
 				alignItems: 'center !important',
 				padding: '0 !important',
-				//height: '56px',
-				//width: '56px',
-				//minWidth: '56px !important',
-				[theme.breakpoints.down('md')]: {
-					marginTop: '10px !important',
-					marginBottom: '10px !important',
-				}
+
 			},
 
 			introModal: {
@@ -221,7 +248,6 @@ export default class UseStyles {
 
 			profileDial: {
 				position: 'relative',
-				marginLeft: '30px',
 				"& .MuiFab-root": {
 					boxShadow: '0px 0px 0px 0px !important'
 				}
@@ -266,24 +292,24 @@ export default class UseStyles {
 
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
-					borderTopRightRadius: '20px',
+					//borderTopRightRadius: '20px',
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.main,
 
 					[theme.breakpoints.up('md')]: {
 						left: 0,
-						height: '100%',
+						top: 55,
 						maxWidth: leftWidth,
 
 					},
 					[theme.breakpoints.down('md')]: {
 						left: 0,
-						height: '80%',
+						height: '60%',
 						maxWidth: '100vw',
-						bottom: '56px',
-						borderBottomLeftRadius: '20px',
-						borderBottomRightRadius: '20px',
-						borderTopLeftRadius: '20px',
+						bottom: 0,
+						//borderBottomLeftRadius: '20px',
+						//borderBottomRightRadius: '20px',
+						//borderTopLeftRadius: '20px',
 						overflow: 'hidden',
 					}
 				},
@@ -311,7 +337,6 @@ export default class UseStyles {
 			searchDrawSearch: {
 				margin: 20,
 				display: 'flex',
-				borderRadius: '6px',
 				overflow: 'hidden',
 				padding: '12px 14px',
 				backgroundColor: theme.palette.primary.lighter
@@ -331,8 +356,6 @@ export default class UseStyles {
 
 			searchDrawResults: {
 				backgroundColor: theme.palette.primary.darker,
-				borderTopLeftRadius: '20px',
-				borderTopRightRadius: '20px',
 				flex: 1,
 				display: 'flex',
 				flexDirection: 'column',
@@ -469,22 +492,20 @@ export default class UseStyles {
 			mapDial: {
 				position: 'absolute',
 				right: 20,
-				top: 20
+				bottom: 20
 			},
 
 			mapContainer: {
 				position: "relative",
 				width: '100%',
-				height: '65vh'
+				height: '100vh'
 			},
 			mapContainerFull: {
 				position: "relative",
 				width: '100%',
 				height: '100vh',
 				[theme.breakpoints.down('md')]: {
-					height: 'calc(100vh - 56px)',
-					borderBottomLeftRadius: '20px',
-					borderBottomRightRadius: '20px',
+					height: '100vh',
 					overflow: 'hidden',
 				}
 			},
@@ -510,11 +531,11 @@ export default class UseStyles {
 			viewDraw: {
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
-					borderTopRightRadius: '20px',
-					height: '100%',
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.darker,
 					width: 'calc(100vw)',
+					height: 'calc(100% - 56px)',
+
 					[theme.breakpoints.up('md')]: {
 						maxWidth: leftWidth,
 						left: 0
@@ -522,15 +543,21 @@ export default class UseStyles {
 					[theme.breakpoints.down('md')]: {
 						maxWidth: '100vw',
 						left: 0,
-						bottom: '56px',
-						height: 'calc(100% - 56px)',
-						borderTopRightRadius: '0px',
-						borderBottomLeftRadius: '20px',
-						borderBottomRightRadius: '20px',
 						overflow: 'hidden',
 					}
 				},
 			},
+
+			viewDrawFull:{
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					color: theme.palette.icons.main,
+					backgroundColor: theme.palette.primary.darker,
+					width: 'calc(100vw)',
+					height: 'calc(100% - 56px)',
+				},
+			},
+
 			viewDrawHeader: {
 				padding: 10,
 				position: 'relative',
@@ -557,9 +584,17 @@ export default class UseStyles {
 				borderColor: `${theme.palette.text.primary} !important`,
 				opacity: .26,
 			},
-			pageDialog: {
+			pageDraw: {
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					color: theme.palette.text.primary,
+					backgroundColor: theme.palette.primary.darker,
+				},
+				height: '100%',
+				bottom: 0,
 				"& .MuiPaper-root": {
-					padding: 10
+					padding: 10,
+					height: "100%"
 				}
 			},
 
@@ -593,6 +628,10 @@ export default class UseStyles {
 					maxWidth: 'calc(100vw - 40px)',
 					paddingBottom: '20px'
 				}
+			},
+			ReportMap: {
+				height: "50vh",
+				width: "100%"
 			},
 			ReportProfileHeader: {
 				padding: '0 !important',

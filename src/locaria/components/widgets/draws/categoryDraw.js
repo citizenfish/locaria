@@ -11,6 +11,7 @@ import {channels, configs} from 'themeLocaria';
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import FilterDistance from "../../search/FilterDistance";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -23,6 +24,9 @@ const CategoryDraw = forwardRef((props, ref) => {
 	const dispatch = useDispatch()
 
 	const open = useSelector((state) => state.categoryDraw.open);
+
+	const distance = useSelector((state) => state.searchDraw.distance);
+
 
 	return (
 		<Dialog
@@ -40,25 +44,34 @@ const CategoryDraw = forwardRef((props, ref) => {
 			className={classes.dialog}
 		>
 			<Grid container className={classes.root} spacing={2} justifyContent="center">
-				{channels.listChannels().map(function (channel) {
-						const chan = channels.getChannelProperties(channel);
-						if (chan.display !== false) {
-							return (
-								<Grid item md={6} className={classes.channel} key={chan.key}>
-									<div className={classes.channelPod} onClick={() => {
-										dispatch(closeCategoryDraw());
-										dispatch(openSearchDraw({categories:[chan.category]}));
-									}}>
-										<Typography>{chan.name}</Typography>
+				<Grid item md={8} className={classes.channel}>
+					<h2>Category</h2>
+					<Grid container className={classes.root} spacing={2} justifyContent="center">
+						{channels.listChannels().map(function (channel) {
+								const chan = channels.getChannelProperties(channel);
+								if (chan.display !== false) {
+									return (
+										<Grid item md={4} className={classes.channel} key={chan.key}>
+											<div className={classes.channelPod} onClick={() => {
+												dispatch(closeCategoryDraw());
+												dispatch(openSearchDraw({categories:[chan.category]}));
+											}}>
+												<Typography>{chan.name}</Typography>
 
-										<img src={chan.image}/>
-									</div>
-								</Grid>
+												<img src={chan.image}/>
+											</div>
+										</Grid>
 
-							)
-						}
-					}
-				)}
+									)
+								}
+							}
+						)}
+					</Grid>
+				</Grid>
+				<Grid item md={4}>
+					<h2>Advanced</h2>
+					<FilterDistance></FilterDistance>
+				</Grid>
 			</Grid>
 		</Dialog>
 	)
