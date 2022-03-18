@@ -9,7 +9,6 @@ import Alert from '@mui/material/Alert';
 import {useCookies} from 'react-cookie';
 import {Link, useHistory, useLocation, useParams} from 'react-router-dom';
 import Map from "./map";
-import {IntroModal} from "./intro";
 import {
 	BottomNavigation,
 	BottomNavigationAction,
@@ -20,6 +19,7 @@ import {NavProfile} from "./navProfile";
 import {SearchDraw} from "./draws/searchDraw";
 import {ViewDraw} from "./draws/viewDraw";
 import CategoryDraw from "./draws/categoryDraw";
+import LandingDraw from "./draws/landingDraw";
 import MenuDraw from "./draws/menuDraw";
 import Multi from "./multi";
 
@@ -32,6 +32,7 @@ import PageDraw from "./draws/pageDraw";
 import {setLocation, setResolutions} from "../redux/slices/layoutSlice";
 import Typography from "@mui/material/Typography";
 import {openPageDialog} from "../redux/slices/pageDialogSlice";
+import {closeLandingDraw} from "../redux/slices/landingDrawSlice";
 
 const Layout = ({children, map, update, fullscreen = false}) => {
 	const mapRef = useRef();
@@ -69,6 +70,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			if (open === true) {
 				history.push(`/Map`);
 				forceMapRefresh();
+				dispatch(closeLandingDraw());
 			}
 		}
 
@@ -228,7 +230,6 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			</Snackbar>
 			<div>
 				<div className={classes.grow}>
-					<IntroModal/>
 					<SearchDraw  mapRef={mapRef} updateMap={forceMapRefresh} />
 					<MenuDraw/>
 					<ViewDraw mapRef={mapRef}/>
@@ -242,6 +243,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 												onClick={() => {toggleSearchWrapper()}}/>
 	                    <NavProfile/>
 					</BottomNavigation>
+					<LandingDraw></LandingDraw>
 				</div>
 				<div>
 					{displayMap()}
@@ -259,7 +261,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		if (map === true) {
 			return (
 				<div className={fullscreen ? classes.mapContainerFull : classes.mapContainer}>
-					<Map className={'mapView'} ref={mapRef} onFeatureSeleted={handleFeatureSelected}
+					<Map id={'mainMap'} className={'mapView'} ref={mapRef} onFeatureSeleted={handleFeatureSelected}
 					     onZoomChange={configs.cluster ? onZoomChange : undefined}/>
 				</div>
 			)

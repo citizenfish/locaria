@@ -54,12 +54,26 @@ export default class UseStyles {
 			},
 
 			/*
-				Landing page
+				Landing draw
 			 */
+
+			landingDraw:{
+				overflow: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					width: 'calc(100vw)',
+					height: 'calc(100% - 56px)',
+				},
+			},
+
+			landingMap: {
+				width: "100%",
+				height:"100%"
+			},
+
 
 			landingCallToAction: {
 				width: "100vw",
-				height: "10vh",
+				height: "20vh",
 				backgroundColor: theme.palette.primary.darker,
 				fontColor: theme.palette.text.primary
 			},
@@ -76,10 +90,9 @@ export default class UseStyles {
 			landingLocationPod: {
 				height: 250,
 				margin: 10,
-				border: `1px solid ${theme.palette.primary.main}`,
-				borderRadius: `10px 10px 10px 10px`,
 				padding: 10,
-				backgroundColor: `${theme.palette.secondary.lighter} !important`
+				fontColor: theme.palette.text.primary
+
 			},
 
 
@@ -476,15 +489,12 @@ export default class UseStyles {
 			},
 
 			channelPod: {
-				border: `1px solid ${theme.palette.primary.main}`,
-				borderRadius: `10px 10px 10px 10px`,
+
 				padding: 10,
 				margin: 10,
 				'& img': {
 					width: '100%'
-				},
-				backgroundColor: `${theme.palette.secondary.lighter} !important`
-
+				}
 			},
 
 			/* Mapping */

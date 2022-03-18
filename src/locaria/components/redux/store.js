@@ -6,6 +6,7 @@ import multiSelectSlice from './slices/multiSelectSlice'
 import menuDrawSlice from './slices/menuDrawSlice'
 import pageDialog from './slices/pageDialogSlice'
 import layoutSlice from './slices/layoutSlice'
+import landingDrawSlice from "./slices/landingDrawSlice";
 
 export default configureStore({
 	reducer: {
@@ -15,6 +16,7 @@ export default configureStore({
 		multiSelect: multiSelectSlice,
 		menuDraw: menuDrawSlice,
 		pageDialog: pageDialog,
-		layout: layoutSlice
+		layout: layoutSlice,
+		landingDraw: landingDrawSlice
 	}
 })

@@ -146,7 +146,7 @@ const ViewDraw = forwardRef((props, ref) => {
 						</Container>
 					</Grid>
 					<Grid item md={8}>
-						<Map className={"ReportMap"} ref={localMapRef}></Map>
+						<Map id={'viewMap'} className={"ReportMap"} ref={localMapRef} speedDial={false}></Map>
 					</Grid>
 				</Grid>
 				<ReportResults></ReportResults>

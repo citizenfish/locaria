@@ -12,6 +12,7 @@ import {closeMenuDraw} from "../../redux/slices/menuDrawSlice";
 import {openSearchDraw} from "../../redux/slices/searchDrawSlice";
 import SearchIcon from "@mui/icons-material/Search";
 import {openPageDialog} from "../../redux/slices/pageDialogSlice";
+import {openLandingDraw} from "../../redux/slices/landingDrawSlice";
 
 
 
@@ -44,7 +45,9 @@ const MenuDraw = function () {
 					onKeyDown={()=>{dispatch(closeMenuDraw())}}
 				>
 
-					{configs.landing? <ListItem button key={'Intro'} component={Link} to={`/`}>
+					{configs.landing? <ListItem onClick={() => {
+						dispatch(openLandingDraw())
+					}} key={'Intro'}>
 						<ListItemIcon>
 							<HomeIcon/>
 						</ListItemIcon>

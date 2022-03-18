@@ -32,6 +32,7 @@ import {openLayout, closeLayout} from "../../redux/slices/layoutSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Distance from "../../../libs/Distance";
+import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
 
 
 const SearchDraw = forwardRef((props, ref) => {
@@ -66,6 +67,7 @@ const SearchDraw = forwardRef((props, ref) => {
 					history.push(`/Search/${JSON.stringify(categories)}/${search}`);
 					dispatch(closeViewDraw());
 					dispatch(closeLayout());
+					dispatch(closeLandingDraw());
 					props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
 					props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
 					if (searchResults.length === 0)
