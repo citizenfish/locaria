@@ -9,7 +9,6 @@ import Alert from '@mui/material/Alert';
 import {useCookies} from 'react-cookie';
 import {Link, useHistory, useLocation, useParams} from 'react-router-dom';
 import Map from "./map";
-import {IntroModal} from "./intro";
 import {
 	BottomNavigation,
 	BottomNavigationAction,
@@ -20,18 +19,20 @@ import {NavProfile} from "./navProfile";
 import {SearchDraw} from "./draws/searchDraw";
 import {ViewDraw} from "./draws/viewDraw";
 import CategoryDraw from "./draws/categoryDraw";
+import LandingDraw from "./draws/landingDraw";
 import MenuDraw from "./draws/menuDraw";
 import Multi from "./multi";
 
 import { useSelector, useDispatch } from 'react-redux'
-import { openSearchDraw ,toggleSearchDraw} from '../redux/slices/searchDrawSlice'
+import {closeSearchDraw, openSearchDraw, toggleSearchDraw} from '../redux/slices/searchDrawSlice'
 import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawSlice'
-import { openMultiSelect} from '../redux/slices/multiSelectSlice'
+import {closeMultiSelect, openMultiSelect} from '../redux/slices/multiSelectSlice'
 import { openMenuDraw} from '../redux/slices/menuDrawSlice'
 import PageDraw from "./draws/pageDraw";
-import {setLocation, setResolutions} from "../redux/slices/layoutSlice";
+import {closeLayout, openLayout,setLocation, setResolutions} from "../redux/slices/layoutSlice";
 import Typography from "@mui/material/Typography";
 import {openPageDialog} from "../redux/slices/pageDialogSlice";
+import {closeLandingDraw, openLandingDraw} from "../redux/slices/landingDrawSlice";
 
 const Layout = ({children, map, update, fullscreen = false}) => {
 	const mapRef = useRef();
@@ -62,13 +63,51 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	const isInitialMount = useRef(true);
 
+	const drawStateRouter = () => {
+
+		if(location.pathname==='/') {
+			dispatch(openLandingDraw());
+			return;
+		}
+
+
+
+		if (location.pathname.match('^/Search/.*')&&searchDrawOpen===false) {
+			if(category) {
+				dispatch(openSearchDraw({categories: JSON.parse(category),search:search}));
+			} else {
+				dispatch(openSearchDraw());
+			}
+
+			return;
+		}
+
+
+		if (feature&&viewDrawOpen===false) {
+			dispatch(openViewDraw({fid:feature,category:category}));
+			return;
+		}
+
+		if (location.pathname.match('^/Map')&&open === false) {
+			dispatch(openLayout())
+			return
+		}
+	}
+
 	React.useEffect(() => {
+
+
 		if (isInitialMount.current) {
 			isInitialMount.current = false;
+			drawStateRouter();
+
 		} else {
-			if (open === true) {
+			if(open) {
 				history.push(`/Map`);
 				forceMapRefresh();
+				dispatch(closeLandingDraw());
+				dispatch(closeSearchDraw());
+				dispatch(closeMultiSelect());
 			}
 		}
 
@@ -152,23 +191,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	React.useEffect(() => {
 
-		if (location.pathname.match('^/Search/.*')) {
-			if(category) {
-					dispatch(openSearchDraw({categories: JSON.parse(category),search:search}));
-			} else {
-				dispatch(openSearchDraw());
-			}
 
-		}
-
-
-
-
-
-		if (feature) {
-			dispatch(openViewDraw({fid:feature,category:category}));
-
-		}
 
 		if (map === true  ) {
 			if (configs.cluster === undefined || configs.cluster === false) {
@@ -228,7 +251,6 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			</Snackbar>
 			<div>
 				<div className={classes.grow}>
-					<IntroModal/>
 					<SearchDraw  mapRef={mapRef} updateMap={forceMapRefresh} />
 					<MenuDraw/>
 					<ViewDraw mapRef={mapRef}/>
@@ -242,6 +264,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 												onClick={() => {toggleSearchWrapper()}}/>
 	                    <NavProfile/>
 					</BottomNavigation>
+					<LandingDraw></LandingDraw>
 				</div>
 				<div>
 					{displayMap()}
@@ -259,7 +282,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		if (map === true) {
 			return (
 				<div className={fullscreen ? classes.mapContainerFull : classes.mapContainer}>
-					<Map className={'mapView'} ref={mapRef} onFeatureSeleted={handleFeatureSelected}
+					<Map id={'mainMap'} className={'mapView'} ref={mapRef} onFeatureSeleted={handleFeatureSelected}
 					     onZoomChange={configs.cluster ? onZoomChange : undefined}/>
 				</div>
 			)

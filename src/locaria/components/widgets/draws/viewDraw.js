@@ -17,6 +17,7 @@ import SearchDrawCard from "./cards/searchDrawCard";
 import {InView} from "react-intersection-observer";
 import Grid from "@mui/material/Grid";
 import Map from "../map";
+import {closeLayout} from "../../redux/slices/layoutSlice";
 
 
 const ViewDraw = forwardRef((props, ref) => {
@@ -47,6 +48,8 @@ const ViewDraw = forwardRef((props, ref) => {
 			isInitialMount.current = false;
 		} else {
 			if (open === true) {
+				history.push(`/View/${category}/${fid}`);
+				dispatch(closeLayout());
 				dispatch(closeSearchDraw());
 				dispatch(closeMultiSelect());
 				if (fid !== false) {
@@ -146,7 +149,7 @@ const ViewDraw = forwardRef((props, ref) => {
 						</Container>
 					</Grid>
 					<Grid item md={8}>
-						<Map className={"ReportMap"} ref={localMapRef}></Map>
+						<Map id={'viewMap'} className={"ReportMap"} ref={localMapRef} speedDial={false}></Map>
 					</Grid>
 				</Grid>
 				<ReportResults></ReportResults>

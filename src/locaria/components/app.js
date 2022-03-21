@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Home from "components/home";
-import Landing from "components/landing";
 import Submit from 'components/submit';
 import Error from 'components/error';
 import Maintenance from 'components/maintenance';
@@ -156,7 +155,7 @@ const App = () => {
 							<Route path="/Page/:pageId" component={Home}/>
 							<Route path="/Map" component={Home}/>
 							<Route path="/Submit/:category" component={Submit}/>
-							<Route path="/" component={configs.landing? Landing:Home}></Route>
+							<Route path="/" component={Home}></Route>
 							<Route exact path="/:id_token?" component={Home}/>
 
 							<Route component={Home}/>

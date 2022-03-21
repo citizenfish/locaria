@@ -11,7 +11,7 @@ const Footer = () => {
 	const history = useHistory();
 
 	return (
-		<div class={classes.footer}>
+		<div className={classes.footer}>
 			<div className={classes.footerLogo} style={{backgroundImage: `url(${configs.siteFooter})`}}></div>
 			<ul>
 				{pages.listPages().map(function (page) {
@@ -22,7 +22,7 @@ const Footer = () => {
 							} else {
 								history.push(`/Page/${page.id}`);
 							}
-						}} key={page.page}>
+						}} key={page.id}>
 							{page.title}
 						</li>
 					)
