@@ -70,7 +70,13 @@ const MenuDraw = function () {
 
 					{pages.listPages().map(function (page) {
 						return (
-							<ListItem onClick={()=>{ dispatch(openPageDialog(page.page));}} key={page.page}>
+							<ListItem onClick={()=>{
+								if(page.type==="link") {
+									window.location=page.link;
+								} else {
+									dispatch(openPageDialog(page.id));
+								}
+							}} key={page.id}>
 								<ListItemIcon>
 									{page.icon}
 								</ListItemIcon>

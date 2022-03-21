@@ -56,7 +56,8 @@
 	  "functions": [
 		"ws-api.js",
 		"database.js",
-		"load_methods.js"
+		"load_methods.js",
+		"timing.js"
 	  ]
 	},
 	{

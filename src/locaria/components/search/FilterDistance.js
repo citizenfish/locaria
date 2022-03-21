@@ -2,23 +2,35 @@ import React from "react";
 
 
 import InputLabel from "@mui/material/InputLabel";
-import NativeSelect from "@mui/material/NativeSelect";
+import {useSelector, useDispatch} from 'react-redux'
 import FormControl from "@mui/material/FormControl";
 import {useStyles} from "stylesLocaria";
 import Slider from "@mui/material/Slider";
+import {
+	setDistance
+} from "../redux/slices/searchDrawSlice";
 
-
-const SearchDistance = ({changeFunction, currentValue, min = 0, max = 100}) => {
+const FilterDistance = ({min = 0, max = 100, step = 1}) => {
 	const classes = useStyles();
-	const [value, setValue] = React.useState(parseInt(currentValue));
+
+	const dispatch = useDispatch()
+	const distance = useSelector((state) => state.searchDraw.distance);
+	const [value, setValue] = React.useState(distance);
+
+	React.useEffect(() => {
+		setValue(distance);
+	}, [distance]);
 
 	function valuetext(value) {
 		return `${value} things`;
 	}
 
 	const handleChange = (event, newValue) => {
-		setValue(newValue);
+		dispatch(setDistance(newValue));
 	};
+	const handleChangeShow = (event, newValue) => {
+		setValue(newValue);
+	}
 	return (
 		<FormControl className={classes.formControl} fullWidth>
 			<InputLabel htmlFor="distance-select">Distance</InputLabel>
@@ -28,14 +40,15 @@ const SearchDistance = ({changeFunction, currentValue, min = 0, max = 100}) => {
 				value={value}
 				valueLabelDisplay="auto"
 				getAriaValueText={valuetext}
-				onChange={handleChange}
-				onChangeCommitted={changeFunction}
+				onChange={handleChangeShow}
+				onChangeCommitted={handleChange}
 				min={min}
 				max={max}
 				key={'distanceSlider'}
+				step={step}
 			/>
 		</FormControl>
 	)
 }
 
-export default SearchDistance;
+export default FilterDistance;

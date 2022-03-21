@@ -9,6 +9,7 @@ import {Container, Divider} from "@mui/material";
 import {useDispatch} from 'react-redux'
 import {openViewDraw} from "../../../redux/slices/viewDrawSlice";
 import Grid from "@mui/material/Grid";
+import {setLocation} from "../../../redux/slices/layoutSlice";
 
 const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
@@ -23,6 +24,8 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	}
 
 	const channel = channels.getChannelProperties(properties.category);
+	if(channel===undefined)
+		return <></>
 
 	switch (properties.featureType) {
 		case 'location':
@@ -41,16 +44,19 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 						<Grid container spacing={1} justifyContent="center">
 							<Grid item md={6}>
 								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation} onClick={() => {
-									dispatch(openViewDraw(properties.fid));
+									mapRef.current.centerOnCoordinate(geometry.coordinates,undefined,"EPSG:4326");
 								}}>Locate</Button>
 							</Grid>
 							<Grid item md={6}>
 								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation} onClick={() => {
-									dispatch(openViewDraw(properties.fid));
-								}}>My Location</Button>
+									dispatch(setLocation(geometry.coordinates));
+								}}>Set Home</Button>
 							</Grid>
 						</Grid>
+
+
 					</div>
+
 				</Paper>
 			)
 		default:
@@ -69,7 +75,7 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 								if (closeWrapper)
 									closeWrapper();
 								mapRef.current.clearHighlighted("default", "data");
-								dispatch(openViewDraw(properties.fid));
+								dispatch(openViewDraw({fid:properties.fid,category:properties.category}));
 							}}>View</Button>
 						</div>
 					</Paper>

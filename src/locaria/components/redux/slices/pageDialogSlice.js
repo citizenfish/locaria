@@ -12,7 +12,7 @@ export const pageDialog = createSlice({
 			state.page=action.payload;
 		},
 		closePageDialog: (state) => {
-			state.open =false;
+			state.open=false;
 		}
 	},
 })

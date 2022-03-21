@@ -7,6 +7,7 @@
 
 'use strict';
 const Database = require("./database");
+const Timing = require("./timing");
 const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
 const jwkToPem = require('jwk-to-pem');
@@ -20,6 +21,8 @@ const MAX_BYTES = 50000;
 
 
 module.exports.run = (event, context, callback) => {
+	let times=new Timing();
+	times.start("Setup");
 	let client = null;
 
 	//const conn = `pg://${process.env.auroraMasterUser}:${process.env.auroraMasterPass}@${process.env.postgresHost}:${process.env.postgresPort}/${process.env.auroraDatabaseName}`;
@@ -50,10 +53,14 @@ module.exports.run = (event, context, callback) => {
 		apiVersion: '2018-11-29',
 		endpoint: 'https://' + event.requestContext.domainName+ '/' + event.requestContext.stage
 	});
+	times.stop("Setup");
+
 	/**
 	 *  Connect to the database
 	 * @type {Database}
 	 */
+	times.start("Connect");
+
 	let database = new Database(client, conn, callback);
 	switch (eventType) {
 		case 'CONNECT':
@@ -73,6 +80,8 @@ module.exports.run = (event, context, callback) => {
 	}
 
 	function endSession() {
+		times.stop("Connect");
+
 		client = database.getClient();
 		client.query("SELECT locaria_core.session_api('del', $1)", [connectionId], function (err, result) {
 			if (err) {
@@ -86,6 +95,8 @@ module.exports.run = (event, context, callback) => {
 	}
 
 	function newSession() {
+		times.stop("Connect");
+
 		client = database.getClient();
 		let querysql = "SELECT locaria_core.session_api('set', $1, $2::JSONB)";
 		let qarguments = [connectionId, {"status": "Connected"}];
@@ -108,6 +119,7 @@ module.exports.run = (event, context, callback) => {
 
 
 	function processMessage() {
+		times.stop("Connect");
 
 		const body = JSON.parse(event.body);
 		const packet = body;
@@ -121,12 +133,16 @@ module.exports.run = (event, context, callback) => {
 				break;
 			// Public API
 			case 'api':
+				times.start("Query");
+
 				client = database.getClient();
 				let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
 				let qarguments = [packet.data];
 				console.log(querysql);
 				console.log(qarguments);
 				client.query(querysql, qarguments, function (err, result) {
+					times.stop("Query");
+
 					if (err) {
 						console.log(err);
 						payload.packet['response_code'] = 310;
@@ -138,6 +154,7 @@ module.exports.run = (event, context, callback) => {
 							sendToClient(payload);
 						} else {
 							payload.packet = result.rows[0]['locaria_gateway'];
+							payload.timing=times.display();
 							payload.method = packet.data.method;
 							sendToClient(payload);
 						}
