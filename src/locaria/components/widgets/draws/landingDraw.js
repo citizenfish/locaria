@@ -14,7 +14,9 @@ import {Footer} from "../footer";
 import {useHistory} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
-import {openSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {closeSearchDraw, openSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {closeLayout} from "../../redux/slices/layoutSlice";
+import {closeMultiSelect} from "../../redux/slices/multiSelectSlice";
 
 const LandingDraw = function () {
 
@@ -39,6 +41,9 @@ const LandingDraw = function () {
 		} else {
 			if (open === true) {
 				history.push(`/`);
+				dispatch(closeLayout());
+				dispatch(closeSearchDraw());
+				dispatch(closeMultiSelect());
 			}
 		}
 	}, [open]);

@@ -74,7 +74,7 @@ const SearchDraw = forwardRef((props, ref) => {
 						doSearch('new');
 
 				} else {
-					dispatch(openLayout());
+					//dispatch(openLayout());
 					//history.push(`/Map`);
 					//props.updateMap();
 
@@ -270,7 +270,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				<div className={classes.searchDrawHeader}>
 					<Typography className={classes.searchDrawTitle} variant={'h5'}>{configs.searchTitle}</Typography>
 					<IconButton onClick={() => {
-						dispatch(closeSearchDraw());
+						dispatch(openLayout());
 					}} className={classes.searchDrawClose} type="submit"
 					            aria-label="search">
 						<CloseIcon className={classes.icons}/>
