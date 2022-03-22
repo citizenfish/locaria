@@ -22,6 +22,7 @@ BEGIN
     CREATE EXTENSION IF NOT EXISTS aws_commons;
     CREATE EXTENSION IF NOT EXISTS aws_s3;
     CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+    CREATE EXTENSION IF NOT EXISTS aws_lambda;
 
     --Create schema for search functions, data and views.
     RAISE NOTICE 'CREATING CORE SCHEMA';
