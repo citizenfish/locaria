@@ -32,6 +32,7 @@ import {openLayout, closeLayout} from "../../redux/slices/layoutSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Distance from "../../../libs/Distance";
+import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
 
 
 const SearchDraw = forwardRef((props, ref) => {
@@ -66,13 +67,14 @@ const SearchDraw = forwardRef((props, ref) => {
 					history.push(`/Search/${JSON.stringify(categories)}/${search}`);
 					dispatch(closeViewDraw());
 					dispatch(closeLayout());
+					dispatch(closeLandingDraw());
 					props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
 					props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
 					if (searchResults.length === 0)
 						doSearch('new');
 
 				} else {
-					dispatch(openLayout());
+					//dispatch(openLayout());
 					//history.push(`/Map`);
 					//props.updateMap();
 
@@ -268,7 +270,7 @@ const SearchDraw = forwardRef((props, ref) => {
 				<div className={classes.searchDrawHeader}>
 					<Typography className={classes.searchDrawTitle} variant={'h5'}>{configs.searchTitle}</Typography>
 					<IconButton onClick={() => {
-						dispatch(closeSearchDraw());
+						dispatch(openLayout());
 					}} className={classes.searchDrawClose} type="submit"
 					            aria-label="search">
 						<CloseIcon className={classes.icons}/>

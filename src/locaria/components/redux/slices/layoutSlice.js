@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit'
 export const layoutSlice = createSlice({
 	name: 'layout',
 	initialState: {
-		open: true,
+		open: false,
 		homeLocation: false,
 		resolutions: undefined
 	},

@@ -7,10 +7,13 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import {useHistory} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {openSearchDraw} from "../redux/slices/searchDrawSlice";
 
 const ChannelSelect = () => {
 	const classes = useStyles();
 	const history = useHistory();
+	const dispatch = useDispatch()
 
 	return (
 		<Grid container className={classes.root} spacing={2} justifyContent="center">
@@ -29,7 +32,9 @@ const ChannelSelect = () => {
 											{chan.description}
 										</Typography>
 										<Button size="medium" color="secondary" variant="outlined" onClick={() => {
-												history.push(`/Search/["${channel}"]/`)
+												//history.push(`/Search/["${channel}"]/`)
+											dispatch(openSearchDraw({categories: [channel]}));
+
 										}}>
 											EXPLORE
 										</Button>

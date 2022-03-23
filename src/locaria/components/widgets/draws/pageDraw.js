@@ -41,8 +41,6 @@ const PageDraw = () => {
 	React.useEffect(() => {
 		if(open)
 			history.push(`/Page/${page}`);
-		else
-			history.push(`/Map`);
 
 	},[open]);
 

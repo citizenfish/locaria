@@ -66,7 +66,7 @@ const Landing = () => {
 				<Grid container className={classes.landingLocation} spacing={1} justifyContent="center">
 					<Grid item md={6} className={classes.landingLocationGrid}>
 						<div className={classes.landingLocationPod}>
-							<Map ref={mapRef} speedDial={false}/>
+							<Map id='landingMap' ref={mapRef} speedDial={false} className={'landingMap'}/>
 						</div>
 					</Grid>
 					<Grid item md={6} className={classes.landingLocationGrid}>

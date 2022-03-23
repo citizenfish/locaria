@@ -21,7 +21,7 @@ const Map = forwardRef((props, ref) => {
 
 	React.useEffect(() => {
 		ol.addMap({
-			"target": "map",
+			"target": props.id,
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
 			"zoom": configs.defaultZoom,
@@ -185,7 +185,7 @@ const Map = forwardRef((props, ref) => {
 	}
 
 	return (
-		<div id="map" className={classes[props.className]}>
+		<div id={props.id} className={classes[props.className]}>
 			<MapSpeedDial/>
 		</div>
 	)
