@@ -99,7 +99,7 @@ module.exports.run = (event, context, callback) => {
 
 		client = database.getClient();
 		let querysql = "SELECT locaria_core.session_api('set', $1, $2::JSONB)";
-		let qarguments = [connectionId, {"status": "Connected"}];
+		let qarguments = [connectionId, {"status": "Connected","groups":[]}];
 		client.query(querysql, qarguments, function (err, result) {
 			if (err) {
 				console.log(err);
@@ -115,6 +115,16 @@ module.exports.run = (event, context, callback) => {
 			}
 		});
 
+	}
+
+	function updateSession(groups) {
+		let querysql = "SELECT locaria_core.session_api('set', $1, $2::JSONB)";
+		let qarguments = [connectionId, {"status": "Connected","groups":groups}];
+		client.query(querysql, qarguments, function (err, result) {
+			if (err) {
+				console.log(err);
+			}
+		});
 	}
 
 
@@ -164,12 +174,13 @@ module.exports.run = (event, context, callback) => {
 			// Secure API
 			case 'sapi':
 				validateToken(packet, function (tokenPacket) {
+						client = database.getClient();
+						updateSession(tokenPacket['cognito:groups']);
 						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
 							// inject groups / user from token
 							packet.data["_user"] = tokenPacket['cognito:username'];
 							packet.data["_group"] = tokenPacket['cognito:groups'];
 							packet.data["_email"] = tokenPacket['email'];
-							client = database.getClient();
 							let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
 							/* For non admins
 														let qarguments = [packet.data, {
@@ -216,9 +227,9 @@ module.exports.run = (event, context, callback) => {
 			/// New loader API
 			case 'lapi':
 				validateToken(packet, function (tokenPacket) {
+						client = database.getClient();
+						updateSession(tokenPacket['cognito:groups']);
 						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
-
-							let client = database.getClient();
 							// Valid user with loader token
 							let cb = (result) => {
 								sendToClient(result)
@@ -255,6 +266,8 @@ module.exports.run = (event, context, callback) => {
 				break;
 			case 'token':
 				validateToken(packet, function (tokenPacket) {
+						client = database.getClient();
+						updateSession(tokenPacket['cognito:groups']);
 						payload.packet = tokenPacket;
 						sendToClient(payload);
 					},

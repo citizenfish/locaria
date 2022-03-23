@@ -40,7 +40,7 @@ const NavProfile = () => {
 					ariaLabel="SpeedDial basic example"
 					icon={<AccountCircle fontSize="medium"/>}
 					className={classes.profileDial}
-					direction={'up'}
+					direction={'down'}
 				>
 					<SpeedDialAction
 						key={'signup'}
@@ -63,7 +63,7 @@ const NavProfile = () => {
 					ariaLabel="SpeedDial basic example"
 					icon={<AccountCircle fontSize="medium"/>}
 					className={classes.profileDial}
-					direction={'up'}
+					direction={'down'}
 				>
 					<SpeedDialAction
 						key={'logout'}
@@ -88,7 +88,7 @@ const NavProfile = () => {
 			<SpeedDial
 				ariaLabel="SpeedDial basic example"
 				className={classes.profileDial}
-				direction={'up'}
+				direction={'down'}
 			>
 			</SpeedDial>
 				)

@@ -78,12 +78,15 @@ resources:
         Engine: aurora-postgresql
         EngineMode: provisioned
         EngineVersion: ${file(../../../locaria.json):${self:custom.stage}.auroraVersion}
-        DatabaseName: locaria${env:site}
+        DatabaseName: locariamain
         BackupRetentionPeriod: 3
         DBClusterParameterGroupName:
           Ref: AuroraRDSClusterParameter
         VpcSecurityGroupIds:
           - Fn::GetAtt: AuroraStorageSecurityGroup.GroupId
+        AssociatedRoles:
+          - FeatureName: Lambda
+            RoleArn: !GetAtt [ AuroraLambdaRole, Arn ]
     AuroraRDSInstance:
       Type: "AWS::RDS::DBInstance"
       Properties:

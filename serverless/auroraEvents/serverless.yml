@@ -1,0 +1,40 @@
+service: locaria-aurora-events-${env:theme}
+projectDir: ../../../
+provider:
+  name: aws
+  profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../../locaria.json):${self:custom.stage}.region}
+  environment:
+    postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
+    postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
+    websocket: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}.json):ServiceEndpointWebsocket}
+    stage: ${self:custom.stage}
+    auroraDatabaseName: locaria${env:theme}
+    auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
+    auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - execute-api:*
+          Resource:
+            - "*"
+
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+functions:
+  eventWS:
+    handler: eventWS.run
+    vpc:
+      securityGroupIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
+      subnetIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
+
+plugins:
+  - serverless-stack-output

@@ -77,6 +77,16 @@
 	  "functions": [
 		"incoming.js"
 	  ]
+	},
+	{
+	  "dir": "auroraEvents",
+	  "outputsSitePrefix": true,
+	  "outputs": {
+
+	  },
+	  "functions": [
+		"eventWS.js"
+	  ]
 	}
   ]
 }
