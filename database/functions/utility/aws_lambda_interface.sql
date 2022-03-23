@@ -13,7 +13,8 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    SELECT parameter AS lambda_config
+    SELECT parameter
+    INTO lambda_config
     FROM parameters
     WHERE parameter_name = 'lambda_config';
 
@@ -27,7 +28,7 @@ BEGIN
            log_result_var
     FROM aws_lambda.invoke(aws_commons.create_lambda_function_arn(json_extract_path_text(lambda_config, lambda_parameters->>'function', 'arn'),
                                                                   json_extract_path_text(lambda_config, lambda_parameters->>'function', 'region')),
-                           COALESCE(lambda_parameters->'parameters', json_build_object()),
+                           COALESCE(lambda_parameters->'parameters', jsonb_build_object()),
                            COALESCE(lambda_parameters->>'mode', mode_var),
                            COALESCE(lambda_parameters->>'log_type', log_var));
 
