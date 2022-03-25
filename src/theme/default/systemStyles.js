@@ -497,6 +497,15 @@ export default class UseStyles {
 				}
 			},
 
+			channelPodSelected: {
+				padding: 10,
+				margin: 10,
+				'& img': {
+					width: '100%'
+				},
+				border: "1px solid red"
+			},
+
 			/* Mapping */
 
 			mapDial: {
