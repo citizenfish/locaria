@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import {useStyles} from "stylesLocaria";
 import {closeCategoryDraw} from "../../redux/slices/categoryDrawSlice";
-import {openSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {openSearchDraw, setTags} from "../../redux/slices/searchDrawSlice";
 import Slide from "@mui/material/Slide";
 
 import {channels, configs} from 'themeLocaria';
@@ -12,6 +12,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import FilterDistance from "../../search/FilterDistance";
+import SearchTags from "../../search/SearchTags";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -26,6 +27,8 @@ const CategoryDraw = forwardRef((props, ref) => {
 	const open = useSelector((state) => state.categoryDraw.open);
 
 	const distance = useSelector((state) => state.searchDraw.distance);
+
+	const categories = useSelector((state) => state.searchDraw.categories);
 
 
 	return (
@@ -52,8 +55,9 @@ const CategoryDraw = forwardRef((props, ref) => {
 								if (chan.display !== false) {
 									return (
 										<Grid item md={4} className={classes.channel} key={chan.key}>
-											<div className={classes.channelPod} onClick={() => {
-												dispatch(closeCategoryDraw());
+											<div className={categories.indexOf(chan.category)!==-1? classes.channelPodSelected:classes.channelPod} onClick={() => {
+												//dispatch(closeCategoryDraw());
+												dispatch(setTags([]));
 												dispatch(openSearchDraw({categories:[chan.category]}));
 											}}>
 												<Typography>{chan.name}</Typography>
@@ -71,6 +75,7 @@ const CategoryDraw = forwardRef((props, ref) => {
 				<Grid item md={4}>
 					<h2>Advanced</h2>
 					<FilterDistance></FilterDistance>
+					<SearchTags></SearchTags>
 				</Grid>
 			</Grid>
 		</Dialog>

@@ -10,6 +10,7 @@ import {useDispatch} from 'react-redux'
 import {openViewDraw} from "../../../redux/slices/viewDrawSlice";
 import Grid from "@mui/material/Grid";
 import {setLocation} from "../../../redux/slices/layoutSlice";
+import Tags from "../../tags";
 
 const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
@@ -71,6 +72,8 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 								<Divider className={classes.SearchDrawDivider}/>
 								<Typography className={classes.SearchDrawShipText}>{properties.description.text}</Typography>
 							</div>
+							<Tags tags={properties.tags}></Tags>
+
 							<Button color="secondary" disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
 								if (closeWrapper)
 									closeWrapper();

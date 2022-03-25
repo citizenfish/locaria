@@ -9,50 +9,59 @@ import ListItemText from "@mui/material/ListItemText";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import {useStyles} from "stylesLocaria";
+import {useDispatch, useSelector} from "react-redux";
 
+import {
+	setTags
+} from "../redux/slices/searchDrawSlice";
 
 const SearchTags = ({category, changeFunction, currentValue}) => {
 	const classes = useStyles();
-	const [tags, setTags] = React.useState([]);
-	const [selectedTags, setSelectTags] = React.useState(currentValue);
+	const [tagList, setTagList] = React.useState([]);
+	const [selectedTags, setSelectTags] = React.useState([]);
+
+	const categories = useSelector((state) => state.searchDraw.categories);
+	const tags = useSelector((state) => state.searchDraw.tags);
+
+	const dispatch = useDispatch()
 
 	React.useEffect(() => {
 
 		window.websocket.registerQueue("tagsLoader", function (json) {
-			setTags(json.packet.tags);
+			setTagList(json.packet.tags);
 		});
 
-		if (tags.length === 0) {
+		if (tags.length === 0&&categories[0]) {
 
 			window.websocket.send({
 				"queue": "tagsLoader",
 				"api": "api",
-				"data": {"method": "list_tags", "filter": {"category": [category]}}
+				"data": {"method": "list_tags", "filter": {"category": [categories[0]]}}
 			});
 		}
 		return () => {
 			window.websocket.clearQueues();
 		}
 
-	}, [tags]);
+	}, [categories]);
 
 
 	function handleChange(e) {
-		setSelectTags(e.target.value);
+		dispatch(setTags(e.target.value));
 	}
 
 	function handleClose(e) {
-		changeFunction(selectedTags);
+		dispatch(setTags(tags));
 	}
 
-	if (tags.length > 0) {
+	if (tagList.length > 0) {
 		return (
 			<FormControl className={classes.formControl} fullWidth>
 
 				<InputLabel htmlFor="tag-select">Tags</InputLabel>
 				<Select
 					id="tag-select"
-					value={selectedTags}
+					value={tags}
 					onChange={handleChange}
 					onClose={handleClose}
 					multiple
@@ -60,10 +69,10 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 					key={`tss-control`}
 					renderValue={(selected) => selected.join(', ')}
 				>
-					{tags.map(function (tag, index) {
+					{tagList.map(function (tag, index) {
 						return (
 							<MenuItem key={`tsmi-${index}`} value={tag}>
-								<Checkbox checked={selectedTags.indexOf(tag) > -1}/>
+								<Checkbox checked={tags.indexOf(tag) > -1}/>
 								<ListItemText primary={tag}></ListItemText>
 							</MenuItem>
 						)
@@ -73,7 +82,7 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 			</FormControl>
 		)
 	} else {
-		return (<p>Loading</p>)
+		return (<></>)
 	}
 }
 
