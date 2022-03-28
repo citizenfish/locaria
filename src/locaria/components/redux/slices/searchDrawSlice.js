@@ -43,6 +43,9 @@ export const searchDrawSlice = createSlice({
 		},
 		setTags: (state, action) => {
 			state.tags=action.payload;
+		},
+		deleteTag: (state,action) => {
+			state.tags.splice(state.tags.indexOf(action.payload),1);
 		}
 	},
 })
@@ -57,7 +60,8 @@ export const {
 	setSearch,
 	toggleLocationShow,
 	setDistance,
-	setTags
+	setTags,
+	deleteTag
 } = searchDrawSlice.actions
 
 export default searchDrawSlice.reducer

@@ -21,7 +21,7 @@ import {
 	openSearchDraw,
 	setSearch,
 	toggleLocationShow,
-	setDistance
+	setDistance, deleteTag
 } from "../../redux/slices/searchDrawSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 import Chip from "@mui/material/Chip";
@@ -94,6 +94,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		React.useEffect(() => {
 			if (open === true) {
 				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
+				document.getElementById('mySearch').value=search;
 				doSearch('new');
 			}
 		}, [search]);
@@ -316,6 +317,13 @@ const SearchDraw = forwardRef((props, ref) => {
 							dispatch(deleteSearchCategory(category));
 						}}/>
 					))}
+
+					{tags.map((tag) => (
+						<Chip ket={`tag-${tag}`} label={`tag: ${tag}`} onDelete={() => {
+							dispatch(deleteTag(tag));
+						}}/>
+					))}
+
 					{distance > 0 ?
 						< Chip label={`Distance: ${distance}km`} onDelete={() => {
 							dispatch(setDistance(false));

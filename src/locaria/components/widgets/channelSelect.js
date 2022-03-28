@@ -28,7 +28,7 @@ const ChannelSelect = () => {
 										            style={{color: `${chan.color}`}}>
 											{chan.name}
 										</Typography>
-										<Typography variant="body2" color="textSecondary" component="p">
+										<Typography variant="body2" color="textSecondary" component="p" className={classes.channelDescription}>
 											{chan.description}
 										</Typography>
 										<Button size="medium" color="secondary" variant="outlined" onClick={() => {
