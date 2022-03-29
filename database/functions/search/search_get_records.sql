@@ -133,7 +133,6 @@ BEGIN
 			            CASE WHEN search_ts_query = '_IGNORE' THEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
 			            wkb_geometry,
 			            (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
-                        --DEBUG TODO REMOVE jsonb_build_object('category', attributes->'category') as attributes,
 			            COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance,
                         jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max, 'acl', attributes->'acl')) AS metadata,
                         --used to further rank results against a specific attribute
@@ -156,7 +155,7 @@ BEGIN
                 --for tags
                 AND ( (search_parameters->'tags') IS NULL OR attributes->'tags' ?| json2text(search_parameters->'tags') )
                 --for categories
-                 AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
+                AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
                 --range query
                 AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
 

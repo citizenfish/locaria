@@ -45,17 +45,30 @@ def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
 def update_file_status(db,schema,id,update):
     update["method"] = "update_file"
     update["id"] = id
-    files = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS files", [json.dumps(update)])
-    db.commit()
-    return files.fetchone()[0]
+    print(update)
+
+    try:
+        files = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS files", [json.dumps(update)])
+        db.commit()
+        return files.fetchone()[0]
+    except Exception as error:
+        print("Cannot update file", error)
+        return {"error" : error}
 
 def get_files_to_process(db,schema):
     files = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS files", [json.dumps({"method" : "get_files", "status" : "REGISTERED"})])
     return files.fetchone()[0]
 
 def get_record_count(db,table):
-    count = db.execute(f"SELECT count(*) FROM {table}")
-    return count.fetchone()[0]
+
+    if table == 'ignore':
+        return "Multiple tables loaded"
+
+    try:
+        count = db.execute(f"SELECT count(*) FROM {table}")
+        return count.fetchone()[0]
+    except Exception as error:
+        return(error)
 
 def process_file_csv(db,file):
     print(f"CSV PROCESSING: {file['id']}")
@@ -69,9 +82,8 @@ def process_file_xls(db,file):
 
 def process_file_json(db,file):
     print(f"JSON PROCESSING  {file['id']}")
-    parameters = []
+    parameters = ['-oo', 'ARRAY_AS_STRING=YES', '-oo', 'FLATTEN_NESTED_ATTRIBUTES=YES']
     return process_file_generic(db, file, parameters)
-
 
 def process_file_geopackage(db,file):
     print(f"GEOPACKAGE PROCESSING {file['id']}")
@@ -86,7 +98,7 @@ def process_file_gpx(db,file):
 
 def process_file_generic(db,file,parameters):
     print(f"GENERIC PROCESSING {file['id']}")
-    parameters.extend(['-lco','FID=ogc_fid', '-lco', 'GEOMETRY_NAME=wkb_geometry', '--config', 'PG_USE_COPY', 'YES', '-overwrite', '-t_srs', 'EPSG:4326'])
+    parameters.extend(['-lco','FID=ogc_fid', '-lco', 'GEOMETRY_NAME=wkb_geometry',  '--config', 'PG_USE_COPY', 'YES',  '-t_srs', 'EPSG:4326', '-overwrite'])
 
     if 'flatten' in file and file['flatten']:
         parameters.extend(['-oo','FLATTEN_NESTED_ATTRIBUTES=YES'])
@@ -147,14 +159,18 @@ def ogr_loader(file, parameters):
     if 'ogr_parameters' in file['attributes']:
         ogr_parameters.extend(file['attributes']['ogr_parameters'])
 
-    ogr_parameters.extend(['-nln', file['table_name'],'-f', 'PostgreSQL',ogrConn, filename])
+    if file['table_name'] != 'ignore':
+        ogr_parameters.extend(['-nln', file['table_name']])
+
+    ogr_parameters.extend(['-f', 'PostgreSQL',ogrConn, filename])
+
     command.extend(ogr_parameters)
 
     if 'layer' in file['attributes']:
-        command.extend([file['attributes']['layer']])
+        command.extend(file['attributes']['layer'])
 
     print(f"**********Running ogr2ogr on {filename} with table {file['table_name']}************")
-    #print(' '.join(command))
+    print(' '.join(command))
 
     try:
         result = subprocess.run(command,check=True, capture_output=True)

@@ -29,7 +29,7 @@ BEGIN
         SET SESSION ROLE locaria_report_user;
     END IF;
 
-    RAISE NOTICE '%', current_user;
+    --RAISE NOTICE '%', search_parameters;
 
     EXECUTE query_var
     USING search_parameters

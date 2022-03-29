@@ -189,7 +189,7 @@ $SQL$
 
         REFRESH MATERIALIZED VIEW CONCURRENTLY locaria_data.global_search_view;
 
-        --Write results to temp table so can eb read outside of DO
+        --Write results to temp table so can be read outside of DO
         CREATE TEMP TABLE crime_post_process_output AS
         SELECT ret_var;
 

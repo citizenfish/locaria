@@ -9,7 +9,9 @@ import AdminFileDetails from "./adminFileDetails";
 import AdminDataMapper from "./adminDataMapper";
 import AdminPlanningLoader from "./adminPlanningLoader";
 import AdminFloodMonitoringLoader from "./adminFloodMonitoringLoader";
-import Typography from "@mui/material/Typography";
+import AdminCrimeLoader from "./adminCrimeLoader.js";
+import AdminBoundaryLoader from "./adminBoundaryLoader";
+import AdminEventsLoader from "./adminEventsLoader";
 
 //Details of file we are going to map
 let fileDetailsData = {}
@@ -186,6 +188,25 @@ export default function AdminUpload(props) {
                  />
              }
 
+             {
+                 mapFileDetails === null && open === false  &&
+                 <AdminCrimeLoader
+                     forceRefresh = {setTime}
+                 />
+             }
+
+             {
+                 mapFileDetails === null && open === false  &&
+                 <AdminBoundaryLoader
+                     forceRefresh = {setTime}
+                 />
+             }
+             {
+                 mapFileDetails === null && open === false  &&
+                 <AdminEventsLoader
+                     forceRefresh = {setTime}
+                 />
+             }
          </div>
 
     )

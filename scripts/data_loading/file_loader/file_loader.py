@@ -26,8 +26,7 @@ for f in files_to_process["files"]:
 
     # Mandatory extension which tells us which loader to use
     extension = f['attributes'].get('ext', 'csv')
-    # Any SQL to run after load
-    post_process_report = f['attributes'].get('post_process_report', '')
+
 
     # A file needs a url or S3 path if we are to process it
     if not 'path' in f['attributes'] and not 'url' in f['attributes'] and not "custom_loader" in f['attributes']:
@@ -36,8 +35,12 @@ for f in files_to_process["files"]:
 
     # The table we are loading to, can only be in uploads schema
     table_name = f['attributes'].get('table_name', f"{table_name_mask}{f['id']}")
-    f['table_name'] = f"{upload_schema}.{table_name}"
-
+    # For multiple layers we don't want to set a table name
+    if table_name == 'no_table_name':
+        f['table_name'] = 'ignore'
+    else:
+        f['upload_schema'] = upload_schema
+        f['table_name'] = f"{upload_schema}.{table_name}"
 
     # Add any parameters to file structure so passed to processing functions
     f["parameters"] = parameters if "error" not in parameters else {}
@@ -60,6 +63,8 @@ for f in files_to_process["files"]:
             continue
 
         f.update(custom_loader_result)
+        print(f)
+        #exit()
 
     else:
         # We are now expecting file to be in S3 so must have a bucket
@@ -100,10 +105,16 @@ for f in files_to_process["files"]:
 
     if result['status'] == 'FARGATE_PROCESSED':
         result['attributes'] = {'table_name' : f['table_name'], 'processing_time' : round(time.time() - start_time,2), 'record_count' : get_record_count(db, f['table_name'])}
+        # Custom loaders do not need any additional mapping/user intervention
+        if 'auto_mapped' in f['attributes']:
+            result['status'] = 'IMPORTED'
 
+    #Any SQL to run after load
+    post_process_report = f.get('post_process_report', f['attributes'].get('post_process_report', ''))
     if post_process_report != '':
         f['report_name'] = post_process_report
         result['attributes']['post_process_report_output'] = run_post_process_report(db,f)
+
 
     update_file_status(db,schema,f['id'],result)
     print(f"Processed file {f['id']}")

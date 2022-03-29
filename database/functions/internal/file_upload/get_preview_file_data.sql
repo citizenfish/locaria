@@ -21,7 +21,8 @@ $$
                    jsonb_build_object('description', jsonb_build_object('title', COALESCE(attributes->>'%2$s', attributes->>'title', attributes->>'name', attributes->>'description',''),
                                                                         'text',  COALESCE(attributes->>'%3$s',attributes->>'text', attributes->>'description',''),
                                                                         'url',   COALESCE(attributes->>'%4$s',attributes->>'url', attributes->>'website', attributes->>'link','')),
-                                      'data', attributes) AS attributes,
+                                      'data', attributes,
+                                      'tags', COALESCE((attributes->'tags'), jsonb_build_array(attributes->'%5$s'), jsonb_build_array())) AS attributes,
                    wkb_geometry
             FROM
         $SQL$;
@@ -31,6 +32,8 @@ $$
         title_field_var TEXT DEFAULT 'THISWILLLFAIL';
         text_field_var  TEXT DEFAULT 'THISWILLLFAIL';
         url_field_var TEXT DEFAULT 'THISWILLLFAIL';
+        tag_field_var TEXT DEFAULT 'THISWILLFAIL';
+
 BEGIN
     SET SEARCH_PATH = 'locaria_uploads','locaria_core','public';
 
@@ -41,8 +44,8 @@ BEGIN
     --try to map required fields
     title_field_var = COALESCE(parameters->>'title_field', title_field_var);
     text_field_var  = COALESCE(parameters->>'text_field', text_field_var);
-    url_field_var  = COALESCE(parameters->>'url_field', url_field_var);
-
+    url_field_var  =  COALESCE(parameters->>'url_field', url_field_var);
+    tag_field_var =   COALESCE(parameters->>'tag_field', tag_field_var);
 
     --cope with missing geometry field as load process has failed to geocode
     IF (
@@ -83,11 +86,8 @@ BEGIN
     limit_var = COALESCE(parameters->>'limit', limit_var::TEXT)::INTEGER;
     offset_var = COALESCE(parameters->>'offset', offset_var::TEXT)::INTEGER;
 
-    RAISE NOTICE '%', header;
-    RAISE NOTICE '%',query;
-
     RETURN QUERY EXECUTE format(
-        header||query, table_var,title_field_var,text_field_var,url_field_var
+        header||query, table_var,title_field_var,text_field_var,url_field_var,tag_field_var
         ) USING offset_var,
                 limit_var,
                 jsonb_build_object('_geocoder_type', parameters->>'_geocoder_type',

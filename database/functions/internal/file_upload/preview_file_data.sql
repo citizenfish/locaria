@@ -14,6 +14,7 @@ BEGIN
                                    'text',  attributes#>>'{description,text}',
                                    'url',   attributes#>>'{description,url}',
                                    'data', attributes->'data',
+                                   'tags', attributes->'tags',
                                    'geometry', ST_ASGEOJSON(wkb_geometry)::JSONB) AS attributes
         FROM get_preview_file_data(parameters)
     ) R;
