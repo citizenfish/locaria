@@ -21,18 +21,18 @@ import {
 	openSearchDraw,
 	setSearch,
 	toggleLocationShow,
-	setDistance
+	setDistance, deleteTag
 } from "../../redux/slices/searchDrawSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 import Chip from "@mui/material/Chip";
 import MenuIcon from "@mui/icons-material/Menu";
-import {openCategoryDraw} from "../../redux/slices/categoryDrawSlice";
 
 import {openLayout, closeLayout} from "../../redux/slices/layoutSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Distance from "../../../libs/Distance";
 import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
+import AdvancedAccordion from "../advancedAccordion";
 
 
 const SearchDraw = forwardRef((props, ref) => {
@@ -94,6 +94,7 @@ const SearchDraw = forwardRef((props, ref) => {
 		React.useEffect(() => {
 			if (open === true) {
 				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
+				document.getElementById('mySearch').value=search;
 				doSearch('new');
 			}
 		}, [search]);
@@ -294,9 +295,6 @@ const SearchDraw = forwardRef((props, ref) => {
 				</div>
 				<Divider/>
 				<div className={classes.searchDrawSearch}>
-					<MenuIcon fontSize="large" color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
-						dispatch(openCategoryDraw());
-					}}/>
 					<InputBase
 						className={classes.searchDrawBox}
 						id="mySearch"
@@ -310,18 +308,29 @@ const SearchDraw = forwardRef((props, ref) => {
 						<SearchIcon className={classes.icons}/>
 					</IconButton>
 				</div>
-				<Container className={classes.searchDrawAdvanced}>
-					{categories.map((category) => (
-						<Chip ket={`cat-${category}`} label={category} onDelete={() => {
-							dispatch(deleteSearchCategory(category));
-						}}/>
-					))}
-					{distance > 0 ?
-						< Chip label={`Distance: ${distance}km`} onDelete={() => {
-							dispatch(setDistance(false));
-						}}/> : <></>
-					}
-				</Container>
+
+				<AdvancedAccordion>
+					<Container className={classes.searchDrawAdvanced}>
+						{categories.map((category) => (
+							<Chip className={classes.chip} ket={`cat-${category}`} label={category} onDelete={() => {
+								dispatch(deleteSearchCategory(category));
+							}}/>
+						))}
+
+						{tags.map((tag) => (
+							<Chip className={classes.chip} ket={`tag-${tag}`} label={`tag: ${tag}`} onDelete={() => {
+								dispatch(deleteTag(tag));
+							}}/>
+						))}
+
+						{distance > 0 ?
+							<Chip className={classes.chip} label={`Distance: ${distance}km`} onDelete={() => {
+								dispatch(setDistance(false));
+							}}/> : <></>
+						}
+					</Container>
+				</AdvancedAccordion>
+
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
