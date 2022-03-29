@@ -7,7 +7,6 @@ import {configs, channels} from "themeLocaria";
 export function locationStyle(feature, resolution) {
 
 	let type=feature.get('featureType');
-	console.log(type);
 	if (type === 'home') {
 		return [
 			new Style({

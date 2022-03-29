@@ -18,13 +18,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import {NavProfile} from "./navProfile";
 import {SearchDraw} from "./draws/searchDraw";
 import {ViewDraw} from "./draws/viewDraw";
-import CategoryDraw from "./draws/categoryDraw";
+import AdvancedAccordion from "./advancedAccordion";
 import LandingDraw from "./draws/landingDraw";
 import MenuDraw from "./draws/menuDraw";
 import Multi from "./multi";
 
 import { useSelector, useDispatch } from 'react-redux'
-import {closeSearchDraw, openSearchDraw, toggleSearchDraw} from '../redux/slices/searchDrawSlice'
+import {closeSearchDraw, openSearchDraw, resolutionUpdate, toggleSearchDraw} from '../redux/slices/searchDrawSlice'
 import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawSlice'
 import {closeMultiSelect, openMultiSelect} from '../redux/slices/multiSelectSlice'
 import { openMenuDraw} from '../redux/slices/menuDrawSlice'
@@ -34,7 +34,7 @@ import Typography from "@mui/material/Typography";
 import {openPageDialog} from "../redux/slices/pageDialogSlice";
 import {closeLandingDraw, openLandingDraw} from "../redux/slices/landingDrawSlice";
 
-const Layout = ({children, map, update, fullscreen = false}) => {
+const Layout = ({children, map, fullscreen = false}) => {
 	const mapRef = useRef();
 	const location = useLocation();
 	// params?
@@ -51,6 +51,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	const [openError, setOpenError] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
+	const [features, setFeatures] = React.useState({});
 	const viewDrawOpen = useSelector((state) => state.viewDraw.open);
 	const searchDrawOpen = useSelector((state) => state.searchDraw.open);
 	const open = useSelector((state) => state.layout.open);
@@ -90,7 +91,7 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 		if (location.pathname.match('^/Map')&&open === false) {
 			dispatch(openLayout())
-			return
+			return;
 		}
 	}
 
@@ -104,16 +105,20 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 		} else {
 			if(open) {
 				history.push(`/Map`);
-				forceMapRefresh();
 				dispatch(closeLandingDraw());
 				dispatch(closeSearchDraw());
 				dispatch(closeMultiSelect());
+				//forceMapRefresh();
+				displayMapData();
+
 			}
 		}
 
 		window.websocket.registerQueue("homeLoader", function (json) {
-			if (map === true && open === true) {
-				mapRef.current.addGeojson(json.packet)
+			if (map === true) {
+				if(open===true)
+					mapRef.current.addGeojson(json.packet);
+				setFeatures(json.packet);
 			}
 		});
 
@@ -123,6 +128,10 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 
 	}, [open]);
 
+
+	function displayMapData() {
+		mapRef.current.addGeojson(features);
+	}
 
 	const handleFeatureSelected = function (features,geojsonFeatures) {
 		if (features[0].get('geometry_type') === 'cluster') {
@@ -137,23 +146,21 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	}
 
 	const forceMapRefresh = () => {
-		if(resolutions!==undefined&&viewDrawOpen===false&&searchDrawOpen===false) {
-			updateMap(resolutions);
-			console.log('Forced refresh');
-
+		if(resolutions!==undefined) {
+			if(open===true||features.features===undefined) {
+				updateMap(resolutions);
+			}
 		}
 	}
 
 	const onZoomChange = (newRes) => {
-		console.log('Zoom refresh');
-		console.log(newRes);
 		dispatch(setResolutions(newRes));
 		//setResolutions(newRes);
 	}
 
 	React.useEffect(() => {
-		forceMapRefresh();
-
+		if(resolutions!==undefined)
+			forceMapRefresh();
 	}, [resolutions]);
 
 	React.useEffect(() => {
@@ -228,7 +235,17 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	}
 
 	const toggleSearchWrapper = function () {
-		dispatch(toggleSearchDraw());
+		if(searchDrawOpen===true) {
+			dispatch(closeSearchDraw());
+		} else {
+			dispatch(openSearchDraw());
+
+		}
+
+	/*	dispatch(toggleSearchDraw());
+		if(open===false) {
+			dispatch(openLayout());
+		}*/
 	}
 
 
@@ -251,11 +268,10 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 			</Snackbar>
 			<div>
 				<div className={classes.grow}>
-					<SearchDraw  mapRef={mapRef} updateMap={forceMapRefresh} />
+					<SearchDraw mapRef={mapRef}/>
 					<MenuDraw/>
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
-					<CategoryDraw></CategoryDraw>
 					<PageDraw></PageDraw>
                     <BottomNavigation className={classes.nav} id={"navMain"}>
 						<BottomNavigationAction className={classes.NavMenuButton}  icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>

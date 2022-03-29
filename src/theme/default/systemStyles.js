@@ -10,7 +10,7 @@ export default class UseStyles {
 	constructor(theme, merge = {}) {
 
 
-		const leftWidth = 350;
+		const leftWidth = 550;
 
 		let base = {
 
@@ -34,12 +34,19 @@ export default class UseStyles {
 			 */
 
 			icons: {
-				color: theme.palette.icons.main
+				color: theme.palette.text.primary
 			},
 
+			iconsLight: {
+				color: theme.palette.text.lighter
+			},
 
 			grow: {
 				flexGrow: 1,
+			},
+
+			chip: {
+				margin: "5px !important"
 			},
 
 			/*
@@ -75,7 +82,8 @@ export default class UseStyles {
 				width: "100vw",
 				height: "20vh",
 				backgroundColor: theme.palette.primary.darker,
-				fontColor: theme.palette.text.primary
+				fontColor: theme.palette.text.primary,
+				padding: 20
 			},
 
 			landingLocation:{
@@ -84,14 +92,19 @@ export default class UseStyles {
 
 			landingLocationGrid: {
 				textAlign: "center",
-				width: "100%"
+				width: "100%",
+				color: theme.palette.text.lighter,
+			},
+
+			landingSearchBox: {
+				color: `${theme.palette.text.lighter} !important`,
 			},
 
 			landingLocationPod: {
-				height: 250,
+				height: "40vh",
 				margin: 10,
 				padding: 10,
-				fontColor: theme.palette.text.primary
+				color: theme.palette.text.lighter
 
 			},
 
@@ -428,7 +441,7 @@ export default class UseStyles {
 				flexDirection: 'row',
 				borderRadius: '10px',
 				overflow: 'hidden',
-				height: '128px',
+				height: '180px',
 				marginBottom: '20px',
 				backgroundColor: `${theme.palette.primary.main} !important`
 			},
@@ -459,8 +472,9 @@ export default class UseStyles {
 			},
 
 			SearchDrawButton: {
-				marginTop: '10px !important',
-				marginRight: '10px',
+				/*marginTop: '10px !important',
+				marginRight: '10px',*/
+				marginLeft: "28px !important",
 				alignSelf: 'stretch',
 				backgroundColor: `${theme.palette.secondary.main} !important`,
 				color: `${theme.palette.text.primary} !important`,
@@ -470,6 +484,16 @@ export default class UseStyles {
 				margin: "10px !important",
 				backgroundColor: `${theme.palette.secondary.main} !important`,
 				color: `${theme.palette.text.primary} !important`,
+			},
+
+			searchDrawAdvancedAccordion: {
+				backgroundColor: `${theme.palette.primary.main} !important`,
+				color: `${theme.palette.text.primary} !important`,
+				overflowY: 'auto',
+				overflowX: 'hidden'
+			},
+
+			searchDrawAdvancedAccordionDetails:{
 			},
 
 			searchDrawAdvanced: {
@@ -493,8 +517,22 @@ export default class UseStyles {
 				padding: 10,
 				margin: 10,
 				'& img': {
-					width: '100%'
+					width: '100%',
+					maxWidth: 300
 				}
+			},
+
+			channelDescription: {
+				height: 80
+			},
+
+			channelPodSelected: {
+				padding: 10,
+				margin: 10,
+				'& img': {
+					width: '100%'
+				},
+				border: "1px solid red"
 			},
 
 			/* Mapping */

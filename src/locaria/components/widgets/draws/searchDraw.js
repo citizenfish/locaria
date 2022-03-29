@@ -21,18 +21,18 @@ import {
 	openSearchDraw,
 	setSearch,
 	toggleLocationShow,
-	setDistance
+	setDistance, deleteTag
 } from "../../redux/slices/searchDrawSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 import Chip from "@mui/material/Chip";
 import MenuIcon from "@mui/icons-material/Menu";
-import {openCategoryDraw} from "../../redux/slices/categoryDrawSlice";
 
 import {openLayout, closeLayout} from "../../redux/slices/layoutSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Distance from "../../../libs/Distance";
 import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
+import AdvancedAccordion from "../advancedAccordion";
 
 
 const SearchDraw = forwardRef((props, ref) => {
@@ -47,10 +47,12 @@ const SearchDraw = forwardRef((props, ref) => {
 		const locationShow = useSelector((state) => state.searchDraw.locationShow);
 		const resolutions = useSelector((state) => state.layout.resolutions);
 		const distance = useSelector((state) => state.searchDraw.distance);
+		const tags = useSelector((state) => state.searchDraw.tags);
 
 
 		const classes = useStyles();
 		const [moreResults, setMoreResults] = React.useState(false);
+		const [fit, setFit] = React.useState(true);
 		const [searchResults, setSearchResults] = React.useState([]);
 		const [locationResults, setLocationResults] = React.useState([]);
 		const myContext = useContext(LocariaContext);
@@ -59,7 +61,10 @@ const SearchDraw = forwardRef((props, ref) => {
 
 		const isInitialMount = useRef(true);
 
-		React.useEffect(() => {
+		const [channel, setChannel] = React.useState(undefined);
+
+
+	React.useEffect(() => {
 			if (isInitialMount.current) {
 				isInitialMount.current = false;
 			} else {
@@ -70,29 +75,26 @@ const SearchDraw = forwardRef((props, ref) => {
 					dispatch(closeLandingDraw());
 					props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
 					props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
-					if (searchResults.length === 0)
+					/*if (searchResults.length === 0)
 						doSearch('new');
-
-				} else {
-					//dispatch(openLayout());
-					//history.push(`/Map`);
-					//props.updateMap();
-
+*/
 				}
 			}
 		}, [open]);
 
 		React.useEffect(() => {
+			setChannel(channels.getChannelProperties(categories[0]));
 			if (open === true) {
 				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
 				doSearch('new');
 			}
-		}, [categories]);
+		}, [categories,tags,open]);
 
 
 		React.useEffect(() => {
 			if (open === true) {
 				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
+				document.getElementById('mySearch').value=search;
 				doSearch('new');
 			}
 		}, [search]);
@@ -139,7 +141,10 @@ const SearchDraw = forwardRef((props, ref) => {
 					setLocationResults(json.locationLoader.packet.features);
 				}
 				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
-				props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
+				if(fit)
+					props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
+				else
+					setFit(false);
 
 			});
 
@@ -149,6 +154,14 @@ const SearchDraw = forwardRef((props, ref) => {
 
 
 		}, [searchResults]);
+
+
+		React.useEffect(() => {
+			if (channel && channel.searchReport) {
+				setFit(false);
+				doSearch();
+			}
+		},[resolutions]);
 
 		function handleKeyDown(e) {
 			if (e.key === 'Enter') {
@@ -183,17 +196,21 @@ const SearchDraw = forwardRef((props, ref) => {
 				}
 			};
 
+			if(tags.length>0) {
+				packetSearch.data.tags=tags;
+			}
+
 			if (distance > 0) {
 				packetSearch.data.location_distance = distanceLib.distanceActual(distance,'km');
 				packetSearch.data.location = `SRID=4326;POINT(${homeLocation[0]} ${homeLocation[1]})`;
 			}
 
 
-			let channel = channels.getChannelProperties(categories[0]);
 			if (channel && channel.searchReport) {
 				packetSearch.data.method = "report";
 				packetSearch.data.report_name = channel.searchReport;
-				packetSearch.data.cluster = true;
+				if(resolutions.resolution >= configs.clusterCutOff)
+					packetSearch.data.cluster = true;
 				packetSearch.data.bbox = `${resolutions.extent4326[0]} ${resolutions.extent4326[1]},${resolutions.extent4326[2]} ${resolutions.extent4326[3]}`;
 			}
 
@@ -278,9 +295,6 @@ const SearchDraw = forwardRef((props, ref) => {
 				</div>
 				<Divider/>
 				<div className={classes.searchDrawSearch}>
-					<MenuIcon fontSize="large" color="icons" className={classes.searchDrawAdvancedButton} onClick={() => {
-						dispatch(openCategoryDraw());
-					}}/>
 					<InputBase
 						className={classes.searchDrawBox}
 						id="mySearch"
@@ -294,18 +308,29 @@ const SearchDraw = forwardRef((props, ref) => {
 						<SearchIcon className={classes.icons}/>
 					</IconButton>
 				</div>
-				<Container className={classes.searchDrawAdvanced}>
-					{categories.map((category) => (
-						<Chip label={category} onDelete={() => {
-							dispatch(deleteSearchCategory(category));
-						}}/>
-					))}
-					{distance > 0 ?
-						< Chip label={`Distance: ${distance}km`} onDelete={() => {
-							dispatch(setDistance(false));
-						}}/> : <></>
-					}
-				</Container>
+
+				<AdvancedAccordion>
+					<Container className={classes.searchDrawAdvanced}>
+						{categories.map((category) => (
+							<Chip className={classes.chip} ket={`cat-${category}`} label={category} onDelete={() => {
+								dispatch(deleteSearchCategory(category));
+							}}/>
+						))}
+
+						{tags.map((tag) => (
+							<Chip className={classes.chip} ket={`tag-${tag}`} label={`tag: ${tag}`} onDelete={() => {
+								dispatch(deleteTag(tag));
+							}}/>
+						))}
+
+						{distance > 0 ?
+							<Chip className={classes.chip} label={`Distance: ${distance}km`} onDelete={() => {
+								dispatch(setDistance(false));
+							}}/> : <></>
+						}
+					</Container>
+				</AdvancedAccordion>
+
 				<div className={classes.searchDrawResults}>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>

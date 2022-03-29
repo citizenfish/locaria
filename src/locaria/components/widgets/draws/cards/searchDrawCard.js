@@ -10,6 +10,7 @@ import {useDispatch} from 'react-redux'
 import {openViewDraw} from "../../../redux/slices/viewDrawSlice";
 import Grid from "@mui/material/Grid";
 import {setLocation} from "../../../redux/slices/layoutSlice";
+import Tags from "../../tags";
 
 const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
@@ -23,12 +24,10 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 		mapRef.current.clearHighlighted("default", "data");
 	}
 
-	const channel = channels.getChannelProperties(properties.category);
-	if(channel===undefined)
-		return <></>
 
 	switch (properties.featureType) {
 		case 'location':
+
 			return (
 				<Paper elevation={0} className={classes.SearchDrawWrapper}>
 					<CardImageLoader defaultImage={configs.locationIcon}/>
@@ -43,14 +42,16 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 
 						<Grid container spacing={1} justifyContent="center">
 							<Grid item md={6}>
-								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation} onClick={() => {
-									mapRef.current.centerOnCoordinate(geometry.coordinates,undefined,"EPSG:4326");
-								}}>Locate</Button>
+								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation}
+								        onClick={() => {
+									        mapRef.current.centerOnCoordinate(geometry.coordinates, undefined, "EPSG:4326");
+								        }}>Locate</Button>
 							</Grid>
 							<Grid item md={6}>
-								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation} onClick={() => {
-									dispatch(setLocation(geometry.coordinates));
-								}}>Set Home</Button>
+								<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation}
+								        onClick={() => {
+									        dispatch(setLocation(geometry.coordinates));
+								        }}>Set Home</Button>
 							</Grid>
 						</Grid>
 
@@ -60,26 +61,46 @@ const SearchDrawCard = function ({properties, geometry, mapRef, closeWrapper}) {
 				</Paper>
 			)
 		default:
-				return (
-					<Paper elevation={0} className={classes.SearchDrawWrapper} onMouseOver={mapOver} onMouseOut={mapOut}
-					       data-fid={properties.fid}>
-						<CardImageLoader defaultImage={channel.image? channel.image:configs.defaultImage}
-						                 images={properties.description ? properties.description.images : ''}/>
-						<div className={classes.SearchDrawContent}>
-							<div className={classes.SearchDrawContentSub}>
-								<Typography className={classes.SearchDrawNameText}>{properties.description.title}</Typography>
-								<Divider className={classes.SearchDrawDivider}/>
-								<Typography className={classes.SearchDrawShipText}>{properties.description.text}</Typography>
+			const channel = channels.getChannelProperties(properties.category);
+			if (channel === undefined)
+				return <></>
+			return (
+				<Paper elevation={0} className={classes.SearchDrawWrapper} onMouseOver={mapOver} onMouseOut={mapOut}
+				       data-fid={properties.fid}>
+					<Grid container justifyContent="center" spacing={0}>
+						<Grid item md={3}>
+							<Grid item md={12}>
+								<CardImageLoader defaultImage={channel.image ? channel.image : configs.defaultImage}
+								                 images={properties.description ? properties.description.images : ''}/>
+							</Grid>
+							<Grid item md={12} justifyContent="center">
+								<Button color="secondary" disableElevation variant="contained"
+								        className={classes.SearchDrawButton} onClick={() => {
+									if (closeWrapper)
+										closeWrapper();
+									mapRef.current.clearHighlighted("default", "data");
+									dispatch(openViewDraw({fid: properties.fid, category: properties.category}));
+								}}>View</Button>
+
+							</Grid>
+						</Grid>
+
+						<Grid item md={9}>
+							<div className={classes.SearchDrawContent}>
+								<div className={classes.SearchDrawContentSub}>
+									<Typography
+										className={classes.SearchDrawNameText}>{properties.description.title}</Typography>
+									<Divider className={classes.SearchDrawDivider}/>
+									<Typography
+										className={classes.SearchDrawShipText}>{properties.description.text}</Typography>
+								</div>
+								<Tags tags={properties.tags}></Tags>
 							</div>
-							<Button color="secondary" disableElevation variant="contained" className={classes.SearchDrawButton} onClick={() => {
-								if (closeWrapper)
-									closeWrapper();
-								mapRef.current.clearHighlighted("default", "data");
-								dispatch(openViewDraw({fid:properties.fid,category:properties.category}));
-							}}>View</Button>
-						</div>
-					</Paper>
-				)
+						</Grid>
+					</Grid>
+				</Paper>
+
+			)
 
 	}
 

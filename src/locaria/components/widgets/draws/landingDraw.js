@@ -13,10 +13,10 @@ import ChannelSelect from "../channelSelect";
 import {Footer} from "../footer";
 import {useHistory} from "react-router-dom";
 import {useCookies} from "react-cookie";
-import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
 import {closeSearchDraw, openSearchDraw} from "../../redux/slices/searchDrawSlice";
 import {closeLayout} from "../../redux/slices/layoutSlice";
 import {closeMultiSelect} from "../../redux/slices/multiSelectSlice";
+import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
 
 const LandingDraw = function () {
 
@@ -34,6 +34,8 @@ const LandingDraw = function () {
 
 	const dispatch = useDispatch()
 
+	const [search, setSearch] = React.useState('');
+
 
 	React.useEffect(() => {
 		if (isInitialMount.current) {
@@ -43,10 +45,15 @@ const LandingDraw = function () {
 				history.push(`/`);
 				dispatch(closeLayout());
 				dispatch(closeSearchDraw());
+				dispatch(closeViewDraw());
 				dispatch(closeMultiSelect());
 			}
 		}
 	}, [open]);
+
+	function handleChange(e) {
+		setSearch(e.target.value);
+	}
 
 	function handleKeyDown(e) {
 		if (e.key === 'Enter') {
@@ -55,9 +62,7 @@ const LandingDraw = function () {
 	}
 
 	function doSearch() {
-		let newSearchValue = document.getElementById('mySearch').value;
-		//history.push(`/Search/[]/${newSearchValue}`);
-		dispatch(openSearchDraw({categories: [],search:newSearchValue}));
+		dispatch(openSearchDraw({categories: [],search:search}));
 
 	}
 
@@ -92,17 +97,22 @@ const LandingDraw = function () {
 				</Grid>
 				<Grid item md={6} className={classes.landingLocationGrid}>
 					<div className={classes.landingLocationPod}>
+						<Typography variant="h6" component="div">
+							Search for a location or thing
+						</Typography>
 						<InputBase
-							className={classes.searchDrawBox}
+							className={classes.landingSearchBox}
 							id="mySearch"
 							placeholder={configs.searchPlaceholder}
 							variant="filled"
 							onKeyDown={handleKeyDown}
+							onChange={handleChange}
+							value={search}
 						/>
 						<IconButton onClick={() => {
-							doSearch('new')
+							doSearch()
 						}} type="submit" aria-label="search">
-							<SearchIcon className={classes.icons}  />
+							<SearchIcon className={classes.iconsLight}  />
 						</IconButton>
 					</div>
 

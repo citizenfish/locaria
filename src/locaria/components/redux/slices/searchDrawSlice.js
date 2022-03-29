@@ -7,7 +7,9 @@ export const searchDrawSlice = createSlice({
 		categories: [],
 		search: '',
 		locationShow: false,
-		distance: 0
+		distance: 0,
+		tags: [],
+		resolutionUpdate: false
 	},
 	reducers: {
 		openSearchDraw: (state, action) => {
@@ -38,6 +40,16 @@ export const searchDrawSlice = createSlice({
 		},
 		setDistance: (state,action) => {
 			state.distance=action.payload;
+		},
+		setTags: (state, action) => {
+			state.tags=action.payload;
+		},
+		deleteTag: (state,action) => {
+			state.tags.splice(state.tags.indexOf(action.payload),1);
+		},
+		addTag: (state,action) => {
+			if(state.tags.indexOf(action.payload)===-1)
+				state.tags.push(action.payload);
 		}
 	},
 })
@@ -51,7 +63,10 @@ export const {
 	clearSearchCategory,
 	setSearch,
 	toggleLocationShow,
-	setDistance
+	setDistance,
+	setTags,
+	deleteTag,
+	addTag
 } = searchDrawSlice.actions
 
 export default searchDrawSlice.reducer
