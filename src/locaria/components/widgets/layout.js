@@ -18,7 +18,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {NavProfile} from "./navProfile";
 import {SearchDraw} from "./draws/searchDraw";
 import {ViewDraw} from "./draws/viewDraw";
-import CategoryDraw from "./draws/categoryDraw";
+import AdvancedAccordion from "./advancedAccordion";
 import LandingDraw from "./draws/landingDraw";
 import MenuDraw from "./draws/menuDraw";
 import Multi from "./multi";
@@ -34,7 +34,7 @@ import Typography from "@mui/material/Typography";
 import {openPageDialog} from "../redux/slices/pageDialogSlice";
 import {closeLandingDraw, openLandingDraw} from "../redux/slices/landingDrawSlice";
 
-const Layout = ({children, map, update, fullscreen = false}) => {
+const Layout = ({children, map, fullscreen = false}) => {
 	const mapRef = useRef();
 	const location = useLocation();
 	// params?
@@ -235,10 +235,17 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 	}
 
 	const toggleSearchWrapper = function () {
-		dispatch(toggleSearchDraw());
+		if(searchDrawOpen===true) {
+			dispatch(closeSearchDraw());
+		} else {
+			dispatch(openSearchDraw());
+
+		}
+
+	/*	dispatch(toggleSearchDraw());
 		if(open===false) {
 			dispatch(openLayout());
-		}
+		}*/
 	}
 
 
@@ -265,7 +272,6 @@ const Layout = ({children, map, update, fullscreen = false}) => {
 					<MenuDraw/>
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
-					<CategoryDraw></CategoryDraw>
 					<PageDraw></PageDraw>
                     <BottomNavigation className={classes.nav} id={"navMain"}>
 						<BottomNavigationAction className={classes.NavMenuButton}  icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>

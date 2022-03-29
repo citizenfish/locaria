@@ -45,6 +45,10 @@ export default class UseStyles {
 				flexGrow: 1,
 			},
 
+			chip: {
+				margin: "5px !important"
+			},
+
 			/*
 				Maintenance
 			 */
@@ -97,7 +101,7 @@ export default class UseStyles {
 			},
 
 			landingLocationPod: {
-				height: 250,
+				height: "40vh",
 				margin: 10,
 				padding: 10,
 				color: theme.palette.text.lighter
@@ -480,6 +484,16 @@ export default class UseStyles {
 				margin: "10px !important",
 				backgroundColor: `${theme.palette.secondary.main} !important`,
 				color: `${theme.palette.text.primary} !important`,
+			},
+
+			searchDrawAdvancedAccordion: {
+				backgroundColor: `${theme.palette.primary.main} !important`,
+				color: `${theme.palette.text.primary} !important`,
+				overflowY: 'auto',
+				overflowX: 'hidden'
+			},
+
+			searchDrawAdvancedAccordionDetails:{
 			},
 
 			searchDrawAdvanced: {

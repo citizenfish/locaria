@@ -1,19 +1,14 @@
 import React from "react";
 
-
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Checkbox from "@mui/material/Checkbox";
-import ListItemText from "@mui/material/ListItemText";
-import FormControl from "@mui/material/FormControl";
-import Input from "@mui/material/Input";
 import {useStyles} from "stylesLocaria";
 import {useDispatch, useSelector} from "react-redux";
+import AddIcon from '@mui/icons-material/Add';
 
 import {
-	setTags
+	setTags,
+	addTag
 } from "../redux/slices/searchDrawSlice";
+import Chip from "@mui/material/Chip";
 
 const SearchTags = ({category, changeFunction, currentValue}) => {
 	const classes = useStyles();
@@ -46,40 +41,17 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 	}, [categories]);
 
 
-	function handleChange(e) {
-		dispatch(setTags(e.target.value));
-	}
-
-	function handleClose(e) {
-		dispatch(setTags(tags));
-	}
-
 	if (tagList.length > 0) {
 		return (
-			<FormControl className={classes.formControl} fullWidth>
-
-				<InputLabel htmlFor="tag-select">Tags</InputLabel>
-				<Select
-					id="tag-select"
-					value={tags}
-					onChange={handleChange}
-					onClose={handleClose}
-					multiple
-					input={<Input/>}
-					key={`tss-control`}
-					renderValue={(selected) => selected.join(', ')}
-				>
-					{tagList.map(function (tag, index) {
-						return (
-							<MenuItem key={`tsmi-${index}`} value={tag}>
-								<Checkbox checked={tags.indexOf(tag) > -1}/>
-								<ListItemText primary={tag}></ListItemText>
-							</MenuItem>
-						)
-					})}
-
-				</Select>
-			</FormControl>
+			<>
+			{tagList.map((tag) => {
+				if(tags.indexOf(tag)===-1) return (
+					<Chip className={classes.chip} ket={`tag-${tag}`} label={`tag: ${tag}`} deleteIcon={<AddIcon />} onDelete={() => {
+						dispatch(addTag(tag));
+					}}/>
+				)}
+			)}
+			</>
 		)
 	} else {
 		return (<></>)

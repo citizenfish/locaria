@@ -156,6 +156,14 @@ function sendSQLFiles(stage, theme,configFile, callBack) {
 	let skipped = 0;
 	let failed = 0;
 	let fileList = [];
+
+	if(!fs.existsSync(configFile)) {
+		console.log(`specified config file ${configFile} does not exist!`);
+		callBack(stage,theme);
+		return;
+	}
+
+
 	const deployConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
 	deployConfig.subs = {};
 	if (deployConfig.substitutions) {
@@ -163,7 +171,7 @@ function sendSQLFiles(stage, theme,configFile, callBack) {
 			deployConfig.subs = JSON.parse(fs.readFileSync(deployConfig.substitutions, 'utf8'));
 		} else {
 			console.log(`substitutions file: ${deployConfig.substitutions} not found`);
-			callBack(stage);
+			callBack(stage,theme);
 			return;
 		}
 	}
@@ -194,7 +202,7 @@ function sendSQLFiles(stage, theme,configFile, callBack) {
 			index++;
 			skipped++;
 			if (index >= items) {
-				callBack(stage);
+				callBack(stage,theme);
 			} else {
 				sendFile(index);
 			}
@@ -225,7 +233,7 @@ function sendSQLFiles(stage, theme,configFile, callBack) {
 					failed++;
 					if (deployConfig.stopOnError === true) {
 						console.log(`EARLY STOP! DONE ${fileList.length} Records SKIPPED ${skipped}`);
-						callBack(stage);
+						callBack(stage,theme);
 						return;
 					}
 				} else {
@@ -244,7 +252,7 @@ function sendSQLFiles(stage, theme,configFile, callBack) {
 				}
 				if (index >= items) {
 					console.log(`DONE ${fileList.length} FAILED ${failed} Records SKIPPED ${skipped}`);
-					callBack(stage);
+					callBack(stage,theme);
 				} else {
 					sendFile(index);
 				}
@@ -293,13 +301,13 @@ function deploySystemMain(stage,theme) {
 				deployWEB(stage,theme);
 				break;
 			case 'sql':
-				deploySQL(stage);
+				deploySQL(stage,theme);
 				break;
 			case 'usql':
-				upgradeSQL(stage);
+				upgradeSQL(stage,theme);
 				break;
 			case 'tests':
-				runTests(stage);
+				runTests(stage,theme);
 				break;
 			case 'q':
 				commandLoop();
@@ -313,16 +321,9 @@ function deploySystemMain(stage,theme) {
 }
 
 
-function runTests(stage) {
-	const options = {};
-	const cmdLine = `grunt runTests --stage=${stage}`;
-	console.log(`#${cmdLine}`);
-	exec(cmdLine, options, (err, stdout, stderr) => {
-		console.log(stdout);
-		console.log(err);
-		console.log(stderr);
-		deploySystemMain(stage);
-	});
+function runTests(stage,theme) {
+	sendSQLFiles(stage, theme,'database/tests.json', deploySystemMain);
+
 }
 
 
@@ -432,22 +433,19 @@ function deployWEB(stage,theme) {
 
 }
 
-function deploySQL(stage) {
-	let theme = 'main';
-	readline.question(`Theme to use [${theme}]?`, (cmd) => {
-		if (cmd)
-			theme = cmd;
-		sendSQLFiles(stage, theme,'database/install.json', deploySystemMain);
+function deploySQL(stage,theme) {
+	readline.question(`Are you sure you wish to wipe and re-install ${theme} [n]?`, (cmd) => {
+		if (cmd==='y') {
+			sendSQLFiles(stage, theme, 'database/install.json', deploySystemMain);
+		} else {
+			console.log('Aborted!');
+			deploySystemMain(stage,theme);
+		}
 	});
 }
 
-function upgradeSQL(stage) {
-	let theme = 'main';
-	readline.question(`Theme to use [${theme}]?`, (cmd) => {
-		if (cmd)
-			theme = cmd;
+function upgradeSQL(stage,theme) {
 		sendSQLFiles(stage, theme,'database/upgrade.json', deploySystemMain);
-	});
 }
 
 function deleteConfig() {
