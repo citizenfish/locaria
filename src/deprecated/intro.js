@@ -5,7 +5,7 @@ import {useStyles} from "stylesLocaria";
 import {configs} from "themeLocaria";
 import Checkbox from '@mui/material/Checkbox';
 import {useCookies} from "react-cookie";
-import LocariaContext from "../context/locariaContext";
+import LocariaContext from "../locaria/components/context/locariaContext";
 import Grid from "@mui/material/Grid";
 
 const IntroModal = () => {

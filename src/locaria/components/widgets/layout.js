@@ -272,7 +272,6 @@ const Layout = ({children, map, fullscreen = false}) => {
 					<MenuDraw/>
 					<ViewDraw mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
-					<PageDraw></PageDraw>
                     <BottomNavigation className={classes.nav} id={"navMain"}>
 						<BottomNavigationAction className={classes.NavMenuButton}  icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
 	                    <div  style={{backgroundImage: `url(${configs.siteLogo})`}} className={classes.NavSiteLogo}/>
@@ -281,6 +280,8 @@ const Layout = ({children, map, fullscreen = false}) => {
 	                    <NavProfile/>
 					</BottomNavigation>
 					<LandingDraw></LandingDraw>
+					<PageDraw></PageDraw>
+
 				</div>
 				<div>
 					{displayMap()}
