@@ -11,13 +11,15 @@ BEGIN
     DROP VIEW IF EXISTS locaria_data.typeahead_search_view;
 
     CREATE VIEW locaria_data.typeahead_search_view AS
-    SELECT 'f_'||fid ,
+    SELECT 'f_'||fid AS fid ,
            attributes#>>'{description,title}' AS search_text,
+           attributes->'category'->>0 AS category,
            'f' AS feature_type
     FROM locaria_data.global_search_view
     UNION ALL
     SELECT 'l_'||id AS fid,
            attributes->>'name1' AS search_text,
+           'Location' AS category,
            'l' AS feature_type
     FROM locaria_data.location_search_view;
 
@@ -27,7 +29,7 @@ BEGIN
     --Permissions
     GRANT SELECT ON locaria_data.typeahead_search_view TO PUBLIC;
 
-    RETURN jsonb_build_object('success', 'locaria search materialised view created');
+    RETURN jsonb_build_object('success', 'locaria typeahead_search view created');
 
 EXCEPTION WHEN OTHERS THEN
     RAISE NOTICE '%',SQLERRM;

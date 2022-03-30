@@ -134,7 +134,7 @@ export default function AdminUpload(props) {
                      <DataGrid style={{width: '100%'}}
                          rows={tableData}
                          columns={columns}
-                               autoHeight
+                         autoHeight
                          initialState={{
                            sorting: {
                                sortModel: [{ field: 'id', sort: 'desc' }],
