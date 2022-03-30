@@ -36,12 +36,6 @@ const Map = forwardRef((props, ref) => {
 
 		});
 		ol.addLayer({
-			"name": "home",
-			"type": "vector",
-			"active": true,
-			"style": locationStyle
-		});
-		ol.addLayer({
 			"name": "location",
 			"type": "vector",
 			"active": true,
@@ -51,12 +45,20 @@ const Map = forwardRef((props, ref) => {
 			"name": "data",
 			"type": "vector",
 			"active": true,
-			"style": function(feature,resolution) { return viewStyle(feature,resolution,ol);}
+			"style": function(feature,resolution) { return viewStyle(feature,resolution,ol);},
+			"declutter": true
+		});
+		ol.addLayer({
+			"name": "home",
+			"type": "vector",
+			"active": true,
+			"style": locationStyle
 		});
 
 		// optionals
-		if (props.handleMapClick !== undefined)
+		if (props.handleMapClick !== undefined) {
 			ol.simpleClick({"clickFunction": props.handleMapClick});
+		}
 		if (props.onZoomChange !== undefined) {
 			ol.addResolutionEvent({"changeFunction": props.onZoomChange});
 			const resolution = ol.updateResolution();
@@ -64,8 +66,9 @@ const Map = forwardRef((props, ref) => {
 			props.onZoomChange(resolution);
 
 		}
-		if (props.onFeatureSeleted !== undefined)
+		if (props.onFeatureSeleted !== undefined) {
 			ol.makeControl({"layers": ["data"], "selectedFunction": props.onFeatureSeleted, "multi": true});
+		}
 
 	}, [ol]);
 
@@ -148,7 +151,7 @@ const Map = forwardRef((props, ref) => {
 
 		return (
 		<SpeedDial
-			ariaLabel="SpeedDial basic example"
+			ariaLabel="SpeedDial"
 			icon={<MapIcon fontSize="medium"/>}
 			className={classes.mapDial}
 			direction={'up'}

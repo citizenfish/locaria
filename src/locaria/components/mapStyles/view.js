@@ -13,7 +13,7 @@ export function locationStyle(feature, resolution) {
 				image: new Icon({
 					src: markerHome,
 					size: [40, 70],
-					zIndex: 100,
+					zIndex: 100000000,
 					anchorOrigin: 'top-left',
 					anchor: [0.5, 0.5],
 					anchorXUnits: 'fraction',
@@ -25,7 +25,7 @@ export function locationStyle(feature, resolution) {
 					text: 'Your location',
 					font: 'bold 11px "Soleil"',
 					textBaseline: 'bottom',
-					offsetY: 15,
+					offsetY: -30,
 					fill: new Fill({
 						color: '#000000'
 					}),
