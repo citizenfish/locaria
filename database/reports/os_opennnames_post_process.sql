@@ -6,7 +6,8 @@ SELECT 'opennames_post_process',
 
 $SQL$
 
-        CREATE MATERIALIZED VIEW IF NOT EXISTS locaria_data.location_search_view
+        DROP MATERIALIZED VIEW IF EXISTS locaria_data.location_search_view CASCADE;
+        CREATE MATERIALIZED VIEW locaria_data.location_search_view
         AS
         SELECT
             fid AS id,
@@ -32,6 +33,8 @@ $SQL$
                 USING gin(attributes jsonb_path_ops);
 
         REFRESH MATERIALIZED VIEW CONCURRENTLY locaria_data.location_search_view;
+
+        SELECT locaria_core.create_typeahead_search_view();
 
         UPDATE parameters
         SET parameter = parameter || jsonb_build_object('opennames_version', ($1::JSONB)->>'version')

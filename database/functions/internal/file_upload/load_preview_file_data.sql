@@ -6,6 +6,7 @@ DECLARE
     count_var INTEGER;
     processed_var INTEGER;
     inserts_var INTEGER;
+    category_id_var INTEGER;
 BEGIN
 
     SET SEARCH_PATH = 'locaria_uploads','locaria_core','public';
@@ -22,12 +23,16 @@ BEGIN
     FROM files
     WHERE id = (parameters->>'id')::BIGINT;
 
+    SELECT id
+    INTO category_id_var
+    FROM categories WHERE category = parameters->>'category';
+
     IF status_var != 'IMPORTED' THEN
 
         parameters = parameters || jsonb_build_object('limit', max_sync_var, 'offset', processed_var);
 
         INSERT INTO locaria_data.imports(category_id, wkb_geometry, attributes)
-        SELECT (SELECT id FROM categories WHERE category = parameters->>'category'),
+        SELECT category_id_var,
                wkb_geometry,
                attributes
         FROM get_preview_file_data(parameters);
@@ -48,7 +53,7 @@ BEGIN
         WHERE id = COALESCE(parameters->>'id', '-1')::INTEGER;
     END IF;
 
-    RETURN jsonb_build_object('status', status_var, 'processed', processed_var, 'record_count', count_var);
+    RETURN jsonb_build_object('status', status_var, 'processed', processed_var, 'record_count', count_var, 'category_id', category_id_var);
 
 END;
 $$ LANGUAGE PLPGSQL;

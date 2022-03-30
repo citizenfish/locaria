@@ -124,7 +124,7 @@ BEGIN
                    attributes || CASE WHEN distance >= 0 THEN jsonb_build_object('distance', distance) ELSE jsonb_build_object() END
                               || CASE WHEN metadata_var THEN metadata ELSE jsonb_build_object() END
                               --return category as a string not array
-                              || jsonb_build_object('category', attributes->'category'->0)
+                              || jsonb_build_object('category', attributes->'category'->0, 'c', count(*) OVER() )
                               - 'acl'
                    as attributes
 
@@ -155,7 +155,7 @@ BEGIN
                 --for tags
                 AND ( (search_parameters->'tags') IS NULL OR attributes->'tags' ?| json2text(search_parameters->'tags') )
                 --for categories
-                 AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
+                AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
                 --range query
                 AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
 

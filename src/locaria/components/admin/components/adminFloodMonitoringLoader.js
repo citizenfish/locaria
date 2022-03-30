@@ -9,7 +9,7 @@ import {useCookies} from "react-cookie";
 export default function AdminFloodMonitoringLoader(props) {
 
     const [counties,setCounties] =useState(null)
-    const [chosenCounty,setChosenCounty] = useState('')
+    const [chosenCounty,setChosenCounty] = useState('-- Select County --')
     const [cookies, setCookies] = useCookies(['location'])
 
     useEffect(() =>{
@@ -30,6 +30,7 @@ export default function AdminFloodMonitoringLoader(props) {
             unique.sort(function(a, b) {
                 return (a < b) ? -1 : (a > b) ? 1 : 0;
             })
+            unique.unshift(chosenCounty)
             setCounties(unique)
         })
 
@@ -39,7 +40,7 @@ export default function AdminFloodMonitoringLoader(props) {
 
     const countyList = (arr) => {
         return arr.map((key) =>(
-            <MenuItem value={key} name={key}>{key}</MenuItem>
+            <MenuItem key = {key} value={key} name={key}>{key}</MenuItem>
         ))
     }
 
@@ -75,10 +76,11 @@ export default function AdminFloodMonitoringLoader(props) {
             borderRadius: '5px' }}>
 
             <Button
-                variant="contained"
+                variant="outlined"
                 onClick={() => {
                     loadFloodData()
                 }}
+                disabled = {chosenCounty ==='-- Select County --' ? true : false}
                 component="span"
             >
                 Load Flood Data

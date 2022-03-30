@@ -17,8 +17,63 @@ def custom_loader_main(db,file):
         return os_opendata_loader(db, file)
     elif func == 'crime_loader':
         return crime_loader(db,file)
+    elif func == 'thelist_events':
+        return thelist_events(db,file)
     else:
         return 'ERROR'
+
+def thelist_events(db,file):
+    parameters = get_parameters(db,'thelist_events').get('thelist_events',{})
+    eventsUrl = parameters.get('url', 'https://api.list.co.uk/v1/events')
+    eventsAPIKey = parameters.get('key', 'WILLFAIL')
+
+    # Step one, get the max distance in miles for our chose authority
+    la_id = file['attributes'].get('bounding_la_id', '')
+    if la_id == '':
+        return {'status' : 'ERROR', 'result' : 'Local authority id required'}
+
+    query = """ SELECT ROUND(radius::NUMERIC * 0.000621371, 2) AS miles,
+                ST_X(ST_TRANSFORM(center,4326)) AS lon,
+                ST_Y(ST_TRANSFORM(center,4326)) AS lat
+                FROM (
+
+                        SELECT (ST_MINIMUMBOUNDINGRADIUS(ST_TRANSFORM(wkb_geometry,3857))).*
+                        FROM locaria_data.local_authority_boundary
+                        WHERE id = %s::BIGINT
+                ) MBR """
+    mbr = db.execute(query, [la_id]).fetchone()
+
+    # Step two call events api to get events within this distance
+    events = []
+    url = f"{eventsUrl}?near={mbr[2]},{mbr[1]}/{mbr[0]}"
+    count = 0
+    while True:
+        res = requests.get(url, headers={'Authorization': f"Bearer {eventsAPIKey}"})
+        events.extend(res.json())
+        url = res.links.get('next', '')
+        if url == '':
+            break
+        url = url['url']
+
+    tmp_dir = file["attributes"]["tmp_dir"]
+    path = f"{tmp_dir}/events.json"
+    features = []
+    for f in events:
+        lon = f['schedules'][0]['place']['lng']
+        lat = f['schedules'][0]['place']['lat']
+        features.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [lon,lat]}, 'properties' : f})
+    data = {'type' : 'FeatureCollection'}
+    data['features'] = features
+    writeFileJson(path,data)
+
+    response = {
+        'filename': path,
+        'table_name': parameters.get('table_name', file['table_name']),
+        'post_process_report': parameters.get('post_process_report', file['attributes'].get('post_process_report',''))
+    }
+
+    return response
+
 
 def crime_loader(db,file):
 
@@ -29,6 +84,7 @@ def crime_loader(db,file):
     if not force:
         return {'status' : 'REGISTERED', 'result' : 'Force not specified', 'message' : 'A force must be specified to load crime data'}
 
+
     crimes = []
     outcomes = []
     events = []
@@ -36,6 +92,8 @@ def crime_loader(db,file):
     priorities = []
     boundaries = []
     loadFiles = []
+
+
     # Step 1 - identify the neighbourhoods for the force
     neighbourhoods = requests.get(f"{crimesUrl}{force}/neighbourhoods").json()
 
@@ -62,7 +120,8 @@ def crime_loader(db,file):
 
         # Either retrieve for a set date or go back 3 months from current
         tm = datetime.date.today() - relativedelta(months=3)
-        postParams = {'poly' : ':'.join(poly), 'date' : file['attributes'].get('crime_date', tm.strftime("%Y-%m"))}
+        month = file['attributes'].get('crime_date', tm.strftime("%Y-%m"))
+        postParams = {'poly' : ':'.join(poly), 'date' : month}
 
         #Get Crimes
         print(f"Downloading Crime for {postParams['date']}")
@@ -70,17 +129,21 @@ def crime_loader(db,file):
         if  crime.status_code == 200 and len(crime.json()) > 0:
             features = []
             for f in crime.json():
+                f['force'] = force
+                f['neighbourhood'] = neighbourhood['id']
                 features.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [float(f['location']['longitude']),float(f['location']['latitude'])]}, 'properties' : f})
             crimes.extend(features)
         else:
             print(f"Crimes failure {crime}")
 
         #Get outcomes
-        print(f"Downloading Outcome fpr {postParams['date']}")
+        print(f"Downloading Outcome for {postParams['date']}")
         outcome = requests.post(f"{crimesUrl}outcomes-at-location", postParams)
         if outcome.status_code == 200 and len(outcome.json()) > 0:
             features = []
             for f in outcome.json():
+                f['force'] = force
+                f['neighbourhood'] = neighbourhood['id']
                 features.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [float(f['crime']['location']['longitude']),float(f['crime']['location']['latitude'])]}, 'properties' : f})
             outcomes.extend(features)
         else:
@@ -98,7 +161,7 @@ def crime_loader(db,file):
         print(f"Downloading Events {crimesUrl}{force}/{neighbourhood['id']}/events")
         event = requests.get(f"{crimesUrl}{force}/{neighbourhood['id']}/events")
         if event.status_code == 200 and len(event.json()) > 0:
-            events.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [float(nlon),float(nlat)]}, 'properties': {'neighbourhood' : neighbourhood['id'], 'force' : force, 'team' : event.json()}})
+            events.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [float(nlon),float(nlat)]}, 'properties': {'month' : month, 'neighbourhood' : neighbourhood['id'], 'force' : force, 'event' : event.json()}})
         else:
             print(f"Events failure {event}")
 
@@ -106,15 +169,15 @@ def crime_loader(db,file):
         print(f"Downloading Priorities {crimesUrl}{force}/{neighbourhood['id']}/priorities")
         priority = requests.get(f"{crimesUrl}{force}/{neighbourhood['id']}/priorities")
         if priority.status_code == 200 and len(priority.json()) > 0:
-            priorities.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [float(nlon),float(nlat)]}, 'properties': {'neighbourhood' : neighbourhood['id'], 'force' : force, 'team' : priority.json()}})
+            priorities.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [float(nlon),float(nlat)]}, 'properties': {'neighbourhood' : neighbourhood['id'], 'force' : force, 'priority' : priority.json()}})
         else:
             print(f"Priority failure {priority}")
 
     # Now write them out to files for processing
     schema = file['schema']
-    if len(boundaries) > 0: loadFiles.append({'table': f"{schema}.crime_boundary", 'file': 'boundary.json', 'data': boundaries, 'geojson' : True})
-    if len(crimes) > 0:     loadFiles.append({'table': f"{schema}.crime_streetcrimes", 'file': 'crimes.json', 'data': crimes, 'geojson' : True})
-    if len(outcomes) > 0:   loadFiles.append({'table': f"{schema}.crime_outcomes", 'file': 'outcomes.json', 'data': outcomes, 'geojson' : True})
+    if len(boundaries) > 0: loadFiles.append({'table': f"{schema}.crime_neighbourhoods", 'file': 'boundary.json', 'data': boundaries, 'geojson' : True})
+    if len(crimes) > 0:     loadFiles.append({'table': f"{schema}.crime_streetcrimes", 'file': 'crimes.json', 'data': crimes, 'geojson' : True, 'flatten': True})
+    if len(outcomes) > 0:   loadFiles.append({'table': f"{schema}.crime_outcomes", 'file': 'outcomes.json', 'data': outcomes, 'geojson' : True, 'flatten': True})
     if len(teams) > 0:      loadFiles.append({'table': f"{schema}.crime_teams", 'file': 'teams.json', 'data': teams, 'geojson' : True})
     if len(events) > 0:     loadFiles.append({'table': f"{schema}.crime_events",'file': 'events.json', 'data': events, 'geojson' : True})
     if len(priorities) > 0: loadFiles.append({'table': f"{schema}.crime_priorities", 'file': 'priorities.json', 'data': priorities, 'geojson' : True})
@@ -130,7 +193,7 @@ def crime_loader(db,file):
             data = f['data']
         path = f"{tmp_dir}/{f['file']}"
         writeFileJson(path,data)
-        multifile.append({'path' : path, 'table' : f['table']})
+        multifile.append({'path' : path, 'table' : f['table'], 'flatten' : f.get('flatten', False)})
 
     return {'multifile' : multifile, 'message' : 'Processed multiple files for Crime'}
 
@@ -240,7 +303,7 @@ def planning_loader(db,file):
     base_url = parameters.get('url', 'https://www.planit.org.uk/api/applics/json')
     pageSize = file['attributes'].get('pageSize', 1000)
     index = file['attributes'].get('index', 0)
-    recent = file['attributes'].get('recent', 60)
+    recent = file['attributes'].get('recency', 60)
 
     if not 'authority' in file['attributes']:
         return {'status' : 'ERROR', 'result' : 'Missing authority', 'message' : 'Missing authority code for planning_loader'}

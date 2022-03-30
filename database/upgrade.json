@@ -1,7 +1,11 @@
 {
   "stopOnError": true,
   "tables": [
-    "tests/integration_tests/core_schema_test.sql"
+    "database/functions/view_creation/views_union.sql",
+    "database/functions/view_creation/create_typeahead_search_view.sql",
+    "database/functions/search/typeahead_search.sql",
+    "database/functions/search/search.sql",
+    "database/functions/search/search_get_records.sql"
   ],
   "substitutions": "../tests.json"
 }

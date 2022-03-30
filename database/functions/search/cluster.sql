@@ -50,7 +50,8 @@ BEGIN
                  ) FINAL;
     END IF;
 
-    IF cluster_algorithm = 'KMEANS' THEN
+    --Used when lots of singletons but slow
+    IF cluster_algorithm = 'KMEANSDBSCAN' THEN
 
         RETURN QUERY
 
@@ -85,6 +86,36 @@ BEGIN
                  ) FINAL;
     END IF;
 
+    IF cluster_algorithm = 'KMEANS' THEN
+
+        RETURN QUERY
+
+            SELECT  FINAL._fid,
+                    FINAL._search_rank,
+                    ST_Centroid(FINAL._wkb_geometry) AS _wkb_geometry,
+                    --add in the cluster extent converted from box_2d to a json array to facilitate zoom in
+                    --TODO this extent needs to be buffered if count = 1 as we zoom in too far
+                    FINAL._attributes || jsonb_build_object('extent', box2json(FINAL._wkb_geometry)) AS _attributes
+
+            FROM (
+                     SELECT c_id::TEXT AS _fid,
+                            1::DOUBLE PRECISION as _search_rank,
+                            ST_Collect(K._wkb_geometry) AS _wkb_geometry,
+                            jsonb_build_object('category',      category,
+                                               'count',         count(*),
+                                               'geometry_type', 'cluster') AS _attributes
+                     FROM (
+
+                           SELECT S._attributes ->> 'category' AS category,
+                                  S._wkb_geometry,
+                                  --kmeans_number_of_clusters must be > total number of geometries hence requiring the count
+                                  ST_ClusterKmeans(S._wkb_geometry, LEAST(kmeans_number_of_clusters, total_c::INTEGER)) OVER () AS c_id
+                           FROM (SELECT *, count(*) OVER() AS total_c FROM search_get_records(search_parameters, cluster_limit)) S
+                       ) K
+
+                     GROUP BY c_id, category
+                 ) FINAL;
+    END IF;
 
 END;
 $$
