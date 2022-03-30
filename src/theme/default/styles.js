@@ -8,7 +8,7 @@ const useStyles = new UseStyles(theme, {
 */
 	"nav":{
 		backgroundColor: `${theme.palette.primary.main} !important`,
-		borderRadius: '10px',
+		borderRadius: '0px',
 		width: '300px',
 		position: 'absolute',
 		zIndex: '150',

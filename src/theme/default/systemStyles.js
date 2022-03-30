@@ -95,8 +95,15 @@ export default class UseStyles {
 				padding: 20
 			},
 
+			channelCallToAction: {
+				width: "100vw",
+				height: "10vh",
+				padding: 10
+			},
+
 			landingLocation:{
 			//	marginTop: "20px !important"
+				backgroundColor: "rgb(246,245,243)"
 			},
 
 			landingLocationGrid: {
@@ -248,15 +255,14 @@ export default class UseStyles {
 				padding: '10px !important',
 			},
 			NavSearchButton: {
-				backgroundColor: `${theme.palette.secondary.main} !important`,
+
 				position: 'relative',
 				flex: '0 !important',
 				display: 'flex !important',
 				borderRadius: '100px !important',
 				justifyContent: 'center !important',
 				alignItems: 'center !important',
-				padding: '0 !important',
-
+				padding: '0 !important'
 			},
 
 			introModal: {
@@ -320,7 +326,7 @@ export default class UseStyles {
 				'& .MuiPaper-root': {
 					backgroundColor: theme.palette.primary.main,
 					color: theme.palette.icons.main,
-					borderRadius: '0px 20px 20px 0px',
+					/*borderRadius: '0px 20px 20px 0px',*/
 					paddingRight: '40px',
 					'& .MuiSvgIcon-root': {
 						color: theme.palette.icons.main

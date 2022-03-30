@@ -275,7 +275,7 @@ const Layout = ({children, map, fullscreen = false}) => {
                     <BottomNavigation className={classes.nav} id={"navMain"}>
 						<BottomNavigationAction className={classes.NavMenuButton}  icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
 	                    <div  style={{backgroundImage: `url(${configs.siteLogo})`}} className={classes.NavSiteLogo}/>
-	                    <BottomNavigationAction className={classes.NavSearchButton}  icon={<SearchIcon color="contrastIcons" fontSize="large"/>}
+	                    <BottomNavigationAction className={classes.NavSearchButton}  icon={<SearchIcon color="icons" fontSize="large"/>}
 												onClick={() => {toggleSearchWrapper()}}/>
 	                    <NavProfile/>
 					</BottomNavigation>
