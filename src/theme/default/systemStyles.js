@@ -49,6 +49,10 @@ export default class UseStyles {
 				margin: "5px !important"
 			},
 
+			list: {
+				color: theme.palette.text.lighter
+			},
+
 			/*
 				Maintenance
 			 */
@@ -58,6 +62,11 @@ export default class UseStyles {
 				height: "95vh",
 				margin: "30px",
 				padding: "10px"
+			},
+
+
+			typeAheadPopover: {
+				maxHeight: "30vh"
 			},
 
 			/*
@@ -96,12 +105,25 @@ export default class UseStyles {
 				color: theme.palette.text.lighter,
 			},
 
+
 			landingSearchBox: {
 				color: `${theme.palette.text.lighter} !important`,
+				border: `3px solid ${theme.palette.text.lighter}`,
+				boxShadow: "3px 3px 5px 0 rgb(0 0 0 / 15%)",
+				"& input": {
+					padding: 20
+				}
 			},
 
 			landingLocationPod: {
 				height: "40vh",
+				margin: 0,
+				padding: 0,
+				color: theme.palette.text.lighter
+
+			},
+
+			landingLocationPodSmall: {
 				margin: 10,
 				padding: 10,
 				color: theme.palette.text.lighter
@@ -439,17 +461,16 @@ export default class UseStyles {
 			SearchDrawWrapper: {
 				display: 'flex',
 				flexDirection: 'row',
-				borderRadius: '10px',
 				overflow: 'hidden',
 				height: '180px',
 				marginBottom: '20px',
-				backgroundColor: `${theme.palette.primary.main} !important`
+				backgroundColor: `${theme.palette.primary.main} !important`,
+				borderRadius: '0px !important',
 			},
 
 			SearchDrawMore: {
 				display: 'flex',
 				flexDirection: 'row',
-				borderRadius: '10px',
 				overflow: 'hidden',
 				marginBottom: '20px',
 				backgroundColor: `${theme.palette.primary.main} !important`

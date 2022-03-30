@@ -17,6 +17,9 @@ import {closeSearchDraw, openSearchDraw} from "../../redux/slices/searchDrawSlic
 import {closeLayout} from "../../redux/slices/layoutSlice";
 import {closeMultiSelect} from "../../redux/slices/multiSelectSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
+import TypeAhead from "../typeAhead";
+import {closeTypeAhead, openTypeAhead} from "../../redux/slices/typeAheadSlice";
+import Button from "@mui/material/Button";
 
 const LandingDraw = function () {
 
@@ -49,26 +52,53 @@ const LandingDraw = function () {
 				dispatch(closeMultiSelect());
 			}
 		}
+
+
+
+
+		window.websocket.registerQueue("typeAheadLoader", function (json) {
+			if(json.packet&&json.packet.results&&json.packet.results!==null)
+				dispatch(openTypeAhead(json.packet.results));
+			else
+				dispatch(closeTypeAhead());
+		});
+
 	}, [open]);
 
 	function handleChange(e) {
 		setSearch(e.target.value);
 	}
 
-	function handleKeyDown(e) {
+	function handleKeyUp(e) {
+		console.log(e.target.value);
 		if (e.key === 'Enter') {
+			dispatch(closeTypeAhead());
 			doSearch();
+		} else {
+			if (e.target.value.length > 2) {
+				window.websocket.send({
+					"queue": "typeAheadLoader",
+					"api": "api",
+					"data": {
+						"method": "search",
+						"typeahead": true,
+						"search_text": e.target.value
+					}
+				});
+			} else {
+				dispatch(closeTypeAhead());
+			}
 		}
 	}
 
 	function doSearch() {
-		dispatch(openSearchDraw({categories: [],search:search}));
+		dispatch(openSearchDraw({categories: [], search: search}));
 
 	}
 
 	React.useEffect(() => {
 		mapRef.current.markHome(cookies.location);
-		mapRef.current.zoomToLayersExtent(["data","location","home"]);
+		mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
 
 	});
 
@@ -90,30 +120,35 @@ const LandingDraw = function () {
 				</Typography>
 			</Box>
 			<Grid container className={classes.landingLocation} spacing={1} justifyContent="center">
-				<Grid item md={6} className={classes.landingLocationGrid}>
+				<Grid item md={12} className={classes.landingLocationGrid}>
 					<div className={classes.landingLocationPod}>
 						<Map id={'landingMap'} ref={mapRef} speedDial={false} className={'landingMap'}/>
 					</div>
 				</Grid>
-				<Grid item md={6} className={classes.landingLocationGrid}>
-					<div className={classes.landingLocationPod}>
+				<Grid item md={12} className={classes.landingLocationGrid}>
+					<div className={classes.landingLocationPodSmall}>
 						<Typography variant="h6" component="div">
 							Search for a location or thing
 						</Typography>
 						<InputBase
 							className={classes.landingSearchBox}
-							id="mySearch"
+							id="landingSearch"
 							placeholder={configs.searchPlaceholder}
 							variant="filled"
-							onKeyDown={handleKeyDown}
+							onKeyUp={handleKeyUp}
 							onChange={handleChange}
 							value={search}
+							autoComplete={'off'}
+							autoFocus={true}
+
 						/>
-						<IconButton onClick={() => {
-							doSearch()
-						}} type="submit" aria-label="search">
-							<SearchIcon className={classes.iconsLight}  />
-						</IconButton>
+
+						<TypeAhead anchorId={"landingSearch"}></TypeAhead>
+						<p>
+							<Button size="medium" color="secondary" variant="outlined" onClick={() => {
+								doSearch()
+							}}>Search</Button>
+						</p>
 					</div>
 
 				</Grid>

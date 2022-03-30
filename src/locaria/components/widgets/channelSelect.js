@@ -21,7 +21,7 @@ const ChannelSelect = () => {
 					const chan = channels.getChannelProperties(channel);
 					if (chan.display !== false) {
 						return (
-							<Grid item md={configs.homeGrid} className={classes.channel} key={chan.key}>
+							<Grid item md={configs.homeGrid} className={classes.channel} key={chan.key} onClick={() => {dispatch(openSearchDraw({categories: [channel]}));}}>
 								<div className={classes.channelPod}>
 								<img src={chan.image}/>
 										<Typography gutterBottom variant="h5" component="h2"
@@ -31,11 +31,7 @@ const ChannelSelect = () => {
 										<Typography variant="body2" color="textSecondary" component="p" className={classes.channelDescription}>
 											{chan.description}
 										</Typography>
-										<Button size="medium" color="secondary" variant="outlined" onClick={() => {
-												//history.push(`/Search/["${channel}"]/`)
-											dispatch(openSearchDraw({categories: [channel]}));
-
-										}}>
+										<Button size="medium" color="secondary" variant="outlined" onClick={() => { dispatch(openSearchDraw({categories: [channel]}));}}>
 											EXPLORE
 										</Button>
 								</div>

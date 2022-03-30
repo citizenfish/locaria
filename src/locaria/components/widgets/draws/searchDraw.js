@@ -245,7 +245,7 @@ const SearchDraw = forwardRef((props, ref) => {
 			if (locationResults.length) {
 				if (locationShow) {
 					return (
-						<>
+						<div className={classes.searchDrawResultList}>
 							{locationResults.map((item, index) => (
 								<SearchDrawCard more={true} key={index} {...item} mapRef={props.mapRef}/>
 							))}
@@ -255,11 +255,11 @@ const SearchDraw = forwardRef((props, ref) => {
 								Less locations
 								<ExpandMoreIcon></ExpandMoreIcon>
 							</div>
-						</>
+						</div>
 					)
 				} else {
 					return (
-						<>
+						<div className={classes.searchDrawResultList}>
 							{[locationResults[0]].map((item, index) => (
 								<SearchDrawCard more={true} key={index} {...item} mapRef={props.mapRef}/>
 							))}
@@ -269,7 +269,7 @@ const SearchDraw = forwardRef((props, ref) => {
 								More locations
 								<ExpandMoreIcon></ExpandMoreIcon>
 							</div>
-						</>
+						</div>
 					)
 				}
 
@@ -301,6 +301,8 @@ const SearchDraw = forwardRef((props, ref) => {
 						placeholder={configs.searchPlaceholder}
 						variant="filled"
 						onKeyDown={handleKeyDown}
+						autoComplete={'off'}
+						autoFocus={true}
 					/>
 					<IconButton onClick={() => {
 						setNewSearch();
@@ -332,9 +334,9 @@ const SearchDraw = forwardRef((props, ref) => {
 				</AdvancedAccordion>
 
 				<div className={classes.searchDrawResults}>
+					<LocationResults></LocationResults>
 					{searchResults.length > 0 ? (
 						<div className={classes.searchDrawResultList}>
-							<LocationResults></LocationResults>
 							{searchResults.map((item, index) => (
 								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
 							))}

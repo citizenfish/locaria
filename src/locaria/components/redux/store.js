@@ -6,6 +6,7 @@ import menuDrawSlice from './slices/menuDrawSlice'
 import pageDialog from './slices/pageDialogSlice'
 import layoutSlice from './slices/layoutSlice'
 import landingDrawSlice from "./slices/landingDrawSlice";
+import typeAhead from "./slices/typeAheadSlice";
 
 export default configureStore({
 	reducer: {
@@ -15,6 +16,7 @@ export default configureStore({
 		menuDraw: menuDrawSlice,
 		pageDialog: pageDialog,
 		layout: layoutSlice,
-		landingDraw: landingDrawSlice
+		landingDraw: landingDrawSlice,
+		typeAhead: typeAhead
 	}
 })

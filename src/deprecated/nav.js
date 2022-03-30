@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
-import {IntroModal} from "../locaria/components/widgets/intro";
+import {IntroModal} from "./intro";
 
 
 import {SearchDraw} from "../locaria/components/widgets/draws/searchDraw";
