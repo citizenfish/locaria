@@ -115,8 +115,11 @@ const LandingDraw = function () {
 			     flexDirection="column"
 			     justifyContent="center"
 			     alignItems="center">
-				<Typography variant="h6" component="div">
+				<Typography variant="h4" component="div">
 					{configs.siteCallToAction}
+				</Typography>
+				<Typography variant="body2" component="div" sx={{mt:1}}>
+					{configs.siteSubCallToAction}
 				</Typography>
 			</Box>
 			<Grid container className={classes.landingLocation} spacing={1} justifyContent="center">
@@ -127,8 +130,8 @@ const LandingDraw = function () {
 				</Grid>
 				<Grid item md={12} className={classes.landingLocationGrid}>
 					<div className={classes.landingLocationPodSmall}>
-						<Typography variant="h6" component="div">
-							Search for a location or thing
+						<Typography variant="body1" component="div" sx={{mb:1}}>
+							Search for a location or item
 						</Typography>
 						<InputBase
 							className={classes.landingSearchBox}
@@ -145,16 +148,17 @@ const LandingDraw = function () {
 
 						<TypeAhead anchorId={"landingSearch"}></TypeAhead>
 						<p>
-							<Button size="medium" color="secondary" variant="outlined" onClick={() => {
+							<Button size="medium" color="secondary" variant="contained" endIcon={<SearchIcon/>} onClick={() => {
 								doSearch()
 							}}>Search</Button>
 						</p>
+
 					</div>
 
 				</Grid>
 			</Grid>
-			<ChannelSelect></ChannelSelect>
-			<Footer></Footer>
+			<ChannelSelect/>
+			<Footer/>
 		</Drawer>
 	)
 
