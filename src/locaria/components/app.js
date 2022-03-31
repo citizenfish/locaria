@@ -6,7 +6,7 @@ import Submit from 'components/submit';
 import Error from 'components/error';
 import Maintenance from 'components/maintenance';
 import AdminHome from "components/admin/adminHome";
-import AdminNew from "components/admin/adminNew";
+import Admin from "components/admin/admin";
 import AdminView from "components/admin/AdminView";
 import AdminData from "components/admin/AdminData";
 import AdminLoader from "components/admin/AdminLoader";
@@ -144,8 +144,7 @@ const App = () => {
 				<LocariaContext.Provider value={userSettings}>
 					<Router>
 						<Switch>
-							<Route path="/Admin/" user={user} component={AdminHome}/>
-							<Route path="/AdminNew/" user={user} component={AdminNew}/>
+							<Route path="/Admin/" user={user} component={Admin}/>
 							<Route path="/AdminView/:feature" user={user} component={AdminView}/>
 							<Route path="/AdminData/" user={user} component={AdminData}/>
 							<Route path="/AdminLoader/" user={user} component={AdminLoader}/>

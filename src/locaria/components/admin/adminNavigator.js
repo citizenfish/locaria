@@ -7,30 +7,12 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
-import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
+
 import GroupIcon from '@mui/icons-material/Group';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import {useDispatch, useSelector} from "react-redux";
+import {openComponent} from "./redux/slices/adminSlice";
 
-const dataItems = [{
-    "name" : "Upload",
-    "component" : "upload",
-    "icon" : <DriveFolderUploadOutlinedIcon />
-},{
-    "name" : "Edit",
-    "component" : "edit",
-    "icon" : <EditOutlinedIcon />
-},{
-    "name" : "Moderate",
-    "component" : "moderate",
-    "icon" : <AssignmentTurnedInOutlinedIcon/>
-},{
-    "name" : "Export",
-    "component" : "export",
-    "icon" : <GetAppOutlinedIcon/>
-}]
 
 const systemItems = [{
     "name" : "Users",
@@ -45,8 +27,11 @@ const systemItems = [{
 
 export default function AdminNavigator(props) {
 
-    const clickHandler = (item) => {
-        props.cm(item)
+    const components = useSelector((state) => state.admin.components);
+    const dispatch = useDispatch()
+
+    const clickHandler = (id) => {
+        dispatch(openComponent(id))
     }
 
     return (
@@ -66,8 +51,8 @@ export default function AdminNavigator(props) {
             <Toolbar />
             <Divider />
             <List>
-                {dataItems.map((item) => (
-                    <ListItem button key={item.name} onClick={() => clickHandler(item.component)}>
+                {components.map((item) => (
+                    <ListItem button key={item.id} onClick={() => clickHandler(item.id)}>
                         <ListItemIcon >
                             {item.icon}
                         </ListItemIcon>

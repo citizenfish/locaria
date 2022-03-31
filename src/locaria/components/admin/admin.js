@@ -1,22 +1,26 @@
 import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import AdminAppBar from './adminHeader'
+import AdminAppBar from './adminAppBar'
 import {useStyles} from 'stylesLocaria';
 import AdminNavigator from './adminNavigator'
-import AdminUpload from './components/adminUpload'
-import AdminEdit from './components/adminEdit'
-import AdminModerate from "./components/adminModerate";
-import AdminExport from "./components/adminExport";
-import AdminUsers from "./components/adminUsers";
-import AdminReports from "./components/adminReports";
+
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
+import {useSelector} from "react-redux";
 const drawerWidth = 240
 
 
-const AdminNew= () => {
+const Admin= () => {
 
+
+
+	function RunComponent(props) {
+		const Comp = props.comp;
+		return <Comp/>;
+	}
+
+	const selectedComponent = useSelector((state) => state.admin.selectedComponent);
 	const [component,setComponent] = useState('upload')
 	const [cookies, setCookies] = useCookies(['location'])
 
@@ -26,21 +30,14 @@ const AdminNew= () => {
 	}
 
 	return (
-		<Box sx={{ display: 'flex' }}>
+		<Box sx={{ display: 'flex'}}>
 			<AdminAppBar dw = {drawerWidth} mode = {component}/>
 			<AdminNavigator dw = {drawerWidth} cm = {setComponent}/>
 			<Box
 				component="main"
-				sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+				sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '140px'  }}
 			>
-				<Toolbar />
-				<Toolbar />
-				{component == 'upload' && <AdminUpload />}
-				{component == 'edit' && <AdminEdit/>}
-				{component == 'moderate' && <AdminModerate/>}
-				{component == 'export' && <AdminExport/>}
-				{component == 'users' && <AdminUsers/>}
-				{component == 'reports' && <AdminReports/>}
+				<RunComponent comp={selectedComponent.component}/>
 			</Box>
 		</Box>
 
@@ -48,4 +45,4 @@ const AdminNew= () => {
 };
 
 
-export default AdminNew;
+export default Admin;
