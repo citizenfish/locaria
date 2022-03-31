@@ -21,7 +21,7 @@ import TypeAhead from "../typeAhead";
 import {closeTypeAhead, openTypeAhead} from "../../redux/slices/typeAheadSlice";
 import Button from "@mui/material/Button";
 
-const LandingDraw = function () {
+const LandingDrawer = function () {
 
 	const open = useSelector((state) => state.landingDraw.open);
 
@@ -122,7 +122,7 @@ const LandingDraw = function () {
 					{configs.siteSubCallToAction}
 				</Typography>
 			</Box>
-			<Grid container className={classes.landingLocation} spacing={1} justifyContent="center">
+			<Grid container className={classes.landingLocation} spacing={0} justifyContent="center">
 				<Grid item md={12} className={classes.landingLocationGrid}>
 					<div className={classes.landingLocationPod}>
 						<Map id={'landingMap'} ref={mapRef} speedDial={false} className={'landingMap'}/>
@@ -131,7 +131,7 @@ const LandingDraw = function () {
 				<Grid item md={12} className={classes.landingLocationGrid}>
 					<div className={classes.landingLocationPodSmall}>
 						<Typography variant="body1" component="div" sx={{mb:1}}>
-							Search for a location or item
+							{configs.searchInstruction}
 						</Typography>
 						<InputBase
 							className={classes.landingSearchBox}
@@ -152,7 +152,6 @@ const LandingDraw = function () {
 								doSearch()
 							}}>Search</Button>
 						</p>
-
 					</div>
 
 				</Grid>
@@ -164,4 +163,4 @@ const LandingDraw = function () {
 
 }
 
-export default LandingDraw;
+export default LandingDrawer;

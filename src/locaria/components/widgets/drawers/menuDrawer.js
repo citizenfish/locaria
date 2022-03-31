@@ -17,7 +17,7 @@ import {openLayout} from "../../redux/slices/layoutSlice";
 
 
 
-const MenuDraw = function () {
+const MenuDrawer = function () {
 	const classes = useStyles();
 	const dispatch = useDispatch()
 
@@ -95,4 +95,4 @@ const MenuDraw = function () {
 	);
 }
 
-export default MenuDraw;
+export default MenuDrawer;

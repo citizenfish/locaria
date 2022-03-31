@@ -16,19 +16,18 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import {NavProfile} from "./navProfile";
-import {SearchDraw} from "./draws/searchDraw";
-import {ViewDraw} from "./draws/viewDraw";
-import AdvancedAccordion from "./advancedAccordion";
-import LandingDraw from "./draws/landingDraw";
-import MenuDraw from "./draws/menuDraw";
+import {SearchDrawer} from "./drawers/searchDrawer";
+import {ViewDrawer} from "./drawers/viewDrawer";
+import LandingDrawer from "./drawers/landingDrawer";
+import MenuDrawer from "./drawers/menuDrawer";
 import Multi from "./multi";
-
+import Grid from "@mui/material/Grid";
 import { useSelector, useDispatch } from 'react-redux'
 import {closeSearchDraw, openSearchDraw, resolutionUpdate, toggleSearchDraw} from '../redux/slices/searchDrawSlice'
 import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawSlice'
 import {closeMultiSelect, openMultiSelect} from '../redux/slices/multiSelectSlice'
 import { openMenuDraw} from '../redux/slices/menuDrawSlice'
-import PageDraw from "./draws/pageDraw";
+import PageDrawer from "./drawers/pageDrawer";
 import {closeLayout, openLayout,setLocation, setResolutions} from "../redux/slices/layoutSlice";
 import Typography from "@mui/material/Typography";
 import {openPageDialog} from "../redux/slices/pageDialogSlice";
@@ -268,19 +267,34 @@ const Layout = ({children, map, fullscreen = false}) => {
 			</Snackbar>
 			<div>
 				<div className={classes.grow}>
-					<SearchDraw mapRef={mapRef}/>
-					<MenuDraw/>
-					<ViewDraw mapRef={mapRef}/>
+					<SearchDrawer mapRef={mapRef}/>
+					<MenuDrawer/>
+					<ViewDrawer mapRef={mapRef}/>
 					<Multi mapRef={mapRef}/>
-					<LandingDraw></LandingDraw>
-					<BottomNavigation className={classes.nav} id={"navMain"}>
+                    <BottomNavigation className={classes.nav} id={"navMain"}>
 						<BottomNavigationAction className={classes.NavMenuButton}  icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
-						<div  style={{backgroundImage: `url(${configs.siteLogo})`}} className={classes.NavSiteLogo}/>
-						<BottomNavigationAction className={classes.NavSearchButton}  icon={<SearchIcon color="icons" fontSize="large"/>}
-						                        onClick={() => {toggleSearchWrapper()}}/>
-						<NavProfile/>
+
+					<Grid xs={12} className={classes.NavSiteTitle}>
+						<Grid item xs={12}>
+							<Typography className={classes.NavSiteTitleText} variant="h6" >
+								{configs.siteTitle.toUpperCase()}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography className={classes.NavSiteSubTitleText} variant = "body2">
+								{configs.siteSubTitle}
+							</Typography>
+						</Grid>
+					</Grid>
+
+
+					<BottomNavigationAction className={classes.NavSearchButton}
+												icon={<SearchIcon color="icons" fontSize="large"/>}
+												onClick={() => {toggleSearchWrapper()}}/>
+	                    <NavProfile/>
 					</BottomNavigation>
-					<PageDraw></PageDraw>
+					<LandingDrawer></LandingDrawer>
+					<PageDrawer></PageDrawer>
 
 				</div>
 				<div>
