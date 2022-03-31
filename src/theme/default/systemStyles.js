@@ -48,10 +48,10 @@ export default class UseStyles {
 
 			chip: {
 				margin: "5px !important",
-				color: `${theme.palette.text.lighter} !important`
+				color: `${theme.palette.text.clear} !important`
 			},
 			chipIcon: {
-				color: `${theme.palette.text.lighter} !important`
+				color: `${theme.palette.text.clear} !important`
 			},
 
 			list: {
@@ -388,6 +388,12 @@ export default class UseStyles {
 				textAlign: 'center'
 			},
 
+			searchDrawerAccordianTitle: {
+				flex: 1,
+				textAlign: 'center',
+				color: theme.palette.primary.darker
+			},
+
 			searchDrawerClose: {
 				position: 'absolute'
 			},
@@ -527,13 +533,13 @@ export default class UseStyles {
 			},
 
 			searchCategoryChosen :{
-				color: `${theme.palette.text.lighter} !important`,
+				color: `${theme.palette.text.lighter} !important`
 			},
 			searchDistanceChosen:{
-
+				color: `${theme.palette.text.lighter} !important`
 			},
 			searchTagsChosen: {
-
+				color: `${theme.palette.text.lighter} !important`
 			},
 			searchDrawAdvancedAccordionDetails:{
 			},

@@ -48,7 +48,9 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 				if(tags.indexOf(tag)===-1) return (
 					<Chip className={classes.chip}
 						  key={`tag-${tag}`}
-						  label={`tag: ${tag}`}
+						  label={tag}
+						  size="small"
+						  sx ={{bgcolor: "selection.lighter"}}
 						  deleteIcon={<AddIcon className={classes.chipIcon}/>}
 						  onDelete={() => {
 						  dispatch(addTag(tag));

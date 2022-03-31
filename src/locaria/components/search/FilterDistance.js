@@ -1,6 +1,6 @@
 import React from "react";
 
-
+import {configs, theme, channels} from "themeLocaria";
 import InputLabel from "@mui/material/InputLabel";
 import {useSelector, useDispatch} from 'react-redux'
 import FormControl from "@mui/material/FormControl";
@@ -33,12 +33,13 @@ const FilterDistance = ({min = 0, max = 100, step = 1}) => {
 	}
 	return (
 		<FormControl className={classes.formControl} fullWidth>
-			<InputLabel htmlFor="distance-select">Distance</InputLabel>
 			<Slider
+				sx={{color: "secondary.main"}}
 				id={"distance-select"}
 				getAriaLabel={() => 'Distance'}
 				value={value}
 				valueLabelDisplay="auto"
+				valueLabelFormat={(x)=>{return x+'km'}}
 				getAriaValueText={valuetext}
 				onChange={handleChangeShow}
 				onChangeCommitted={handleChange}
