@@ -21,8 +21,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import {IntroModal} from "./intro";
 
 
-import {SearchDraw} from "../locaria/components/widgets/draws/searchDraw";
-import {ViewDraw} from "../locaria/components/widgets/draws/viewDraw";
+import {SearchDrawer} from "../locaria/components/widgets/drawers/searchDrawer";
+import {ViewDrawer} from "../locaria/components/widgets/drawers/viewDrawer";
 
 const Nav = () => {
 	const classes = useStyles();
@@ -142,9 +142,9 @@ const Nav = () => {
 				<BottomNavigationAction className={classes.NavSearchButton} label="Search"  icon={<SearchIcon color="secondary"/>} onClick={toggleSearchWrapper}/>
 				<NavProfile/>
 			</BottomNavigation>
-			<SearchDraw ref={searchRef} viewWrapper={openViewWrapper}/>
+			<SearchDrawer ref={searchRef} viewWrapper={openViewWrapper}/>
 			<RenderDraw/>
-			<ViewDraw ref={viewRef}/>
+			<ViewDrawer ref={viewRef}/>
 		</div>
 	)
 }

@@ -21,7 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const PageDraw = () => {
+const PageDrawer = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch()
 	const history = useHistory();
@@ -71,4 +71,4 @@ const PageDraw = () => {
 };
 
 
-export default PageDraw;
+export default PageDrawer;

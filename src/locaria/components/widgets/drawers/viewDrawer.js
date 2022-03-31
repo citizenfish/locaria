@@ -20,7 +20,7 @@ import Map from "../map";
 import {closeLayout} from "../../redux/slices/layoutSlice";
 
 
-const ViewDraw = forwardRef((props, ref) => {
+const ViewDrawer = forwardRef((props, ref) => {
 	const dispatch = useDispatch()
 	const history = useHistory();
 	const localMapRef = useRef();
@@ -229,4 +229,4 @@ const ViewDraw = forwardRef((props, ref) => {
 	)
 });
 
-export {ViewDraw};
+export {ViewDrawer};

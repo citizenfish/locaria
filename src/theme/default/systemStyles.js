@@ -77,7 +77,7 @@ export default class UseStyles {
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
 					width: 'calc(100vw)',
-					height: 'calc(100% - 56px)',
+					height: 'calc(100% - 60px)',
 				},
 			},
 
@@ -91,8 +91,7 @@ export default class UseStyles {
 				width: "100vw",
 				height: "20vh",
 				backgroundColor: theme.palette.primary.darker,
-				fontColor: theme.palette.text.primary,
-				padding: 20
+				fontColor: theme.palette.text.primary
 			},
 
 			channelCallToAction: {
@@ -230,25 +229,25 @@ export default class UseStyles {
 
 			"nav": {
 				backgroundColor: `${theme.palette.primary.main} !important`,
-				//borderRadius: '10px',
 				width: '100vw',
 				position: 'fixed',
 				zIndex: '150',
 				top: 0,
 				justifyContent: 'space-between !important',
-				padding: '10px 0 !important',
-
+				padding: '10px 0 !important'
 			},
-			NavSiteLogo: {
+			NavSiteTitle: {
 				width: "calc(100% - 120px)",
-				height: 40,
 				borderLeft: "2px solid white",
 				borderRight: "2px solid white",
-				backgroundRepeat: "no-repeat",
-				backgroundSize: "auto 30px",
-				backgroundPosition: "center",
-				padding: '10px !important',
-				marginRight: 20
+			},
+			NavSiteTitleText: {
+				flexGrow: 1,
+				textAlign: "center",
+			},
+			NavSiteSubTitleText: {
+				flexGrow: 1,
+				textAlign: "center",
 			},
 			NavMenuButton: {
 				flex: '0 !important',
@@ -609,7 +608,7 @@ export default class UseStyles {
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.darker,
 					width: 'calc(100vw)',
-					height: 'calc(100% - 56px)',
+					height: 'calc(100% - 60px)',
 
 					[theme.breakpoints.up('md')]: {
 						maxWidth: leftWidth,
@@ -629,7 +628,7 @@ export default class UseStyles {
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.darker,
 					width: 'calc(100vw)',
-					height: 'calc(100% - 56px)',
+					height: 'calc(100% - 60px)',
 				},
 			},
 

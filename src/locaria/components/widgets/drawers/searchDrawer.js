@@ -35,7 +35,7 @@ import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
 import AdvancedAccordion from "../advancedAccordion";
 
 
-const SearchDraw = forwardRef((props, ref) => {
+const SearchDrawer = forwardRef((props, ref) => {
 		const history = useHistory();
 		const dispatch = useDispatch()
 
@@ -364,4 +364,4 @@ const SearchDraw = forwardRef((props, ref) => {
 	}
 );
 
-export {SearchDraw};
+export {SearchDrawer};
