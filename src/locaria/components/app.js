@@ -144,6 +144,8 @@ const App = () => {
 				<LocariaContext.Provider value={userSettings}>
 					<Router>
 						<Switch>
+							<Route path="/Admin/Upload/" user={user} component={Admin}/>
+							<Route path="/Admin/Edit/:feature?" user={user} component={Admin}/>
 							<Route path="/Admin/" user={user} component={Admin}/>
 							<Route path="/AdminView/:feature" user={user} component={AdminView}/>
 							<Route path="/AdminData/" user={user} component={AdminData}/>
