@@ -1,4 +1,4 @@
-import {Container, Divider, Drawer, useMediaQuery} from "@mui/material";
+import {Accordion, AccordionDetails, AccordionSummary,Container, Divider, Drawer, useMediaQuery} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -311,69 +311,94 @@ const SearchDrawer = forwardRef((props, ref) => {
 					</IconButton>
 				</div>
 
-				<AdvancedAccordion>
-					<Container className={classes.searchDrawerAdvanced}>
-						<Grid xs={12}>
-								<Grid item xs={12} className={classes.searchCategoryChosen}>
-									<Grid xs={12}>
-										<Grid item xs={4}>
-											<Typography >Categories Chosen:</Typography>
-										</Grid>
-										<Grid item xs={8}>
-											{ categories.length > 0 &&
-												categories.map((category) => (
-
-												<Chip className={classes.chip}
-												key={`cat-${category}`}
-												label={category}
-												onDelete={() => {
-												dispatch(deleteSearchCategory(category));
-												}}/>))
-											}
-											{
-												categories.length === 0  &&
-												<Typography >All categories</Typography>
-											}
-
-										</Grid>
-									</Grid>
+				<Accordion>
+				<AccordionSummary
+					expandIcon={<ExpandMoreIcon />}
+					aria-controls="panel1a-content"
+					id="panel1a-header"
+				>
+					<Typography variant="subtitle2"
+								className={classes.searchDrawerAccordianTitle}>
+						Search Filters
+					</Typography>
+				</AccordionSummary>
+				<AccordionDetails>
+					<AdvancedAccordion>
+						<Container className={classes.searchDrawerAdvanced}>
+							<Grid container className={classes.searchCategoryChosen}>
+								<Grid item md={12}>
+									<Typography variant="subtitle2"
+												className={classes.searchDrawerAccordianTitle}>
+										Current Filters
+									</Typography>
+									<Divider sx={{mb:1,mt:1}}/>
 								</Grid>
-
-							{ distance > 0 &&
-								<Grid item xs={12} className={classes.searchDistanceChosen}>
-									<Typography>Distance</Typography>
+								<Grid item md={4}>
+									<Typography >Categories:</Typography>
+								</Grid>
+								<Grid item md={8}>
+									{ categories.length > 0 &&
+									categories.map((category) => (
 
 										<Chip className={classes.chip}
-											  label={`Distance: ${distance}km`}
+											  key={`cat-${category}`}
+											  label={category}
+											  sx ={{bgcolor: "primary.main"}}
 											  onDelete={() => {
-												  dispatch(setDistance(false));
-											  }}/> : <></>
-
+												  dispatch(deleteSearchCategory(category));
+											  }}
+										/>))
+									}
+									{
+										categories.length === 0  &&
+										<Typography >All categories</Typography>
+									}
 
 								</Grid>
-							}
-							{ tags.length > 0 &&
-								<Grid item xs={12} className={classes.searchTagsChosen}>
-									<Typography>Tags</Typography>
-								{
-									tags.map((tag) => (
+							</Grid>
+
+
+							{ distance > 0 &&
+							<Grid container className={classes.searchDistanceChosen}>
+								<Grid item md={4}>
+									<Typography >Distance:</Typography>
+								</Grid>
+								<Grid item md={8}>
 									<Chip className={classes.chip}
-										  key={`tag-${tag}`}
-										  label={`tag: ${tag}`}
+										  label={`Distance within : ${distance}km`}
+										  sx ={{bgcolor: "secondary.main"}}
 										  onDelete={() => {
-											  dispatch(deleteTag(tag));
-										  }}/>))
-								}
+											  dispatch(setDistance(false));
+										  }}
+									/>
+
+								</Grid>
 							</Grid>
 							}
-						</Grid>
+							{ tags.length > 0 &&
+							<Grid container className={classes.searchTagsChosen}>
+								<Grid item md={4}>
+									<Typography >Tags:</Typography>
+								</Grid>
+								<Grid item md={8}>
+									{tags.map((tag) => (
+										<Chip className={classes.chip}
+											  key={`tag-${tag}`}
+											  label={tag}
+											  sx ={{bgcolor: "selection.main"}}
+											  onDelete={() => {
+												  dispatch(deleteTag(tag));
+											  }}
+										/>))}
+								</Grid>
+							</Grid>
+							}
+						</Container>
+					</AdvancedAccordion>
+				</AccordionDetails>
+			</Accordion>
 
 
-
-
-
-					</Container>
-				</AdvancedAccordion>
 
 				<div className={classes.searchDrawerResults}>
 					<LocationResults></LocationResults>
