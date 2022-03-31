@@ -74,7 +74,7 @@ export default class UseStyles {
 			 */
 
 			landingDraw:{
-				overflow: 'hidden',
+				overflowX: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
 					width: 'calc(100vw)',
 					height: 'calc(100% - 60px)',
