@@ -7,7 +7,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import React, {forwardRef, useContext, useImperativeHandle, useRef} from "react";
 import {useStyles} from "stylesLocaria";
 import {configs, theme, channels} from "themeLocaria";
-
+import Grid from "@mui/material/Grid";
 import LocariaContext from "../../context/locariaContext";
 import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
 import SearchDrawCard from "./cards/searchDrawCard";
@@ -281,22 +281,22 @@ const SearchDrawer = forwardRef((props, ref) => {
 			<Drawer
 				anchor="bottom"
 				open={open}
-				className={classes.searchDraw}
+				className={classes.searchDrawer}
 				variant="persistent"
 			>
-				<div className={classes.searchDrawHeader}>
-					<Typography className={classes.searchDrawTitle} variant={'h5'}>{configs.searchTitle}</Typography>
+				<div className={classes.searchDrawerHeader}>
+					<Typography className={classes.searchDrawerTitle} variant={'h6'}>{configs.searchTitle}</Typography>
 					<IconButton onClick={() => {
 						dispatch(openLayout());
-					}} className={classes.searchDrawClose} type="submit"
+					}} className={classes.searchDrawerClose} type="submit"
 					            aria-label="search">
 						<CloseIcon className={classes.icons}/>
 					</IconButton>
 				</div>
 				<Divider/>
-				<div className={classes.searchDrawSearch}>
+				<div className={classes.searchDrawerSearch}>
 					<InputBase
-						className={classes.searchDrawBox}
+						className={classes.searchDrawerBox}
 						id="mySearch"
 						placeholder={configs.searchPlaceholder}
 						variant="filled"
@@ -307,36 +307,78 @@ const SearchDrawer = forwardRef((props, ref) => {
 					<IconButton onClick={() => {
 						setNewSearch();
 					}} type="submit" aria-label="search">
-						<SearchIcon className={classes.icons}/>
+						<SearchIcon className={classes.iconsLight}/>
 					</IconButton>
 				</div>
 
 				<AdvancedAccordion>
-					<Container className={classes.searchDrawAdvanced}>
-						{categories.map((category) => (
-							<Chip className={classes.chip} ket={`cat-${category}`} label={category} onDelete={() => {
-								dispatch(deleteSearchCategory(category));
-							}}/>
-						))}
+					<Container className={classes.searchDrawerAdvanced}>
+						<Grid xs={12}>
+								<Grid item xs={12} className={classes.searchCategoryChosen}>
+									<Grid xs={12}>
+										<Grid item xs={4}>
+											<Typography >Categories Chosen:</Typography>
+										</Grid>
+										<Grid item xs={8}>
+											{ categories.length > 0 &&
+												categories.map((category) => (
 
-						{tags.map((tag) => (
-							<Chip className={classes.chip} ket={`tag-${tag}`} label={`tag: ${tag}`} onDelete={() => {
-								dispatch(deleteTag(tag));
-							}}/>
-						))}
+												<Chip className={classes.chip}
+												key={`cat-${category}`}
+												label={category}
+												onDelete={() => {
+												dispatch(deleteSearchCategory(category));
+												}}/>))
+											}
+											{
+												categories.length === 0  &&
+												<Typography >All categories</Typography>
+											}
 
-						{distance > 0 ?
-							<Chip className={classes.chip} label={`Distance: ${distance}km`} onDelete={() => {
-								dispatch(setDistance(false));
-							}}/> : <></>
-						}
+										</Grid>
+									</Grid>
+								</Grid>
+
+							{ distance > 0 &&
+								<Grid item xs={12} className={classes.searchDistanceChosen}>
+									<Typography>Distance</Typography>
+
+										<Chip className={classes.chip}
+											  label={`Distance: ${distance}km`}
+											  onDelete={() => {
+												  dispatch(setDistance(false));
+											  }}/> : <></>
+
+
+								</Grid>
+							}
+							{ tags.length > 0 &&
+								<Grid item xs={12} className={classes.searchTagsChosen}>
+									<Typography>Tags</Typography>
+								{
+									tags.map((tag) => (
+									<Chip className={classes.chip}
+										  key={`tag-${tag}`}
+										  label={`tag: ${tag}`}
+										  onDelete={() => {
+											  dispatch(deleteTag(tag));
+										  }}/>))
+								}
+							</Grid>
+							}
+						</Grid>
+
+
+
+
+
 					</Container>
 				</AdvancedAccordion>
 
-				<div className={classes.searchDrawResults}>
+				<div className={classes.searchDrawerResults}>
 					<LocationResults></LocationResults>
 					{searchResults.length > 0 ? (
-						<div className={classes.searchDrawResultList}>
+						<div className={classes.searchDrawerResultList}>
 							{searchResults.map((item, index) => (
 								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
 							))}
@@ -352,9 +394,9 @@ const SearchDrawer = forwardRef((props, ref) => {
 							}
 						</div>
 					) : (
-						<div className={classes.searchDrawNoResults}>
-							<DirectionsBoatOutlinedIcon className={classes.searchDrawNoResultsIcon}/>
-							<Typography className={classes.searchDrawNoResultsText} variant="body1">No results
+						<div className={classes.searchDrawerNoResults}>
+							<DirectionsBoatOutlinedIcon className={classes.searchDrawerNoResultsIcon}/>
+							<Typography className={classes.searchDrawerNoResultsText} variant="body1">No results
 								found</Typography>
 						</div>
 					)}

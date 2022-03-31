@@ -46,8 +46,12 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 			<>
 			{tagList.map((tag) => {
 				if(tags.indexOf(tag)===-1) return (
-					<Chip className={classes.chip} ket={`tag-${tag}`} label={`tag: ${tag}`} deleteIcon={<AddIcon />} onDelete={() => {
-						dispatch(addTag(tag));
+					<Chip className={classes.chip}
+						  key={`tag-${tag}`}
+						  label={`tag: ${tag}`}
+						  deleteIcon={<AddIcon className={classes.chipIcon}/>}
+						  onDelete={() => {
+						  dispatch(addTag(tag));
 					}}/>
 				)}
 			)}

@@ -46,7 +46,11 @@ export default class UseStyles {
 			},
 
 			chip: {
-				margin: "5px !important"
+				margin: "5px !important",
+				color: `${theme.palette.text.lighter} !important`
+			},
+			chipIcon: {
+				color: `${theme.palette.text.lighter} !important`
 			},
 
 			list: {
@@ -77,7 +81,7 @@ export default class UseStyles {
 				overflowX: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
 					width: 'calc(100vw)',
-					height: 'calc(100% - 60px)',
+					height: 'calc(100% - 64px)',
 				},
 			},
 
@@ -234,7 +238,8 @@ export default class UseStyles {
 				zIndex: '150',
 				top: 0,
 				justifyContent: 'space-between !important',
-				padding: '10px 0 !important'
+				padding: '5px 0 !important',
+				height: '65px !important'
 			},
 			NavSiteTitle: {
 				width: "calc(100% - 120px)",
@@ -338,20 +343,20 @@ export default class UseStyles {
 			},
 
 			/*
-				Search Draw
+				Search Drawer
 			 */
 
-			"searchDraw": {
+			searchDrawer: {
 
 				overflow: 'hidden',
 				'&	.MuiDrawer-paperAnchorDockedBottom': {
 					//borderTopRightRadius: '20px',
 					color: theme.palette.icons.main,
-					backgroundColor: theme.palette.primary.main,
-
+					//backgroundColor: theme.palette.primary.main,
+					backgroundColor: theme.palette.primary.trans,
 					[theme.breakpoints.up('md')]: {
 						left: 0,
-						top: 55,
+						top: 65,
 						maxWidth: leftWidth,
 
 					},
@@ -360,9 +365,6 @@ export default class UseStyles {
 						height: '60%',
 						maxWidth: '100vw',
 						bottom: 0,
-						//borderBottomLeftRadius: '20px',
-						//borderBottomRightRadius: '20px',
-						//borderTopLeftRadius: '20px',
 						overflow: 'hidden',
 					}
 				},
@@ -370,52 +372,56 @@ export default class UseStyles {
 
 			},
 
-			searchDrawHeader: {
+			searchDrawerHeader: {
 				padding: 10,
 				position: 'relative',
 				display: 'flex',
 				flexDirection: 'row',
-				alignItems: 'center'
+				alignItems: 'center',
+				//backgroundColor: theme.palette.primary.trans
+				backgroundColor: theme.palette.primary.darker
 			},
 
-			searchDrawTitle: {
+			searchDrawerTitle: {
 				flex: 1,
 				textAlign: 'center'
 			},
 
-			searchDrawClose: {
+			searchDrawerClose: {
 				position: 'absolute'
 			},
 
-			searchDrawSearch: {
+			searchDrawerSearch: {
 				margin: 20,
 				display: 'flex',
 				overflow: 'hidden',
 				padding: '12px 14px',
-				backgroundColor: theme.palette.primary.lighter
+				backgroundColor: theme.palette.primary.clear
+
 			},
 
-			searchDrawBox: {
+			searchDrawerBox: {
 				flex: 1,
-				color: `${theme.palette.text.primary} !important`,
+				color: `${theme.palette.text.lighter} !important`,
 			},
 
-			searchDrawResultList: {
+			searchDrawerResultList: {
 				padding: 20,
 				paddingBottom: 0,
 				display: 'flex',
 				flexDirection: 'column'
 			},
 
-			searchDrawResults: {
-				backgroundColor: theme.palette.primary.darker,
+			searchDrawerResults: {
+				//backgroundColor: theme.palette.primary.darker,
+				backgroundColor: "white",
 				flex: 1,
 				display: 'flex',
 				flexDirection: 'column',
 				overflowY: 'auto'
 			},
 
-			searchDrawNoResults: {
+			searchDrawerNoResults: {
 				display: 'flex',
 				flexDirection: 'column',
 				alignItems: 'center',
@@ -423,13 +429,13 @@ export default class UseStyles {
 				flex: 1
 			},
 
-			searchDrawNoResultsIcon: {
+			searchDrawerNoResultsIcon: {
 				color: alpha(theme.palette.icons.main, 0.35),
 				height: '128px',
 				width: '128px'
 			},
 
-			searchDrawNoResultsText: {
+			searchDrawerNoResultsText: {
 				color: 'rgba(255, 255, 255, 0.35)',
 				marginTop: '12px',
 				fontWeight: 200,
@@ -513,16 +519,25 @@ export default class UseStyles {
 			},
 
 			searchDrawAdvancedAccordion: {
-				backgroundColor: `${theme.palette.primary.main} !important`,
+				backgroundColor: `${theme.palette.primary.trans} !important`,
 				color: `${theme.palette.text.primary} !important`,
 				overflowY: 'auto',
 				overflowX: 'hidden'
 			},
 
+			searchCategoryChosen :{
+				color: `${theme.palette.text.lighter} !important`,
+			},
+			searchDistanceChosen:{
+
+			},
+			searchTagsChosen: {
+
+			},
 			searchDrawAdvancedAccordionDetails:{
 			},
 
-			searchDrawAdvanced: {
+			searchDrawerAdvanced: {
 				marginBottom: 25
 			},
 
@@ -608,7 +623,7 @@ export default class UseStyles {
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.darker,
 					width: 'calc(100vw)',
-					height: 'calc(100% - 60px)',
+					height: 'calc(100% - 64px)',
 
 					[theme.breakpoints.up('md')]: {
 						maxWidth: leftWidth,
@@ -628,7 +643,7 @@ export default class UseStyles {
 					color: theme.palette.icons.main,
 					backgroundColor: theme.palette.primary.darker,
 					width: 'calc(100vw)',
-					height: 'calc(100% - 60px)',
+					height: 'calc(100% - 64px)',
 				},
 			},
 

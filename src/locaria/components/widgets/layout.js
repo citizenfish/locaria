@@ -276,12 +276,12 @@ const Layout = ({children, map, fullscreen = false}) => {
 
 					<Grid xs={12} className={classes.NavSiteTitle}>
 						<Grid item xs={12}>
-							<Typography className={classes.NavSiteTitleText}>
+							<Typography className={classes.NavSiteTitleText} variant="h6" >
 								{configs.siteTitle.toUpperCase()}
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>
-							<Typography className={classes.NavSiteSubTitleText}>
+							<Typography className={classes.NavSiteSubTitleText} variant = "body2">
 								{configs.siteSubTitle}
 							</Typography>
 						</Grid>
