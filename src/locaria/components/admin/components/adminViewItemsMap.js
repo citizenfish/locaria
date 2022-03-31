@@ -26,7 +26,7 @@ export default function AdminViewItemsMap(props) {
                      }}
 
                 >
-                    <Map ref = {mapRef} id={'DataMapperMap'}/>
+                    <Map ref={mapRef} id={'DataMapperMap'} className={'mapView'}/>
                 </Box>
     )
 }
