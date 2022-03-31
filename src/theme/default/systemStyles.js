@@ -1,5 +1,6 @@
 import {makeStyles} from "@mui/styles";
 import {alpha} from '@mui/material/styles';
+import {autocompleteClasses} from "@mui/material";
 
 export default class UseStyles {
 
@@ -935,8 +936,18 @@ export default class UseStyles {
 			imageList: {
 				/*width: 500,
 				height: 300,*/
-			}
+			},
 			/* Admin */
+
+			adminDrawers: {
+
+				'&	.MuiDrawer-paperAnchorDockedRight': {
+					top: 140,
+					width: "calc(100vw - 245px)",
+					height: "calc(100vh - 140px)",
+					overflowY:"auto"
+				}
+			}
 
 		};
 		base = Object.assign(base, merge);

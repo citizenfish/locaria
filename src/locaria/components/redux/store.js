@@ -7,7 +7,8 @@ import pageDialog from './slices/pageDialogSlice'
 import layoutSlice from './slices/layoutSlice'
 import landingDrawSlice from "./slices/landingDrawSlice";
 import typeAhead from "./slices/typeAheadSlice";
-import adminSlice from "../admin/redux/slices/adminSlice";
+import adminEditDrawerSlice from "../admin/redux/slices/editDrawerSlice";
+import adminUploadDrawerSlice from "../admin/redux/slices/uploadDrawerSlice";
 
 export default configureStore({
 	reducer: {
@@ -19,6 +20,8 @@ export default configureStore({
 		layout: layoutSlice,
 		landingDraw: landingDrawSlice,
 		typeAhead: typeAhead,
-		admin: adminSlice
+		adminEditDrawer: adminEditDrawerSlice,
+		adminUploadDrawer: adminUploadDrawerSlice
+
 	}
 })
