@@ -3,12 +3,8 @@ import AppBar from '@mui/material/AppBar';
 
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import {useSelector} from "react-redux";
 
 export default function AdminAppBar(props) {
-
-    const selectedComponent = useSelector((state) => state.admin.selectedComponent);
-
 
     return (
             <AppBar
@@ -21,7 +17,7 @@ export default function AdminAppBar(props) {
                 </Toolbar>
                 <Toolbar>
                     <Typography variant="h6" noWrap component="div" >
-                        {selectedComponent.name}
+                       {/* {selectedComponent.name}*/}
                     </Typography>
                 </Toolbar>
 

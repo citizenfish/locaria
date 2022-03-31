@@ -7,21 +7,12 @@ import AdminNavigator from './adminNavigator'
 
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
-import {useSelector} from "react-redux";
 const drawerWidth = 240
-
+import AdminUploadDrawer from './components/drawers/adminUploadDrawer'
+import AdminEditDrawer from './components/drawers/adminEditDrawer'
 
 const Admin= () => {
 
-
-
-	function RunComponent(props) {
-		const Comp = props.comp;
-		return <Comp/>;
-	}
-
-	const selectedComponent = useSelector((state) => state.admin.selectedComponent);
-	const [component,setComponent] = useState('upload')
 	const [cookies, setCookies] = useCookies(['location'])
 
 	if(cookies['id_token'] === undefined ||
@@ -31,13 +22,15 @@ const Admin= () => {
 
 	return (
 		<Box sx={{ display: 'flex'}}>
-			<AdminAppBar dw = {drawerWidth} mode = {component}/>
-			<AdminNavigator dw = {drawerWidth} cm = {setComponent}/>
+			<AdminAppBar dw = {drawerWidth}/>
+			<AdminNavigator dw = {drawerWidth}/>
 			<Box
 				component="main"
 				sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '140px'  }}
 			>
-				<RunComponent comp={selectedComponent.component}/>
+				<AdminUploadDrawer></AdminUploadDrawer>
+				<AdminEditDrawer></AdminEditDrawer>
+
 			</Box>
 		</Box>
 
