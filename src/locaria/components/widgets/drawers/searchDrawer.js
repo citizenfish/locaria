@@ -313,65 +313,61 @@ const SearchDrawer = forwardRef((props, ref) => {
 
 				<AdvancedAccordion>
 					<Container className={classes.searchDrawerAdvanced}>
-						<Grid xs={12}>
-								<Grid item xs={12} className={classes.searchCategoryChosen}>
-									<Grid xs={12}>
-										<Grid item xs={4}>
-											<Typography >Categories Chosen:</Typography>
-										</Grid>
-										<Grid item xs={8}>
-											{ categories.length > 0 &&
-												categories.map((category) => (
-
-												<Chip className={classes.chip}
-												key={`cat-${category}`}
-												label={category}
-												onDelete={() => {
-												dispatch(deleteSearchCategory(category));
-												}}/>))
-											}
-											{
-												categories.length === 0  &&
-												<Typography >All categories</Typography>
-											}
-
-										</Grid>
+						<Grid container className={classes.searchChosen}>
+									<Grid item md={4}>
+										<Typography >Categories:</Typography>
 									</Grid>
-								</Grid>
+									<Grid item md={8}>
+										{ categories.length > 0 &&
+											categories.map((category) => (
 
-							{ distance > 0 &&
-								<Grid item xs={12} className={classes.searchDistanceChosen}>
-									<Typography>Distance</Typography>
+											<Chip className={classes.chip}
+											key={`cat-${category}`}
+											label={category}
+											onDelete={() => {
+											dispatch(deleteSearchCategory(category));
+											}}/>))
+										}
+										{
+											categories.length === 0  &&
+											<Typography >All categories</Typography>
+										}
 
-										<Chip className={classes.chip}
-											  label={`Distance: ${distance}km`}
-											  onDelete={() => {
-												  dispatch(setDistance(false));
-											  }}/> : <></>
-
-
-								</Grid>
-							}
-							{ tags.length > 0 &&
-								<Grid item xs={12} className={classes.searchTagsChosen}>
-									<Typography>Tags</Typography>
-								{
-									tags.map((tag) => (
-									<Chip className={classes.chip}
-										  key={`tag-${tag}`}
-										  label={`tag: ${tag}`}
-										  onDelete={() => {
-											  dispatch(deleteTag(tag));
-										  }}/>))
-								}
-							</Grid>
-							}
+									</Grid>
 						</Grid>
 
 
+						{ distance > 0 &&
+							<Grid container className={classes.searchDistanceChosen}>
+								<Grid item md={4}>
+									<Typography >Distance:</Typography>
+								</Grid>
+								<Grid item md={8}>
+									<Chip className={classes.chip}
+										  label={`Distance within : ${distance}km`}
+										  onDelete={() => {
+											  dispatch(setDistance(false));
+										  }}/> : <></>
 
-
-
+								</Grid>
+							</Grid>
+						}
+							{ tags.length > 0 &&
+								<Grid container className={classes.searchTagsChosen}>
+									<Grid item md={4}>
+										<Typography >Tags:</Typography>
+									</Grid>
+									<Grid item md={8}>
+										{tags.map((tag) => (
+											<Chip className={classes.chip}
+												  key={`tag-${tag}`}
+												  label={`tag: ${tag}`}
+												  onDelete={() => {
+													  dispatch(deleteTag(tag));
+												  }}/>))}
+									</Grid>
+							</Grid>
+							}
 					</Container>
 				</AdvancedAccordion>
 
