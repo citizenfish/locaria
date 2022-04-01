@@ -618,6 +618,10 @@ export default class UseStyles {
 				height: '50vh',
 				position: "relative"
 			},
+			editMapView: {
+				width: '100%',
+				height: "40vh"
+			},
 
 			/*
 			  View draw
@@ -945,15 +949,8 @@ export default class UseStyles {
 			},
 			/* Admin */
 
-			adminDrawers: {
 
-				'&	.MuiDrawer-paperAnchorDockedRight': {
-					top: 140,
-					width: "calc(100vw - 245px)",
-					height: "calc(100vh - 140px)",
-					overflowY:"auto"
-				}
-			}
+
 
 		};
 		base = Object.assign(base, merge);

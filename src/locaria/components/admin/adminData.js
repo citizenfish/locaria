@@ -9,7 +9,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import {Link, useParams, useLocation} from 'react-router-dom';
 import {channels, configs} from 'themeLocaria';
-import {useStyles} from 'stylesLocaria';
+import {useStyles} from "../../../theme/default/adminStyle";
 import Openlayers from "libs/Openlayers";
 
 

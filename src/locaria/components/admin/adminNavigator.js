@@ -13,6 +13,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {openEditDrawer} from "./redux/slices/editDrawerSlice";
 import {openUploadDrawer} from "./redux/slices/uploadDrawerSlice";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
+import EditIcon from '@mui/icons-material/Edit';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import {useCookies} from "react-cookie";
+import Badge from '@mui/material/Badge';
+import {setTotal} from "./redux/slices/adminSlice";
 
 const systemItems = [{
     "name" : "Users",
@@ -27,7 +32,48 @@ const systemItems = [{
 
 export default function AdminNavigator(props) {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const [cookies, setCookies] = useCookies(['location']);
+    const total = useSelector((state) => state.adminSlice.total);
+
+
+    React.useEffect(() => {
+
+        if (total === -1) {
+            window.websocket.send({
+                "queue": "updateTotals",
+                "api": "sapi",
+                "data": {
+                    "method": "view_report",
+                    "id_token": cookies['id_token']
+                }
+            });
+        }
+
+        window.websocket.registerQueue("updateTotals", function (json) {
+            let totals = json.packet.add_item + json.packet.delete_item + json.packet.update_item;
+            dispatch(setTotal(totals));
+        });
+
+    },[total]);
+
+    window.websocket.registerQueue("refreshView", function (json) {
+        dispatch(setTotal(-1));
+    });
+
+
+
+    function refresh() {
+        window.websocket.send({
+            "queue": "refreshView",
+            "api": "sapi",
+            "data": {
+                "method": "refresh_search_view",
+                "id_token": cookies['id_token']
+            }
+        });
+    }
+
 
 
     return (
@@ -47,6 +93,14 @@ export default function AdminNavigator(props) {
             <Toolbar />
             <Divider />
             <List>
+                <ListItem button onClick={() => refresh()}>
+                        <ListItemIcon >
+                            <Badge color="secondary" badgeContent={total}>
+                                <RotateLeftIcon />
+                            </Badge>
+                        </ListItemIcon>
+                    <ListItemText primary={`Refresh view`} />
+                </ListItem>
                 <ListItem button onClick={() => dispatch(openUploadDrawer())}>
                     <ListItemIcon >
                         <DriveFolderUploadOutlinedIcon />
@@ -55,7 +109,7 @@ export default function AdminNavigator(props) {
                 </ListItem>
                 <ListItem button onClick={() => dispatch(openEditDrawer())}>
                     <ListItemIcon >
-                        <DriveFolderUploadOutlinedIcon />
+                        <EditIcon />
                     </ListItemIcon>
                     <ListItemText primary={"Edit Data"} />
                 </ListItem>

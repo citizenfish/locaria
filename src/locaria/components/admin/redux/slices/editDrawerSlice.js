@@ -7,7 +7,7 @@ export const adminEditDrawerSlice = createSlice({
 	name: 'adminEditDrawer',
 	initialState: {
 		open: false,
-
+		data: []
 	},
 	reducers: {
 		openEditDrawer: (state) => {
@@ -15,11 +15,14 @@ export const adminEditDrawerSlice = createSlice({
 		},
 		closeEditDrawer: (state) => {
 			state.open =false;
+		},
+		setEditData: (state,action) => {
+			state.data=action.payload;
 		}
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const { openEditDrawer,closeEditDrawer } = adminEditDrawerSlice.actions
+export const { openEditDrawer,closeEditDrawer,setEditData } = adminEditDrawerSlice.actions
 
 export default adminEditDrawerSlice.reducer
