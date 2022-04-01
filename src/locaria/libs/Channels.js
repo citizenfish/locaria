@@ -70,5 +70,27 @@ export default class Channels {
 		return false;
 	}
 
+	mergeDataWithForm(channel,data) {
+
+		let sections=["title","main","extra"]
+		let chan=this.getChannelProperties(channel);
+		const fields=chan.fields;
+		for(let s in sections) {
+			if(fields[sections[s]]) {
+				if(Array.isArray(fields[sections[s]]))
+					this._mergeDataWithFormSection(fields[sections[s]],data);
+				else
+					this._mergeDataWithFormSection([fields[sections[s]]],data);
+			}
+		}
+	}
+
+	_mergeDataWithFormSection(fields,data) {
+		for(let f in fields) {
+			let newValue=document.getElementById(`${fields[f].key}-id`).value;
+			eval(`data.${fields[f].key} = newValue`);
+		}
+	}
+
 
 }

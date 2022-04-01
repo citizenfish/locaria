@@ -6,7 +6,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const adminUploadDrawerSlice = createSlice({
 	name: 'adminUploadDrawer',
 	initialState: {
-		open: false,
+		open: true,
 
 	},
 	reducers: {
