@@ -2,7 +2,7 @@ import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import Chip from "@mui/material/Chip";
 import {useStyles} from "stylesLocaria";
 import AddIcon from "@mui/icons-material/Add";
-import {addTag} from "../redux/slices/searchDrawSlice";
+import {addTag} from "../redux/slices/searchDrawerSlice";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 //const Tags = function ({tags,mode='view',category}) {

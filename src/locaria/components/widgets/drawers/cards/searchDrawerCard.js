@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-
+import AnchorIcon from '@mui/icons-material/Anchor';
 import CardImageLoader from "../../cardImageLoader";
 import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
@@ -12,6 +12,7 @@ import {openViewDraw} from "../../../redux/slices/viewDrawerSlice";
 import Grid from "@mui/material/Grid";
 import {setLocation} from "../../../redux/slices/layoutSlice";
 import Tags from "../../tags";
+import IconButton from "@mui/material/IconButton";
 
 const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
@@ -43,11 +44,15 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 									<Typography variant="body2">{properties['local_type']}</Typography>
 								</Grid>
 								<Grid item md={4}>
-									<Button variant="contained" size="small" className={classes.SearchDrawButtonLocation}
-											onClick={(e) => {
-												e.stopPropagation()
-												dispatch(setLocation(geometry.coordinates))
-											}}>{configs.setAsLocationText}</Button>
+									<IconButton  size="small"
+												 className={classes.SearchDrawButtonLocation}
+												 onClick={(e) => {
+														e.stopPropagation()
+														dispatch(setLocation(geometry.coordinates))
+												 }}
+									>
+										<AnchorIcon/>
+									</IconButton>
 								</Grid>
 							</Grid>
 							<Divider sx={{mb:1, color: "primary.darker"}}/>
