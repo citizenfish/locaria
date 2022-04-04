@@ -645,6 +645,10 @@ export default class UseStyles {
 				color: theme.palette.primary.darker
 			},
 
+			tagFeatureCard :{
+				backgroundColor: "theme.palette.secondary.main !important"
+			},
+
 			distanceSelectText: {
 				color: theme.palette.primary.darker
 			},
