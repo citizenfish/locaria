@@ -23,6 +23,8 @@ import {channels} from "themeLocaria";
 import {FieldEdit} from "../../../widgets/fieldEdit";
 import Map from "../../../widgets/map";
 import {setTitle, setTotal} from "../../redux/slices/adminSlice";
+import Tags from "../../../widgets/tags"
+import Container from "@mui/material/Container";
 
 
 const  AdminEditFeatureDrawer = (props) => {
@@ -34,7 +36,9 @@ const  AdminEditFeatureDrawer = (props) => {
 	const feature = useSelector((state) => state.adminEditFeatureDrawer.feature);
 	const data = useSelector((state) => state.adminEditFeatureDrawer.data);
 	const dispatch = useDispatch()
-	const mapRef = useRef()
+	const mapRef = useRef();
+	const tagRef = useRef();
+
 
 
 	useEffect(() => {
@@ -51,12 +55,6 @@ const  AdminEditFeatureDrawer = (props) => {
 
 
 	useEffect(() => {
-		window.websocket.send({
-			"queue": "viewLoader",
-			"api": "api",
-			"data": {"method": "get_item", "fid": feature, "live": true}
-		});
-
 		window.websocket.registerQueue("viewLoader", function (json) {
 			if (json.packet.response_code !== 200) {
 				dispatch(setEditFeatureData({}));
@@ -66,6 +64,14 @@ const  AdminEditFeatureDrawer = (props) => {
 				mapRef.current.zoomToLayersExtent(["data"], 50000)
 			}
 		});
+
+		window.websocket.send({
+			"queue": "viewLoader",
+			"api": "api",
+			"data": {"method": "get_item", "fid": feature, "live": true}
+		});
+
+
 
 		window.websocket.registerQueue("saveFeature", function (json) {
 			/// dispatch a view needs updating
@@ -81,9 +87,10 @@ const  AdminEditFeatureDrawer = (props) => {
 	}, [feature])
 
 	function saveFeature() {
-
+		let tags=tagRef.current.getTags();
 		let properties=JSON.parse(JSON.stringify(data.features[0].properties));
 		channels.mergeDataWithForm(data.features[0].properties.category,properties);
+		properties.tags=tags;
 		console.log(properties);
 		window.websocket.send({
 			"queue": "saveFeature",
@@ -110,14 +117,7 @@ const  AdminEditFeatureDrawer = (props) => {
 		} else {
 			// No channel config so we just display what we got
 			return (
-				Object.keys(data.features[0].properties.description).map(prop => (
-					<FormControl className={classes.formControl} fullWidth>
-						<InputLabel id={prop + '-label'}>{prop}</InputLabel>
-						<Input type="text" labelId={prop + '-label'} id={prop + '-id'}
-						       defaultValue={data.features[0].properties.description[prop]}
-						       onChange={onChange} name={prop}/>
-					</FormControl>
-				))
+				<h1>No field setup</h1>
 			)
 		}
 
@@ -172,29 +172,26 @@ const  AdminEditFeatureDrawer = (props) => {
 			} else {
 				return (
 					<>
+						<Container>
+							<Map ref={mapRef} id={'EditMap'} className={'editMapView'}/>
+							<p>Owner: {data.features[0].properties.acl ? data.features[0].properties.acl.email : 'No acl'}</p>
+							{editFields()}
+							<Tags ref={tagRef} tags={data.features[0].properties.tags} mode={'edit'} category={data.features[0].properties.category}></Tags>
+						</Container>
+						<Container>
+							<Button size="small" color="success" onClick={saveFeature} variant="contained">
+								Save
+							</Button>
 
-						<Map ref={mapRef} id={'EditMap'} className={'editMapView'}/>
-
-						<p>Owner: {data.features[0].properties.acl ? data.features[0].properties.acl.email : 'No acl'}</p>
-						<SearchTags category={data.features[0].properties.category}
-						            changeFunction={onChangeTags}
-						            currentValue={data.features[0].properties.tags}></SearchTags>
-
-
-						{editFields()}
-
-
-						<Button size="small" color="secondary" onClick={saveFeature} variant="outlined">
-							Save
-						</Button>
-						<Button size="small" color="secondary" onClick={deleteFeature} variant="outlined">
-							Delete
-						</Button>
-						<Button size="small" color="secondary" onClick={() => {
-							dispatch(openEditDrawer());
-						}} variant="outlined">
-							Back
-						</Button>
+							<Button size="small" color="error" onClick={deleteFeature} variant="contained">
+								Delete
+							</Button>
+							<Button size="small" color="primary" onClick={() => {
+								dispatch(openEditDrawer());
+							}} variant="contained">
+								Back
+							</Button>
+						</Container>
 					</>
 
 				);

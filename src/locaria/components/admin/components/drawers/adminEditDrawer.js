@@ -119,6 +119,13 @@ export default function AdminEditDrawer(props) {
 		setSearchInput(e.target.value)
 	}
 
+	const  handleKeyDown = (e) => {
+		if (e.key === 'Enter') {
+			search();
+			e.preventDefault();
+		}
+	}
+
 	const search = () => {
 		setSearchText(searchInput)
 	}
@@ -145,10 +152,14 @@ export default function AdminEditDrawer(props) {
 					type="search"
 					variant="filled"
 					onChange={searchFieldChange}
+					onKeyDown={handleKeyDown}
+					autoComplete={'off'}
+					autoFocus={true}
 					InputProps={{
 						endAdornment: (
 							<InputAdornment position="start"
 							                onClick={search}
+
 							>
 								<SearchIcon/>
 							</InputAdornment>
