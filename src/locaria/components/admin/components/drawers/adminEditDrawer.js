@@ -9,15 +9,18 @@ import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {Drawer} from "@mui/material";
-import {useStyles} from 'stylesLocaria';
+import {useStyles} from "../../../../../theme/default/adminStyle";
 import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
-
+import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
+import {openEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
+import {setEditData} from "../../redux/slices/editDrawerSlice";
+import {setTitle} from "../../redux/slices/adminSlice";
 
 
 export default function AdminEditDrawer(props) {
 
 	const [cookies, setCookies] = useCookies(['location'])
-	const [featureData, setFeatureData] = useState([])
+
 	const [searchText, setSearchText] = useState(null)
 	const [searchInput, setSearchInput] = useState('')
 	const [offset, setOffset] = useState(0)
@@ -25,6 +28,7 @@ export default function AdminEditDrawer(props) {
 	const history = useHistory();
 	const classes = useStyles();
 	const open = useSelector((state) => state.adminEditDrawer.open);
+	const data = useSelector((state) => state.adminEditDrawer.data);
 	const dispatch = useDispatch()
 
 	const isInitialMount = useRef(true);
@@ -61,6 +65,8 @@ export default function AdminEditDrawer(props) {
 
 	const selectRow = (row) => {
 		console.log(row);
+		dispatch(openEditFeatureDrawer(row.id))
+
 	}
 
 	const columns = [
@@ -73,8 +79,6 @@ export default function AdminEditDrawer(props) {
 	]
 
 	useEffect(() => {
-		debugger;
-
 		if (isInitialMount.current) {
 			isInitialMount.current = false;
 			setSearchText('')
@@ -82,16 +86,21 @@ export default function AdminEditDrawer(props) {
 
 		if(open) {
 			history.push(`/Admin/Edit/`);
-			dispatch(closeUploadDrawer)
+			dispatch(closeUploadDrawer())
+			dispatch(closeEditFeatureDrawer())
+			dispatch(setTitle('Edit'));
+			refresh();
 		}
 		window.websocket.registerQueue('getFeatures', (json) => {
-			// if(json.packet.features.length > 0){
-			setFeatureData(json.packet.features)
-			//}
+			dispatch(setEditData(json.packet.features));
 		})
 	}, [open])
 
 	useEffect(() => {
+		refresh();
+	}, [searchText, offset, limit])
+
+	const refresh = () => {
 		window.websocket.send({
 			queue: "getFeatures",
 			api: "api",
@@ -104,8 +113,7 @@ export default function AdminEditDrawer(props) {
 				limit: limit
 			}
 		})
-	}, [searchText, offset, limit])
-
+	}
 
 	const searchFieldChange = (e) => {
 		setSearchInput(e.target.value)
@@ -151,9 +159,9 @@ export default function AdminEditDrawer(props) {
 			</Box>
 			<Button disabled={true}>Edit</Button>
 			{
-				featureData.length > 0 &&
+				data.length > 0 &&
 				<DataGrid columns={columns}
-				          rows={featureData}
+				          rows={data}
 				          autoHeight
 				          onRowClick={selectRow}
 				          initialState={{

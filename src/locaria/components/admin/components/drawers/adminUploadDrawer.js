@@ -14,10 +14,12 @@ import AdminBoundaryLoader from "../adminBoundaryLoader";
 import AdminEventsLoader from "../adminEventsLoader";
 import {Drawer} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {useStyles} from 'stylesLocaria';
+import {useStyles} from "../../../../../theme/default/adminStyle";
 
 import {closeEditDrawer} from "../../redux/slices/editDrawerSlice";
 import {useHistory} from "react-router-dom";
+import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
+import {setTitle} from "../../redux/slices/adminSlice";
 //Details of file we are going to map
 let fileDetailsData = {}
 
@@ -49,7 +51,10 @@ export default function AdminUploadDrawer(props) {
         //This hook manages the refresh of the files display every X seconds
         if(open) {
             history.push(`/Admin/Upload/`);
-            dispatch(closeEditDrawer())
+            dispatch(closeEditDrawer());
+            dispatch(closeEditFeatureDrawer());
+            dispatch(setTitle('Upload'));
+
         }
 
         const interval = setInterval(() => {

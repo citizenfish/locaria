@@ -5,11 +5,7 @@ import Home from "components/home";
 import Submit from 'components/submit';
 import Error from 'components/error';
 import Maintenance from 'components/maintenance';
-import AdminHome from "components/admin/adminHome";
 import Admin from "components/admin/admin";
-import AdminView from "components/admin/AdminView";
-import AdminData from "components/admin/AdminData";
-import AdminLoader from "components/admin/AdminLoader";
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
@@ -147,9 +143,6 @@ const App = () => {
 							<Route path="/Admin/Upload/" user={user} component={Admin}/>
 							<Route path="/Admin/Edit/:feature?" user={user} component={Admin}/>
 							<Route path="/Admin/" user={user} component={Admin}/>
-							<Route path="/AdminView/:feature" user={user} component={AdminView}/>
-							<Route path="/AdminData/" user={user} component={AdminData}/>
-							<Route path="/AdminLoader/" user={user} component={AdminLoader}/>
 
 							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Search/:category?/:search?" component={Home}/>

@@ -35,7 +35,7 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 			});
 		}
 		return () => {
-			window.websocket.clearQueues();
+			//window.websocket.clearQueues();
 		}
 
 	}, [categories]);

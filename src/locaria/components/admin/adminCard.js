@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import {useStyles} from "stylesLocaria";
+import {useStyles} from "../../../theme/default/adminStyle";
 import {useCookies} from "react-cookie";
 import {Badge} from "@mui/material";
 

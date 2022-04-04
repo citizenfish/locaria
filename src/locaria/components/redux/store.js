@@ -9,6 +9,8 @@ import landingDrawSlice from "./slices/landingDrawerSlice";
 import typeAhead from "./slices/typeAheadSlice";
 import adminEditDrawerSlice from "../admin/redux/slices/editDrawerSlice";
 import adminUploadDrawerSlice from "../admin/redux/slices/uploadDrawerSlice";
+import adminEditFeatureDrawerSlice from "../admin/redux/slices/editFeatureDrawerSlice";
+import adminSlice from "../admin/redux/slices/adminSlice";
 
 export default configureStore({
 	reducer: {
@@ -21,7 +23,8 @@ export default configureStore({
 		landingDraw: landingDrawSlice,
 		typeAhead: typeAhead,
 		adminEditDrawer: adminEditDrawerSlice,
-		adminUploadDrawer: adminUploadDrawerSlice
-
+		adminUploadDrawer: adminUploadDrawerSlice,
+		adminEditFeatureDrawer: adminEditFeatureDrawerSlice,
+		adminSlice: adminSlice
 	}
 })
