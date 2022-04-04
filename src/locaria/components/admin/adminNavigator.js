@@ -15,9 +15,11 @@ import {openUploadDrawer} from "./redux/slices/uploadDrawerSlice";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import EditIcon from '@mui/icons-material/Edit';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import {useCookies} from "react-cookie";
 import Badge from '@mui/material/Badge';
 import {setTotal} from "./redux/slices/adminSlice";
+import {useHistory} from "react-router-dom";
 
 const systemItems = [{
     "name" : "Users",
@@ -35,6 +37,7 @@ export default function AdminNavigator(props) {
     const dispatch = useDispatch();
     const [cookies, setCookies] = useCookies(['location']);
     const total = useSelector((state) => state.adminSlice.total);
+    const history = useHistory();
 
 
     React.useEffect(() => {
@@ -93,6 +96,12 @@ export default function AdminNavigator(props) {
             <Toolbar />
             <Divider />
             <List>
+                <ListItem button onClick={() => {    history.push(`/`);}}>
+                    <ListItemIcon >
+                            <HomeOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={`Back to client`} />
+                </ListItem>
                 <ListItem button onClick={() => refresh()}>
                         <ListItemIcon >
                             <Badge color="secondary" badgeContent={total}>

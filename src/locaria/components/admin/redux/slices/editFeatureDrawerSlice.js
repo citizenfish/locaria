@@ -17,6 +17,7 @@ export const adminEditFeatureDrawerSlice = createSlice({
 		},
 		closeEditFeatureDrawer: (state) => {
 			state.open =false;
+			state.feature=null;
 		},
 		setEditFeatureData:(state,action) => {
 			state.data=action.payload;

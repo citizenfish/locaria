@@ -24,6 +24,7 @@ const useStyles = makeStyles({
 	},
 	formControl: {
 		marginBottom: '10px !important',
+		marginTop: '10px !important',
 		minWidth: 220,
 	},
 
