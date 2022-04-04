@@ -3,13 +3,13 @@ import {Accordion, AccordionDetails, AccordionSummary, Dialog} from "@mui/materi
 import {useSelector, useDispatch} from 'react-redux'
 
 import {useStyles} from "stylesLocaria";
-import {openSearchDraw, setTags} from "../redux/slices/searchDrawSlice";
+import {openSearchDrawer, setTags} from "../locaria/components/redux/slices/searchDrawerSlice";
 
 import {channels, configs} from 'themeLocaria';
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import FilterDistance from "../search/FilterDistance";
-import SearchTags from "../search/SearchTags";
+import FilterDistance from "../locaria/components/search/FilterDistance";
+import SearchTags from "../locaria/components/search/SearchTags";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Divider from '@mui/material/Divider';
 
@@ -34,13 +34,13 @@ const AdvancedAccordion = forwardRef((props, ref) => {
 				<Grid container className={classes.root} justifyContent="center">
 					<Grid item md={12}>
 						<Divider sx={{mb:1}}/>
-						<Typography variant="subtitle2" className={classes.searchDrawerAccordianTitle}>Constrain to distance from current location</Typography>
+						<Typography variant="subtitle2" className={classes.searchDrawerAccordionTitle}>Constrain to distance from current location</Typography>
 						<FilterDistance/>
 
 					</Grid>
 					<Grid item md={12}>
 						<Divider sx={{mb:1}}/>
-						<Typography variant="subtitle2" className={classes.searchDrawerAccordianTitle}>Choose category for selection</Typography>
+						<Typography variant="subtitle2" className={classes.searchDrawerAccordionTitle}>Choose category for selection</Typography>
 						<Grid item md={12} className={classes.channel}>
 							<Grid container className={classes.root} spacing={2} justifyContent="center">
 								{channels.listChannels().map(function (channel) {
@@ -53,9 +53,9 @@ const AdvancedAccordion = forwardRef((props, ref) => {
 														onClick={() => {
 															//dispatch(closeCategoryDraw());
 															dispatch(setTags([]));
-															dispatch(openSearchDraw({categories: [chan.category]}));
+															dispatch(openSearchDrawer({categories: [chan.category]}));
 														}}>
-														<Typography variant="subtitle2" className={classes.searchDrawerAccordianTitle}>{chan.name}</Typography>
+														<Typography variant="subtitle2" className={classes.searchDrawerAccordionTitle}>{chan.name}</Typography>
 
 														<img src={chan.image}/>
 													</div>
@@ -70,7 +70,7 @@ const AdvancedAccordion = forwardRef((props, ref) => {
 					</Grid>
 					<Grid item md={12}>
 						<Divider sx={{mb:1}}/>
-						<Typography variant="subtitle2" className={classes.searchDrawerAccordianTitle}>Choose tags for selection</Typography>
+						<Typography variant="subtitle2" className={classes.searchDrawerAccordionTitle}>Choose tags for selection</Typography>
 						<SearchTags/>
 					</Grid>
 				</Grid>

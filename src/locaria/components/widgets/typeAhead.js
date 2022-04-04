@@ -3,7 +3,7 @@ import {ListItemText, List, ListItem, Popover, ListItemIcon} from "@mui/material
 import {useDispatch, useSelector} from "react-redux";
 import {closeTypeAhead} from "../redux/slices/typeAheadSlice";
 import {useStyles} from "stylesLocaria";
-import {openSearchDraw} from "../redux/slices/searchDrawSlice";
+import {openSearchDrawer} from "../redux/slices/searchDrawerSlice";
 import AdjustIcon from '@mui/icons-material/Adjust';
 
 function TypeAhead({anchorId}) {
@@ -33,7 +33,7 @@ function TypeAhead({anchorId}) {
 				subs.push(
 					<ListItem key={index2} onClick={() => {
 						dispatch(closeTypeAhead());
-						dispatch(openSearchDraw({categories: (item.category!=='Location')? [item.category]:[], search: item2.text}));
+						dispatch(openSearchDrawer({categories: (item.category!=='Location')? [item.category]:[], search: item2.text}));
 					}}>
 						<ListItemIcon>
 							<AdjustIcon />
@@ -69,7 +69,7 @@ function TypeAhead({anchorId}) {
 					<>
 						<ListItem key={index} onClick={() => {
 							dispatch(closeTypeAhead());
-							dispatch(openSearchDraw({
+							dispatch(openSearchDrawer({
 								categories: (item.category!=='Location')? [item.category]:[],
 								search: document.getElementById(anchorId).value
 							}));

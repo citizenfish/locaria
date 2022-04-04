@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 
-export const viewDrawSlice = createSlice({
+export const viewDrawerSlice = createSlice({
 	name: 'viewDraw',
 	initialState: {
 		open: false,
@@ -27,6 +27,6 @@ export const viewDrawSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {openViewDraw, closeViewDraw,setPosition} = viewDrawSlice.actions
+export const {openViewDraw, closeViewDraw,setPosition} = viewDrawerSlice.actions
 
-export default viewDrawSlice.reducer
+export default viewDrawerSlice.reducer

@@ -42,7 +42,7 @@ BEGIN
          INTO ret_var
          USING  parameters->'attributes',
                 ST_TRANSFORM(ST_GEOMFROMEWKT(parameters->>'geometry'),4326),
-                (SELECT category_id FROM categories WHERE category = parameters->>'category'),
+                (SELECT id FROM categories WHERE category = parameters->>'category'),
                 (parameters->>'search_date')::TIMESTAMP,
                 item_var->>'ofid';
 

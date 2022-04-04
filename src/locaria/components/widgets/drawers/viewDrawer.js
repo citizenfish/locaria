@@ -7,13 +7,13 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import {useHistory, useParams} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
-import {openSearchDraw, closeSearchDraw} from "../../redux/slices/searchDrawSlice";
-import {setPosition} from "../../redux/slices/viewDrawSlice";
+import {openSearchDrawer, closeSearchDrawer} from "../../redux/slices/searchDrawerSlice";
+import {setPosition} from "../../redux/slices/viewDrawerSlice";
 import {closeMultiSelect} from "../../redux/slices/multiSelectSlice";
 import {FieldView} from '../fieldView'
 import CardImageLoader from "../cardImageLoader";
 import Share from "../share";
-import SearchDrawCard from "./cards/searchDrawCard";
+import SearchDrawerCard from "./cards/searchDrawerCard";
 import {InView} from "react-intersection-observer";
 import Grid from "@mui/material/Grid";
 import Map from "../map";
@@ -50,7 +50,7 @@ const ViewDrawer = forwardRef((props, ref) => {
 			if (open === true) {
 				history.push(`/View/${category}/${fid}`);
 				dispatch(closeLayout());
-				dispatch(closeSearchDraw());
+				dispatch(closeSearchDrawer());
 				dispatch(closeMultiSelect());
 				if (fid !== false) {
 					let featureLoader = {
@@ -77,7 +77,7 @@ const ViewDrawer = forwardRef((props, ref) => {
 				}
 			} else {
 				actualMapRef.current.setSelected("default", "data", []);
-				dispatch(openSearchDraw());
+				dispatch(openSearchDrawer());
 				setReport(null);
 			}
 		}
@@ -186,7 +186,7 @@ const ViewDrawer = forwardRef((props, ref) => {
 					<Divider className={classes.ReportInfoDivider}/>
 					<Typography className={classes.ReportProfileTitle}>Links</Typography>
 					{featuresCut.map((item, index) => (
-						<SearchDrawCard key={index} {...item} mapRef={props.mapRef} full={true}/>
+						<SearchDrawerCard key={index} {...item} mapRef={props.mapRef} full={true}/>
 					))}
 
 					{more ? (
@@ -215,7 +215,7 @@ const ViewDrawer = forwardRef((props, ref) => {
 			<div className={classes.searchDrawHeader}>
 				<Typography className={classes.viewDrawTitle} variant={'h5'}>{configs.viewTitle}</Typography>
 				<IconButton onClick={() => {
-					dispatch(openSearchDraw());
+					dispatch(openSearchDrawer());
 				}} className={classes.viewDrawClose} type="submit"
 				            aria-label="search">
 					<CloseIcon className={classes.icons}/>

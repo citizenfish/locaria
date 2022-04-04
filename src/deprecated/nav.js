@@ -36,7 +36,7 @@ const Nav = () => {
 
 	React.useEffect(() => {
 		if(location.pathname==='/Search/') {
-			searchRef.current.toggleSearchDraw();
+			searchRef.current.toggleSearchDrawer();
 		}
 		if(feature) {
 			openViewWrapper(feature,true);
@@ -127,7 +127,7 @@ const Nav = () => {
 
 	const toggleSearchWrapper=function() {
 		viewRef.current.closeViewDraw();
-		searchRef.current.toggleSearchDraw();
+		searchRef.current.toggleSearchDrawer();
 	}
 
 	const openViewWrapper=function(fid) {
