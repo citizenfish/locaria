@@ -53,7 +53,7 @@ const Tags = forwardRef((props, ref) => {
 				tagsArray.push(
 					<Chip className={classes.chip} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}
 					      onDelete={() => {
-						      let newTags=selectedTags;
+						      let newTags=JSON.parse(JSON.stringify(selectedTags));
 						      newTags.splice(parseInt(tag),1);
 						      setSelectedTags([...newTags]);
 					      }}></Chip>
