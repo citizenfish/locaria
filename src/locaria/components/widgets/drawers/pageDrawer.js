@@ -8,13 +8,13 @@ import {useHistory, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {closePageDialog} from "../../redux/slices/pageDialogSlice";
 import Slide from "@mui/material/Slide";
-import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
+import {closeViewDraw} from "../../redux/slices/viewDrawerSlice";
 import {closeMultiSelect} from "../../redux/slices/multiSelectSlice";
 import Button from "@mui/material/Button";
 import {Drawer} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import {openSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {openSearchDrawer} from "../../redux/slices/searchDrawerSlice";
 import CloseIcon from "@mui/icons-material/Close";
 
 const Transition = React.forwardRef(function Transition(props, ref) {

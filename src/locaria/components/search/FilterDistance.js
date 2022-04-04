@@ -8,7 +8,7 @@ import {useStyles} from "stylesLocaria";
 import Slider from "@mui/material/Slider";
 import {
 	setDistance
-} from "../redux/slices/searchDrawSlice";
+} from "../redux/slices/searchDrawerSlice";
 
 const FilterDistance = ({min = 0, max = 100, step = 1}) => {
 	const classes = useStyles();

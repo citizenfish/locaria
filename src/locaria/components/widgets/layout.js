@@ -11,7 +11,7 @@ import {Link, useHistory, useLocation, useParams} from 'react-router-dom';
 import Map from "./map";
 import {
 	BottomNavigation,
-	BottomNavigationAction,
+	BottomNavigationAction, Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -23,15 +23,20 @@ import MenuDrawer from "./drawers/menuDrawer";
 import Multi from "./multi";
 import Grid from "@mui/material/Grid";
 import { useSelector, useDispatch } from 'react-redux'
-import {closeSearchDraw, openSearchDraw, resolutionUpdate, toggleSearchDraw} from '../redux/slices/searchDrawSlice'
-import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawSlice'
+import {closeSearchDrawer, openSearchDrawer, resolutionUpdate, toggleSearchDrawer} from '../redux/slices/searchDrawerSlice'
+import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawerSlice'
 import {closeMultiSelect, openMultiSelect} from '../redux/slices/multiSelectSlice'
-import { openMenuDraw} from '../redux/slices/menuDrawSlice'
+import { openMenuDraw} from '../redux/slices/menuDrawerSlice'
 import PageDrawer from "./drawers/pageDrawer";
 import {closeLayout, openLayout,setLocation, setResolutions} from "../redux/slices/layoutSlice";
 import Typography from "@mui/material/Typography";
 import {openPageDialog} from "../redux/slices/pageDialogSlice";
-import {closeLandingDraw, openLandingDraw} from "../redux/slices/landingDrawSlice";
+import {closeLandingDraw, openLandingDraw} from "../redux/slices/landingDrawerSlice";
+
+
+
+import NavFabFilter from "./fabs/navFabFilter";
+
 
 const Layout = ({children, map, fullscreen = false}) => {
 	const mapRef = useRef();
@@ -74,9 +79,9 @@ const Layout = ({children, map, fullscreen = false}) => {
 
 		if (location.pathname.match('^/Search/.*')&&searchDrawOpen===false) {
 			if(category) {
-				dispatch(openSearchDraw({categories: JSON.parse(category),search:search}));
+				dispatch(openSearchDrawer({categories: JSON.parse(category),search:search}));
 			} else {
-				dispatch(openSearchDraw());
+				dispatch(openSearchDrawer());
 			}
 
 			return;
@@ -105,7 +110,7 @@ const Layout = ({children, map, fullscreen = false}) => {
 			if(open) {
 				history.push(`/Map`);
 				dispatch(closeLandingDraw());
-				dispatch(closeSearchDraw());
+				dispatch(closeSearchDrawer());
 				dispatch(closeMultiSelect());
 				//forceMapRefresh();
 				displayMapData();
@@ -235,13 +240,13 @@ const Layout = ({children, map, fullscreen = false}) => {
 
 	const toggleSearchWrapper = function () {
 		if(searchDrawOpen===true) {
-			dispatch(closeSearchDraw());
+			dispatch(closeSearchDrawer());
 		} else {
-			dispatch(openSearchDraw());
+			dispatch(openSearchDrawer());
 
 		}
 
-	/*	dispatch(toggleSearchDraw());
+	/*	dispatch(toggleSearchDrawer());
 		if(open===false) {
 			dispatch(openLayout());
 		}*/
@@ -267,6 +272,7 @@ const Layout = ({children, map, fullscreen = false}) => {
 			</Snackbar>
 			<div>
 				<div className={classes.grow}>
+
 					<SearchDrawer mapRef={mapRef}/>
 					<MenuDrawer/>
 					<ViewDrawer mapRef={mapRef}/>
@@ -293,12 +299,25 @@ const Layout = ({children, map, fullscreen = false}) => {
 												onClick={() => {toggleSearchWrapper()}}/>
 	                    <NavProfile/>
 					</BottomNavigation>
-					<LandingDrawer></LandingDrawer>
-					<PageDrawer></PageDrawer>
+					<LandingDrawer/>
+					<PageDrawer/>
 
 				</div>
 				<div>
-					{displayMap()}
+					{
+						map &&
+						<div className={fullscreen ? classes.mapContainerFull : classes.mapContainer}>
+							<Map id={'mainMap'}
+								 className={'mapView'}
+								 ref={mapRef}
+								 onFeatureSeleted={handleFeatureSelected}
+								 onZoomChange={configs.cluster ? onZoomChange : undefined}
+							/>
+
+								<NavFabFilter/>
+
+						</div>
+					}
 
 					{children}
 
@@ -307,19 +326,8 @@ const Layout = ({children, map, fullscreen = false}) => {
 
 			</div>
 		</div>
-	);
-
-	function displayMap() {
-		if (map === true) {
-			return (
-				<div className={fullscreen ? classes.mapContainerFull : classes.mapContainer}>
-					<Map id={'mainMap'} className={'mapView'} ref={mapRef} onFeatureSeleted={handleFeatureSelected}
-					     onZoomChange={configs.cluster ? onZoomChange : undefined}/>
-				</div>
-			)
-		}
-	}
-};
+	)
+}
 
 
 export default Layout;

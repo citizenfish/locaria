@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {
 	setTags,
 	addTag
-} from "../redux/slices/searchDrawSlice";
+} from "../redux/slices/searchDrawerSlice";
 import Chip from "@mui/material/Chip";
 
 const SearchTags = ({category, changeFunction, currentValue}) => {
