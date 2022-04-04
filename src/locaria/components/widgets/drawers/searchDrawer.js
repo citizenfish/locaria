@@ -24,7 +24,7 @@ import {configs,  channels} from "themeLocaria";
 import Distance from "../../../libs/Distance";
 import LocationSearchResults from "../searchResults/locationSearchResults";
 import FeatureSearchResults from "../searchResults/featureSearchResults";
-import {Divider} from "@mui/material";
+import {Divider, Drawer} from "@mui/material";
 
 const SearchDrawer = forwardRef((props, ref) => {
 
