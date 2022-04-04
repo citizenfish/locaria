@@ -1,5 +1,5 @@
 import {configureStore} from '@reduxjs/toolkit'
-import searchDrawSlice from './slices/searchDrawerSlice'
+import searchDrawerSlice from './slices/searchDrawerSlice'
 import viewDrawSlice from './slices/viewDrawerSlice'
 import multiSelectSlice from './slices/multiSelectSlice'
 import menuDrawSlice from './slices/menuDrawerSlice'
@@ -14,7 +14,7 @@ import adminSlice from "../admin/redux/slices/adminSlice";
 
 export default configureStore({
 	reducer: {
-		searchDraw: searchDrawSlice,
+		searchDraw: searchDrawerSlice,
 		viewDraw: viewDrawSlice,
 		multiSelect: multiSelectSlice,
 		menuDraw: menuDrawSlice,
