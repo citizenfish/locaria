@@ -17,7 +17,7 @@ const Tags = forwardRef((props, ref) => {
 			setTagList(json.packet.tags);
 		});
 
-		if (tagList.length === 0&&props.mode==='edit') {
+		if (tagList.length === 0 && props.mode === 'edit') {
 
 			window.websocket.send({
 				"queue": "tagsLoader",
@@ -45,13 +45,13 @@ const Tags = forwardRef((props, ref) => {
 
 	if(Array.isArray(selectedTags)) {
 		for (let tag in selectedTags) {
-			if(props.mode==='view') {
+			if(props.mode === 'view') {
 				tagsArray.push(
-					<Chip className={classes.chip} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}></Chip>
+					<Chip className={classes.chip}  sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}></Chip>
 				)
 			} else {
 				tagsArray.push(
-					<Chip className={classes.chip} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}
+					<Chip className={classes.chip} sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}
 					      onDelete={() => {
 						      let newTags=selectedTags;
 						      newTags.splice(parseInt(tag),1);
@@ -62,14 +62,13 @@ const Tags = forwardRef((props, ref) => {
 
 		}
 
-
 	}
 
 	if(props.mode==='edit') {
 		for (let tag in tagList) {
 			if(selectedTags.indexOf(tagList[tag])===-1) {
 				tagsArray.push(
-					<Chip className={classes.chip} key={`tag-${tagList[tag]}`} label={tagList[tag]}
+					<Chip sx={{bgcolor: "secondary.main"}} className={classes.chip} key={`tag-${tagList[tag]}`} label={tagList[tag]}
 					      deleteIcon={<AddOutlinedIcon className={classes.chipIcon}/>}
 					      onDelete={() => {
 						      setSelectedTags([...selectedTags,...[tagList[tag]]]);

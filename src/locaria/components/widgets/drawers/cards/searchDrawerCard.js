@@ -1,5 +1,4 @@
-import React from 'react';
-import Button from '@mui/material/Button';
+import React, {useRef} from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import AnchorIcon from '@mui/icons-material/Anchor';
@@ -11,8 +10,8 @@ import {useDispatch} from 'react-redux'
 import {openViewDraw} from "../../../redux/slices/viewDrawerSlice";
 import Grid from "@mui/material/Grid";
 import {setLocation} from "../../../redux/slices/layoutSlice";
-import Tags from "../../tags";
 import IconButton from "@mui/material/IconButton";
+import Tags from "../../tags"
 
 const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
@@ -26,6 +25,7 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 		mapRef.current.clearHighlighted("default", "data");
 	}
 
+	const tagRef = useRef();
 
 	switch (properties.featureType) {
 		case 'location':
@@ -36,6 +36,7 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 						<div className={classes.SearchLocationContent}
 							 onClick={() => {
 								 mapRef.current.centerOnCoordinate(geometry.coordinates, undefined, "EPSG:4326")
+
 							 }}
 						>
 							<Grid container>
@@ -67,8 +68,9 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 			return (
 				<Paper elevation={0}  className={classes.SearchDrawerFeatureWrapper}>
 					<div className={classes.SearchLocationContent}
-						 onClick={() => {
+						 onClick={(e) => {
 							 mapRef.current.centerOnCoordinate(geometry.coordinates, undefined, "EPSG:4326")
+							 //mapOver(e)
 						 }}
 					>
 						<Grid container>
@@ -93,11 +95,16 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 											/>
 										</div>
 									</Grid>
-									<Grid item md={12}>
 
-									</Grid>
 								</Grid>
-
+							</Grid>
+							<Grid item md={12}>
+								<Tags ref={tagRef}
+									  tags={properties.tags}
+									  mode={"view"}
+									  category={properties.category}
+									  tagClass={'tagFeatureCard'}
+								/>
 							</Grid>
 						</Grid>
 						<Divider sx={{mb:1, color: "primary.darker"}}/>
