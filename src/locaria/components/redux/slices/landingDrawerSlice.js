@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const landingDrawSlice = createSlice({
+export const landingDrawerSlice = createSlice({
 	name: 'landingDraw',
 	initialState: {
 		open: false
@@ -16,6 +16,6 @@ export const landingDrawSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { openLandingDraw, closeLandingDraw } = landingDrawSlice.actions
+export const { openLandingDraw, closeLandingDraw } = landingDrawerSlice.actions
 
-export default landingDrawSlice.reducer
+export default landingDrawerSlice.reducer

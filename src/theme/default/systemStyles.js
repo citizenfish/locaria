@@ -1,6 +1,7 @@
 import {makeStyles} from "@mui/styles";
 import {alpha} from '@mui/material/styles';
 import {autocompleteClasses} from "@mui/material";
+import {ellipse} from "@turf/turf";
 
 export default class UseStyles {
 
@@ -11,7 +12,7 @@ export default class UseStyles {
 	constructor(theme, merge = {}) {
 
 
-		const leftWidth = 550;
+		const leftWidth = 400;
 
 		let base = {
 
@@ -388,7 +389,7 @@ export default class UseStyles {
 				textAlign: 'center'
 			},
 
-			searchDrawerAccordianTitle: {
+			searchDrawerAccordionTitle: {
 				flex: 1,
 				textAlign: 'center',
 				color: theme.palette.primary.darker
@@ -399,21 +400,24 @@ export default class UseStyles {
 			},
 
 			searchDrawerSearch: {
-				margin: 20,
+				margin: 10,
 				display: 'flex',
 				overflow: 'hidden',
 				padding: '12px 14px',
-				backgroundColor: theme.palette.primary.clear
-
+				backgroundColor: theme.palette.primary.clear,
+				boxShadow: "0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02)"
 			},
 
 			searchDrawerBox: {
 				flex: 1,
 				color: `${theme.palette.text.lighter} !important`,
 			},
+			searchDrawerAccordion:{
+				margin: '0 !important'
 
+			},
 			searchDrawerResultList: {
-				padding: 20,
+				//padding: 20,
 				paddingBottom: 0,
 				display: 'flex',
 				flexDirection: 'column'
@@ -468,15 +472,15 @@ export default class UseStyles {
 				marginBottom: '5px !important'
 			},
 
-			SearchDrawShipText: {
-				color: alpha(theme.palette.text.primary, 0.35),
+			SearchDrawerResultText: {
+				color: alpha(theme.palette.text.lighter, 0.9),
 				fontSize: '0.8rem !important',
 				textOverflow: 'ellipsis',
 				whiteSpace: 'nowrap',
 				overflow: 'hidden',
 			},
 
-			SearchDrawWrapper: {
+			SearchDrawerWrapper: {
 				display: 'flex',
 				flexDirection: 'row',
 				overflow: 'hidden',
@@ -484,6 +488,30 @@ export default class UseStyles {
 				marginBottom: '20px',
 				backgroundColor: `${theme.palette.primary.main} !important`,
 				borderRadius: '0px !important',
+			},
+			SearchDrawerLocationWrapper: {
+				display: 'flex',
+				flexDirection: 'row',
+				overflow: 'hidden',
+				backgroundColor: `${theme.palette.primary.clear} !important`,
+				borderBottom: "black",
+				borderBottomStyle: "solid",
+				borderBottomWidth: "1px",
+				borderRadius: "0px !important",
+				//padding: "0px ! important",
+				//margin: "0px !important"
+			},
+			SearchDrawerFeatureWrapper: {
+				display: 'flex',
+				flexDirection: 'row',
+				overflow: 'hidden',
+				backgroundColor: `${theme.palette.primary.clear} !important`,
+				borderBottom: "black",
+				borderBottomStyle: "solid",
+				borderBottomWidth: "1px",
+				borderRadius: "0px !important",
+				//padding: "0px ! important",
+				//margin: "0px !important"
 			},
 
 			SearchDrawMore: {
@@ -494,15 +522,22 @@ export default class UseStyles {
 				backgroundColor: `${theme.palette.primary.main} !important`
 			},
 
-			SearchDrawContent: {
+			SearchLocationContent: {
 				flex: 1,
 				display: 'flex',
 				flexDirection: 'column',
 				alignItems: 'flex-start',
 				justifyContent: 'stretch',
-				padding: '10px 10px 10px 0',
 				overflow: 'hidden',
+				color: `${theme.palette.primary.darker} !important`,
+				paddingLeft: "20px",
+				paddingTop: "5px",
+				paddingBottom: "5px",
+				'&:hover': {
+					cursor:"pointer"
+				}
 			},
+
 			SearchDrawContentSub: {
 				height: 90,
 				paddingLeft: '0px !important',
@@ -525,6 +560,16 @@ export default class UseStyles {
 				color: `${theme.palette.text.primary} !important`,
 			},
 
+			searchFeatureIcon: {
+				padding: 0,
+				margin: 0,
+				'& img': {
+					width: '100%',
+					maxWidth: 75,
+					maxHeight:75
+				}
+			},
+
 			searchDrawAdvancedAccordion: {
 				backgroundColor: `${theme.palette.primary.trans} !important`,
 				color: `${theme.palette.text.primary} !important`,
@@ -542,10 +587,11 @@ export default class UseStyles {
 				color: `${theme.palette.text.lighter} !important`
 			},
 			searchDrawAdvancedAccordionDetails:{
+
 			},
 
 			searchDrawerAdvanced: {
-				marginBottom: 25
+				marginBottom: 0
 			},
 
 			searchDrawAdvancedButton: {
@@ -584,6 +630,31 @@ export default class UseStyles {
 			},
 
 			/* Mapping */
+
+			navfab:{
+				borderRadius: "8px !important",
+				backgroundColor: 'white !important'
+			},
+
+			categorySelectText :{
+				color: theme.palette.primary.darker,
+				overflow:"ellipse"
+			},
+
+			tagSelectText :{
+				color: theme.palette.primary.darker
+			},
+
+			distanceSelectText: {
+				color: theme.palette.primary.darker
+			},
+
+			resetCategorySelectText:{
+				color: theme.palette.secondary.main,
+				'&:hover': {
+					cursor:"pointer"
+				}
+			},
 
 			mapDial: {
 				position: 'absolute',

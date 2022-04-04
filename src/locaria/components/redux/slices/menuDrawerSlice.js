@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const menuDrawSlice = createSlice({
+export const menuDrawerSlice = createSlice({
 	name: 'menuDraw',
 	initialState: {
 		open: false
@@ -16,6 +16,6 @@ export const menuDrawSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { openMenuDraw, closeMenuDraw } = menuDrawSlice.actions
+export const { openMenuDraw, closeMenuDraw } = menuDrawerSlice.actions
 
-export default menuDrawSlice.reducer
+export default menuDrawerSlice.reducer

@@ -9,14 +9,14 @@ import Map from "../map";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import ChannelSelect from "../channelSelect";
+import ChannelSelect from "../selectors/categorySelect";
 import {Footer} from "../footer";
 import {useHistory} from "react-router-dom";
 import {useCookies} from "react-cookie";
-import {closeSearchDraw, openSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {closeSearchDrawer, openSearchDrawer} from "../../redux/slices/searchDrawerSlice";
 import {closeLayout} from "../../redux/slices/layoutSlice";
 import {closeMultiSelect} from "../../redux/slices/multiSelectSlice";
-import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
+import {closeViewDraw} from "../../redux/slices/viewDrawerSlice";
 import TypeAhead from "../typeAhead";
 import {closeTypeAhead, openTypeAhead} from "../../redux/slices/typeAheadSlice";
 import Button from "@mui/material/Button";
@@ -47,7 +47,7 @@ const LandingDrawer = function () {
 			if (open === true) {
 				history.push(`/`);
 				dispatch(closeLayout());
-				dispatch(closeSearchDraw());
+				dispatch(closeSearchDrawer());
 				dispatch(closeViewDraw());
 				dispatch(closeMultiSelect());
 			}
@@ -92,7 +92,7 @@ const LandingDrawer = function () {
 	}
 
 	function doSearch() {
-		dispatch(openSearchDraw({categories: [], search: search}));
+		dispatch(openSearchDrawer({categories: [], search: search}));
 
 	}
 

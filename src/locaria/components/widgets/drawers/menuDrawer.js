@@ -8,11 +8,11 @@ import {configs, channels, pages} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import {useDispatch, useSelector} from "react-redux";
-import {closeMenuDraw} from "../../redux/slices/menuDrawSlice";
-import {openSearchDraw} from "../../redux/slices/searchDrawSlice";
+import {closeMenuDraw} from "../../redux/slices/menuDrawerSlice";
+import {openSearchDrawer} from "../../redux/slices/searchDrawerSlice";
 import SearchIcon from "@mui/icons-material/Search";
 import {openPageDialog} from "../../redux/slices/pageDialogSlice";
-import {openLandingDraw} from "../../redux/slices/landingDrawSlice";
+import {openLandingDraw} from "../../redux/slices/landingDrawerSlice";
 import {openLayout} from "../../redux/slices/layoutSlice";
 
 
@@ -24,7 +24,7 @@ const MenuDrawer = function () {
 	const open = useSelector((state) => state.menuDraw.open);
 
 	function channelDisplay(channel) {
-		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDraw({categories:[channel.category]}));}}>
+		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDrawer({categories:[channel.category]}));}}>
 			<ListItemIcon>
 				<SearchIcon/>
 			</ListItemIcon>

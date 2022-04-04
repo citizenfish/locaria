@@ -1,42 +1,34 @@
-import {Accordion, AccordionDetails, AccordionSummary,Container, Divider, Drawer, useMediaQuery} from "@mui/material";
+import React, {forwardRef, useContext, useEffect, useRef} from "react";
+
+import {useHistory} from "react-router-dom";
+import {useSelector, useDispatch} from 'react-redux'
+import {setSearch,} from "../../redux/slices/searchDrawerSlice";
+import {closeViewDraw} from "../../redux/slices/viewDrawerSlice";
+import {openLayout, closeLayout} from "../../redux/slices/layoutSlice";
+import {closeLandingDraw} from "../../redux/slices/landingDrawerSlice";
+
+//** MUI **//
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import React, {forwardRef, useContext, useImperativeHandle, useRef} from "react";
-import {useStyles} from "stylesLocaria";
-import {configs, theme, channels} from "themeLocaria";
-import Grid from "@mui/material/Grid";
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
+//** LOCARIA **//
+
 import LocariaContext from "../../context/locariaContext";
-import DirectionsBoatOutlinedIcon from '@mui/icons-material/DirectionsBoatOutlined';
-import SearchDrawCard from "./cards/searchDrawCard";
-import {InView} from "react-intersection-observer";
-import LinearProgress from "@mui/material/LinearProgress";
-import {useHistory, useParams} from "react-router-dom";
-import {useSelector, useDispatch} from 'react-redux'
-import {
-	closeSearchDraw,
-	deleteSearchCategory,
-	openSearchDraw,
-	setSearch,
-	toggleLocationShow,
-	setDistance, deleteTag
-} from "../../redux/slices/searchDrawSlice";
-import {closeViewDraw} from "../../redux/slices/viewDrawSlice";
-import Chip from "@mui/material/Chip";
-import MenuIcon from "@mui/icons-material/Menu";
-
-import {openLayout, closeLayout} from "../../redux/slices/layoutSlice";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import {useStyles} from "stylesLocaria";
+import {configs,  channels} from "themeLocaria";
 import Distance from "../../../libs/Distance";
-import {closeLandingDraw} from "../../redux/slices/landingDrawSlice";
-import AdvancedAccordion from "../advancedAccordion";
-
+import LocationSearchResults from "../searchResults/locationSearchResults";
+import FeatureSearchResults from "../searchResults/featureSearchResults";
+import {Divider} from "@mui/material";
 
 const SearchDrawer = forwardRef((props, ref) => {
-		const history = useHistory();
+
+	const history = useHistory();
 		const dispatch = useDispatch()
 
 		const distanceLib = new Distance();
@@ -48,23 +40,20 @@ const SearchDrawer = forwardRef((props, ref) => {
 		const resolutions = useSelector((state) => state.layout.resolutions);
 		const distance = useSelector((state) => state.searchDraw.distance);
 		const tags = useSelector((state) => state.searchDraw.tags);
-
+		const homeLocation = useSelector((state) => state.layout.homeLocation);
 
 		const classes = useStyles();
 		const [moreResults, setMoreResults] = React.useState(false);
 		const [fit, setFit] = React.useState(true);
 		const [searchResults, setSearchResults] = React.useState([]);
 		const [locationResults, setLocationResults] = React.useState([]);
-		const myContext = useContext(LocariaContext);
-
-		const homeLocation = useSelector((state) => state.layout.homeLocation);
-
-		const isInitialMount = useRef(true);
-
 		const [channel, setChannel] = React.useState(undefined);
 
+		const myContext = useContext(LocariaContext);
+		const isInitialMount = useRef(true);
 
-	React.useEffect(() => {
+
+		useEffect(() => {
 			if (isInitialMount.current) {
 				isInitialMount.current = false;
 			} else {
@@ -82,7 +71,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 			}
 		}, [open]);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			setChannel(channels.getChannelProperties(categories[0]));
 			if (open === true) {
 				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
@@ -90,8 +79,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 			}
 		}, [categories,tags,open]);
 
-
-		React.useEffect(() => {
+		useEffect(() => {
 			if (open === true) {
 				history.push(`/Search/${JSON.stringify(categories)}/${search}`);
 				document.getElementById('mySearch').value=search;
@@ -99,13 +87,13 @@ const SearchDrawer = forwardRef((props, ref) => {
 			}
 		}, [search]);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			if (open === true) {
 				doSearch('new');
 			}
 		}, [distance]);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			console.log('locationResults change')
 			if (open === true&&locationResults.length>0) {
 
@@ -129,8 +117,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 
 		}, [locationResults, locationShow]);
 
-
-		React.useEffect(() => {
+		useEffect(() => {
 
 			window.websocket.registerQueue("searchBulk", function (json) {
 				setMoreResults(json.searchLoader.packet.features.length === configs.searchLimit);
@@ -155,26 +142,30 @@ const SearchDrawer = forwardRef((props, ref) => {
 
 		}, [searchResults]);
 
-
-		React.useEffect(() => {
+		useEffect(() => {
 			if (channel && channel.searchReport) {
 				setFit(false);
 				doSearch();
 			}
 		},[resolutions]);
 
-		function handleKeyDown(e) {
+		const handleKeyDown = (e) => {
 			if (e.key === 'Enter') {
 				setNewSearch();
 			}
 		}
 
-		function setNewSearch() {
+		const setNewSearch = () => {
 			let newSearchValue = document.getElementById('mySearch').value;
 			dispatch(setSearch({search: newSearchValue}));
 		}
 
-		function doSearch(mode = 'new') {
+		const clearSearch = (e) => {
+			document.getElementById('mySearch').value = ''
+			setNewSearch()
+		}
+
+		const doSearch = (mode = 'new') => {
 			if (open !== true)
 				return;
 			//let newSearchValue = document.getElementById('mySearch').value;
@@ -241,41 +232,6 @@ const SearchDrawer = forwardRef((props, ref) => {
 			}
 		}
 
-		const LocationResults = () => {
-			if (locationResults.length) {
-				if (locationShow) {
-					return (
-						<div className={classes.searchDrawResultList}>
-							{locationResults.map((item, index) => (
-								<SearchDrawCard more={true} key={index} {...item} mapRef={props.mapRef}/>
-							))}
-							<div className={classes.SearchDrawMore} onClick={() => {
-								dispatch(toggleLocationShow());
-							}}>
-								Less locations
-								<ExpandMoreIcon></ExpandMoreIcon>
-							</div>
-						</div>
-					)
-				} else {
-					return (
-						<div className={classes.searchDrawResultList}>
-							{[locationResults[0]].map((item, index) => (
-								<SearchDrawCard more={true} key={index} {...item} mapRef={props.mapRef}/>
-							))}
-							<div className={classes.SearchDrawMore} onClick={() => {
-								dispatch(toggleLocationShow());
-							}}>
-								More locations
-								<ExpandMoreIcon></ExpandMoreIcon>
-							</div>
-						</div>
-					)
-				}
-
-			}
-			return <></>
-		}
 
 		return (
 			<Drawer
@@ -283,6 +239,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 				open={open}
 				className={classes.searchDrawer}
 				variant="persistent"
+
 			>
 				<div className={classes.searchDrawerHeader}>
 					<Typography className={classes.searchDrawerTitle} variant={'h6'}>{configs.searchTitle}</Typography>
@@ -304,127 +261,42 @@ const SearchDrawer = forwardRef((props, ref) => {
 						autoComplete={'off'}
 						autoFocus={true}
 					/>
-					<IconButton onClick={() => {
-						setNewSearch();
-					}} type="submit" aria-label="search">
+					<IconButton onClick={() => {setNewSearch()}}
+								type="submit"
+								aria-label="search">
 						<SearchIcon className={classes.iconsLight}/>
+					</IconButton>
+					<Divider orientation="vertical" className={classes.iconsLight} />
+					<IconButton type="submit"
+								size="small"
+								onClick={clearSearch}
+					>
+						<DeleteIcon className={classes.iconsLight} />
 					</IconButton>
 				</div>
 
-				<Accordion>
-				<AccordionSummary
-					expandIcon={<ExpandMoreIcon />}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<Typography variant="subtitle2"
-								className={classes.searchDrawerAccordianTitle}>
-						Search Filters
-					</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<AdvancedAccordion>
-						<Container className={classes.searchDrawerAdvanced}>
-							<Grid container className={classes.searchCategoryChosen}>
-								<Grid item md={12}>
-									<Typography variant="subtitle2"
-												className={classes.searchDrawerAccordianTitle}>
-										Current Filters
-									</Typography>
-									<Divider sx={{mb:1,mt:1}}/>
-								</Grid>
-								<Grid item md={4}>
-									<Typography >Categories:</Typography>
-								</Grid>
-								<Grid item md={8}>
-									{ categories.length > 0 &&
-									categories.map((category) => (
-
-										<Chip className={classes.chip}
-											  key={`cat-${category}`}
-											  label={category}
-											  sx ={{bgcolor: "primary.main"}}
-											  onDelete={() => {
-												  dispatch(deleteSearchCategory(category));
-											  }}
-										/>))
-									}
-									{
-										categories.length === 0  &&
-										<Typography >All categories</Typography>
-									}
-
-								</Grid>
-							</Grid>
-
-
-							{ distance > 0 &&
-							<Grid container className={classes.searchDistanceChosen}>
-								<Grid item md={4}>
-									<Typography >Distance:</Typography>
-								</Grid>
-								<Grid item md={8}>
-									<Chip className={classes.chip}
-										  label={`Distance within : ${distance}km`}
-										  sx ={{bgcolor: "secondary.main"}}
-										  onDelete={() => {
-											  dispatch(setDistance(false));
-										  }}
-									/>
-
-								</Grid>
-							</Grid>
-							}
-							{ tags.length > 0 &&
-							<Grid container className={classes.searchTagsChosen}>
-								<Grid item md={4}>
-									<Typography >Tags:</Typography>
-								</Grid>
-								<Grid item md={8}>
-									{tags.map((tag) => (
-										<Chip className={classes.chip}
-											  key={`tag-${tag}`}
-											  label={tag}
-											  sx ={{bgcolor: "selection.main"}}
-											  onDelete={() => {
-												  dispatch(deleteTag(tag));
-											  }}
-										/>))}
-								</Grid>
-							</Grid>
-							}
-						</Container>
-					</AdvancedAccordion>
-				</AccordionDetails>
-			</Accordion>
-
-
 
 				<div className={classes.searchDrawerResults}>
-					<LocationResults></LocationResults>
-					{searchResults.length > 0 ? (
-						<div className={classes.searchDrawerResultList}>
-							{searchResults.map((item, index) => (
-								<SearchDrawCard key={index} {...item} mapRef={props.mapRef}/>
-							))}
-							{moreResults ? (
-								<div sx={{height: '10px'}}>
-									<InView as="div" onChange={(inView, entry) => {
-										inViewEvent(inView)
-									}}>
-									</InView>
-									<LinearProgress/>
-								</div>
-							) : <div/>
-							}
-						</div>
-					) : (
-						<div className={classes.searchDrawerNoResults}>
-							<DirectionsBoatOutlinedIcon className={classes.searchDrawerNoResultsIcon}/>
-							<Typography className={classes.searchDrawerNoResultsText} variant="body1">No results
-								found</Typography>
-						</div>
-					)}
+					<Divider/>
+
+					<LocationSearchResults
+							locationResults ={locationResults}
+							mapRef = {props.mapRef}
+							locationShow = {locationShow}
+					/>
+
+					<FeatureSearchResults
+							featureResults = {searchResults}
+							mapRef = {props.mapRef}
+							inViewEvent = {inViewEvent}
+							moreResults = {moreResults}
+
+					/>
+
+				</div>
+				<Divider/>
+				<div >
+
 				</div>
 			</Drawer>
 		)
