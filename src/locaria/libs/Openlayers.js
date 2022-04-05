@@ -44,6 +44,7 @@ import {v4 as uuidv4} from 'uuid';
 import bbox from '@turf/bbox';
 import bboxPolygon from '@turf/bbox-polygon';
 import buffer from '@turf/buffer';
+import {centroid,polygon} from "@turf/turf";
 
 
 proj4.defs([
@@ -964,6 +965,8 @@ export default class Openlayers {
 			"clickFunction": undefined
 		}, options);
 		let map = self.maps[options.map].object;
+		let view = map.getView();
+
 		if (options.mode === "on") {
 			self.maps[options.map].clickTag = map.on('click', clickFunction);
 		} else {
@@ -971,7 +974,13 @@ export default class Openlayers {
 		}
 
 		function clickFunction(e) {
-			options.clickFunction(e);
+			let coordinate4326 = transform([e.coordinate[0], e.coordinate[1]], view.getProjection().getCode(), "EPSG:4326");
+
+			const locations={
+				coordinate: e.constructor,
+				coordinate4326: coordinate4326
+			}
+			options.clickFunction(locations);
 		}
 	}
 
@@ -1313,7 +1322,15 @@ export default class Openlayers {
 		if (!options.projection)
 			options.projection = view.getProjection().getCode();
 		let size = map.getSize();
+
+
+		if(Array.isArray(options.coordinate)&&Array.isArray(options.coordinate[0])) {
+			const centerOfPolygon = polygon(options.coordinate);
+			options.coordinate=centroid(centerOfPolygon).geometry.coordinates;
+			// Not a point
+		}
 		let cords = this.decodeCoords(options.coordinate, options.projection, view.getProjection().getCode());
+
 		if (cords) {
 			view.centerOn(cords, size, [size[0] / 2, size[1] / 2]);
 		}
@@ -1355,6 +1372,8 @@ export default class Openlayers {
 				returnCords = transform(cords, projectionFrom, projectionTo);
 				returnCords = this._cleanCoords(returnCords);
 			} catch (e) {
+				console.log('Transform failed');
+				console.log(cords);
 				return false;
 			}
 		}

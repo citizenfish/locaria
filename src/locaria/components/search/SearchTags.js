@@ -31,7 +31,7 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 			window.websocket.send({
 				"queue": "tagsLoader",
 				"api": "api",
-				"data": {"method": "list_tags", "filter": {"category": [categories[0]]}}
+				"data": {"method": "list_tags", "filter": {"category": categories}}
 			});
 		}
 		return () => {

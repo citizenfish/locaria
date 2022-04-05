@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react"
+import React, {useEffect, useRef, useState} from "react"
 
 import {useCookies} from "react-cookie";
 import Button from "@mui/material/Button";
@@ -35,10 +35,11 @@ const  AdminEditFeatureDrawer = (props) => {
 	const open = useSelector((state) => state.adminEditFeatureDrawer.open);
 	const feature = useSelector((state) => state.adminEditFeatureDrawer.feature);
 	const data = useSelector((state) => state.adminEditFeatureDrawer.data);
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const mapRef = useRef();
 	const tagRef = useRef();
 
+	let point=null;
 
 
 	useEffect(() => {
@@ -65,11 +66,13 @@ const  AdminEditFeatureDrawer = (props) => {
 			}
 		});
 
-		window.websocket.send({
-			"queue": "viewLoader",
-			"api": "api",
-			"data": {"method": "get_item", "fid": feature, "live": true}
-		});
+		if(feature) {
+			window.websocket.send({
+				"queue": "viewLoader",
+				"api": "api",
+				"data": {"method": "get_item", "fid": feature, "live": true}
+			});
+		}
 
 
 
@@ -91,8 +94,8 @@ const  AdminEditFeatureDrawer = (props) => {
 		let properties=JSON.parse(JSON.stringify(data.features[0].properties));
 		channels.mergeDataWithForm(data.features[0].properties.category,properties);
 		properties.tags=tags;
-		console.log(properties);
-		window.websocket.send({
+
+		let packet={
 			"queue": "saveFeature",
 			"api": "sapi",
 			"data": {
@@ -102,7 +105,10 @@ const  AdminEditFeatureDrawer = (props) => {
 				},
 				"id_token": cookies['id_token']
 			}
-		});
+		};
+		if(point!==null)
+			packet.data.geometry={type: "Point", coordinates:point}
+		window.websocket.send(packet);
 
 	}
 
@@ -135,10 +141,19 @@ const  AdminEditFeatureDrawer = (props) => {
 
 	}
 
-	function onChangeTags(newTags) {
-		//debugger;
-		console.log(newTags);
-		data.features[0].properties.tags = newTags;
+
+	const mapClick = (e) => {
+
+		const geojson={"features": [
+				{
+					type: "Feature",
+					geometry: {type: "Point", coordinates:e.coordinate4326},
+					properties: data.features[0].properties
+				}
+			], type: "FeatureCollection"};
+		mapRef.current.addGeojson(geojson,"data",true);
+		point=e.coordinate4326;
+
 	}
 
 	const ControlActual = () => {
@@ -173,20 +188,20 @@ const  AdminEditFeatureDrawer = (props) => {
 				return (
 					<>
 						<Container>
-							<Map ref={mapRef} id={'EditMap'} className={'editMapView'}/>
+							<Map ref={mapRef} id={'EditMap'} className={'editMapView'} handleMapClick={mapClick}/>
 							<p>Owner: {data.features[0].properties.acl ? data.features[0].properties.acl.email : 'No acl'}</p>
 							{editFields()}
 							<Tags ref={tagRef} tags={data.features[0].properties.tags} mode={'edit'} category={data.features[0].properties.category}></Tags>
 						</Container>
 						<Container>
-							<Button size="small" color="success" onClick={saveFeature} variant="contained">
+							<Button size="small" color="success" onClick={saveFeature} variant="contained" className={classes.editButtons}>
 								Save
 							</Button>
 
-							<Button size="small" color="error" onClick={deleteFeature} variant="contained">
+							<Button size="small" color="error" onClick={deleteFeature} variant="contained" className={classes.editButtons}>
 								Delete
 							</Button>
-							<Button size="small" color="primary" onClick={() => {
+							<Button  className={classes.editButtons} size="small" color="primary" onClick={() => {
 								dispatch(openEditDrawer());
 							}} variant="contained">
 								Back
