@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import AdminAppBar from './adminAppBar'
@@ -12,14 +12,47 @@ import AdminEditDrawer from './components/drawers/adminEditDrawer'
 import AdminEditFeatureDrawer from "./components/drawers/adminEditFeatureDrawer";
 import {theme} from "../../../theme/default/adminStyle";
 import {ThemeProvider} from "@emotion/react";
+import {closeEditDrawer, openEditDrawer} from "./redux/slices/editDrawerSlice";
+import {closeUploadDrawer, openUploadDrawer} from "./redux/slices/uploadDrawerSlice";
+import {setTitle} from "./redux/slices/adminSlice";
+import {useLocation, useParams} from "react-router-dom";
+import {openEditFeatureDrawer} from "./redux/slices/editFeatureDrawerSlice";
+import {useDispatch, useSelector} from "react-redux";
 
 const Admin= () => {
 
 	const [cookies, setCookies] = useCookies(['location'])
+	let {feature} = useParams();
+	const dispatch = useDispatch()
+	const location = useLocation();
+
+	const adminEditDrawer = useSelector((state) => state.adminEditDrawer.open);
+
+
+	useEffect(() => {
+		router();
+	}, []);
 
 	if(cookies['id_token'] === undefined ||
 	   cookies['id_token'] === "null") {
 		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
+	}
+
+
+	const router = () => {
+		if(feature) {
+			dispatch(openEditFeatureDrawer(feature));
+			return;
+		}
+
+		if (location.pathname.match('/Edit/')&&adminEditDrawer===false) {
+			dispatch(openEditDrawer());
+			return;
+
+		}
+
+		dispatch(openUploadDrawer());
+
 	}
 
 	return (
