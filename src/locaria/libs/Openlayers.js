@@ -964,6 +964,8 @@ export default class Openlayers {
 			"clickFunction": undefined
 		}, options);
 		let map = self.maps[options.map].object;
+		let view = map.getView();
+
 		if (options.mode === "on") {
 			self.maps[options.map].clickTag = map.on('click', clickFunction);
 		} else {
@@ -971,7 +973,13 @@ export default class Openlayers {
 		}
 
 		function clickFunction(e) {
-			options.clickFunction(e);
+			let coordinate4326 = transform([e.coordinate[0], e.coordinate[1]], view.getProjection().getCode(), "EPSG:4326");
+
+			const locations={
+				coordinate: e.constructor,
+				coordinate4326: coordinate4326
+			}
+			options.clickFunction(locations);
 		}
 	}
 
