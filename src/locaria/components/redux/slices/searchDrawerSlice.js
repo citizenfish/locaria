@@ -15,7 +15,16 @@ export const searchDrawerSlice = createSlice({
 		openSearchDrawer: (state, action) => {
 			state.open = true;
 			if (action.payload && action.payload.categories){
-				state.categories = action.payload.categories;
+				if(action.payload.mode==='add') {
+					for(let c in action.payload.categories) {
+						if(state.categories.indexOf(action.payload.categories[c])===-1)
+							state.categories.push(action.payload.categories[c]);
+						else
+							state.categories.splice(state.categories.indexOf(action.payload.categories[c]),1);
+					}
+				}
+				else
+					state.categories = action.payload.categories;
 				state.tags = []; //If category changes then so must tags
 			}
 
