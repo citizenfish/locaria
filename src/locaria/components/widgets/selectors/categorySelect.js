@@ -26,9 +26,7 @@ const CategorySelect = (props) => {
 	const categories = useSelector((state) => state.searchDraw.categories);
 
 	const categoryChange = (e) => {
-		if(e.target.checked){
-			dispatch(openSearchDrawer({categories: [e.target.value]}));
-		}
+			dispatch(openSearchDrawer({categories: [e.target.value],mode:'add'}));
 	}
 
 

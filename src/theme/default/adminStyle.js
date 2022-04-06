@@ -28,6 +28,10 @@ const useStyles = makeStyles({
 		minWidth: 220,
 	},
 
+	editButtons: {
+		margin: 5
+	}
+
 });
 
 
