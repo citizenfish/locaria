@@ -22,7 +22,7 @@ const Tags = forwardRef((props, ref) => {
 			window.websocket.send({
 				"queue": "tagsLoader",
 				"api": "api",
-				"data": {"method": "list_tags", "filter": {"category": [props.category]}}
+				"data": {"method": "list_tags", "category": [props.category]}
 			});
 		}
 		return () => {

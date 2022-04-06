@@ -14,6 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {openPageDialog} from "../../redux/slices/pageDialogSlice";
 import {openLandingDraw} from "../../redux/slices/landingDrawerSlice";
 import {openLayout} from "../../redux/slices/layoutSlice";
+import {NavProfile} from "../navProfile";
 
 
 
@@ -64,7 +65,8 @@ const MenuDrawer = function () {
 						<ListItemText primary={'Map'}/>
 					</ListItem>
 
-
+					<Divider/>
+					<NavProfile/>
 					<Divider/>
 
 					{channels.listChannels().map(function (channel) {
