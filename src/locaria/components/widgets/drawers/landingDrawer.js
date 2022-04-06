@@ -97,7 +97,7 @@ const LandingDrawer = function () {
 	}
 
 	React.useEffect(() => {
-		mapRef.current.markHome(cookies.location);
+		mapRef.current.markHome(cookies.location.location);
 		mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
 
 	});

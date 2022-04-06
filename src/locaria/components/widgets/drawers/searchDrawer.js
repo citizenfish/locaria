@@ -97,7 +97,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 			console.log('locationResults change')
 			if (open === true&&locationResults.length>0) {
 
-				if (locationShow) {
+				/*if (locationShow) {
 					props.mapRef.current.addGeojson({
 						"features": locationResults,
 						type: "FeatureCollection"
@@ -110,7 +110,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 					}, "location", true);
 
 				}
-				props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
+				props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);*/
 
 			}
 
@@ -126,6 +126,8 @@ const SearchDrawer = forwardRef((props, ref) => {
 				//console.log(json.locationLoader);
 				if (json.locationLoader.packet.features) {
 					setLocationResults(json.locationLoader.packet.features);
+				} else {
+					setLocationResults([]);
 				}
 				props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
 				if(fit)
@@ -193,7 +195,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 
 			if (distance > 0) {
 				packetSearch.data.location_distance = distanceLib.distanceActual(distance,'km');
-				packetSearch.data.location = `SRID=4326;POINT(${homeLocation[0]} ${homeLocation[1]})`;
+				packetSearch.data.location = `SRID=4326;POINT(${homeLocation.location[0]} ${homeLocation.location[1]})`;
 			}
 
 
@@ -206,7 +208,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 			}
 
 			if (search === '' && categories.length === 0) {
-				packetSearch.data.tags = ['featured'];
+				//packetSearch.data.tags = ['featured'];
 			}
 
 			let packetLocation = {

@@ -39,7 +39,7 @@ const Submit = () => {
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
 			"zoom": 10,
-			center: configs.defaultLocation
+			center: configs.defaultLocation.location
 		});
 		ol.addLayer({
 			"name": "xyz",

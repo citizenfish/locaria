@@ -5,7 +5,7 @@ import Fab from '@mui/material/Fab';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Popover from '@mui/material/Popover';
 import Typography from "@mui/material/Typography";
-import {Box} from "@mui/material";
+import {Badge, Box} from "@mui/material";
 
 import CategorySelect from '../selectors/categorySelect'
 
@@ -16,7 +16,11 @@ import DistanceSelect from "../selectors/distanceSelect";
 const NavFabFilter = () => {
 
     const classes = useStyles();
-    const open = useSelector((state) => state.searchDraw.open)
+    const open = useSelector((state) => state.searchDraw.open);
+    const distance = useSelector((state) => state.searchDraw.distance);
+    const tags = useSelector((state) => state.searchDraw.tags);
+    const categories = useSelector((state) => state.searchDraw.categories);
+
     const [popoverOpen,setPopoverOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
 
@@ -53,7 +57,12 @@ const NavFabFilter = () => {
                      sx={{mr:1}}
                      onClick={handleOpen}
                 >
-                    <Typography variant="body2">Category</Typography>
+                    <Badge color="secondary" badgeContent={categories.length} anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}>
+                        <Typography variant="body2" className={classes.fabText}>Category</Typography>
+                    </Badge>
                     <ExpandMoreIcon sx={{ mr: 1 }} />
                 </Fab>
                 <Fab id="tagsFab"
@@ -64,19 +73,30 @@ const NavFabFilter = () => {
                      sx={{mr:1}}
                      onClick={handleOpen}
                 >
-                    <Typography variant="body2">Tags</Typography>
+                    <Badge color="secondary" badgeContent={tags.length} anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}>
+                        <Typography variant="body2" className={classes.fabText}>Tags</Typography>
+                    </Badge>
                     <ExpandMoreIcon sx={{ mr: 1 }} />
                 </Fab>
-                <Fab id="distanceFab"
-                     variant="extended"
-                     size="small"
-                     aria-label="add"
-                     className={classes.navfab}
-                     onClick={handleOpen}
-                >
-                    <Typography variant="body2">Distance</Typography>
-                    <ExpandMoreIcon sx={{ mr: 1 }} />
-                </Fab>
+
+                    <Fab id="distanceFab"
+                         variant="extended"
+                         size="small"
+                         aria-label="add"
+                         className={classes.navfab}
+                         onClick={handleOpen}
+                    >
+                        <Badge color="secondary" badgeContent={distance} anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}>
+                            <Typography variant="body2" className={classes.fabText}>Distance</Typography>
+                        </Badge>
+                        <ExpandMoreIcon sx={{ mr: 1 }} />
+                    </Fab>
             </Box>
             <Popover open={popoverOpen}
                      anchorEl={anchorEl}

@@ -55,6 +55,10 @@ export default class UseStyles {
 				color: `${theme.palette.text.clear} !important`
 			},
 
+			chipLight: {
+				color: `${theme.palette.text.lighter} !important`
+			},
+
 			list: {
 				color: theme.palette.text.lighter
 			},
@@ -562,7 +566,8 @@ export default class UseStyles {
 
 			searchFeatureIcon: {
 				padding: 0,
-				margin: 0,
+				width: 80,
+				margin: "0 auto !important",
 				'& img': {
 					width: '100%',
 					maxWidth: 75,
@@ -634,6 +639,10 @@ export default class UseStyles {
 			navfab:{
 				borderRadius: "8px !important",
 				backgroundColor: 'white !important'
+			},
+
+			fabText: {
+				paddingLeft: 10
 			},
 
 			categorySelectText :{
