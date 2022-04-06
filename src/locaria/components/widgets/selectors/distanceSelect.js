@@ -39,7 +39,7 @@ const DistanceSelect = (props) => {
             <Divider/>
             <Typography variant="body1"
                         className={classes.resetCategorySelectText}
-                        onClick={() => {dispatch(setDistance(false))}}
+                        onClick={() => {dispatch(setDistance(0))}}
                         sx={{m:1}}
             >
                 {configs.resetDistanceText}

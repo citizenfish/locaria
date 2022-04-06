@@ -52,7 +52,7 @@ function TypeAhead({anchorId}) {
                             dispatch(setLocation({location:item2.location,name:searchText}));
                             dispatch(openSearchDrawer({
                                 categories: [],
-                                search: searchText,
+                                search: '',
                                 distance:configs.defaultDistance
                             }));
 
