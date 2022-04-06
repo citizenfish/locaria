@@ -12,10 +12,13 @@ import Grid from "@mui/material/Grid";
 import {setLocation} from "../../../redux/slices/layoutSlice";
 import IconButton from "@mui/material/IconButton";
 import Tags from "../../tags"
+import Chip from "@mui/material/Chip";
+import Distance from "../../../../libs/Distance";
 
 const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
 	const dispatch = useDispatch()
+	const distanceLib = new Distance();
 
 	const mapOver = (e) => {
 		mapRef.current.setHighlighted("default", "data", [e.currentTarget.getAttribute('data-fid')]);
@@ -26,6 +29,15 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 	}
 
 	const tagRef = useRef();
+
+	const DistanceDisplay = () => {
+		if(properties.distance)
+		return (
+			<Chip label={`Distance: ${distanceLib.distanceFormatNice(properties.distance,'km')}`} size="small" variant="outlined" className={classes.chipLight}></Chip>
+		)
+		else
+			return (<></>)
+	}
 
 	switch (properties.featureType) {
 		case 'location':
@@ -49,7 +61,7 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 												 className={classes.SearchDrawButtonLocation}
 												 onClick={(e) => {
 														e.stopPropagation()
-														dispatch(setLocation(geometry.coordinates))
+														dispatch(setLocation({location:geometry.coordinates,name:properties.address }))
 												 }}
 									>
 										<AnchorIcon/>
@@ -75,12 +87,14 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 					>
 						<Grid container>
 							<Grid item md={8}>
+
 								<Typography variant="subtitle1"><b>{properties.description.title}</b></Typography>
 								<Typography variant="body2">{properties.description.text}</Typography>
 							</Grid>
 							<Grid item md={4}>
-								<Grid container>
-									<Grid item md={12}>
+								<Grid container alignContent={"center"}>
+									<Grid item md={12} alignContent={"center"}>
+										<DistanceDisplay/>
 										<div   	className={classes.searchFeatureIcon}
 												onClick={(e) => {
 													e.stopPropagation()
