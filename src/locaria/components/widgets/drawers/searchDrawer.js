@@ -97,7 +97,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 			console.log('locationResults change')
 			if (open === true&&locationResults.length>0) {
 
-				if (locationShow) {
+				/*if (locationShow) {
 					props.mapRef.current.addGeojson({
 						"features": locationResults,
 						type: "FeatureCollection"
@@ -110,7 +110,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 					}, "location", true);
 
 				}
-				props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
+				props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);*/
 
 			}
 

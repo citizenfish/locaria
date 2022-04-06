@@ -30,7 +30,7 @@ const App = () => {
 	if (cookies.location === undefined) {
 		const ol = new Openlayers();
 
-		setCookies('location', ol.decodeCoords(configs.defaultLocation, "EPSG:3857", "EPSG:4326"), {
+		setCookies('location', configs.defaultLocation, {
 			path: '/',
 			sameSite: true
 		});

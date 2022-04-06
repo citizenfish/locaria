@@ -5,85 +5,108 @@ import {closeTypeAhead} from "../redux/slices/typeAheadSlice";
 import {useStyles} from "stylesLocaria";
 import {openSearchDrawer} from "../redux/slices/searchDrawerSlice";
 import AdjustIcon from '@mui/icons-material/Adjust';
+import {setLocation} from "../redux/slices/layoutSlice";
+import {configs} from "themeLocaria";
 
 function TypeAhead({anchorId}) {
 
-	const dispatch = useDispatch()
-	const classes = useStyles();
+    const dispatch = useDispatch()
+    const classes = useStyles();
 
-	const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
-	const open = useSelector((state) => state.typeAhead.open);
-	const results = useSelector((state) => state.typeAhead.results);
+    const open = useSelector((state) => state.typeAhead.open);
+    const results = useSelector((state) => state.typeAhead.results);
 
-	React.useEffect(() => {
-		const element=document.getElementById(anchorId);
-		setAnchorEl(element);
-	}, [open]);
+    let searchText;
 
-	function handleClose() {
-		dispatch(closeTypeAhead());
-	}
+    React.useEffect(() => {
+        const element = document.getElementById(anchorId);
+        setAnchorEl(element);
 
 
-	function MakeSubs({item}) {
-		let subs = [];
+    }, [open]);
 
-		item.jsonb_agg.map((item2, index2) => {
-				subs.push(
-					<ListItem key={index2} onClick={() => {
-						dispatch(closeTypeAhead());
-						dispatch(openSearchDrawer({categories: (item.category!=='Location')? [item.category]:[], search: item2.text}));
-					}}>
-						<ListItemIcon>
-							<AdjustIcon />
-						</ListItemIcon>
-						<ListItemText primary={item2.text}/>
-					</ListItem>);
+    function handleClose() {
+        dispatch(closeTypeAhead());
+    }
 
-			}
-		)
-		return subs;
-	}
 
-	return (
-		<Popover
-			id={'typeAheadPopover'}
-			open={open}
-			onClose={handleClose}
-			anchorEl={anchorEl}
-			anchorOrigin={{
-				vertical: 'bottom',
-				horizontal: 'left',
-			}}
-			transformOrigin={{
-				vertical: 'top',
-				horizontal: 'left',
-			}}
-			className={classes.typeAheadPopover}
-			disableAutoFocus={true}
-			disableEnforceFocus={true}
-		>
-			<List className={classes.list}>
-				{results.map((item, index) => (
-					<>
-						<ListItem key={index} onClick={() => {
-							dispatch(closeTypeAhead());
-							dispatch(openSearchDrawer({
-								categories: (item.category!=='Location')? [item.category]:[],
-								search: document.getElementById(anchorId).value
-							}));
-						}}>
-							<ListItemText primary={`(${item.count}) ${item.category}`}/>
-						</ListItem>
-						<MakeSubs item={item}></MakeSubs>
-					</>
-					))}
 
-					</List>
-					</Popover>
-					)
+    function MakeSubs({item}) {
+        let subs = [];
 
-				}
+        item.jsonb_agg.map((item2, index2) => {
+                subs.push(
+                    <ListItem key={index2} onClick={() => {
+                        dispatch(closeTypeAhead());
+                        searchText=item2.text;
 
-				export default TypeAhead;
+                        if (item.category !== 'Location') {
+                            dispatch(openSearchDrawer({
+                                categories: [item.category],
+                                search: searchText
+                            }));
+                        } else {
+
+                            dispatch(setLocation({location:item2.location,name:searchText}));
+                            dispatch(openSearchDrawer({
+                                categories: [],
+                                search: searchText,
+                                distance:configs.defaultDistance
+                            }));
+
+                        }
+                    }}>
+                        <ListItemIcon>
+                            <AdjustIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary={item2.text}/>
+                    </ListItem>);
+
+            }
+        )
+        return subs;
+    }
+
+    return (
+        <Popover
+            id={'typeAheadPopover'}
+            open={open}
+            onClose={handleClose}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+            className={classes.typeAheadPopover}
+            disableAutoFocus={true}
+            disableEnforceFocus={true}
+        >
+            <List className={classes.list}>
+                {results.map((item, index) => (
+                    <>
+                        <ListItem key={index} onClick={() => {
+                            dispatch(closeTypeAhead());
+                            dispatch(openSearchDrawer({
+                                categories: (item.category !== 'Location') ? [item.category] : [],
+                                search: document.getElementById(anchorId).value
+                            }));
+                        }}>
+                            <ListItemText primary={`(${item.count}) ${item.category}`}/>
+                        </ListItem>
+                        <MakeSubs item={item}></MakeSubs>
+                    </>
+                ))}
+
+            </List>
+        </Popover>
+    )
+
+}
+
+export default TypeAhead;

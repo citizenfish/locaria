@@ -177,7 +177,7 @@ const Layout = ({children, map, fullscreen = false}) => {
 	React.useEffect(() => {
 
 		if(homeLocation!==false&&homeLocation!==undefined&&map===true&&configs.location!==false) {
-			mapRef.current.markHome(homeLocation);
+			mapRef.current.markHome(homeLocation.location);
 			setCookies('location', homeLocation,{path: '/', sameSite: true});
 		}
 
@@ -297,7 +297,6 @@ const Layout = ({children, map, fullscreen = false}) => {
 					<BottomNavigationAction className={classes.NavSearchButton}
 												icon={<SearchIcon color="icons" fontSize="large"/>}
 												onClick={() => {toggleSearchWrapper()}}/>
-	                    <NavProfile/>
 					</BottomNavigation>
 					<LandingDrawer/>
 					<PageDrawer/>
