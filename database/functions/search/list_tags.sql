@@ -17,6 +17,7 @@ BEGIN
         SELECT distinct jsonb_array_elements_text(attributes#>'{tags}') tag
         FROM global_search_view
         WHERE attributes @> filter_var
+        AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
 	) TAGS
 	WHERE tag != '';
 

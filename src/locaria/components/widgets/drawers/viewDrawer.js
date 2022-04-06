@@ -5,6 +5,7 @@ import {configs, theme, channels} from "themeLocaria";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import LinkIcon from '@mui/icons-material/Link';
 import {useHistory, useParams} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
 import {openSearchDrawer, closeSearchDrawer} from "../../redux/slices/searchDrawerSlice";
@@ -135,7 +136,7 @@ const ViewDrawer = forwardRef((props, ref) => {
 	const ShowFeatureFull = () => {
 		return (
 			<>
-				<Grid container className={classes.root} spacing={2} justifyContent="center">
+				<Grid container className={classes.ReportPageWrapper} spacing={2}>
 					<Grid item md={4}>
 						<Container className={classes.ReportProfileHeader}>
 							<div className={classes.ReportProfileImageContainer}>
@@ -143,16 +144,47 @@ const ViewDrawer = forwardRef((props, ref) => {
 								                 images={report.viewLoader.packet.features[0].properties.description.images}
 								                 defaultImage={channel.image ? channel.image : configs.defaultImage}
 								                 gallery={true}/>
+
 							</div>
-							<FieldView data={report.viewLoader.packet.features[0].properties}></FieldView>
-							<Share/>
+							<Typography variant={"h6"} align={"center"}>{category}</Typography>
+							<Divider/>
+							<FieldView data={report.viewLoader.packet.features[0].properties}/>
+							<Share />
 						</Container>
+
 					</Grid>
 					<Grid item md={8}>
-						<Map id={'viewMap'} className={"ReportMap"} ref={localMapRef} speedDial={false}></Map>
+						<Container sx={{m:0,p:0}}>
+							<Typography variant={"h6"}
+										align={"center"}
+							>
+								{report.viewLoader.packet.features[0].properties.description.title}
+							</Typography>
+							<Divider/>
+							<Typography variant={"subtitle1"}
+										align={"left"}
+										sx={{mt:1}}
+
+							>
+								{report.viewLoader.packet.features[0].properties.description.text}
+							</Typography>
+							{
+								report.viewLoader.packet.features[0].properties.description.url &&
+									<Typography variant={"subtitle2"} align={"left"}
+												sx={{mb:1}}
+												onClick ={() => {
+													window.open(report.viewLoader.packet.features[0].properties.description.url , '_blank')
+												}}
+												className={classes.ReportFurtherInformationText}
+									>
+										Further information
+									</Typography>
+							}
+						</Container>
+						<Map id={'viewMap'} className={"ReportMap"} ref={localMapRef} speedDial={false}/>
 					</Grid>
 				</Grid>
-				<ReportResults></ReportResults>
+				<ReportResults/>
 			</>
 		);
 	}
@@ -167,10 +199,10 @@ const ViewDrawer = forwardRef((props, ref) => {
 						                 defaultImage={channel.image ? channel.image : configs.defaultImage}
 						                 gallery={true}/>
 					</div>
-					<FieldView data={report.viewLoader.packet.features[0].properties}></FieldView>
+					<FieldView data={report.viewLoader.packet.features[0].properties}/>
 					<Share/>
 				</Container>
-				<ReportResults></ReportResults>
+				<ReportResults/>
 
 			</>
 		);
@@ -223,7 +255,7 @@ const ViewDrawer = forwardRef((props, ref) => {
 			</div>
 			<Divider className={classes.drawHeaderDivider}/>
 			<div className={classes.viewDrawScroll}>
-				<ShowFeature></ShowFeature>
+				<ShowFeature/>
 			</div>
 		</Drawer>
 	)

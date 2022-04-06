@@ -7,6 +7,8 @@ import {Accordion, AccordionDetails, AccordionSummary, Container} from "@mui/mat
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Linker from "./linker";
+import Button from "@mui/material/Button";
+import Tags from "./tags";
 
 const FieldView = ({data}) => {
 	const classes = useStyles();
@@ -84,6 +86,53 @@ const FormatField = ({field, data}) => {
 		case 'p':
 			return (
 				<Typography className={classes.ReportProfileText}>{dataActual}</Typography>
+			)
+		case 'pLabel':
+			return (
+				<Grid container md={12} sx={{mt:1, mb:1}}>
+					<Grid item md={4}>
+						<Typography className={classes.ReportProfilePTitle}>{field.name}:</Typography>
+					</Grid>
+					<Grid item md = {8}>
+						<Typography align={"left"} className={classes.ReportProfilePText}>{dataActual}</Typography>
+					</Grid>
+				</Grid>
+
+			)
+		case 'tags':
+			return (
+				<Grid container md={12} sx={{mt:1, mb:1}}>
+					<Grid item md={4}>
+						<Typography className={classes.ReportProfilePTitle}>Tags</Typography>
+					</Grid>
+					<Grid item md = {8}>
+						<Tags
+							tags={dataActual}
+							mode={"view"}
+							category={field.category}
+							tagClass={'tagFeatureCard'}
+						/>
+					</Grid>
+				</Grid>
+			)
+		case 'linkButton':
+			return(
+				<Grid container sx={{mt:1, mb:1}}>
+					<Grid item md={4}>
+						<Typography className={classes.ReportProfilePTitle}>{field.name}:</Typography>
+					</Grid>
+					<Grid item md = {8}>
+						<Button
+						variant={"outlined"}
+						onClick={() => {
+							window.open(dataActual, '_blank')
+						}}
+					>
+						{field.buttonName}
+					</Button>
+					</Grid>
+				</Grid>
+
 			)
 		case 'div':
 			if (field.icon) {
