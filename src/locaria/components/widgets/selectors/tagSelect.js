@@ -20,7 +20,6 @@ import Chip from "@mui/material/Chip";
 
 const TagSelect = (props) => {
     const classes = useStyles();
-    const history = useHistory();
     const dispatch = useDispatch()
 
     const tags = useSelector((state) => state.searchDraw.tags);
