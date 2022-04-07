@@ -62,6 +62,7 @@ export function viewStyle(feature, resolution) {
 	// Clustering? Lets revise to one feature
 	feature = (feature.get('features') !== undefined ? feature.get('features')[0] : feature);
 
+
 	let category = feature.get('category');
 	let tags = feature.get('tags');
 
