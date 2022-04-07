@@ -175,12 +175,6 @@ const Map = forwardRef((props, ref) => {
 				tooltipTitle={'Zoom Out'}
 				onClick={mapZoomOut}
 			/>
-			<SpeedDialAction
-				key={'attr'}
-				icon={<InfoIcon/>}
-				tooltipTitle={configs.mapAttribution}
-				tooltipOpen
-			/>
 
 
 		</SpeedDial>
@@ -190,6 +184,7 @@ const Map = forwardRef((props, ref) => {
 	return (
 		<div id={props.id} className={classes[props.className]}>
 			<MapSpeedDial/>
+			<div className={classes.mapAttribution}>{configs.mapAttribution}</div>
 		</div>
 	)
 });

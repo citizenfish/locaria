@@ -653,6 +653,17 @@ export default class UseStyles {
 
 			/* Mapping */
 
+			mapAttribution: {
+				position: "absolute",
+				zIndex: 1,
+				bottom: 5,
+				right: 5,
+				background: "rgba(0,0,0,0.2)",
+				padding: 2,
+				fontSize: "0.7rem",
+				color: "black"
+			},
+
 			navfab:{
 				borderRadius: "8px !important",
 				backgroundColor: 'white !important'
@@ -692,7 +703,7 @@ export default class UseStyles {
 			mapDial: {
 				position: 'absolute',
 				right: 20,
-				bottom: 20
+				bottom: 40
 			},
 
 			mapContainer: {
@@ -835,7 +846,8 @@ export default class UseStyles {
 			},
 			ReportMap: {
 				height: "50vh",
-				width: "100%"
+				width: "100%",
+				position: "relative"
 			},
 			ReportProfileHeader: {
 				padding: '0 !important',
