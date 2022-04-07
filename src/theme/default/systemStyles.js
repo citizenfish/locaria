@@ -772,6 +772,7 @@ export default class UseStyles {
 
 			viewDrawScroll: {
 				overflowY: 'auto',
+				overflowX: 'hidden',
 				padding: 20
 			},
 
@@ -808,7 +809,8 @@ export default class UseStyles {
 
 			ReportPageWrapper: {
 				backgroundColor: '#fdffff',
-				color: '#000000'
+				color: '#000000',
+				marginLeft: "0px !important"
 			},
 
 			ReportWrapper: {
@@ -832,8 +834,8 @@ export default class UseStyles {
 				}
 			},
 			ReportMap: {
-				height: "100%",
-				width: "95%"
+				height: "50vh",
+				width: "100%"
 			},
 			ReportProfileHeader: {
 				padding: '0 !important',

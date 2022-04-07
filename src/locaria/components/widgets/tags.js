@@ -13,6 +13,7 @@ const Tags = forwardRef((props, ref) => {
 
 
 	const classIndex=props.className||'chip';
+	const limit=props.limit||20;
 
 	React.useEffect(() => {
 
@@ -50,11 +51,11 @@ const Tags = forwardRef((props, ref) => {
 		for (let tag in selectedTags) {
 			if(props.mode === 'view') {
 				tagsArray.push(
-					<Chip className={classes[classIndex]}  sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}></Chip>
+					<Chip className={classes[classIndex]}  sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag].substring(0,limit)}></Chip>
 				)
 			} else {
 				tagsArray.push(
-					<Chip className={classes[classIndex]} sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}
+					<Chip className={classes[classIndex]} sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag].substring(0,limit)}
 					      onDelete={() => {
 						      let newTags=JSON.parse(JSON.stringify(selectedTags));
 						      newTags.splice(parseInt(tag),1);
@@ -71,7 +72,7 @@ const Tags = forwardRef((props, ref) => {
 		for (let tag in tagList) {
 			if(selectedTags.indexOf(tagList[tag])===-1) {
 				tagsArray.push(
-					<Chip sx={{bgcolor: "secondary.main"}} className={classes[classIndex]} key={`tag-${tagList[tag]}`} label={tagList[tag]}
+					<Chip sx={{bgcolor: "secondary.main"}} className={classes[classIndex]} key={`tag-${tagList[tag]}`} label={tagList[tag].substring(0,limit)}
 					      deleteIcon={<AddOutlinedIcon className={classes.chipIcon}/>}
 					      onDelete={() => {
 						      setSelectedTags([...selectedTags,...[tagList[tag]]]);
