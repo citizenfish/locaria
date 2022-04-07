@@ -45,8 +45,7 @@ const Map = forwardRef((props, ref) => {
 			"name": "data",
 			"type": "vector",
 			"active": true,
-			"style": function(feature,resolution) { return viewStyle(feature,resolution,ol);},
-			"declutter": true
+			"style": function(feature,resolution) { return viewStyle(feature,resolution,ol);}
 		});
 		ol.addLayer({
 			"name": "home",
