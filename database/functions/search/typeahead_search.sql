@@ -18,7 +18,11 @@ BEGIN
     FROM (
            SELECT distinct ON (category) category,
                                          count(*) OVER(PARTITION BY category),
-                                         jsonb_agg(jsonb_build_object('text', search_text, 'type', feature_type)) OVER(PARTITION BY category)
+                                         jsonb_agg(jsonb_build_object('fid', fid,
+                                                                      'text', search_text,
+                                                                      'type', feature_type,
+                                                                      'location', location
+                                             )) OVER(PARTITION BY category)
            FROM (
                     SELECT row_number() OVER (PARTITION BY category) AS rn,
                            * FROM locaria_data.typeahead_search_view

@@ -787,12 +787,10 @@ export default class UseStyles {
 			 */
 
 			ReportPageWrapper: {
-				minHeight: '100vh',
-				display: 'flex',
-				alignItems: 'flex-end',
-				justifyContent: 'center',
-				backgroundColor: '#192123',
+				backgroundColor: '#fdffff',
+				color: '#000000'
 			},
+
 			ReportWrapper: {
 				borderRadius: 0,
 				padding: '20px',
@@ -814,8 +812,8 @@ export default class UseStyles {
 				}
 			},
 			ReportMap: {
-				height: "50vh",
-				width: "100%"
+				height: "100%",
+				width: "95%"
 			},
 			ReportProfileHeader: {
 				padding: '0 !important',
@@ -846,10 +844,27 @@ export default class UseStyles {
 			ReportProfileText: {
 				fontWeight: 100,
 				padding: 0,
-				color: alpha(theme.palette.text.primary, 0.35),
+				color: alpha(theme.palette.text.lighter, 0.50),
 				width: '100%',
 				margin: 3
 			},
+			ReportProfilePText: {
+				fontWeight: 100,
+				padding: 0,
+				color: alpha(theme.palette.text.lighter, 0.50)
+			},
+			ReportProfilePTitle:{
+				fontWeight: 100,
+				padding: 0,
+				color: alpha(theme.palette.text.lighter, 1)
+			},
+			ReportFurtherInformationText: {
+				color: alpha(theme.palette.secondary.main, 1),
+				'&:hover': {
+					cursor:"pointer"
+				}
+			},
+
 			ReportMainInfo: {
 				[theme.breakpoints.up('md')]: {
 					paddingLeft: 0
@@ -918,10 +933,8 @@ export default class UseStyles {
 				display: 'flex',
 				marginTop: 10,
 			},
-			ReportShareButton: {
-				alignSelf: 'stretch',
-				top: 0,
-				width: "100%"
+			ShareButton: {
+
 			},
 			ReportInfoDivider: {
 				marginTop: '20px !important',

@@ -11,16 +11,20 @@ BEGIN
     DROP VIEW IF EXISTS locaria_data.typeahead_search_view;
 
     CREATE VIEW locaria_data.typeahead_search_view AS
-    SELECT 'f_'||fid AS fid ,
+    SELECT fid AS fid ,
            attributes#>>'{description,title}' AS search_text,
            attributes->'category'->>0 AS category,
-           'f' AS feature_type
+           'f' AS feature_type,
+           --jsonb_build_array(ST_X(wkb_geometry), ST_Y(wkb_geometry)) AS location
+           --not needed at present if added in make sure centroid used
+           jsonb_build_array() AS location
     FROM locaria_data.global_search_view
     UNION ALL
-    SELECT 'l_'||id AS fid,
+    SELECT id::TEXT AS fid,
            attributes->>'name1' AS search_text,
            'Location' AS category,
-           'l' AS feature_type
+           'l' AS feature_type,
+           jsonb_build_array(ST_X(wkb_geometry), ST_Y(wkb_geometry)) AS location
     FROM locaria_data.location_search_view;
 
     CREATE INDEX IF NOT EXISTS gsv_typeahead_idx ON locaria_data.global_search_view (LOWER(attributes#>>'{description,title}') text_pattern_ops);
