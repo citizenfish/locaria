@@ -11,6 +11,9 @@ const Tags = forwardRef((props, ref) => {
 	const [tagList, setTagList] = React.useState([]);
 	const [selectedTags, setSelectedTags] = React.useState(props.tags);
 
+
+	const classIndex=props.className||'chip';
+
 	React.useEffect(() => {
 
 		window.websocket.registerQueue("tagsLoader", function (json) {
@@ -47,11 +50,11 @@ const Tags = forwardRef((props, ref) => {
 		for (let tag in selectedTags) {
 			if(props.mode === 'view') {
 				tagsArray.push(
-					<Chip className={classes.chip}  sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}></Chip>
+					<Chip className={classes[classIndex]}  sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}></Chip>
 				)
 			} else {
 				tagsArray.push(
-					<Chip className={classes.chip} sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}
+					<Chip className={classes[classIndex]} sx={{bgcolor: "secondary.main"}} key={`tag-${selectedTags[tag]}`} label={selectedTags[tag]}
 					      onDelete={() => {
 						      let newTags=JSON.parse(JSON.stringify(selectedTags));
 						      newTags.splice(parseInt(tag),1);
@@ -68,7 +71,7 @@ const Tags = forwardRef((props, ref) => {
 		for (let tag in tagList) {
 			if(selectedTags.indexOf(tagList[tag])===-1) {
 				tagsArray.push(
-					<Chip sx={{bgcolor: "secondary.main"}} className={classes.chip} key={`tag-${tagList[tag]}`} label={tagList[tag]}
+					<Chip sx={{bgcolor: "secondary.main"}} className={classes[classIndex]} key={`tag-${tagList[tag]}`} label={tagList[tag]}
 					      deleteIcon={<AddOutlinedIcon className={classes.chipIcon}/>}
 					      onDelete={() => {
 						      setSelectedTags([...selectedTags,...[tagList[tag]]]);

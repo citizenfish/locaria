@@ -25,7 +25,7 @@ const Map = forwardRef((props, ref) => {
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
 			"zoom": configs.defaultZoom,
-			"center": configs.defaultLocation.location,
+			"center": ol.decodeCoords(configs.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
 			"maxZoom": 16
 		});
 		ol.addLayer({

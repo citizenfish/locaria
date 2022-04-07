@@ -88,8 +88,14 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 						<Grid container>
 							<Grid item md={8}>
 
-								<Typography variant="subtitle1"><b>{properties.description.title}</b></Typography>
-								<Typography variant="body2">{properties.description.text}</Typography>
+								<Typography variant="subtitle1" className={classes.searchTitle}><b>{properties.description.title}</b></Typography>
+								<Typography variant="body2" className={classes.searchText}>{properties.description.text}</Typography>
+								<Tags ref={tagRef}
+									  tags={properties.tags}
+									  mode={"view"}
+									  category={properties.category}
+									  className={'tagFeatureCard'}
+								/>
 							</Grid>
 							<Grid item md={4}>
 								<Grid container alignContent={"center"}>
@@ -112,14 +118,7 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 
 								</Grid>
 							</Grid>
-							<Grid item md={12}>
-								<Tags ref={tagRef}
-									  tags={properties.tags}
-									  mode={"view"}
-									  category={properties.category}
-									  tagClass={'tagFeatureCard'}
-								/>
-							</Grid>
+
 						</Grid>
 						<Divider sx={{mb:1, color: "primary.darker"}}/>
 					</div>
