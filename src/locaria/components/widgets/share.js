@@ -16,7 +16,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import {useStyles} from "stylesLocaria";
 import Grid from "@mui/material/Grid";
-import Container from "@mui/material/Container";
+import ShareIcon from '@mui/icons-material/Share';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -36,7 +36,13 @@ const Share = () => {
 
 	return (
 		<div>
-			<Button disableElevation color="secondary" onClick={handleClickOpen} variant="contained" className={classes.ReportShareButton}>
+			<Button disableElevation
+					color="secondary"
+					onClick={handleClickOpen}
+					variant="outlined"
+					className={classes.ShareButton}
+					endIcon={<ShareIcon />}
+			>
 				Share
 			</Button>
 			<Dialog
@@ -49,17 +55,20 @@ const Share = () => {
 				aria-labelledby="alert-dialog-slide-title"
 				aria-describedby="alert-dialog-slide-description"
 				className={classes.dialog}
-
 			>
 				<DialogTitle id="alert-dialog-slide-title">{"Share this page"}</DialogTitle>
 				<DialogContent>
 					<DialogContentText id="alert-dialog-slide-description" component="div">
 
-						<Grid container className={classes.root} spacing={2}>
+						<Grid container
+							  className={classes.root}
+							  spacing={2}>
 							<Grid item xs={12}>
 								<FormControl fullWidth>
-									<TextField id="outlined-basic" variant="outlined"
-									           value={window.location.href} className={classes.dialogInput}/>
+									<TextField id="outlined-basic"
+											   variant="outlined"
+									           value={window.location.href}
+											   className={classes.dialogInput}/>
 								</FormControl>
 							</Grid>
 							<Grid item md={2}>

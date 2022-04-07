@@ -281,7 +281,7 @@ const Layout = ({children, map, fullscreen = false}) => {
                     <BottomNavigation className={classes.nav} id={"navMain"}>
 						<BottomNavigationAction className={classes.NavMenuButton}  icon={<MenuIcon color="icons"/>} onClick={()=>{dispatch(openMenuDraw());}}/>
 
-					<Grid xs={12} className={classes.NavSiteTitle}>
+					<Grid container className={classes.NavSiteTitle}>
 						<Grid item xs={12}>
 							<Typography className={classes.NavSiteTitleText} variant="h6" >
 								{configs.siteTitle.toUpperCase()}

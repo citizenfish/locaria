@@ -14,6 +14,8 @@ $SQL$
             row_to_json(N.*)::JSONB || jsonb_build_object('address', name1) -'wkb_geometry' AS attributes,
             wkb_geometry
         FROM locaria_uploads.opennames N
+        --TODO pick authority if chosen previously
+        --INNER JOIN locaria_data.local_authority_boundary LAB ON LAB.attributes @> jsonb_build_object('name', 'Swindon (B)') AND ST_INTERSECTS(LAB.wkb_geometry, n.wkb_geometry)
         WHERE  local_type IN ('City','Town','Other Settlement','Village','Hamlet','Suburban Area','Named Road','Postcode');
 
         CREATE UNIQUE INDEX IF NOT EXISTS opennames_id
