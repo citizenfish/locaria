@@ -19,6 +19,7 @@ import {InView} from "react-intersection-observer";
 import Grid from "@mui/material/Grid";
 import Map from "../map";
 import {closeLayout} from "../../redux/slices/layoutSlice";
+import Button from "@mui/material/Button";
 
 
 const ViewDrawer = forwardRef((props, ref) => {
@@ -154,32 +155,53 @@ const ViewDrawer = forwardRef((props, ref) => {
 
 					</Grid>
 					<Grid item md={8}>
-						<Container sx={{m:0,p:0}}>
+						<Container sx={{m:2,p:0}}>
 							<Typography variant={"h6"}
 										align={"center"}
 							>
-								{report.viewLoader.packet.features[0].properties.description.title}
+								{report.viewLoader.packet.features[0].properties.category}&nbsp;:&nbsp;{report.viewLoader.packet.features[0].properties.description.title}
 							</Typography>
 							<Divider/>
-							<Typography variant={"subtitle1"}
-										align={"left"}
-										sx={{mt:1}}
+							<Grid container>
+								{ report.viewLoader.packet.features[0].properties.description.url &&
+								<>
+										<Grid item md={8}>
 
-							>
-								{report.viewLoader.packet.features[0].properties.description.text}
-							</Typography>
-							{
-								report.viewLoader.packet.features[0].properties.description.url &&
-									<Typography variant={"subtitle2"} align={"left"}
-												sx={{mb:1}}
-												onClick ={() => {
-													window.open(report.viewLoader.packet.features[0].properties.description.url , '_blank')
-												}}
-												className={classes.ReportFurtherInformationText}
-									>
-										Further information
-									</Typography>
-							}
+											<Typography variant={"body1"}
+														align={"left"}
+														sx={{mt:1}}
+											>
+												{report.viewLoader.packet.features[0].properties.description.text}
+											</Typography>
+										</Grid>
+										<Grid item md={4}>
+
+												<Button
+														variant = "outlined"
+														onClick ={() => {
+																window.open(report.viewLoader.packet.features[0].properties.description.url , '_blank')
+														}}
+
+												>
+													Further information
+												</Button>
+
+										</Grid>
+								</>
+								}
+								{
+									report.viewLoader.packet.features[0].properties.description.url == undefined &&
+									<Grid item md={12}>
+
+										<Typography variant={"body1"}
+													align={"left"}
+													sx={{mt:1}}
+										>
+											{report.viewLoader.packet.features[0].properties.description.text}
+										</Typography>
+									</Grid>
+								}
+							</Grid>
 						</Container>
 						<Map id={'viewMap'} className={"ReportMap"} ref={localMapRef} speedDial={false}/>
 					</Grid>
