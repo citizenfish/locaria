@@ -240,7 +240,8 @@ const Layout = ({children, map, fullscreen = false}) => {
 
 	const toggleSearchWrapper = function () {
 		if(searchDrawOpen===true) {
-			dispatch(closeSearchDrawer());
+			//dispatch(closeSearchDrawer());
+			dispatch(openLayout());
 		} else {
 			dispatch(openSearchDrawer());
 

@@ -566,13 +566,30 @@ export default class UseStyles {
 
 			searchFeatureIcon: {
 				padding: 0,
-				width: 80,
 				margin: "0 auto !important",
+				width: 55,
 				'& img': {
 					width: '100%',
-					maxWidth: 75,
-					maxHeight:75
+					maxWidth: 55,
+					maxHeight:55,
+					marginTop: 5
 				}
+			},
+
+			searchTitle: {
+				textTransform: "capitalize",
+				textOverflow: "ellipsis"
+			},
+
+			searchText: {
+				textOverflow: "ellipsis",
+				maxHeight: 40,
+				overflow: "hidden",
+/*
+				whiteSpace: "nowrap",
+*/
+				marginBottom: "5px !important"
+
 			},
 
 			searchDrawAdvancedAccordion: {
@@ -655,7 +672,10 @@ export default class UseStyles {
 			},
 
 			tagFeatureCard :{
-				backgroundColor: "theme.palette.secondary.main !important"
+				backgroundColor: "theme.palette.secondary.main !important",
+				fontSize: "0.6125rem !important",
+				height: "22px !important",
+				margin: "1px !important"
 			},
 
 			distanceSelectText: {
