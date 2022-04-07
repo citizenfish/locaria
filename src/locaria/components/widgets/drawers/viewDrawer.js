@@ -198,7 +198,9 @@ const ViewDrawer = forwardRef((props, ref) => {
                             </Grid>
                             <Grid item md={4}>
 
-                                <Button
+                                <Button justifyContent="center"
+                                        alignItems="center"
+                                        className={classes.ReportProfilePButton}
                                     variant="outlined"
                                     onClick={() => {
                                         window.open(report.viewLoader.packet.features[0].properties.description.url, '_blank')

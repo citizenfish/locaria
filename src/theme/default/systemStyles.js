@@ -93,7 +93,8 @@ export default class UseStyles {
 
 			landingMap: {
 				width: "100%",
-				height:"100%"
+				height:"100%",
+				position: "relative"
 			},
 
 
@@ -678,6 +679,15 @@ export default class UseStyles {
 				overflow:"ellipse"
 			},
 
+			categorySelectIcon : {
+				width: 35,
+				height: 35,
+				"& img": {
+					width: 35,
+					height: 35
+				}
+			},
+
 			tagSelectText :{
 				color: theme.palette.primary.darker
 			},
@@ -784,7 +794,7 @@ export default class UseStyles {
 			viewDrawScroll: {
 				overflowY: 'auto',
 				overflowX: 'hidden',
-				padding: 20
+				padding: 35
 			},
 
 			viewDrawTitle: {
@@ -846,8 +856,9 @@ export default class UseStyles {
 			},
 			ReportMap: {
 				height: "50vh",
-				width: "100%",
-				position: "relative"
+				width: "97%",
+				position: "relative",
+				margin: 10
 			},
 			ReportProfileHeader: {
 				padding: '0 !important',
@@ -891,6 +902,9 @@ export default class UseStyles {
 				fontWeight: 100,
 				padding: 0,
 				color: alpha(theme.palette.text.lighter, 1)
+			},
+			ReportProfilePButton: {
+				margin: "20px !important"
 			},
 			ReportFurtherInformationText: {
 				color: alpha(theme.palette.secondary.main, 1),

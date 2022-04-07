@@ -37,7 +37,8 @@ const CategorySelect = (props) => {
 				<FormControl sx={{ m: 1, width: 200 }}>
 					{
 						channels.listChannels().map((channel) => {
-							const chan = channels.getChannelProperties(channel)
+							const chan = channels.getChannelProperties(channel);
+							const chanIcon = channels.getChannelMapIcon(channel,chan.tags,configs.defaultMapIcon);
 							if(chan.display !== false){
 								return(
 									<MenuItem key ={chan.key} value = {chan.category}>
@@ -46,7 +47,11 @@ const CategorySelect = (props) => {
 											checked={categories.indexOf(chan.category) !== -1}
 											onChange={categoryChange}
 										/>
+										<div className={classes.categorySelectIcon}>
+											<img src={chanIcon}/>
+										</div>
 										<Typography variant="body1" className={classes.categorySelectText}>{chan.category}</Typography>
+
 									</MenuItem>
 								)
 							}

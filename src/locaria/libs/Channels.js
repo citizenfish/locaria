@@ -5,7 +5,7 @@ export default class Channels {
 	}
 
 	listChannels() {
-		return Object.keys(this.channels);
+		return Object.keys(this.channels).sort();
 	}
 
 	addChannel(channel,config) {
@@ -33,12 +33,14 @@ export default class Channels {
 		}
 	}
 
-	getChannelMapIcon(channel,tags) {
+	getChannelMapIcon(channel,tags,defaultIcon) {
 		let chan=this.getChannelProperties(channel);
 		if(chan===undefined)
 			return undefined;
 		let icon=chan.mapIcon;
-		if(tags[0]!==undefined) {
+		if(chan.mapIcon===undefined)
+			icon=defaultIcon;
+		if(tags&&tags[0]!==undefined) {
 			for(let tag in chan.tags) {
 				if(tag===tags[0]) {
 					icon=chan.tags[tag].mapIcon;

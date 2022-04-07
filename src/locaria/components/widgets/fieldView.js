@@ -117,19 +117,20 @@ const FormatField = ({field, data}) => {
 			)
 		case 'linkButton':
 			return(
-				<Grid container sx={{mt:1, mb:1}}>
+				<Grid container sx={{mt:1, mb:1}} justifyContent="center"
+					  alignItems="center">
 					<Grid item md={4}>
 						<Typography className={classes.ReportProfilePTitle}>{field.name}:</Typography>
 					</Grid>
-					<Grid item md = {8}>
-						<Button
-						variant={"outlined"}
-						onClick={() => {
-							window.open(dataActual, '_blank')
-						}}
-					>
+					<Grid item md = {8} >
+						<Button className={classes.ReportProfilePButton}
+							variant={"outlined"}
+							onClick={() => {
+								window.open(dataActual, '_blank')
+							}}
+						>
 						{field.buttonName}
-					</Button>
+						</Button>
 					</Grid>
 				</Grid>
 
