@@ -321,13 +321,23 @@ export default class UseStyles {
 			/* Dialogues */
 			dialog: {
 				"& .MuiPaper-root": {
-					backgroundColor: theme.palette.primary.main,
-					color: alpha(theme.palette.text.primary, 1)
+					backgroundColor: alpha(theme.palette.primary.contrast,0.9),
+					color: alpha(theme.palette.text.lighter, 1)
 				}
 			},
 
 			dialogInput: {
-				backgroundColor: theme.palette.primary.lighter
+				backgroundColor: theme.palette.primary.clear,
+				"& input":{
+					color: `${theme.palette.text.lighter} !important`
+				}
+
+			},
+
+			dialogShareIcon: {
+				"& :hover": {
+					color: `${theme.palette.primary.darker} !important`
+				}
 			},
 
 			/*
@@ -360,7 +370,7 @@ export default class UseStyles {
 					//borderTopRightRadius: '20px',
 					color: theme.palette.icons.main,
 					//backgroundColor: theme.palette.primary.main,
-					backgroundColor: theme.palette.primary.trans,
+					backgroundColor: alpha(theme.palette.primary.contrast,0.75),
 					[theme.breakpoints.up('md')]: {
 						left: 0,
 						top: 65,
@@ -385,7 +395,6 @@ export default class UseStyles {
 				display: 'flex',
 				flexDirection: 'row',
 				alignItems: 'center',
-				//backgroundColor: theme.palette.primary.trans
 				backgroundColor: theme.palette.primary.darker
 			},
 
@@ -594,7 +603,7 @@ export default class UseStyles {
 			},
 
 			searchDrawAdvancedAccordion: {
-				backgroundColor: `${theme.palette.primary.trans} !important`,
+				backgroundColor: `${alpha(theme.palette.primary.contrast,0.75)} !important`,
 				color: `${theme.palette.text.primary} !important`,
 				overflowY: 'auto',
 				overflowX: 'hidden'
