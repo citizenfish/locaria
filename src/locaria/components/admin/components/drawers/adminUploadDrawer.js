@@ -24,7 +24,7 @@ import {setTitle} from "../../redux/slices/adminSlice";
 let fileDetailsData = {}
 
 //How often we poll for file updates,default is 30 seconds
-let defaultRefreshInterval = 10000
+let defaultRefreshInterval = 5000
 
 export default function AdminUploadDrawer(props) {
 

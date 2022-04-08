@@ -146,7 +146,7 @@ def ogr_loader(file, parameters):
     # TODO ogr2ogr version check we must have gdal > 3.4
     # Important to dereference parameters as called multiple times
     ogr_parameters = parameters.copy()
-    print(parameters)
+    #print(parameters)
     if not 'table_name' in file:
         return {'status' : 'ERROR', 'result' : 'Missing table_name definition for ogr_loader'}
 
@@ -170,7 +170,7 @@ def ogr_loader(file, parameters):
         command.extend(file['attributes']['layer'])
 
     print(f"**********Running ogr2ogr on {filename} with table {file['table_name']}************")
-    print(' '.join(command))
+    #print(' '.join(command))
 
     try:
         result = subprocess.run(command,check=True, capture_output=True)

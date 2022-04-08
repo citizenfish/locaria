@@ -150,7 +150,7 @@ export default class UseStyles {
 
 			footer: {
 				width: "100%",
-				padding: 20,
+				padding: 0,
 				backgroundColor: theme.palette.primary.darker,
 				fontColor: theme.palette.text.primary,
 				display: "flex",
@@ -160,11 +160,11 @@ export default class UseStyles {
 			},
 
 			footerLogo: {
-				width: 100,
+				width: 170,
 				height: 100,
 				display: "inline-block",
 				backgroundSize: "contain",
-				marginBottom: 5
+				margin: 5
 			},
 
 			footerLi: {
@@ -672,7 +672,7 @@ export default class UseStyles {
 				zIndex: 1,
 				bottom: 5,
 				right: 5,
-				background: "rgba(0,0,0,0.2)",
+				background: "rgba(255,255,255,0.9)",
 				padding: 2,
 				fontSize: "0.7rem",
 				color: "black"
