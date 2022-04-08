@@ -47,7 +47,7 @@ for f in files_to_process["files"]:
 
     # Custom loaders pull their data directly from API calls and do not need files in S3
     if 'custom_loader' in f['attributes']:
-
+        update_file_status(db,schema,f['id'],{'status': f['attributes']['custom_loader'].upper()})
         f['schema'] = upload_schema
         # We need a temporary directory and filename to download to
         f["attributes"]["tmp_dir"] = tempfile.gettempdir()
@@ -59,7 +59,7 @@ for f in files_to_process["files"]:
         custom_loader_result = custom_loader_main(db,f)
         status = custom_loader_result.get('status', '')
         if status in ('ERROR', 'CANCELLED', 'REGISTERED'):
-            update_file_status(db,schema,f['id'],{'status': status, 'log_message' : {'custom_loader_error' : custom_loader_result}})
+            update_file_status(db,schema,f['id'],{'status': status, 'message' : custom_loader_result['message']})
             continue
 
         f.update(custom_loader_result)
@@ -69,7 +69,7 @@ for f in files_to_process["files"]:
     else:
         # We are now expecting file to be in S3 so must have a bucket
         if not 'bucket' in f['attributes']:
-            update_file_status(db,schema,f['id'],{'status': 'FARGATE_ERROR', 'log_message' : {'error' : 'Missing file bucket'}})
+            update_file_status(db,schema,f['id'],{'status': 'FARGATE_ERROR', 'message' : 'Missing file bucket'})
             continue
 
         # When loading from web client the record is created and then file uploaded, file has filename "id"
