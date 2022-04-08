@@ -747,7 +747,9 @@ export default class UseStyles {
 			},
 			mapView: {
 				width: '100%',
-				height: '100%'
+				height: '100%',
+				position: "relative"
+
 			},
 			mediaMap: {
 				height: '50vh',
@@ -884,6 +886,8 @@ export default class UseStyles {
 				overflowX: 'auto',
 				display: 'flex',
 				flexDirection: 'row',
+				margin: "auto",
+				width: "400px"
 			},
 			ReportProfileImage: {
 				maxWidth: '330px',
