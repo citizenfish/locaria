@@ -160,8 +160,8 @@ export default class UseStyles {
 			},
 
 			footerLogo: {
-				width: 80,
-				height: 80,
+				width: 100,
+				height: 100,
 				display: "inline-block",
 				backgroundSize: "contain",
 				marginBottom: 5
