@@ -89,7 +89,7 @@ const FormatField = ({field, data}) => {
 			)
 		case 'pLabel':
 			return (
-				<Grid container md={12} sx={{mt:1, mb:1}}>
+				<Grid container sx={{mt:1, mb:1}}>
 					<Grid item md={4}>
 						<Typography className={classes.ReportProfilePTitle}>{field.name}:</Typography>
 					</Grid>
@@ -101,7 +101,7 @@ const FormatField = ({field, data}) => {
 			)
 		case 'tags':
 			return (
-				<Grid container md={12} sx={{mt:1, mb:1}}>
+				<Grid container sx={{mt:1, mb:1}}>
 					<Grid item md={4}>
 						<Typography className={classes.ReportProfilePTitle}>Tags</Typography>
 					</Grid>
@@ -110,7 +110,8 @@ const FormatField = ({field, data}) => {
 							tags={dataActual}
 							mode={"view"}
 							category={field.category}
-							tagClass={'tagFeatureCard'}
+							className={'tagFeatureCard'}
+
 						/>
 					</Grid>
 				</Grid>
