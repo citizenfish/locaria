@@ -72,7 +72,7 @@ const Tags = forwardRef((props, ref) => {
 		for (let tag in tagList) {
 			if(selectedTags.indexOf(tagList[tag])===-1) {
 				tagsArray.push(
-					<Chip sx={{bgcolor: "secondary.main"}} className={classes[classIndex]} key={`tag-${tagList[tag]}`} label={tagList[tag].substring(0,limit)}
+					<Chip sx={{bgcolor: "selection.lighter"}} className={classes[classIndex]} key={`tag-${tagList[tag]}`} label={tagList[tag].substring(0,limit)}
 					      deleteIcon={<AddOutlinedIcon className={classes.chipIcon}/>}
 					      onDelete={() => {
 						      setSelectedTags([...selectedTags,...[tagList[tag]]]);
