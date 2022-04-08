@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
 import {useCookies} from "react-cookie";
+import Checkbox from "@mui/material/Checkbox";
 
 
 export default function AdminEventsLoader(props) {
@@ -11,7 +12,8 @@ export default function AdminEventsLoader(props) {
     const [authorities,setAuthorities] = useState(null)
     const [chosenAuthority,setChosenAuthority] = useState({id:0})
     const [cookies, setCookies] = useCookies(['location'])
-
+    const [recency,setRecency] = useState(60)
+    const [autoUpdate,setAutoUpdate] = useState('')
 
     useEffect(() =>{
 
@@ -63,6 +65,12 @@ export default function AdminEventsLoader(props) {
     }
 
 
+    const handleRecencyChosen = (e) => {
+        setRecency(e.target.value)
+    }
+    const handleAutoUpdateChosen = (e) => {
+        setAutoUpdate(e.target.checked)
+    }
 
     const loadEventsData = (e) => {
         window.websocket.send({
@@ -121,6 +129,29 @@ export default function AdminEventsLoader(props) {
                     {authoritiesList(authorities)}
 
                 </Select>
+                {chosenAuthority.id !== 0 && <>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recency (Days):&nbsp;
+                    <Select
+                        id="recencySelect"
+                        value={recency}
+                        label={"Recency (Days)"}
+                        onChange={handleRecencyChosen}
+                    >
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={20}>20</MenuItem>
+                        <MenuItem value={30}>30</MenuItem>
+                        <MenuItem value={50}>50</MenuItem>
+                        <MenuItem value={60}>60</MenuItem>
+                    </Select>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auto Update:&nbsp;
+                    <Checkbox
+                        id="autoUpdate"
+                        onChange={handleAutoUpdateChosen}
+                    >
+
+                    </Checkbox>
+                </>}
             </>
             }
 

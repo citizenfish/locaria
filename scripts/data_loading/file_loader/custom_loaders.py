@@ -326,8 +326,10 @@ def planning_loader(db,file):
 
         req_data = req.json()
 
+        print(req_data['total'])
 
-        if req_data['total'].isnumeric() and int(req_data['total']) > 0:
+
+        if str(req_data['total']).isnumeric() and int(req_data['total']) > 0:
             data.extend(req.json()['records'])
             to = int(req_data['to'])
             total = int(req_data['total'])
