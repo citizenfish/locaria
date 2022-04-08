@@ -9,7 +9,8 @@ export const searchDrawerSlice = createSlice({
 		locationShow: false,
 		distance: 0,
 		tags: [],
-		resolutionUpdate: false
+		resolutionUpdate: false,
+		tagList: []
 	},
 	reducers: {
 		openSearchDrawer: (state, action) => {
@@ -74,6 +75,9 @@ export const searchDrawerSlice = createSlice({
 		addTag: (state,action) => {
 			if(state.tags.indexOf(action.payload) === -1)
 				state.tags.push(action.payload);
+		},
+		setTagList: (state,action) => {
+			state.tagList=action.payload;
 		}
 	},
 })
@@ -91,7 +95,8 @@ export const {
 	setTags,
 	deleteTag,
 	addTag,
-	resetTags
+	resetTags,
+	setTagList
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer

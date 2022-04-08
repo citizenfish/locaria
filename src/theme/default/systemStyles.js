@@ -336,7 +336,8 @@ export default class UseStyles {
 
 			dialogShareIcon: {
 				"& :hover": {
-					color: `${theme.palette.primary.darker} !important`
+					color: `${theme.palette.primary.darker} !important`,
+					cursor: "pointer"
 				}
 			},
 
@@ -864,15 +865,19 @@ export default class UseStyles {
 				}
 			},
 			ReportMap: {
-				height: "50vh",
+				height: "700px",
 				width: "97%",
-				position: "relative",
 				margin: 10
+			},
+			ReportMapContainer: {
+				position: "relative",
+				margin: "0 auto",
+				height: "100%",
+				width: "100%"
 			},
 			ReportProfileHeader: {
 				padding: '0 !important',
 				marginBottom: '10px',
-				overflow: 'hidden'
 			},
 			ReportProfileImageContainer: {
 				borderRadius: '10px',

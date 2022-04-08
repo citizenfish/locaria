@@ -32,6 +32,7 @@ const ViewDrawer = forwardRef((props, ref) => {
     const category = useSelector((state) => state.viewDraw.category);
     const more = useSelector((state) => state.viewDraw.more);
     const position = useSelector((state) => state.viewDraw.position);
+    const homeLocation = useSelector((state) => state.layout.homeLocation);
 
     const classes = useStyles();
 
@@ -54,6 +55,8 @@ const ViewDrawer = forwardRef((props, ref) => {
                 dispatch(closeLayout());
                 dispatch(closeSearchDrawer());
                 dispatch(closeMultiSelect());
+                if (homeLocation !== false && homeLocation !== undefined && configs.location !== false)
+                    localMapRef.current.markHome(homeLocation.location);
                 if (fid !== false) {
                     let featureLoader = {
                         "queue": "viewLoader",
@@ -85,8 +88,11 @@ const ViewDrawer = forwardRef((props, ref) => {
         }
     }, [open, fid]);
 
-
     React.useEffect(() => {
+        actualMapRef.current.reset();
+    },[report]);
+
+        React.useEffect(() => {
 
         window.websocket.registerQueue("bulkLoader", function (json) {
 
@@ -177,7 +183,7 @@ const ViewDrawer = forwardRef((props, ref) => {
         if (report === null || !report.viewLoader)
             return (<LinearProgress/>);
         return (
-            <Container sx={{m: 2, p: 0}}>
+            <>
                 <Typography variant={"h6"}
                             align={"center"}
                 >
@@ -226,7 +232,7 @@ const ViewDrawer = forwardRef((props, ref) => {
                         </Grid>
                     }
                 </Grid>
-            </Container>
+            </>
         )
     }
 
@@ -301,8 +307,10 @@ const ViewDrawer = forwardRef((props, ref) => {
                         <RenderLeftPannel/>
                     </Grid>
                     <Grid item md={8}>
-                        <RenderRightPannel/>
-                        <Map id={'viewMap'} className={"ReportMap"} ref={localMapRef} speedDial={false}/>
+                        <div className={classes.ReportMapContainer}>
+                            <RenderRightPannel/>
+                            <Map id={'viewMap'} style={"reportStyle"} className={"ReportMap"} ref={localMapRef} speedDial={false}/>
+                        </div>
                     </Grid>
                 </Grid>
                 <ReportResults/>

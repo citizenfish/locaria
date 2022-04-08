@@ -4,7 +4,7 @@ import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import Button from "@mui/material/Button";
-import {viewStyle, locationStyle} from "mapStyle";
+import {viewStyle, locationStyle,reportStyle} from "mapStyle";
 import Openlayers from "libs/Openlayers";
 import {SpeedDial, SpeedDialAction} from "@mui/material";
 import MapIcon from '@mui/icons-material/Map';
@@ -18,6 +18,14 @@ const Map = forwardRef((props, ref) => {
 	const classes = useStyles();
 	const [ol, setOl] = React.useState(new Openlayers());
 	const [location, setLocation] = React.useState(null);
+
+	const styles={
+		viewStyle:viewStyle,
+		locationStyle:locationStyle,
+		reportStyle:reportStyle
+	}
+
+	const style=props.style? styles[props.style]:styles['viewStyle'];
 
 	React.useEffect(() => {
 		ol.addMap({
@@ -45,7 +53,7 @@ const Map = forwardRef((props, ref) => {
 			"name": "data",
 			"type": "vector",
 			"active": true,
-			"style": function(feature,resolution) { return viewStyle(feature,resolution,ol);}
+			"style": function(feature,resolution) { return style(feature,resolution,ol);}
 		});
 		ol.addLayer({
 			"name": "home",
@@ -103,6 +111,9 @@ const Map = forwardRef((props, ref) => {
 			setSelected(map,layer,fids) {
 				ol.setSelected(map,layer,fids);
 			},
+			reset() {
+				ol.updateSize();
+			},
 			addGeojson(json, layer = "data", clear = true) {
 				ol.addGeojson({"layer": layer, "geojson": json, "clear": clear});
 			},
@@ -133,7 +144,6 @@ const Map = forwardRef((props, ref) => {
 	const mapReset = () => {
 		ol.updateSize();
 		ol.flyTo({"coordinate": location, "projection": "EPSG:4326", "zoom": configs.defaultZoom});
-
 	}
 
 	const mapZoomIn = () => {

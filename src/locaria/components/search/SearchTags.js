@@ -6,24 +6,25 @@ import AddIcon from '@mui/icons-material/Add';
 
 import {
 	setTags,
-	addTag
+	addTag, setTagList
 } from "../redux/slices/searchDrawerSlice";
 import Chip from "@mui/material/Chip";
 
 const SearchTags = ({category, changeFunction, currentValue}) => {
 	const classes = useStyles();
-	const [tagList, setTagList] = React.useState([]);
-	const [selectedTags, setSelectTags] = React.useState([]);
+	//const [tagList, setTagList] = React.useState([]);
 
 	const categories = useSelector((state) => state.searchDraw.categories);
 	const tags = useSelector((state) => state.searchDraw.tags);
+	const tagList = useSelector((state) => state.searchDraw.tagList);
 
 	const dispatch = useDispatch()
 
 	React.useEffect(() => {
 
 		window.websocket.registerQueue("tagsLoader", function (json) {
-			setTagList(json.packet.tags);
+			//setTagList(json.packet.tags);
+			dispatch(setTagList(json.packet.tags));
 		});
 
 		if (tags.length === 0&&categories[0]) {
