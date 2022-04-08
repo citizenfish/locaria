@@ -72,22 +72,23 @@ const Share = () => {
 								</FormControl>
 							</Grid>
 							<Grid item md={2}>
-								<AssignmentIcon color="secondary" fontSize="large" onClick={() => {
-									navigator.clipboard.writeText(window.location.href)
+								<AssignmentIcon className={classes.dialogShareIcon} color="secondary" fontSize="large" onClick={() => {
+									navigator.clipboard.writeText(window.location.href);
+									handleClose();
 								}}></AssignmentIcon>
 							</Grid>
 							<Grid item md={2}>
-								<TwitterIcon color="secondary" fontSize="large" onClick={() => {
+								<TwitterIcon  className={classes.dialogShareIcon} color="secondary" fontSize="large" onClick={() => {
 									window.location = `https://twitter.com/intent/tweet?text=${window.location.href}`
 								}}></TwitterIcon>
 							</Grid>
 							<Grid item md={2}>
-								<FacebookIcon color="secondary" fontSize="large" onClick={() => {
+								<FacebookIcon  className={classes.dialogShareIcon} color="secondary" fontSize="large" onClick={() => {
 									window.location = `http://www.facebook.com/share.php?u=${window.location.href}`
 								}}></FacebookIcon>
 							</Grid>
 							<Grid item md={2}>
-								<LinkedInIcon color="secondary" fontSize="large" onClick={() => {
+								<LinkedInIcon  className={classes.dialogShareIcon} color="secondary" fontSize="large" onClick={() => {
 									window.location = `https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`
 								}}></LinkedInIcon>
 							</Grid>
