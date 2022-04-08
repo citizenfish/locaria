@@ -527,6 +527,9 @@ export default class UseStyles {
 				borderRadius: "0px !important",
 				//padding: "0px ! important",
 				//margin: "0px !important"
+				"& :hover": {
+					backgroundColor: `${theme.palette.primary.contrast} !important`,
+				}
 			},
 
 			SearchDrawMore: {
@@ -757,7 +760,8 @@ export default class UseStyles {
 			},
 			editMapView: {
 				width: '100%',
-				height: "40vh"
+				height: "40vh",
+				position: "relative"
 			},
 
 			/*

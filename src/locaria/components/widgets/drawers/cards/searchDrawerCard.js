@@ -78,11 +78,14 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 			if (channel === undefined)
 				return <></>
 			return (
-				<Paper elevation={0}  className={classes.SearchDrawerFeatureWrapper}>
+				<Paper elevation={0}  className={classes.SearchDrawerFeatureWrapper}
+				   onMouseOver={(e) => { mapOver(e);}}
+				   onMouseOut={(e) => { mapOut(e);}}
+					   data-fid={properties.fid}
+				>
 					<div className={classes.SearchLocationContent}
 						 onClick={(e) => {
 							 mapRef.current.centerOnCoordinate(geometry.coordinates, undefined, "EPSG:4326")
-							 //mapOver(e)
 						 }}
 					>
 						<Grid container>
