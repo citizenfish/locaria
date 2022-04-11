@@ -1,5 +1,5 @@
 /** @module Websockets */
-import wspClient from '@nautoguide/aws-wsp/wsp-client';
+import wspClient from '../libs/wsp-client';
 
 /**
  * @classdesc

@@ -13,7 +13,7 @@ const Footer = () => {
 	return (
 		<div className={classes.footer}>
 			<div className={classes.footerLogo} style={{backgroundImage: `url(${configs.siteFooter})`}}></div>
-			{/*<ul>
+			<ul>
 				{pages.listPages().map(function (page) {
 					return (
 						<li className={classes.footerLi} onClick={()=>{
@@ -27,7 +27,7 @@ const Footer = () => {
 						</li>
 					)
 				})}
-			</ul>*/}
+			</ul>
 			<p className={classes.footerBy}>Powered by <a href={"https://github.com/nautoguide/locaria"}>Locaria</a></p>
 		</div>
 	)

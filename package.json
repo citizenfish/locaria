@@ -16,7 +16,6 @@
 		"@babel/preset-env": "^7.14.8",
 		"@babel/preset-react": "^7.14.5",
 		"@mui/x-data-grid": "^5.4.0",
-		"@nautoguide/aws-wsp": "^1.1.0",
 		"@nautoguide/grunt-pgsql": "^0.1.4",
 		"@turf/turf": "^5.1.6",
 		"aws-sdk": "^2.959.0",

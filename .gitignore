@@ -104,6 +104,6 @@ typings/
 .idea
 src/theme/builder
 src/theme/nmrn
-api/stack.json
+src/deprecated/api/stack.json
 serverless/build
 serverless/outputs

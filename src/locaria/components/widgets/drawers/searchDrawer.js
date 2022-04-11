@@ -120,8 +120,10 @@ const SearchDrawer = forwardRef((props, ref) => {
 		useEffect(() => {
 
 			window.websocket.registerQueue("searchBulk", function (json) {
-				setMoreResults(json.searchLoader.packet.features.length === configs.searchLimit);
-				const newResults = searchResults.concat(json.searchLoader.packet.features);
+				console.log(json.searchLoader);
+
+				setMoreResults(json.searchLoader.packet.geojson.features.length === configs.searchLimit);
+				const newResults = searchResults.concat(json.searchLoader.packet.geojson.features);
 				setSearchResults(newResults);
 				//console.log(json.locationLoader);
 				if (json.locationLoader.packet.features) {
@@ -185,7 +187,8 @@ const SearchDrawer = forwardRef((props, ref) => {
 					"category": categories.length > 0 ? categories : configs.homeCategorySearch,
 					"search_text": search,
 					"limit": configs.searchLimit,
-					"offset": offset
+					"offset": offset,
+					"mask":{"fid":true,"category":true,"tags":true,"description":{"title":true,"text":true}}
 				}
 			};
 
