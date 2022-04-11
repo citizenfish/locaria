@@ -13,12 +13,11 @@ export function locationStyle(feature, resolution) {
 				image: new Icon({
 					src: markerHome,
 					size: [40, 70],
-					zIndex: 100000000,
 					anchorOrigin: 'top-left',
 					anchor: [0.5, 0.5],
 					anchorXUnits: 'fraction',
 					anchorYUnits: 'fraction',
-
+					scale: 0.75
 
 				}),
 				text: new Text({
@@ -53,18 +52,145 @@ export function locationStyle(feature, resolution) {
 			})
 		})
 	]
-	
-	
+
+
 
 }
 
-export function viewStyle(feature, resolution) {
-	// Clustering? Lets revise to one feature
-	feature = (feature.get('features') !== undefined ? feature.get('features')[0] : feature);
+const linkedFeatureStyle = () => {
+	return  new Style({
+		zIndex: 50,
+		image: new Circle({
 
+			radius: 5,
+			stroke: new Stroke({
+				color: "rgba(0,0,0,0.75)",
+				width: 1,
+			}),
+			fill: new Fill({
+				color: "rgba(255,0,0,0.5)"
+			})
+		})
+	})
+}
 
+const defaultFeatureStyle = (feature,resolution,ol) => {
 	let category = feature.get('category');
 	let tags = feature.get('tags');
+	let description = feature.get('description');
+	let icon = channels.getChannelMapIcon(category, tags);
+	if (icon === undefined)
+		icon = configs.defaultMapIcon;
+	const geometry = feature.getGeometry();
+	if (geometry.getType() === 'Point') {
+		let label = category;
+		if (tags && tags[0])
+			label = tags[0];
+		if(description&&description.title)
+			label=description.title;
+		if(ol.isHighlighted("default",feature.get('fid'))) {
+			return [
+				new Style({
+					zIndex: 1000,
+					image: new Icon({
+						src: icon,
+						size: [40, 70],
+						scale: 0.5,
+						anchorOrigin: 'top-left',
+						anchor: [0.5, 0.5],
+						anchorXUnits: 'fraction',
+						anchorYUnits: 'fraction',
+					})
+				}),
+				new Style({
+					zIndex: 999,
+					image: new Circle({
+
+						radius: 20,
+						stroke: new Stroke({
+							color: "rgba(0,0,0,0.75)",
+							width: 1,
+						}),
+						fill: new Fill({
+							color: "rgba(255,0,0,0.5)"
+						})
+					})
+				})
+			]
+		}
+
+		if(resolution<10) {
+			return [
+				new Style({
+					zIndex: 100,
+					image: new Icon({
+						src: icon,
+						size: [40, 70],
+						scale: 0.5,
+						anchorOrigin: 'top-left',
+						anchor: [0.5, 0.5],
+						anchorXUnits: 'fraction',
+						anchorYUnits: 'fraction',
+					}),
+					text: new Text({
+						text: label,
+						font: 'bold 11px "Soleil"',
+						textBaseline: 'bottom',
+						offsetY: 30,
+						fill: new Fill({
+							color: '#000000'
+						}),
+						stroke: new Stroke({
+							color: '#FFFFFF',
+							width: 3.5
+						})
+					})
+				})
+			]
+		} else {
+			return [
+				new Style({
+					zIndex: 100,
+					image: new Icon({
+						src: icon,
+						size: [40, 70],
+						scale: 0.5,
+						anchorOrigin: 'top-left',
+						anchor: [0.5, 0.5],
+						anchorXUnits: 'fraction',
+						anchorYUnits: 'fraction',
+					})
+				})
+			]
+		}
+	} else {
+		let fill = [255, 0, 0, 0.3];
+		return [
+			new Style({
+				stroke: new Stroke({
+					color: [22, 22, 22, 1],
+					width: 1
+				}),
+				fill: new Fill({
+					color: fill,
+					width: 1
+				})
+			})
+		]
+	}
+}
+
+export function reportStyle(feature,resolution,ol) {
+	const featureType=feature.get('featureType');
+	if(featureType==='linked_item') {
+		return linkedFeatureStyle();
+	}
+	return defaultFeatureStyle(feature,resolution,ol);
+}
+
+export function viewStyle(feature, resolution,ol) {
+	// Clustering? Lets revise to one feature
+	feature = (feature.get('features') !== undefined ? feature.get('features')[0] : feature);
 
 	let cluster = feature.get('geometry_type');
 	if (cluster === "cluster") {
@@ -98,59 +224,7 @@ export function viewStyle(feature, resolution) {
 		return style;
 	}
 
-	
+	return defaultFeatureStyle(feature,resolution,ol);
 
-	let channel = channels.getChannelProperties(category);
-
-
-	let icon = channels.getChannelMapIcon(category, tags);
-	if (icon === undefined)
-		icon = configs.defaultMapIcon;
-	const geometry = feature.getGeometry();
-	if (geometry.getType() === 'Point') {
-		let label = category;
-		if (tags && tags[0])
-			label = tags[0];
-		return [
-			new Style({
-				image: new Icon({
-					src: icon,
-					size: [40, 70],
-					zIndex: 100,
-					anchorOrigin: 'top-left',
-					anchor: [0.5, 0.5],
-					anchorXUnits: 'fraction',
-					anchorYUnits: 'fraction',
-				}),
-				text: new Text({
-					text: label,
-					font: 'bold 11px "Soleil"',
-					textBaseline: 'bottom',
-					offsetY: 15,
-					fill: new Fill({
-						color: '#000000'
-					}),
-					stroke: new Stroke({
-						color: '#FFFFFF',
-						width: 3.5
-					})
-				})
-			})
-		]
-	} else {
-		let fill = [255, 0, 0, 0.3];
-		return [
-			new Style({
-				stroke: new Stroke({
-					color: [22, 22, 22, 1],
-					width: 1
-				}),
-				fill: new Fill({
-					color: fill,
-					width: 1
-				})
-			})
-		]
-	}
 
 }

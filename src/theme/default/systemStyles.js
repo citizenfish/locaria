@@ -870,6 +870,22 @@ export default class UseStyles {
 					paddingBottom: '20px'
 				}
 			},
+			mapZoomInButton: {
+				position: "absolute !important",
+				bottom: "50px !important",
+				right: "20px !important",
+				zIndex:1,
+				backgroundColor:  alpha(theme.palette.primary.darker, 0.6)+" !important",
+				color:  theme.palette.text.darker+" !important",
+
+			},
+			mapZoomOutButton: {
+				position: "absolute !important",
+				bottom: "100px !important",
+				right: "20px !important",
+				zIndex:1,
+				backgroundColor:  alpha(theme.palette.primary.darker, 0.6)+" !important",
+			},
 			ReportMap: {
 				height: "700px",
 				width: "97%",

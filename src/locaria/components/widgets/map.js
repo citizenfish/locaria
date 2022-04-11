@@ -9,9 +9,10 @@ import Openlayers from "libs/Openlayers";
 import {SpeedDial, SpeedDialAction} from "@mui/material";
 import MapIcon from '@mui/icons-material/Map';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import InfoIcon from '@mui/icons-material/Info';
+import Chip from "@mui/material/Chip";
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 const Map = forwardRef((props, ref) => {
 
@@ -157,6 +158,14 @@ const Map = forwardRef((props, ref) => {
 	const MapSpeedDial = () => {
 		if(props.speedDial===false)
 			return <></>;
+
+
+		return (
+			<>
+				<Chip color={"primary"} icon={<ZoomInIcon/>}  onClick={mapZoomIn} className={classes.mapZoomInButton}/>
+				<Chip color={"primary"} icon={<ZoomOutIcon/>} onClick={mapZoomOut} className={classes.mapZoomOutButton}/>
+			</>
+		)
 
 		return (
 		<SpeedDial
