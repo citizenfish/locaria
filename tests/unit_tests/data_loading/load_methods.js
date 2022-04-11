@@ -1,8 +1,8 @@
 const fs = require('fs')
 
 
-const Database = require("../../../api/functions/database.js");
-const {get_files,add_file,update_file,delete_file} =  require('../../../api/functions/data_loader/load_methods.js');
+const Database = require("../../../src/deprecated/api/functions/database.js");
+const {get_files,add_file,update_file,delete_file} =  require('../../../src/deprecated/api/functions/data_loader/load_methods.js');
 
 //Read database config
 
