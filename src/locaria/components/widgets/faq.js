@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {Accordion, AccordionDetails, AccordionSummary, Typography} from "@mui/material";
 
 import {configs} from 'themeLocaria';
-import {useStyles} from "stylesLocaria";
+//import {useStyles} from "stylesLocaria";
 
 const FAQ = (props) => {
 

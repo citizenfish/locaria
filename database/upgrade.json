@@ -9,7 +9,9 @@
     "database/functions/search/search_get_records.sql",
     "database/functions/locaria_internal_gateway.sql",
     "database/functions/internal/admin/set_parameters.sql",
-    "database/functions/internal/admin/get_parameters.sql"
+    "database/functions/internal/admin/get_parameters.sql",
+    "database/functions/messages/add_message.sql",
+    "database/functions/locaria_gateway.sql"
   ],
   "substitutions": "../tests.json"
 }
