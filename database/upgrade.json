@@ -5,7 +5,10 @@
     "database/functions/view_creation/create_typeahead_search_view.sql",
     "database/functions/search/typeahead_search.sql",
     "database/functions/search/search.sql",
-    "database/functions/search/search_get_records.sql"
+    "database/functions/search/search_get_records.sql",
+    "database/functions/locaria_internal_gateway.sql",
+    "database/functions/internal/admin/set_parameters.sql",
+    "database/functions/internal/admin/get_parameters.sql"
   ],
   "substitutions": "../tests.json"
 }

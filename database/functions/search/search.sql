@@ -3,13 +3,15 @@ CREATE OR REPLACE FUNCTION locaria_core.search(search_parameters JSONB) RETURNS 
 DECLARE
 
     results_var JSONB;
-
+    precision_var FLOAT DEFAULT 0.00001;
 BEGIN
 
 
     IF COALESCE(search_parameters->>'typeahead', '') = 'true' THEN
         RETURN locaria_core.typeahead_search(search_parameters);
     END IF;
+
+    precision_var = COALESCE((search_parameters->>'precision')::FLOAT, precision_var);
 
     WITH CLUSTER_RESULTS AS (
 
@@ -46,13 +48,19 @@ BEGIN
                                     )
            ELSE
 
-                jsonb_build_object('type','FeatureCollection',
-                             'features', COALESCE(jsonb_agg(
-                                            json_build_object('type',        'Feature',
-                                                              'properties',  _attributes || jsonb_build_object('rank', _search_rank) - 'c',
-                                                              'geometry',    ST_ASGEOJSON(_wkb_geometry)::JSON)
-                                            ), jsonb_build_array())
-                            )
+               jsonb_build_object(
+                       'geojson', jsonb_build_object('type', 'FeatureCollection',
+                                          'features', COALESCE(JSONB_AGG(
+                                                                       jsonb_build_object('type', 'Feature',
+                                                                                         'properties', _attributes ||
+                                                                                                       JSONB_BUILD_OBJECT('rank', _search_rank) - 'c',
+                                                                                         'geometry',
+                                                                                         ST_ASGEOJSON(ST_ReducePrecision(_wkb_geometry,precision_var))::JSON)
+                                                                   ), jsonb_build_array())
+                           ),
+                        --TODO better solution then array agg and picking first entry
+                        'options', jsonb_build_object('count', json_agg(_attributes->>'c')->0)
+                   )
            END
 
     INTO results_var
@@ -62,7 +70,6 @@ BEGIN
             UNION ALL
             SELECT * FROM SEARCH_RESULTS
          ) ALL_RESULTS;
-
 
     RETURN results_var;
 END;

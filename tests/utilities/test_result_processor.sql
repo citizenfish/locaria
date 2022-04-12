@@ -25,7 +25,7 @@ BEGIN
         RAISE EXCEPTION '[%] FAILED VALUE - EXPECTING % RECEIVED % [%]',test_name, test_value,ret_value ,ret_var;
     END IF;
 
-    IF ret_value IS NULL OR (NOT (ret_value_jsonb ? (test_value::JSONB->>0)::TEXT) AND test_value != '*' AND test_value ~ '^\[') THEN
+    IF ret_value IS NULL OR (test_value ~ '^\[' AND NOT ( ret_value_jsonb ? (test_value::JSONB->>0)::TEXT) AND test_value != '*') THEN
         RAISE EXCEPTION '[%] FAILED ARRAY - EXPECTING % RECEIVED %',test_name, test_value, ret_value_jsonb;
     END IF;
 

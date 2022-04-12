@@ -74,6 +74,9 @@ BEGIN
         WHEN parameters->>'method' IN ('get_parameters') THEN
             ret_var = get_parameters(parameters);
 
+        WHEN parameters->>'method' IN ('set_parameters') THEN
+            ret_var = set_parameters(parameters);
+
         ELSE
             RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');
         END CASE;
