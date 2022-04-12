@@ -487,6 +487,19 @@ export default class UseStyles {
 				marginBottom: '5px !important'
 			},
 
+			SearchDrawPage: {
+				color:  theme.palette.text.lighter,
+				backgroundColor:  `${theme.palette.primary.clear} !important`,
+				padding: 10,
+				marginBottom: 10,
+				"& button": {
+					color:  theme.palette.text.lighter
+				},
+				"& div": {
+					color:  theme.palette.text.lighter
+				}
+			},
+
 			SearchDrawerResultText: {
 				color: alpha(theme.palette.text.lighter, 0.9),
 				fontSize: '0.8rem !important',

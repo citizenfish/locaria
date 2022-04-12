@@ -428,7 +428,7 @@ module.exports.run = (event, context, callback) => {
                 }
                 if (typeof ptr[p] === 'object' && !Array.isArray(ptr[p]) && ptr[p] !== null) {
                     savePtr[payload.packet.options.compress.properties[p]] = {};
-                    recurseProperties(payload, ptr[p], savePtr[payload.packet.options.compress.properties[p]], mask[p]);
+                    recurseProperties(payload, ptr[p], savePtr[payload.packet.options.compress.properties[p]], mask&&mask[p]? mask[p]:undefined);
                 } else {
                     savePtr[payload.packet.options.compress.properties[p]] = JSON.parse(JSON.stringify(ptr[p]));
                 }
