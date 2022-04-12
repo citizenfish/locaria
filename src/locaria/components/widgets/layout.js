@@ -123,8 +123,8 @@ const Layout = ({children, map, fullscreen = false}) => {
         window.websocket.registerQueue("homeLoader", function (json) {
             if (map === true) {
                 if (open === true)
-                    mapRef.current.addGeojson(json.packet);
-                setFeatures(json.packet);
+                    mapRef.current.addGeojson(json.packet.geojson);
+                setFeatures(json.packet.geojson);
             }
         });
 

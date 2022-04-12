@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Home from "components/home";
@@ -14,7 +14,6 @@ import { Provider } from 'react-redux'
 
 import AdminRoute from "./adminRoute";
 
-import LocariaContext from './context/locariaContext';
 
 
 const App = () => {
@@ -43,24 +42,6 @@ const App = () => {
 	}
 
 
-	// Globals
-
-	const [homeSearch, setHomeSearch] = useState('');
-	const [introModal, setIntroModal] = useState(false);
-
-	const updateHomeSearch = (text) => {
-		setHomeSearch(text);
-	};
-	const seenIntroModal = (value) => {
-		setIntroModal(value);
-	};
-
-	const userSettings = {
-		homeSearch: homeSearch,
-		updateHomeSearch,
-		introModal:introModal,
-		seenIntroModal,
-	};
 
 
 	React.useEffect(() => {
@@ -124,20 +105,17 @@ const App = () => {
 	if(configs.siteMaintenance===true) {
 		return (
 			<Provider store={store}>
-				<LocariaContext.Provider value={userSettings}>
 					<Router>
 						<Switch>
 							<Route component={Maintenance}/>
 						</Switch>
 					</Router>
-				</LocariaContext.Provider>
 			</Provider>
 		)
 	} else {
 
 		return (
 			<Provider store={store}>
-				<LocariaContext.Provider value={userSettings}>
 					<Router>
 						<Switch>
 							<Route path="/Admin/Upload/" user={user} component={Admin}/>
@@ -155,7 +133,6 @@ const App = () => {
 							<Route component={Home}/>
 						</Switch>
 					</Router>
-				</LocariaContext.Provider>
 			</Provider>
 		);
 	}
