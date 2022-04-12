@@ -2,6 +2,7 @@
   "stopOnError": true,
   "tables": [
     "database/functions/view_creation/views_union.sql",
+    "database/functions/view_creation/views_union.sql",
     "database/functions/view_creation/create_typeahead_search_view.sql",
     "database/functions/search/typeahead_search.sql",
     "database/functions/search/search.sql",

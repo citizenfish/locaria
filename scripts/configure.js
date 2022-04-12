@@ -289,7 +289,7 @@ function deploySystemMain(stage,theme) {
 				console.log('usql - Upgrade SQL');
 				console.log('tests - Run Tests');
 				console.log('q - Exit deploy mode');
-				deployStage(stage,theme);
+				deploySystemMain(stage,theme);
 				break;
 			case 'stage':
 				deployStage(stage,theme);
