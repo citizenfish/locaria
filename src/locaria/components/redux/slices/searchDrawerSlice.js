@@ -10,7 +10,9 @@ export const searchDrawerSlice = createSlice({
 		distance: 0,
 		tags: [],
 		resolutionUpdate: false,
-		tagList: []
+		tagList: [],
+		page: 1,
+		totalPages: 0
 	},
 	reducers: {
 		openSearchDrawer: (state, action) => {
@@ -78,7 +80,14 @@ export const searchDrawerSlice = createSlice({
 		},
 		setTagList: (state,action) => {
 			state.tagList=action.payload;
+		},
+		setPage: (state,action)=> {
+			state.page=action.payload;
+		},
+		setTotalPages: (state,action)=> {
+			state.totalPages=parseInt(action.payload);
 		}
+
 	},
 })
 
@@ -96,7 +105,9 @@ export const {
 	deleteTag,
 	addTag,
 	resetTags,
-	setTagList
+	setTagList,
+	setPage,
+	setTotalPages
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer
