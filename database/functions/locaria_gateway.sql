@@ -24,7 +24,7 @@ BEGIN
          WHEN parameters->>'method' IN ('list_categories') THEN
             ret_var = list_categories(parameters);
 
-          WHEN parameters->>'method' IN ('list_tags') THEN
+         WHEN parameters->>'method' IN ('list_tags') THEN
             ret_var = list_tags(parameters);
 
          WHEN parameters->>'method' IN ('list_categories_with_data') THEN
@@ -38,6 +38,9 @@ BEGIN
 
          WHEN parameters->>'method' IN ('revgeocoder') THEN
             ret_var = reverse_geocoder(parameters);
+
+         WHEN parameters->>'method' IN ('add_message') THEN
+            ret_var = add_message(parameters);
 
          WHEN parameters->>'method' IN ('report') THEN
             ret_var = run_report(parameters, FALSE);
