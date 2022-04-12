@@ -1,6 +1,6 @@
-import React, {useRef} from 'react';
+import React from 'react';
 
-import { configs,pages} from 'themeLocaria';
+import {configs, pages} from 'themeLocaria';
 import {useStyles} from "stylesLocaria";
 
 import {useHistory} from "react-router-dom";
@@ -13,7 +13,7 @@ const Footer = () => {
 	return (
 		<div className={classes.footer}>
 			<div className={classes.footerLogo} style={{backgroundImage: `url(${configs.siteFooter})`}}></div>
-			<ul>
+			{<ul className={classes.footerList}>
 				{pages.listPages().map(function (page) {
 					return (
 						<li className={classes.footerLi} onClick={()=>{
@@ -27,8 +27,14 @@ const Footer = () => {
 						</li>
 					)
 				})}
-			</ul>
-			<p className={classes.footerBy}>Powered by <a href={"https://github.com/nautoguide/locaria"}>Locaria</a></p>
+			</ul>}
+			<p className={classes.footerBy}>
+				<a href={configs.copyrightLink}>{configs.copyrightCompany}</a>
+				&nbsp;|&nbsp;
+				<a href={configs.poweredByLink}>{configs.poweredByText}</a>
+				&nbsp;|&nbsp;
+				<a href={configs.licensedLink}>{configs.licensedText}</a>
+			</p>
 		</div>
 	)
 }

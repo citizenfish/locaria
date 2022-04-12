@@ -164,14 +164,20 @@ export default class UseStyles {
 				height: 100,
 				display: "inline-block",
 				backgroundSize: "contain",
-				margin: 5
+				marginTop: 20
 			},
 
+			footerList: {
+				padding:0
+			},
 			footerLi: {
 				float: "left",
 				padding: 10,
 				textDecoration: "none",
-				listStyle: "none"
+				listStyle: "none",
+				'&:hover': {
+					cursor:"pointer"
+				}
 			},
 
 			footerBy: {
