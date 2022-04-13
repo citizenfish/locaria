@@ -17,6 +17,8 @@ export const searchDrawerSlice = createSlice({
 	reducers: {
 		openSearchDrawer: (state, action) => {
 			state.open = true;
+			state.page=1;
+			state.totalPages=0;
 			if (action.payload && action.payload.categories){
 				if(action.payload.mode==='add') {
 					for(let c in action.payload.categories) {
@@ -54,29 +56,43 @@ export const searchDrawerSlice = createSlice({
 		},
 		clearSearchCategory: (state) => {
 			state.categories = [];
-			state.tags = []; 
+			state.tags = [];
+			state.page=1;
+			state.totalPages=0;
 		},
 		setSearch: (state,action) => {
 			state.search = action.payload.search;
+			state.page=1;
+			state.totalPages=0;
 		},
 		toggleLocationShow: (state) => {
 			state.locationShow = !state.locationShow;
 		},
 		setDistance: (state,action) => {
 			state.distance = action.payload;
+			state.page=1;
+			state.totalPages=0;
 		},
 		setTags: (state, action) => {
 			state.tags = action.payload;
+			state.page=1;
+			state.totalPages=0;
 		},
 		deleteTag: (state,action) => {
 			state.tags.splice(state.tags.indexOf(action.payload),1);
+			state.page=1;
+			state.totalPages=0;
 		},
 		resetTags: (state,action) => {
 			state.tags = [];
+			state.page=1;
+			state.totalPages=0;
 		},
 		addTag: (state,action) => {
 			if(state.tags.indexOf(action.payload) === -1)
 				state.tags.push(action.payload);
+			state.page=1;
+			state.totalPages=0;
 		},
 		setTagList: (state,action) => {
 			state.tagList=action.payload;

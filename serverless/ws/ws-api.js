@@ -135,8 +135,12 @@ module.exports.run = (event, context, callback) => {
         const body = JSON.parse(event.body);
         const packet = body;
 
-        if (packet && packet.data && packet.data.mask)
-            mask = packet.data.mask;
+
+        if(packet&&packet.data) {
+            if (packet.data.mask)
+                mask = packet.data.mask;
+            packet.data['_connectionIdWS'] = connectionId;
+        }
 
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
         switch (packet.api) {
