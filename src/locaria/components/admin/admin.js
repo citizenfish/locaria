@@ -12,12 +12,15 @@ import AdminEditDrawer from './components/drawers/adminEditDrawer'
 import AdminEditFeatureDrawer from "./components/drawers/adminEditFeatureDrawer";
 import {theme} from "../../../theme/default/adminStyle";
 import {ThemeProvider} from "@emotion/react";
-import {closeEditDrawer, openEditDrawer} from "./redux/slices/editDrawerSlice";
-import {closeUploadDrawer, openUploadDrawer} from "./redux/slices/uploadDrawerSlice";
-import {setTitle} from "./redux/slices/adminSlice";
+import {openEditDrawer} from "./redux/slices/editDrawerSlice";
+import {openUploadDrawer} from "./redux/slices/uploadDrawerSlice";
 import {useLocation, useParams} from "react-router-dom";
 import {openEditFeatureDrawer} from "./redux/slices/editFeatureDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
+import AdminSystemConfigDrawer from "./components/drawers/adminSystemConfigDrawer";
+import {openSystemConfigDrawer} from "./redux/slices/systemConfigDrawerSlice";
+import AdminPageDrawer from "./components/drawers/adminPageDrawer";
+import {openAdminPageDrawer} from "./redux/slices/adminPageDrawerSlice";
 
 const Admin= () => {
 
@@ -27,6 +30,8 @@ const Admin= () => {
 	const location = useLocation();
 
 	const adminEditDrawer = useSelector((state) => state.adminEditDrawer.open);
+	const systemConfigDrawer = useSelector((state) => state.systemConfigDrawer.open);
+	const adminPageDrawer = useSelector((state) => state.adminPageDrawer.open);
 
 
 	useEffect(() => {
@@ -48,7 +53,16 @@ const Admin= () => {
 		if (location.pathname.match('/Edit/')&&adminEditDrawer===false) {
 			dispatch(openEditDrawer());
 			return;
+		}
 
+		if (location.pathname.match('/System/')&&systemConfigDrawer===false) {
+			dispatch(openSystemConfigDrawer());
+			return;
+		}
+
+		if (location.pathname.match('/Pages/')&&adminPageDrawer===false) {
+			dispatch(openAdminPageDrawer());
+			return;
 		}
 
 		dispatch(openUploadDrawer());
@@ -67,6 +81,8 @@ const Admin= () => {
 				<AdminUploadDrawer></AdminUploadDrawer>
 				<AdminEditDrawer></AdminEditDrawer>
 				<AdminEditFeatureDrawer></AdminEditFeatureDrawer>
+				<AdminSystemConfigDrawer></AdminSystemConfigDrawer>
+				<AdminPageDrawer></AdminPageDrawer>
 
 			</Box>
 		</Box>

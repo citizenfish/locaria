@@ -193,9 +193,9 @@ const Layout = ({children, map, fullscreen = false}) => {
                 "method": "search",
                 "category": configs.homeCategorySearch,
                 "bbox": `${newRes.extent4326[0]} ${newRes.extent4326[1]},${newRes.extent4326[2]} ${newRes.extent4326[3]}`,
-                "cluster": newRes.resolution >= configs.clusterCutOff,
-                "cluster_width": Math.floor(configs.clusterWidthMod * newRes.resolution),
-                "cluster_algorithm": configs.clusterAlgorithm
+                "cluster": newRes.resolution >= window.systemMain.clusterCutOff,
+                "cluster_width": Math.floor(window.systemMain.clusterWidthMod * newRes.resolution),
+                "cluster_algorithm": window.systemMain.clusterAlgorithm
             }
         };
         window.websocket.send(packet);
@@ -206,20 +206,6 @@ const Layout = ({children, map, fullscreen = false}) => {
 
 
         if (map === true) {
-            if (configs.cluster === undefined || configs.cluster === false) {
-                window.websocket.send({
-                    "queue": "homeLoader",
-                    "api": "api",
-                    "data": {
-                        "method": "search",
-                        "category": "Events",
-                        "location": `SRID=4326;POINT(${cookies.location[0]} ${cookies.location[1]})`,
-                        "location_distance": 5000000000,
-                        "cluster": false
-                    }
-                });
-            }
-
             if (cookies.location) {
                 dispatch(setLocation(cookies.location))
             } else {
@@ -314,7 +300,7 @@ const Layout = ({children, map, fullscreen = false}) => {
                              className={'mapView'}
                              ref={mapRef}
                              onFeatureSeleted={handleFeatureSelected}
-                             onZoomChange={configs.cluster ? onZoomChange : undefined}
+                             onZoomChange={onZoomChange}
                         />
                     </div>
                     <NavFabFilter/>
