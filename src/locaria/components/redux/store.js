@@ -11,6 +11,8 @@ import adminEditDrawerSlice from "../admin/redux/slices/editDrawerSlice";
 import adminUploadDrawerSlice from "../admin/redux/slices/uploadDrawerSlice";
 import adminEditFeatureDrawerSlice from "../admin/redux/slices/editFeatureDrawerSlice";
 import adminSlice from "../admin/redux/slices/adminSlice";
+import systemConfigDrawerSlice from "../admin/redux/slices/systemConfigDrawerSlice";
+import adminPageDrawerSlice from "../admin/redux/slices/adminPageDrawerSlice"
 
 export default configureStore({
 	reducer: {
@@ -25,6 +27,8 @@ export default configureStore({
 		adminEditDrawer: adminEditDrawerSlice,
 		adminUploadDrawer: adminUploadDrawerSlice,
 		adminEditFeatureDrawer: adminEditFeatureDrawerSlice,
-		adminSlice: adminSlice
+		adminSlice: adminSlice,
+		systemConfigDrawer:systemConfigDrawerSlice,
+		adminPageDrawer: adminPageDrawerSlice
 	}
 })

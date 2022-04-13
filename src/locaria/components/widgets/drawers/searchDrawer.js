@@ -104,7 +104,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 
                 const newResults = searchResults.concat(json.searchLoader.packet.geojson.features);
                 setSearchResults(newResults);
-                dispatch(setTotalPages(json.searchLoader.packet.options.count / configs.searchLimit))
+                dispatch(setTotalPages(json.searchLoader.packet.options.count / window.systemMain.searchLimit))
                 props.mapRef.current.addGeojson({"features": newResults, type: "FeatureCollection"});
 
                 // Location results
@@ -156,7 +156,7 @@ const SearchDrawer = forwardRef((props, ref) => {
             if (open !== true)
                 return;
             //let newSearchValue = document.getElementById('mySearch').value;
-            let offset = (page-1)*configs.searchLimit;
+            let offset = (page-1)*window.systemMain.searchLimit;
             setSearchResults([]);
 
 
@@ -167,7 +167,7 @@ const SearchDrawer = forwardRef((props, ref) => {
                     "method": "search",
                     "category": categories.length > 0 ? categories : configs.homeCategorySearch,
                     "search_text": search,
-                    "limit": configs.searchLimit,
+                    "limit": window.systemMain.searchLimit,
                     "offset": offset,
                     "mask": {"fid": true, "category": true, "tags": true, "description": {"title": true, "text": true}}
                 }

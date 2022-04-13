@@ -16,6 +16,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import cssOL from './components/css/ol.css';
+import {setSystemConfig} from "./components/admin/redux/slices/systemConfigDrawerSlice";
 
 let tries = 0;
 
@@ -24,10 +25,21 @@ window.websocket = new Websockets();
 
 window.websocket.init({"url": resources.websocket}, connected, closed, errored);
 
+window.websocket.registerQueue('systemMain', (json) => {
+	window.systemMain=json.packet.systemMain;
+	ReactDOM.render(<Main/>, document.getElementById('root'));
+});
 
 function connected() {
+	window.websocket.send({
+		"queue": "systemMain",
+		"api": "api",
+		"data": {
+			"method": "get_parameters",
+			"parameter_name": "systemMain",
 
-	ReactDOM.render(<Main/>, document.getElementById('root'));
+		}
+	});
 }
 
 function closed(event) {

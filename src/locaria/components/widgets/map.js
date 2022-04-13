@@ -33,14 +33,14 @@ const Map = forwardRef((props, ref) => {
 			"target": props.id,
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
-			"zoom": configs.defaultZoom,
+			"zoom": window.systemMain.defaultZoom,
 			"center": ol.decodeCoords(configs.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
 			"maxZoom": 16
 		});
 		ol.addLayer({
 			"name": "xyz",
 			"type": "xyz",
-			"url": configs.mapXYZ,
+			"url": window.systemMain.mapXYZ,
 			"active": true
 
 		});
@@ -87,11 +87,11 @@ const Map = forwardRef((props, ref) => {
 				return ol.decodeCoords(flatCoordinates, 'EPSG:3857', 'EPSG:4326');
 			},
 			zoomToLayersExtent(layers, buffer) {
-				buffer = buffer || configs.mapBuffer;
+				buffer = buffer || window.systemMain.mapBuffer;
 				ol.zoomToLayersExtent({"layers": layers, "buffer": buffer});
 			},
 			zoomToExtent(extent, buffer) {
-				buffer = buffer || configs.mapBuffer;
+				buffer = buffer || window.systemMain.mapBuffer;
 				ol.zoomToLayersExtent({"layers": ["data"], "buffer": buffer, "extent": extent});
 			},
 			flyTo(coordinate,zoom,projection) {
@@ -144,7 +144,7 @@ const Map = forwardRef((props, ref) => {
 	)
 	const mapReset = () => {
 		ol.updateSize();
-		ol.flyTo({"coordinate": location, "projection": "EPSG:4326", "zoom": configs.defaultZoom});
+		ol.flyTo({"coordinate": location, "projection": "EPSG:4326", "zoom": window.systemMain.defaultZoom});
 	}
 
 	const mapZoomIn = () => {
@@ -202,7 +202,7 @@ const Map = forwardRef((props, ref) => {
 	return (
 		<div id={props.id} className={classes[props.className]}>
 			<MapSpeedDial/>
-			<div className={classes.mapAttribution}>{configs.mapAttribution}</div>
+			<div className={classes.mapAttribution}>{window.systemMain.mapAttribution}</div>
 		</div>
 	)
 });

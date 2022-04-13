@@ -15,6 +15,7 @@ import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice"
 import {openEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
 import {setEditData} from "../../redux/slices/editDrawerSlice";
 import {setTitle} from "../../redux/slices/adminSlice";
+import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 
 
 export default function AdminEditDrawer(props) {
@@ -86,8 +87,9 @@ export default function AdminEditDrawer(props) {
 
 		if(open) {
 			history.push(`/Admin/Edit/`);
-			dispatch(closeUploadDrawer())
-			dispatch(closeEditFeatureDrawer())
+			dispatch(closeUploadDrawer());
+			dispatch(closeEditFeatureDrawer());
+			dispatch(closeSystemConfigDrawer());
 			dispatch(setTitle('Edit'));
 			refresh();
 		}

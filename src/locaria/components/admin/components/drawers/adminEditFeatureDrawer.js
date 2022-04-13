@@ -25,6 +25,7 @@ import Map from "../../../widgets/map";
 import {setTitle, setTotal} from "../../redux/slices/adminSlice";
 import Tags from "../../../widgets/tags"
 import Container from "@mui/material/Container";
+import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 
 
 const  AdminEditFeatureDrawer = (props) => {
@@ -48,6 +49,7 @@ const  AdminEditFeatureDrawer = (props) => {
 			history.push(`/Admin/Edit/${feature}`);
 			dispatch(closeEditDrawer());
 			dispatch(closeUploadDrawer());
+			dispatch(closeSystemConfigDrawer());
 			dispatch(setTitle('Feature Edit'));
 
 		}
