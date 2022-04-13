@@ -175,11 +175,11 @@ export default function AdminSystemConfigDrawer(props) {
                     <TextField
                         id="clusterAlgorithm"
                         label="clusterAlgorithm"
-                        defaultValue={50000}
+                        defaultValue={"KMEANS"}
                         variant="filled"
                         value={config.clusterAlgorithm}
                         onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:parseInt(e.target.value)}));
+                            dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
                         }}
                     />
 

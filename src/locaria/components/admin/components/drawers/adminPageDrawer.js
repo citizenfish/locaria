@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react"
 
-import {Drawer, TextField} from "@mui/material";
+import {Drawer, InputLabel, Select, TextField} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
@@ -11,11 +11,21 @@ import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
 import {addPage, setPages} from "../../redux/slices/adminPageDrawerSlice";
 import {useCookies} from "react-cookie";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import {setPage} from "../../../redux/slices/searchDrawerSlice";
+import Divider from "@mui/material/Divider";
+import MDEditor from '@uiw/react-md-editor';
+
+
 
 export default function AdminPageDrawer(props) {
 
     const open = useSelector((state) => state.adminPageDrawer.open);
     const pages = useSelector((state) => state.adminPageDrawer.pages);
+    const page = useSelector((state) => state.adminPageDrawer.page);
+
+    const [pageData,setPageData] = useState(undefined);
     const dispatch = useDispatch()
     const classes = useStyles();
     const isInitialMount = useRef(true);
@@ -30,7 +40,7 @@ export default function AdminPageDrawer(props) {
         }
 
         window.websocket.registerQueue('getPages', (json) => {
-            if(json.packet.systemPages)
+            if (json.packet.systemPages)
                 dispatch(setPages(json.packet.systemPages));
             else
                 dispatch(setPages([]));
@@ -63,7 +73,8 @@ export default function AdminPageDrawer(props) {
         });
     }
 
-    const setPages = (e) => {
+
+    const setPagesApi = (e) => {
         window.websocket.send({
             "queue": "setPages",
             "api": "sapi",
@@ -72,10 +83,10 @@ export default function AdminPageDrawer(props) {
                 "acl": "external",
                 "parameter_name": "systemPages",
                 id_token: cookies['id_token'],
-                "parameters": config
+                "parameters": [...pages,document.getElementById('pageName').value]
             }
         });
-        window.systemPages=config;
+        window.systemPages = pages;
     }
 
 
@@ -87,14 +98,45 @@ export default function AdminPageDrawer(props) {
             className={classes.adminDrawers}
 
         >
-           <h1>Pages</h1>
-            <TextField
-                id="pageName"
-                label="Page Name"
-                variant="filled"
-                defaultValue={"My New Page"}
-            />
-            <Button>Add Page</Button>
+            <h1>Pages</h1>
+            {pages ? (
+                <>
+                    <TextField
+                        id="pageName"
+                        label="Page Name"
+                        variant="filled"
+                        defaultValue={"My New Page"}
+                    />
+                    <Button onClick={()=>{
+                        setPagesApi();
+                    }}>Add Page</Button>
+                    <Divider></Divider>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={page}
+                            label="Page"
+                            onChange={(e) => {
+                                dispatch(setPage(e.target.value));
+                            }}
+                        >
+                            {pages.map((page) => {
+                                return (
+                                    <MenuItem key={page} value={page}>{page}</MenuItem>
+
+                                )
+                            })}
+                        </Select>
+                    </FormControl>
+                    <Divider></Divider>
+                    <MDEditor
+                        value={pageData}
+                        onChange={setPageData}
+                    />
+                    <MDEditor.Markdown source={pageData} />
+                </>) : (<></>)}
         </Drawer>
     )
 }

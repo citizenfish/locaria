@@ -496,7 +496,8 @@ export default class UseStyles {
 			SearchDrawPage: {
 				color:  theme.palette.text.lighter,
 				backgroundColor:  `${theme.palette.primary.clear} !important`,
-				padding: 10,
+				paddingTop: 5,
+				paddingBottom: 5,
 				marginBottom: 10,
 				"& button": {
 					color:  theme.palette.text.lighter
