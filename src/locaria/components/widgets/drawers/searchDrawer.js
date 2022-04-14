@@ -169,7 +169,7 @@ const SearchDrawer = forwardRef((props, ref) => {
                     "search_text": search,
                     "limit": window.systemMain.searchLimit,
                     "offset": offset,
-                    "mask": {"fid": true, "category": true, "tags": true, "description": {"title": true, "text": true}}
+                    "mask": {distance : true, fid: true, category: true, tags: true, description: {title: true, text: true}}
                 }
             };
 

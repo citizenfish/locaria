@@ -8,7 +8,7 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    SELECT parameter
+    SELECT jsonb_build_object(parameter_name, parameter)
     INTO ret_var
     FROM parameters
     WHERE (acl_var = '' OR acl = acl_var)

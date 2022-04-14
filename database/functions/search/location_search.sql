@@ -22,7 +22,7 @@ BEGIN
         location_var = COALESCE(parameters->>'location',parameters->>'address');
 
         IF REPLACE(location_var, ' ', '') = '' THEN
-            RETURN json_build_object('error', 'Missing address');
+            RETURN json_build_object('error', 'Missing address', 'response_code', 1100);
         ELSE
             search_ts_query = plainto_tsquery(location_var);
         END IF;

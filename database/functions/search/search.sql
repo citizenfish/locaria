@@ -27,7 +27,7 @@ BEGIN
             WHERE COALESCE(search_parameters->>'cluster', '') != 'true'
 
     )
-    --Currently format as Geojson but can add other formatters here
+    --Datagrid format for admin, Geojson for API
     SELECT CASE WHEN COALESCE(search_parameters->>'format','') = 'datagrid' THEN
 
                 jsonb_build_object('features',
@@ -44,7 +44,8 @@ BEGIN
                                                ),
                                       jsonb_build_array()
                                       ),
-                                    'count', json_agg(_attributes->>'c')->0
+                                    'count', COALESCE(json_agg(_attributes->>'c')->>0,'0')::INTEGER,
+                                    'feature_count', count(*)
                                     )
            ELSE
 
@@ -59,7 +60,7 @@ BEGIN
                                                                    ), jsonb_build_array())
                            ),
                         --TODO better solution then array agg and picking first entry
-                        'options', jsonb_build_object('count', json_agg(_attributes->>'c')->0)
+                        'options', jsonb_build_object('count', COALESCE(json_agg(_attributes->>'c')->>0,'0')::INTEGER, 'feature_count', count(*))
                    )
            END
 

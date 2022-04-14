@@ -12,7 +12,7 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
 
     --delete any user sent acl and add in api one
-    parameters = parameters - 'acl' || jsonb_build_object('acl',acl);
+    parameters = parameters - 'acl' - 'id_token' || jsonb_build_object('acl',acl);
 
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('search','bboxsearch', 'refsearch', 'pointsearch', 'datesearch', 'filtersearch') THEN
@@ -63,11 +63,16 @@ BEGIN
     IF log_var THEN
         INSERT INTO logs(log_type, log_message)
         SELECT parameters->>'method',
-               jsonb_build_object('parameters', parameters, 'response', CASE WHEN COALESCE(ret_var->>'error', '') = '' THEN 'ok' ELSE ret_var->>'error' END);
+               jsonb_build_object('response_code',COALESCE(ret_var->>'response_code', '200'),
+                                  'parameters',   parameters ,
+                                  'logpath',     'external',
+                                  'response',     CASE WHEN COALESCE(ret_var->>'error', '') = '' THEN 'ok' ELSE ret_var->>'error' END,
+                                  'search_stats', COALESCE(ret_var->'options', jsonb_build_object())
+               );
     END IF;
 
 
-    RETURN jsonb_build_object('response_code', 200) ||ret_var;
+    RETURN jsonb_build_object('response_code', 200) || ret_var;
 
 --This block will trap any errors and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
 

@@ -37,3 +37,7 @@
 * 1099 - Error in update_file SQL
 * 1100 - Error in delete_file SQL
 
+# Search
+
+* 1100 - Missing Address in location search
+
