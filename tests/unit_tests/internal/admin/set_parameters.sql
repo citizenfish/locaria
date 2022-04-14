@@ -19,7 +19,7 @@ $$
 
         SELECT locaria_gateway(jsonb_build_object('method', 'get_parameters', 'parameter_name', 'test_1')) INTO ret_var;
 
-        RAISE NOTICE '%', locaria_tests.test_result_processor('get_parameters TEST 1', ret_var , '{test_1}', '10');
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_parameters TEST 1', ret_var , '{test_1,test_1}', '10');
 
         SELECT locaria_internal_gateway(parameters) INTO ret_var;
 

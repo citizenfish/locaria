@@ -13,7 +13,7 @@ BEGIN
 
     category_limit = COALESCE(search_parameters->>'limit', category_limit::TEXT)::INTEGER;
 
-    SELECT jsonb_build_object('results',jsonb_agg(R.*))
+    SELECT jsonb_build_object('results',jsonb_agg(R.* ORDER BY COALESCE(array_position(array['Location'], category),2) ASC))
     INTO results_var
     FROM (
            SELECT distinct ON (category) category,
@@ -29,7 +29,7 @@ BEGIN
                     WHERE LOWER(search_text) LIKE LOWER(search_parameters->>'search_text'||'%')
                 ) F
            WHERE rn < category_limit
-       ) R ORDER BY 1;
+       ) R;
 
 
     RETURN results_var;

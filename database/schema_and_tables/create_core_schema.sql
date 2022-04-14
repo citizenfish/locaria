@@ -23,6 +23,10 @@ BEGIN
     CREATE EXTENSION IF NOT EXISTS aws_s3;
     CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
     CREATE EXTENSION IF NOT EXISTS aws_lambda;
+    CREATE SCHEMA IF NOT EXISTS partition_management;
+    CREATE EXTENSION IF NOT EXISTS pg_partman WITH SCHEMA partition_management;
+    --TODO this needs parameters setting up prior to execution and must be run from postgres database
+    --CREATE EXTENSION IF NOT EXISTS pg_cron;
 
     --Create schema for search functions, data and views.
     RAISE NOTICE 'CREATING CORE SCHEMA';
