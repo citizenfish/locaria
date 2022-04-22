@@ -67,6 +67,13 @@ const CategorySelect = (props) => {
 				>
 					{configs.resetCategoryText}
 				</Typography>
+				<Typography variant="body1"
+							className={classes.resetCategorySelectText}
+							onClick={() => {dispatch(clearSearchCategory())}}
+							sx={{m:1}}
+				>
+					{configs.selectAllCategoryText}
+				</Typography>
 			</>
 		)
 	}

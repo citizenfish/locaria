@@ -16,58 +16,86 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import {openSearchDrawer} from "../../redux/slices/searchDrawerSlice";
 import CloseIcon from "@mui/icons-material/Close";
+import MDEditor from '@uiw/react-md-editor';
+import Container from "@mui/material/Container";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction="up" ref={ref} {...props} />;
-});
+import FAQ from "../faq";
+import ContactForm from "../contactForm"
+
 
 const PageDrawer = () => {
-	const classes = useStyles();
-	const dispatch = useDispatch()
-	const history = useHistory();
+    const classes = useStyles();
+    const dispatch = useDispatch()
+    const history = useHistory();
 
-	const open = useSelector((state) => state.pageDialog.open);
-	const page = useSelector((state) => state.pageDialog.page);
-	const [pageData, setPageData] = React.useState(undefined);
 
-	const isInitialMount = useRef(true);
+    const pagePlugins={
+        "FAQ":<FAQ/>,
+        "CONTACT":<ContactForm/>
+    }
 
-	React.useEffect(() => {
-			if(page) {
-				setPageData(pages.getPage(page));
-			}
-	}, [page]);
+    const open = useSelector((state) => state.pageDialog.open);
+    const page = useSelector((state) => state.pageDialog.page);
+    const [pageData, setPageData] = React.useState(undefined);
 
-	React.useEffect(() => {
-		if(open)
-			history.push(`/Page/${page}`);
+    const isInitialMount = useRef(true);
 
-	},[open]);
+    const getPageData = () => {
+        window.websocket.send({
+            "queue": "getPageData",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": `page_${page}`
+            }
+        });
+    }
 
-	if(pageData) {
-		return (
-			<Drawer
-				anchor="bottom"
-				open={open}
-				className={classes.pageDraw}
-				variant="persistent"
-			>
-				<div className={classes.searchDrawHeader}>
-					<Typography className={classes.viewDrawTitle} variant={'h5'}>{pageData.options.title}</Typography>
-					<IconButton onClick={() => {
-						dispatch(closePageDialog());
-					}} className={classes.viewDrawClose} type="submit"
-					            aria-label="search">
-						<CloseIcon className={classes.icons}/>
-					</IconButton>
-				</div>
-				{pageData.data}
-			</Drawer>
+    React.useEffect(() => {
 
-		)
-	} else {
-		return <></>
-	}
+        window.websocket.registerQueue('getPageData', (json) => {
+            setPageData(json.packet[`page_${page}`]);
+        });
+
+        if (page) {
+            getPageData();
+        }
+    }, [page]);
+
+    React.useEffect(() => {
+        if (open)
+            history.push(`/Page/${page}`);
+
+    }, [open]);
+
+    if (pageData) {
+        return (
+            <Drawer
+                anchor="bottom"
+                open={open}
+                className={classes.pageDraw}
+                variant="persistent"
+            >
+                <div className={classes.searchDrawHeader}>
+                    <Typography className={classes.viewDrawTitle} variant={'h5'}>{pageData.title}</Typography>
+                    <IconButton onClick={() => {
+                        dispatch(closePageDialog());
+                    }} className={classes.viewDrawClose} type="submit"
+                                aria-label="search">
+                        <CloseIcon className={classes.icons}/>
+                    </IconButton>
+                </div>
+                <Container>
+
+                    <MDEditor.Markdown source={pageData.data} className={classes.pageDrawMD}/>
+                    {pageData.plugin? pagePlugins[pageData.plugin]:<></>}
+                </Container>
+            </Drawer>
+
+        )
+    } else {
+        return <></>
+    }
 };
 
 
