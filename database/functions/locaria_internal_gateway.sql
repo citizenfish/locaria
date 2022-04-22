@@ -80,7 +80,9 @@ BEGIN
             ret_var = set_parameters(parameters);
 
         ELSE
+
             RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');
+
         END CASE;
 
     --If debug_var is set then the API will return the calling parameters in a debug object. NOTE WELL this will break GeoJSON returned
