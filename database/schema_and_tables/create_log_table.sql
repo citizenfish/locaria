@@ -24,4 +24,4 @@ WHERE parent_table='locaria_core.logs';
 
 
 
-SELECT cron.schedule('@hourly', $$CALL partition_management.run_maintenance_proc()$$);
+--SELECT cron.schedule('@hourly', $$CALL partition_management.run_maintenance_proc()$$);
