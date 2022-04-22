@@ -3,7 +3,7 @@ WORKDIR /app
 
 #gdal-bin has ogr2ogr tool which we use to load data
 RUN apt-get --assume-yes update
-RUN apt-get --assume-yes install gdal-bin
+RUN apt-get --assume-yes install gdal-bin gcc
 
 COPY .. .
 
