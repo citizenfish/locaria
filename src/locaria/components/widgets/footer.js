@@ -4,26 +4,30 @@ import {configs, pages} from 'themeLocaria';
 import {useStyles} from "stylesLocaria";
 
 import {useHistory} from "react-router-dom";
+import {openPageDialog} from "../redux/slices/pageDialogSlice";
+import {useDispatch} from "react-redux";
 
 
 const Footer = () => {
 	const classes = useStyles();
 	const history = useHistory();
+	const dispatch = useDispatch();
+
 
 	return (
 		<div className={classes.footer}>
 			<div className={classes.footerLogo} style={{backgroundImage: `url(${configs.siteFooter})`}}></div>
 			{<ul className={classes.footerList}>
-				{pages.listPages().map(function (page) {
+				{window.systemPages.map(function (page) {
 					return (
 						<li className={classes.footerLi} onClick={()=>{
 							if(page.type==="link") {
 								window.location=page.link;
 							} else {
-								history.push(`/Page/${page.id}`);
-							}
+							dispatch(openPageDialog(page.id));
+						}
 						}} key={page.id}>
-							{page.title}
+							{page.name}
 						</li>
 					)
 				})}

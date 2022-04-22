@@ -5,7 +5,7 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import {theme,configs, resources} from "themeLocaria";
+import {theme, configs, resources} from "themeLocaria";
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -25,44 +25,56 @@ window.websocket = new Websockets();
 
 window.websocket.init({"url": resources.websocket}, connected, closed, errored);
 
-window.websocket.registerQueue('systemMain', (json) => {
-	window.systemMain=json.packet.systemMain;
-	ReactDOM.render(<Main/>, document.getElementById('root'));
+window.websocket.registerQueue('bulkConfigs', (json) => {
+    window.systemMain = json.systemMain.packet.systemMain;
+    window.systemPages = json.systemPages.packet.systemPages||[];
+    ReactDOM.render(<Main/>, document.getElementById('root'));
 });
 
 function connected() {
-	window.websocket.send({
-		"queue": "systemMain",
-		"api": "api",
-		"data": {
-			"method": "get_parameters",
-			"parameter_name": "systemMain",
+    window.websocket.sendBulk('bulkConfigs', [
+        {
+            "queue": "systemMain",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": "systemMain",
 
-		}
-	});
+            }
+        },{
+            "queue": "systemPages",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": "systemPages",
+
+            }
+        }
+        ]
+    );
 }
 
 function closed(event) {
-	console.log(`websock closed: ${event}`);
-	if (tries <= 3)
-		window.websocket.connect();
+    console.log(`websock closed: ${event}`);
+    if (tries <= 3)
+        window.websocket.connect();
 }
 
 function errored(event) {
-	tries++;
-	console.log(`websock errored: ${event}`);
-	if (tries > 2) {
-		ReactDOM.render(<Main/>, document.getElementById('root'));
-	}
+    tries++;
+    console.log(`websock errored: ${event}`);
+    if (tries > 2) {
+        ReactDOM.render(<Main/>, document.getElementById('root'));
+    }
 }
 
 function Main() {
-	return (
-		<ThemeProvider theme={theme}>
-			<CssBaseline />
-			<App/>
-		</ThemeProvider>
-	)
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <App/>
+        </ThemeProvider>
+    )
 }
 
 

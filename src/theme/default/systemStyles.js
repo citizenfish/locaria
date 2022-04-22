@@ -859,6 +859,10 @@ export default class UseStyles {
 					height: "100%"
 				}
 			},
+			pageDrawMD : {
+				backgroundColor: theme.palette.primary.darker,
+				margin: 40
+			},
 
 			/*
 			  Reports page
