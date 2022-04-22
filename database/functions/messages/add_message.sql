@@ -11,7 +11,7 @@ BEGIN
            parameters->'message',
            jsonb_build_object('type', 'contact') || COALESCE(parameters->'attributes', jsonb_build_object()),
            (parameters->>'parent_id')::BIGINT
-    RETURNING jsonb_build_object('id',id)
+    RETURNING jsonb_build_object('id', id)
     INTO ret_var;
 
     RETURN ret_var;

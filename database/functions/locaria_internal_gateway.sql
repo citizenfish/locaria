@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION locaria_core.locaria_internal_gateway(parameters JSON
 $$
 DECLARE
     debug_var   BOOLEAN DEFAULT FALSE;
-    log_var     BOOLEAN DEFAULT TRUE;
+    log_var     BOOLEAN DEFAULT FALSE;
     ret_var     JSONB;
     logid_var   BIGINT;
     version_var TEXT DEFAULT '0.2';
@@ -11,6 +11,8 @@ BEGIN
 
     --This keeps us within our search schema when running code
     SET SEARCH_PATH = 'locaria_core', 'locaria_data','public';
+
+    parameters = parameters - 'id_token';
 
     IF acl IS NOT NULL THEN
         parameters = jsonb_insert(parameters #- '{attributes,acl}', '{attributes,acl}', acl);
@@ -78,7 +80,9 @@ BEGIN
             ret_var = set_parameters(parameters);
 
         ELSE
+
             RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');
+
         END CASE;
 
     --If debug_var is set then the API will return the calling parameters in a debug object. NOTE WELL this will break GeoJSON returned
@@ -87,12 +91,12 @@ BEGIN
     END IF;
 
     -- Operations can be logged to the logs table. This is set on by default but can be switched off with a parameter
-    log_var = COALESCE((SELECT (parameter ->> 'log_searches')::BOOLEAN
+    log_var = COALESCE((SELECT (parameter ->> 'log_admin')::BOOLEAN
                         FROM locaria_core.parameters
                         WHERE parameter_name = 'log_configuration'), log_var);
 
     IF log_var THEN
-        PERFORM log(parameters ||jsonb_build_object('ret',ret_var),CASE
+        PERFORM log(parameters || jsonb_build_object('ret', ret_var, 'logpath', 'internal'),CASE
                            WHEN COALESCE(ret_var ->> 'error', '') = ''
                                THEN 'ok'
                            ELSE ret_var ->> 'error' END);
