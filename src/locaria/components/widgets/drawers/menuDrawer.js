@@ -15,6 +15,8 @@ import {openPageDialog} from "../../redux/slices/pageDialogSlice";
 import {openLandingDraw} from "../../redux/slices/landingDrawerSlice";
 import {openLayout} from "../../redux/slices/layoutSlice";
 import {NavProfile} from "../navProfile";
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+
 
 
 
@@ -23,6 +25,7 @@ const MenuDrawer = function () {
 	const dispatch = useDispatch()
 
 	const open = useSelector((state) => state.menuDraw.open);
+
 
 	function channelDisplay(channel) {
 		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDrawer({categories:[channel.category]}));}}>
@@ -76,7 +79,7 @@ const MenuDrawer = function () {
 
 					<Divider/>
 
-					{pages.listPages().map(function (page) {
+					{window.systemPages.map(function (page) {
 						return (
 							<ListItem onClick={()=>{
 								if(page.type==="link") {
@@ -86,9 +89,9 @@ const MenuDrawer = function () {
 								}
 							}} key={page.id}>
 								<ListItemIcon>
-									{page.icon}
+									<MenuBookIcon/>
 								</ListItemIcon>
-								<ListItemText primary={page.title}/>
+								<ListItemText primary={page.name}/>
 							</ListItem>
 						)
 					})}

@@ -9,14 +9,14 @@ import {setTitle} from "../../redux/slices/adminSlice";
 import {useStyles} from "../../../../../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
-import {addPage, setPages} from "../../redux/slices/adminPageDrawerSlice";
+import {addPage, setPages, setPage} from "../../redux/slices/adminPageDrawerSlice";
 import {useCookies} from "react-cookie";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import {setPage} from "../../../redux/slices/searchDrawerSlice";
 import Divider from "@mui/material/Divider";
 import MDEditor from '@uiw/react-md-editor';
-
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 
 
 export default function AdminPageDrawer(props) {
@@ -25,7 +25,7 @@ export default function AdminPageDrawer(props) {
     const pages = useSelector((state) => state.adminPageDrawer.pages);
     const page = useSelector((state) => state.adminPageDrawer.page);
 
-    const [pageData,setPageData] = useState(undefined);
+    const [pageData, setPageData] = useState({});
     const dispatch = useDispatch()
     const classes = useStyles();
     const isInitialMount = useRef(true);
@@ -50,6 +50,10 @@ export default function AdminPageDrawer(props) {
             getPages();
         });
 
+        window.websocket.registerQueue('setPageData', (json) => {
+            dispatch(setPage(undefined));
+        });
+
         if (open) {
             history.push(`/Admin/Pages/`);
             dispatch(closeUploadDrawer())
@@ -60,6 +64,23 @@ export default function AdminPageDrawer(props) {
 
     }, [open]);
 
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+        }
+
+        window.websocket.registerQueue('getPageData', (json) => {
+            if (json.packet[`page_${page}`])
+                dispatch(setPageData(json.packet[`page_${page}`]));
+            else
+                dispatch(setPageData({data:"# New file",type:"Markdown",title:"My page title"}));
+        });
+        if (page !== undefined) {
+            getPageData();
+        }
+
+    }, [page]);
+
     const getPages = () => {
         window.websocket.send({
             "queue": "getPages",
@@ -67,6 +88,19 @@ export default function AdminPageDrawer(props) {
             "data": {
                 "method": "get_parameters",
                 "parameter_name": "systemPages",
+                id_token: cookies['id_token'],
+
+            }
+        });
+    }
+
+    const getPageData = () => {
+        window.websocket.send({
+            "queue": "getPageData",
+            "api": "sapi",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": `page_${page}`,
                 id_token: cookies['id_token'],
 
             }
@@ -83,10 +117,80 @@ export default function AdminPageDrawer(props) {
                 "acl": "external",
                 "parameter_name": "systemPages",
                 id_token: cookies['id_token'],
-                "parameters": [...pages,document.getElementById('pageName').value]
+                "parameters": [...pages, ...[{
+                    id: document.getElementById('pageId').value,
+                    name: document.getElementById('pageName').value,
+                    type: document.getElementById('pageType').value,
+                }]]
             }
         });
         window.systemPages = pages;
+    }
+
+
+
+
+    const PageDetails = () => {
+        const [data, setData] = useState(pageData.data);
+        const [plugin, setPlugin] = useState(pageData.plugin);
+
+        const setPageDataApi = (e) => {
+            window.websocket.send({
+                "queue": "setPageData",
+                "api": "sapi",
+                "data": {
+                    "method": "set_parameters",
+                    "acl": "external",
+                    "parameter_name": `page_${page}`,
+                    id_token: cookies['id_token'],
+                    "parameters": {
+                        "data": data,
+                        "plugin": plugin
+                    }
+                }
+            });
+        }
+
+        if(pageData&&page!==undefined) {
+            if(pageData.type==='link') {
+
+            } else {
+                return (
+                    <Container>
+                        <MDEditor
+                            id={"pageData"}
+                            value={data}
+                            onChange={setData}
+                            height={500}
+
+                        />
+                        <Select
+                            labelId="pagePluginLabel"
+                            id="pagePlugin"
+                            label="Plugin"
+                            fullWidth
+                            margin={"dense"}
+                            value={plugin}
+                            onChange={(e)=>{
+                                setPlugin(e.target.value);
+                            }}
+                        >
+                            <MenuItem value={"FAQ"}>FAQS</MenuItem>
+                            <MenuItem value={"CONTACT"}>Contact form</MenuItem>
+                        </Select>
+                        <Button onClick={setPageDataApi}>Save</Button>
+                        <Button onClick={()=>{
+                            dispatch(setPage(undefined));
+                        }}>Cancel</Button>
+                        <Button color={"warning"}>Delete</Button>
+                    </Container>
+                )
+            }
+        } else {
+            return (
+                <></>
+            )
+        }
     }
 
 
@@ -98,45 +202,64 @@ export default function AdminPageDrawer(props) {
             className={classes.adminDrawers}
 
         >
-            <h1>Pages</h1>
-            {pages ? (
-                <>
-                    <TextField
-                        id="pageName"
-                        label="Page Name"
-                        variant="filled"
-                        defaultValue={"My New Page"}
-                    />
-                    <Button onClick={()=>{
-                        setPagesApi();
-                    }}>Add Page</Button>
-                    <Divider></Divider>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Age</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={page}
-                            label="Page"
-                            onChange={(e) => {
-                                dispatch(setPage(e.target.value));
-                            }}
-                        >
-                            {pages.map((page) => {
-                                return (
-                                    <MenuItem key={page} value={page}>{page}</MenuItem>
+            {pages&&!page ? (
+                <Container>
+                        <h2>Add Page</h2>
+                        <TextField
+                            id="pageId"
+                            label="Page Id"
+                            variant="filled"
+                            defaultValue={"My New Page"}
+                            fullWidth
+                            margin={"dense"}
+                        />
+                        <TextField
+                            id="pageName"
+                            label="Page Name"
+                            variant="filled"
+                            defaultValue={"My page title"}
+                            fullWidth
+                            margin={"dense"}
 
-                                )
-                            })}
+                        />
+                        <InputLabel id="pageTypeLabel">Page Type</InputLabel>
+                        <Select
+                            labelId="pageTypeLabel"
+                            id="pageType"
+                            label="Page"
+                            fullWidth
+                            margin={"dense"}
+
+                        >
+                            <MenuItem value={"Markdown"}>Markdown</MenuItem>
+                            <MenuItem value={"Link"}>Link</MenuItem>
                         </Select>
-                    </FormControl>
-                    <Divider></Divider>
-                    <MDEditor
-                        value={pageData}
-                        onChange={setPageData}
-                    />
-                    <MDEditor.Markdown source={pageData} />
-                </>) : (<></>)}
+                        <Button variant={"outlined"} onClick={() => {
+                            setPagesApi();
+                        }}>Add Page</Button>
+
+                        <h2>Edit Page</h2>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Edit Page</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={page}
+                                label="Page"
+                                onChange={(e) => {
+                                    dispatch(setPage(e.target.value));
+                                }}
+                            >
+                                {pages.map((page) => {
+                                    return (
+                                        <MenuItem key={page.id} value={page.id}>{page.id} - {page.name}</MenuItem>
+                                    )
+                                })}
+                            </Select>
+                        </FormControl>
+                </Container>) : (<></>)}
+            <PageDetails></PageDetails>
+
         </Drawer>
     )
 }
