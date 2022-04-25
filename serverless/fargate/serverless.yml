@@ -1,0 +1,34 @@
+service: locaria-fargate-${env:theme}
+projectDir: ../../../
+provider:
+  name: aws
+  profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
+  runtime: nodejs14.x
+  region: ${file(../../../locaria.json):${self:custom.stage}.region}
+
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+resources:
+  Resources:
+    ECRLocariaRepo:
+      Type: AWS::ECR::Repository
+      Properties:
+        RepositoryName: locaria-repo-${env:theme}
+        ImageScanningConfiguration:
+          ScanOnPush: "true"
+    ECSLocariaCluster:
+      Type: AWS::ECS::Cluster
+      Properties:
+        ClusterName: locaria-cluster-${env:theme}
+    SecretDBURI:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Description: LOCARIADB conneciton string
+        Name: LOCARIADB-${env:theme}
+        SecretString:
+          "pg://${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}:${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}@${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}:${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}/locaria${env:theme}"
+
+plugins:
+  - serverless-stack-output
