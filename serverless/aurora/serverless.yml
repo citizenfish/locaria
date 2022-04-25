@@ -61,6 +61,7 @@ resources:
         Family: ${file(../../../locaria.json):${self:custom.stage}.auroraFamily}
         Parameters:
           max_connections: 5000
+          shared_preload_libraries: pg_cron
     AuroraRDSInstanceParameter:
       Type: AWS::RDS::DBParameterGroup
       Properties:
