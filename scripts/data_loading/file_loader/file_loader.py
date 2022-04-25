@@ -7,12 +7,15 @@ import boto3
 import tempfile
 
 debug = 0
-schema = 'locaria_core' if len(sys.argv) < 3  else sys.argv[2]
-upload_schema = 'locaria_uploads' if len(sys.argv) < 4  else sys.argv[3]
+config = get_local_config()
+schema = config.get('schema','locaria_core')
+upload_schema = config.get('upload_schema','locaria_uploads')
 table_name_mask = 'upload_file_'
 
-# Make database connection, retrieve any parameters and then a list of files to process
-db = database_connect()
+# Make database connection, retrieve any parameters and then a list of files to
+
+db = database_connect(config["env_var"])
+
 print("Database connection established")
 parameters = get_parameters(db,"file_upload")
 files_to_process = get_files_to_process(db,schema)
