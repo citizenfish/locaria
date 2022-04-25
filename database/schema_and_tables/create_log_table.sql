@@ -8,6 +8,8 @@ CREATE  TABLE locaria_core.logs(
     CONSTRAINT logs_pk PRIMARY KEY (id,log_timestamp)
 ) PARTITION BY RANGE(log_timestamp);
 
+-- Partition management
+-- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/PostgreSQL_Partitions.html
 SELECT partition_management.create_parent(
     p_parent_table => 'locaria_core.logs',
     p_control => 'log_timestamp',
@@ -23,5 +25,5 @@ SET infinite_time_partitions = true,
 WHERE parent_table='locaria_core.logs';
 
 
-
---SELECT cron.schedule('@hourly', $$CALL partition_management.run_maintenance_proc()$$);
+GRANT USAGE ON SCHEMA cron TO locaria;
+SELECT cron.schedule('@hourly', $$CALL partition_management.run_maintenance_proc()$$);
