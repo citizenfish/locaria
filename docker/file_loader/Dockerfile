@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt-get --assume-yes update
 RUN apt-get --assume-yes install gdal-bin gcc
 
-COPY .. .
+COPY ../../scripts/data_loading .
 
 RUN pip3 install psycopg
 RUN pip3 install boto3
