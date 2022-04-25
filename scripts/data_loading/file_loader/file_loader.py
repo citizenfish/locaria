@@ -14,7 +14,7 @@ table_name_mask = 'upload_file_'
 
 # Make database connection, retrieve any parameters and then a list of files to
 
-db = database_connect(config["env_var"])
+db = database_connect(f"{config["env_var"]}-{config["theme"]}")
 
 print("Database connection established")
 parameters = get_parameters(db,"file_upload")

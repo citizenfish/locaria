@@ -1,3 +1,4 @@
 {
-  "env_var" : "LOCARIADB"
+  "env_var" : "LOCARIADB",
+  "theme": "main"
 }
