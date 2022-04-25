@@ -2,10 +2,16 @@ import psycopg
 import os,subprocess
 import json
 
-def database_connect():
+def get_local_config():
+    f = open('config.json')
+    config = json.load(f)
+    f.close()
+    return config
+
+def database_connect(env_var):
     try:
         print("Establishing database connection")
-        return psycopg.connect(os.environ['LOCARIADB'])
+        return psycopg.connect(os.environ[env_var])
 
     except Exception as error:
         print("Cannot connect to database ... exiting", error)
