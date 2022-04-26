@@ -1,0 +1,8 @@
+{
+  "file_loader": {
+    "description": "File loader"
+  },
+  "foobar": {
+    "description": "foobar"
+  }
+}
