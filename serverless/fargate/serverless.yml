@@ -29,6 +29,26 @@ resources:
         Name: LOCARIADB-${env:theme}
         SecretString:
           "pg://${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}:${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}@${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}:${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}/locaria${env:theme}"
-
+    DockerRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - rds.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: "lambda:InvokeFunction"
+                  Resource: '*'
+        Path: "/"
 plugins:
   - serverless-stack-output
