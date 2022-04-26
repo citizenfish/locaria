@@ -2,15 +2,21 @@ import psycopg
 import os,subprocess
 import json
 
-def get_local_config():
-    f = open('config.json')
-    config = json.load(f)
-    f.close()
+def get_local_config(path):
+    try:
+        f = open(path)
+        config = json.load(f)
+        f.close()
+    except FileNotFoundError:
+        return {'env_var': 'LOCARIADB', 'theme':'main'}
+
     return config
 
 def database_connect(env_var):
     try:
         print("Establishing database connection")
+        #This will be used later by ogr2ogr so set a standard named environment variable
+        os.environ['LOCARIADB'] = os.environ[env_var]
         return psycopg.connect(os.environ[env_var])
 
     except Exception as error:
@@ -159,6 +165,7 @@ def ogr_loader(file, parameters):
     # Set up our variables for ogr2ogr command, TODO use peer authentication from FARGATE
 
     command = ['ogr2ogr']
+    #Note this is set at database connection time
     ogrConn = os.environ['LOCARIADB']
 
     filename = file.get('filename', f"/vsis3/{file['attributes']['path']}")
@@ -175,7 +182,7 @@ def ogr_loader(file, parameters):
     if 'layer' in file['attributes']:
         command.extend(file['attributes']['layer'])
 
-    print(f"**********Running ogr2ogr on {filename} with table {file['table_name']}************")
+    print(f"Running ogr2ogr on {filename} with table {file['table_name']}")
     #print(' '.join(command))
 
     try:

@@ -6,20 +6,16 @@ import time
 import boto3
 import tempfile
 
-debug = 0
-config = get_local_config()
+config = get_local_config('config.json')
 schema = config.get('schema','locaria_core')
 upload_schema = config.get('upload_schema','locaria_uploads')
-table_name_mask = 'upload_file_'
+table_name_mask = config.get('table_name_mask', 'upload_file_')
 
 # Make database connection, retrieve any parameters and then a list of files to
-
-db = database_connect(f"{config["env_var"]}-{config["theme"]}")
-
+db = database_connect(f"{config['env_var']}_{config['theme']}")
 print("Database connection established")
 parameters = get_parameters(db,"file_upload")
 files_to_process = get_files_to_process(db,schema)
-
 
 count = 0
 
@@ -30,10 +26,9 @@ for f in files_to_process["files"]:
     # Mandatory extension which tells us which loader to use
     extension = f['attributes'].get('ext', 'csv')
 
-
     # A file needs a url or S3 path if we are to process it
     if not 'path' in f['attributes'] and not 'url' in f['attributes'] and not "custom_loader" in f['attributes']:
-        update_file_status(db,schema,f['id'],{'status': 'FARGATE_ERROR', 'log_message' : {'error' : 'Missing file path, url or custom loader'}})
+        update_file_status(db,schema,f['id'],{'status': 'FARGATE_ERROR', 'message' : {'error' : 'Missing file path, url or custom loader'}})
         continue
 
     # The table we are loading to, can only be in uploads schema
@@ -67,7 +62,6 @@ for f in files_to_process["files"]:
 
         f.update(custom_loader_result)
         print(f)
-        #exit()
 
     else:
         # We are now expecting file to be in S3 so must have a bucket
@@ -86,7 +80,7 @@ for f in files_to_process["files"]:
             s3 = boto3.resource('s3')
             for bucket_list in s3.Bucket(f['attributes']['bucket']).objects.filter(Prefix=path):
                 if not path in bucket_list:
-                    update_file_status(db,schema,f['id'],{'log_message' : {'s3_status' : 'File not yet present in S3'}})
+                    update_file_status(db,schema,f['id'],{'status':'REGISTERED', 'message' : {'s3_status' : 'File not yet present in S3'}})
                     continue
                 else:
                     update_file_status(db,schema,f['id'],{'log_message' : {'s3_status' : 'File found in S3'}})
