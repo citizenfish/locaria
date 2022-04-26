@@ -5,7 +5,6 @@ WORKDIR /app
 RUN apt-get --assume-yes update
 RUN apt-get --assume-yes install gdal-bin gcc
 
-#COPY ../../scripts/data_loading .
 COPY .. .
 
 RUN pip3 install psycopg
