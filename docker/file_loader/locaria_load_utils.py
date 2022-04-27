@@ -196,8 +196,8 @@ def ogr_loader(file, parameters):
         result = subprocess.run(command,check=True, capture_output=True)
     except subprocess.CalledProcessError  as error:
         print("OGR2OGR ERROR")
-        print(error.returncode)
-        print(error.stderr.decode("utf-8") )
+        print(f"OGR2OGR Returncode: {error.returncode}")
+        print(f"OGR2OGR Error: {error.stderr.decode('utf-8')}")
 
         # never return the error here as it can leak the database password in command line
         return {'status' : 'ERROR', 'message': "OGR2OGR Error in execution"}
