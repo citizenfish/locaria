@@ -140,6 +140,8 @@ function getSageOutputs(stage, theme) {
 function sendSQLFiles(stage, theme, configFile, callBack) {
 
     const outputs = getSageOutputs(stage);
+    let themeOutputs=getThemeOutputs(stage,theme);
+
     //const conn=`pg://${configs.custom[stage].auroraMasterUser}:'${encodeURI(configs.custom[stage].auroraMasterPass)}'@${outputs.postgresHost}:${outputs.postgresPort}/locaria${theme}`;
 
     const conn = {
@@ -224,6 +226,15 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
                 fileData = fileData.replace(match[0], deployConfig.config[match[1]]);
             }
 
+            vars = /\{\{outputs\.(.*?)\}\}/g;
+            while (match = vars.exec(fileData)) {
+                fileData = fileData.replace(match[0], outputs[match[1]]);
+            }
+
+            vars = /\{\{themeOutputs\.(.*?)\}\}/g;
+            while (match = vars.exec(fileData)) {
+                fileData = fileData.replace(match[0], themeOutputs[match[1]]);
+            }
             //console.log(fileData);
             client.query(fileData, function (err, result) {
                 index++;
@@ -360,10 +371,9 @@ function deployDocker(stage, theme) {
                 executeWithCatch(`aws ecr get-login-password --profile ${configs['custom'][stage].profile} --region ${configs['custom'][stage].region} | docker login --username AWS --password-stdin ${outputs.ecrRepositoryUri}`, "./", () => {
                     console.log('deploy');
                     executeWithCatch(`docker push ${outputs.ecrRepositoryUri}`, "./", (stdout) => {
-                        console.log('done');
+                        console.log('sql updates');
                         //reload output as they have changed
-                        deploySystemMain(stage, theme);
-
+                        sendSQLFiles(stage, theme, 'database/dockers.json', deploySystemMain);
                     },() => {
                         deploySystemMain(stage, theme);
                     });

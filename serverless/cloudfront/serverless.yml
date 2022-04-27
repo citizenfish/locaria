@@ -16,7 +16,7 @@ resources:
     StaticSite:
       Type: AWS::S3::Bucket
       Properties:
-        AccessControl: BucketOwnerRead
+        AccessControl: PublicRead
         BucketName: locaria-${self:custom.stage}-${env:theme}
         CorsConfiguration:
           CorsRules:
