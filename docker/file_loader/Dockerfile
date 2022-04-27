@@ -2,6 +2,7 @@ FROM python:3.8-slim-buster
 WORKDIR /app
 
 #gdal-bin has ogr2ogr tool which we use to load data
+#RUN add-apt-repository ppa:ubuntugis/ppa
 RUN apt-get --assume-yes update
 RUN apt-get --assume-yes install gdal-bin gcc
 

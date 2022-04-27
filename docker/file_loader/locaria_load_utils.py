@@ -189,6 +189,9 @@ def ogr_loader(file, parameters):
     print(f"Running ogr2ogr on {filename} with table {file['table_name']}")
     #print(' '.join(command))
 
+    #TODO remove ddebug
+    foo = subprocess.run(['ogr2ogr','--version'], capture_output=True)
+    print(foo)
     try:
         result = subprocess.run(command,check=True, capture_output=True)
 
