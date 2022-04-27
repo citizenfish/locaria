@@ -54,8 +54,8 @@ resources:
                     - "s3:GetBucketLocation"
                     - "s3:DeleteObject"
                   Resource:
-                    - "arn:aws:s3:::locaria-${self:custom.stage}-data"
-                    - "arn:aws:s3:::locaria-${self:custom.stage}-data/*"
+                    - "arn:aws:s3:::locaria-${self:custom.stage}-${env:theme}"
+                    - "arn:aws:s3:::locaria-${self:custom.stage}-${env:theme}/*"
         Path: "/"
     DockerGenericExecuteRole:
       Type: "AWS::IAM::Role"
