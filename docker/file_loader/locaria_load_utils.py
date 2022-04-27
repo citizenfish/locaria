@@ -15,8 +15,12 @@ def get_local_config(path):
 def database_connect(env_var):
     try:
         print("Establishing database connection")
+        ##TODO DEBUG REMOVE
+        for k, v in sorted(os.environ.items()):
+            print(k+':', v)
         #This will be used later by ogr2ogr so set a standard named environment variable
         os.environ['LOCARIADB'] = os.environ[env_var]
+        print(f"Got: {os.environ[env_var]} FROM {env_var}")
         return psycopg.connect(os.environ[env_var])
 
     except Exception as error:
