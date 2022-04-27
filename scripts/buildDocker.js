@@ -69,6 +69,7 @@ function doCopy() {
                 theme: theme
             }
             fs.writeFileSync(`${buildDir}/config.json`, JSON.stringify(resource));
+
             const cmdLine = `docker buildx build --platform=linux/amd64 -f Dockerfile -t ${docker}:latest .`;
             exec(cmdLine, {cwd:buildDir}, (err, stdout, stderr) => {
                 console.log(err);
