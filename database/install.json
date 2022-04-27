@@ -26,7 +26,7 @@
 	"database/functions/locaria_gateway.sql",
 	"database/functions/locaria_internal_gateway.sql",
 	"database/reports/*",
-	"database/system_parameters/*",
+    "database/system_parameters/system_parameters.sql",
 	"database/schema_and_tables/create_search_views.sql"
   ]
 }
