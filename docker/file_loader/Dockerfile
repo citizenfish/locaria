@@ -1,12 +1,10 @@
-FROM python:3.8-slim-buster
+FROM osgeo/gdal
 WORKDIR /app
 
-#gdal-bin has ogr2ogr tool which we use to load data
-#RUN add-apt-repository ppa:ubuntugis/ppa
-RUN apt-get --assume-yes update
-RUN apt-get --assume-yes install gdal-bin gcc
-
 COPY .. .
+
+RUN apt-get update
+RUN apt install -y python3-pip
 
 RUN pip3 install psycopg
 RUN pip3 install boto3
