@@ -15,21 +15,21 @@ resources:
     ECRLocariaRepo:
       Type: AWS::ECR::Repository
       Properties:
-        RepositoryName: locaria-repo-${env:theme}
+        RepositoryName: locaria-repo-fileloader-${env:theme}
         ImageScanningConfiguration:
           ScanOnPush: "true"
     ECSLocariaCluster:
       Type: AWS::ECS::Cluster
       Properties:
-        ClusterName: locaria-cluster-${env:theme}
+        ClusterName: locaria-cluster-fileloader-${env:theme}
     SecretDBURI:
       Type: AWS::SecretsManager::Secret
       Properties:
         Description: LOCARIADB conneciton string
-        Name: LOCARIADB-${env:theme}
+        Name: LOCARIADB_${env:theme}
         SecretString:
-          "pg://${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}:${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}@${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}:${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}/locaria${env:theme}"
-    DockerRole:
+          "postgres://${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}:${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}@${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}:${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}/locaria${env:theme}"
+    DockerGenericRole:
       Type: "AWS::IAM::Role"
       Properties:
         AssumeRolePolicyDocument:
@@ -38,7 +38,7 @@ resources:
             - Effect: Allow
               Principal:
                 Service:
-                  - rds.amazonaws.com
+                  - ecs-tasks.amazonaws.com
               Action:
                 - 'sts:AssumeRole'
         Policies:
@@ -47,8 +47,81 @@ resources:
               Version: "2012-10-17"
               Statement:
                 - Effect: Allow
-                  Action: "lambda:InvokeFunction"
-                  Resource: '*'
+                  Action:
+                    - "s3:PutObject"
+                    - "s3:GetObject"
+                    - "s3:ListBucket"
+                    - "s3:GetBucketLocation"
+                    - "s3:DeleteObject"
+                  Resource:
+                    - "arn:aws:s3:::locaria-${self:custom.stage}-data"
+                    - "arn:aws:s3:::locaria-${self:custom.stage}-data/*"
         Path: "/"
+    DockerGenericExecuteRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - ecs-tasks.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                      - "ecr:GetAuthorizationToken"
+                      - "ecr:BatchCheckLayerAvailability"
+                      - "ecr:GetDownloadUrlForLayer"
+                      - "ecr:BatchGetImage"
+                  Resource:
+                    - "*"
+                - Effect: Allow
+                  Action:
+                    - "secretsmanager:GetSecretValue"
+                    - "kms:Decrypt"
+                  Resource:
+                    - "*"
+                - Effect: Allow
+                  Action:
+                    - "logs:CreateLogStream"
+                    - "logs:PutLogEvents"
+                  Resource:
+                    - "*"
+    DockerLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: locaria-cluster-log-${env:theme}
+    taskFileLoader:
+      Type: AWS::ECS::TaskDefinition
+      Properties:
+        RequiresCompatibilities:
+          - FARGATE
+        NetworkMode: awsvpc
+        TaskRoleArn: { 'Fn::GetAtt': [ DockerGenericRole, Arn ] }
+        ExecutionRoleArn: { 'Fn::GetAtt': [ DockerGenericExecuteRole, Arn ] }
+        ContainerDefinitions:
+          -
+            Image: { 'Fn::GetAtt': [ ECRLocariaRepo, RepositoryUri ] }
+            Essential: true
+            Name: "FileLoader"
+            Secrets:
+              -
+                Name: LOCARIADB_${env:theme}
+                ValueFrom: !Ref SecretDBURI
+            LogConfiguration:
+              LogDriver: awslogs
+              Options:
+                awslogs-group: locaria-cluster-log-${env:theme}
+                awslogs-region: ${file(../../../locaria.json):${self:custom.stage}.region}
+                awslogs-stream-prefix: locaria-cluster-fileloader-${env:theme}
+        Cpu: 256
+        Memory: 512
 plugins:
   - serverless-stack-output

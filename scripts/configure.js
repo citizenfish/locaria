@@ -354,14 +354,16 @@ function deployDocker(stage, theme) {
         console.log('Build');
         executeWithCatch(`node scripts/buildDocker.js  ${stage} ${theme} ${docker}`, "./", () => {
             console.log('tag');
-            const outputs=getThemeOutputs(stage,theme);
+            let outputs=getThemeOutputs(stage,theme);
             executeWithCatch(`docker tag ${docker}:latest ${outputs.ecrRepositoryUri}`, "./", () => {
                 console.log('Login');
                 executeWithCatch(`aws ecr get-login-password --profile ${configs['custom'][stage].profile} --region ${configs['custom'][stage].region} | docker login --username AWS --password-stdin ${outputs.ecrRepositoryUri}`, "./", () => {
                     console.log('deploy');
-                    executeWithCatch(`docker push ${outputs.ecrRepositoryUri}`, "./", () => {
+                    executeWithCatch(`docker push ${outputs.ecrRepositoryUri}`, "./", (stdout) => {
                         console.log('done');
+                        //reload output as they have changed
                         deploySystemMain(stage, theme);
+
                     },() => {
                         deploySystemMain(stage, theme);
                     });
@@ -455,7 +457,7 @@ function executeWithCatch(cmd, cwd, success, fail, options) {
             fail();
         } else {
             console.log(stdout);
-            success();
+            success(stdout);
         }
     });
 }

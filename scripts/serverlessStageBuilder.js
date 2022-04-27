@@ -79,6 +79,7 @@ const deployNode = (dir) => {
 			theme:theme
 		}
 	};
+	console.log(`#serverless deploy --stage ${stage}`);
 	let result=spawnSync('serverless', ['deploy','--stage',stage],options);
 	console.log(result.stdout.toString());
 }
