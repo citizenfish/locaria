@@ -1,0 +1,6 @@
+{
+  "stopOnError": true,
+  "tables": [
+    "database/system_parameters/docker_params.sql"
+  ]
+}
