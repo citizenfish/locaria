@@ -47,7 +47,7 @@ export default function AdminLoadFileData(props) {
             data: {
                 id_token: cookies['id_token'],
                 method: "load_preview_file_data",
-                table: props.fileDetails.table_name,
+                table: props.fileDetails.imported_table_name,
                 title_field: props.fileDetails.title_field,
                 text_field : props.fileDetails.text_field,
                 url_field: props.fileDetails.link_field,

@@ -117,7 +117,7 @@ export default function AdminDataMapper(props) {
                 api: "sapi",
                 data: {
                     method: "preview_file_data",
-                    table: fileDetails.table_name,
+                    table: fileDetails.imported_table_name,
                     id_token: cookies['id_token'],
                     limit : dataLimit,
                     offset : dataOffset,
