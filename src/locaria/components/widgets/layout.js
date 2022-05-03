@@ -177,7 +177,7 @@ const Layout = ({children, map, fullscreen = false}) => {
 
     React.useEffect(() => {
 
-        if (homeLocation !== false && homeLocation !== undefined && map === true && configs.location !== false) {
+        if (homeLocation !== false && homeLocation !== undefined && map === true && window.systemMain.searchLocation !== false) {
             mapRef.current.markHome(homeLocation.location);
             setCookies('location', homeLocation, {path: '/', sameSite: true});
         }

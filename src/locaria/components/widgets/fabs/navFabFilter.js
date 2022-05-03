@@ -21,12 +21,12 @@ const NavFabFilter = () => {
     const tags = useSelector((state) => state.searchDraw.tags);
     const categories = useSelector((state) => state.searchDraw.categories);
 
-    const [popoverOpen,setPopoverOpen] = useState(false)
+    const [popoverOpen, setPopoverOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
 
     const [popType, setPopType] = useState(null)
 
-    if(!open){
+    if (!open) {
         return null
     }
 
@@ -42,46 +42,52 @@ const NavFabFilter = () => {
         setPopoverOpen(false)
     };
 
-    return(
+    return (
         <div>
 
             <Box
-                sx={{mt:"80px", ml:"420px", top:0}}
-                style={{position:"absolute"}}
+                sx={{mt: "80px", ml: "420px", top: 0}}
+                style={{position: "absolute"}}
             >
-                <Fab id="categoryFab"
-                     variant="extended"
-                     size="small"
-                     aria-label="add"
-                     className={classes.navfab}
-                     sx={{mr:1}}
-                     onClick={handleOpen}
-                >
-                    <Badge color="secondary" badgeContent={categories.length} anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}>
-                        <Typography variant="body2" className={classes.fabText}>Category</Typography>
-                    </Badge>
-                    <ExpandMoreIcon sx={{ mr: 1 }} />
-                </Fab>
-                <Fab id="tagsFab"
-                     variant="extended"
-                     size="small"
-                     aria-label="add"
-                     className={classes.navfab}
-                     sx={{mr:1}}
-                     onClick={handleOpen}
-                >
-                    <Badge color="secondary" badgeContent={tags.length} anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}>
-                        <Typography variant="body2" className={classes.fabText}>Tags</Typography>
-                    </Badge>
-                    <ExpandMoreIcon sx={{ mr: 1 }} />
-                </Fab>
+                {window.systemMain.searchCategory &&
+                    <Fab id="categoryFab"
+                         variant="extended"
+                         size="small"
+                         aria-label="add"
+                         className={classes.navfab}
+                         sx={{mr: 1}}
+                         onClick={handleOpen}
+                    >
+                        <Badge color="secondary" badgeContent={categories.length} anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}>
+                            <Typography variant="body2" className={classes.fabText}>Category</Typography>
+                        </Badge>
+                        <ExpandMoreIcon sx={{mr: 1}}/>
+                    </Fab>
+                }
 
+                {window.systemMain.searchTags &&
+                    <Fab id="tagsFab"
+                         variant="extended"
+                         size="small"
+                         aria-label="add"
+                         className={classes.navfab}
+                         sx={{mr: 1}}
+                         onClick={handleOpen}
+                    >
+                        <Badge color="secondary" badgeContent={tags.length} anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}>
+                            <Typography variant="body2" className={classes.fabText}>Tags</Typography>
+                        </Badge>
+                        <ExpandMoreIcon sx={{mr: 1}}/>
+                    </Fab>
+                }
+
+                {window.systemMain.searchDistance &&
                     <Fab id="distanceFab"
                          variant="extended"
                          size="small"
@@ -95,8 +101,9 @@ const NavFabFilter = () => {
                         }}>
                             <Typography variant="body2" className={classes.fabText}>Distance</Typography>
                         </Badge>
-                        <ExpandMoreIcon sx={{ mr: 1 }} />
+                        <ExpandMoreIcon sx={{mr: 1}}/>
                     </Fab>
+                }
             </Box>
             <Popover open={popoverOpen}
                      anchorEl={anchorEl}
@@ -105,24 +112,24 @@ const NavFabFilter = () => {
                          vertical: 'bottom',
                          horizontal: 'left'
                      }}
-                     sx={{mt:1}}
+                     sx={{mt: 1}}
 
             >
                 {
                     popType === 'categoryFab' &&
-                    <Box sx={{minWidth:200,maxWidth:300}}>
-                        <CategorySelect mode ={"list"}/>
+                    <Box sx={{minWidth: 200, maxWidth: 300}}>
+                        <CategorySelect mode={"list"}/>
                     </Box>
                 }
                 {
                     popType === 'tagsFab' &&
-                    <Box sx={{minWidth:200,maxWidth:300,p:1}}>
+                    <Box sx={{minWidth: 200, maxWidth: 300, p: 1}}>
                         <TagSelect/>
                     </Box>
                 }
                 {
                     popType === 'distanceFab' &&
-                    <Box sx={{minWidth:200,maxWidth:300, p:1, minHeight:100}}>
+                    <Box sx={{minWidth: 200, maxWidth: 300, p: 1, minHeight: 100}}>
                         <DistanceSelect/>
                     </Box>
 

@@ -13,5 +13,9 @@ SELECT 'systemMain',
          "clusterCutOff": 5,
          "mapAttribution": "© Crown copyright and database rights 2022 OS",
          "clusterWidthMod": 20,
-         "clusterAlgorithm": "KMEANS"
+         "clusterAlgorithm": "KMEANS",
+         "searchDistance": true,
+         "searchLocation": true,
+         "searchTags": true,
+         "searchCategory": true
        }'::JSONB;
