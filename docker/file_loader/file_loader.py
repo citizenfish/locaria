@@ -103,6 +103,7 @@ for f in files_to_process["files"]:
 
     if result['status'] == 'FARGATE_PROCESSED':
         result['attributes'] = {'imported_table_name' : f['table_name'], 'processing_time' : round(time.time() - start_time,2), 'record_count' : get_record_count(db, f['table_name'])}
+
         # Custom loaders do not need any additional mapping/user intervention
         if 'auto_mapped' in f['attributes']:
             result['status'] = 'IMPORTED'
