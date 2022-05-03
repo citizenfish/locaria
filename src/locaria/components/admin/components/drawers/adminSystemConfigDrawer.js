@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react"
 
-import {Drawer, InputLabel, Select, TextField} from "@mui/material";
+import {Checkbox, Drawer, FormControlLabel, FormGroup, InputLabel, Select, TextField} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
@@ -108,6 +108,20 @@ export default function AdminSystemConfigDrawer(props) {
                         }}
 
                     />
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox defaultChecked checked={config.searchDistance}/>} label="Distance Enabled" onChange={(e)=>{
+                            dispatch(setSystemConfigValue({key:"searchDistance",value:e.target.checked}));
+                        }}/>
+                        <FormControlLabel control={<Checkbox defaultChecked checked={config.searchLocation}/>} label="Location Enabled" onChange={(e)=>{
+                            dispatch(setSystemConfigValue({key:"searchLocation",value:e.target.checked}));
+                        }}/>
+                        <FormControlLabel control={<Checkbox defaultChecked  checked={config.searchTags}/>} label="Tags Enabled" onChange={(e)=>{
+                            dispatch(setSystemConfigValue({key:"searchTags",value:e.target.checked}));
+                        }}/>
+                        <FormControlLabel control={<Checkbox defaultChecked checked={config.searchCategory}/>} label="Category Enabled" onChange={(e)=>{
+                            dispatch(setSystemConfigValue({key:"searchCategory",value:e.target.checked}));
+                        }}/>
+                    </FormGroup>
                     <h1>Maps</h1>
                     <TextField
                         id="mapXYZ"
@@ -177,16 +191,6 @@ export default function AdminSystemConfigDrawer(props) {
                             dispatch(setSystemConfigValue({key:"clusterWidthMod",value:parseInt(e.target.value)}));
                         }}
                     />
-                   {/* <TextField
-                        id="clusterAlgorithm"
-                        label="clusterAlgorithm"
-                        defaultValue={"KMEANS"}
-                        variant="filled"
-                        value={config.clusterAlgorithm}
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
-                        }}
-                    />*/}
                     <FormControl fullWidth>
                         <InputLabel id="clusterAlgorithm-label">Age</InputLabel>
                         <Select
