@@ -84,7 +84,7 @@ def get_record_count(db,table):
         count = db.execute(f"SELECT count(*) FROM {table}")
         return count.fetchone()[0]
     except Exception as error:
-        return(error)
+        return(str(error))
 
 def process_file_csv(db,file):
     print(f"CSV PROCESSING: {file['id']}")
@@ -187,16 +187,10 @@ def ogr_loader(file, parameters):
         command.extend(file['attributes']['layer'])
 
     print(f"Running ogr2ogr on {filename} with table {file['table_name']}")
-    #print(' '.join(command))
 
-    #TODO remove ddebug
-    foo = subprocess.run(['ogr2ogr','--version'], capture_output=True)
-    print(foo)
     try:
         result = subprocess.run(command,check=True, capture_output=True)
     except subprocess.CalledProcessError  as error:
-        print("OGR2OGR ERROR")
-        print(f"OGR2OGR Returncode: {error.returncode}")
         print(f"OGR2OGR Error: {error.stderr.decode('utf-8')}")
 
         # never return the error here as it can leak the database password in command line
