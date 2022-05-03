@@ -34,6 +34,7 @@ for f in files_to_process["files"]:
     # The table we are loading to, can only be in uploads schema
     table_name = f['attributes'].get('table_name', f"{table_name_mask}{f['id']}")
     # For multiple layers we don't want to set a table name
+
     if table_name == 'no_table_name':
         f['table_name'] = 'ignore'
     else:
@@ -101,7 +102,7 @@ for f in files_to_process["files"]:
         result = process_file_generic(db,f)
 
     if result['status'] == 'FARGATE_PROCESSED':
-        result['attributes'] = {'table_name' : f['table_name'], 'processing_time' : round(time.time() - start_time,2), 'record_count' : get_record_count(db, f['table_name'])}
+        result['attributes'] = {'imported_table_name' : f['table_name'], 'processing_time' : round(time.time() - start_time,2), 'record_count' : get_record_count(db, f['table_name'])}
         # Custom loaders do not need any additional mapping/user intervention
         if 'auto_mapped' in f['attributes']:
             result['status'] = 'IMPORTED'
