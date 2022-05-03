@@ -622,7 +622,9 @@ export default class UseStyles {
 /*
 				whiteSpace: "nowrap",
 */
-				marginBottom: "5px !important"
+				marginBottom: "5px !important",
+				textTransform: "capitalize"
+
 
 			},
 
@@ -740,7 +742,8 @@ export default class UseStyles {
 				color: theme.palette.secondary.main,
 				'&:hover': {
 					cursor:"pointer"
-				}
+				},
+				float: 'left'
 			},
 
 			mapDial: {
@@ -901,6 +904,8 @@ export default class UseStyles {
 				zIndex:1,
 				backgroundColor:  alpha(theme.palette.primary.darker, 0.6)+" !important",
 				color:  theme.palette.text.darker+" !important",
+				width: 40,
+				paddingLeft: "10px !important"
 
 			},
 			mapZoomOutButton: {
@@ -909,6 +914,8 @@ export default class UseStyles {
 				right: "20px !important",
 				zIndex:1,
 				backgroundColor:  alpha(theme.palette.primary.darker, 0.6)+" !important",
+				width: 40,
+				paddingLeft: "10px !important"
 			},
 			ReportMap: {
 				height: "700px",

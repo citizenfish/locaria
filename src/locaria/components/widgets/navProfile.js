@@ -32,10 +32,6 @@ const NavProfile = () => {
         window.location = `/`;
     }
 
-    const handleAdmin = function () {
-
-    }
-
     if (configs.login === true) {
 
         if (cookies['id_token'] === undefined || cookies['id_token'] === "null") {

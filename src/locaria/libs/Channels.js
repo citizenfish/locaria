@@ -19,6 +19,7 @@ export default class Channels {
 		return display;
 	}
 
+
 	getChannelProperty(channel,property) {
 		return this.channels[channel][property];
 

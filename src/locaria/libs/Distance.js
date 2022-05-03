@@ -14,7 +14,7 @@
 
 
 const units= {
-	"mile":{"lang":"Miles",value:1609},
+	"miles":{"lang":"Miles",value:1609},
 	"km":{"lang":"KM",value:1000}
 }
 

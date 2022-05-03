@@ -1,7 +1,8 @@
 import React from 'react';
 
 import {
-    deleteTag,
+    addTag,
+    deleteTag, openSearchDrawer,
     resetTags
 } from "../../redux/slices/searchDrawerSlice";
 
@@ -23,6 +24,7 @@ const TagSelect = (props) => {
     const dispatch = useDispatch()
 
     const tags = useSelector((state) => state.searchDraw.tags);
+    const tagList = useSelector((state) => state.searchDraw.tagList);
 
     return (
         <div sx={ {mw:300}}>
@@ -60,6 +62,13 @@ const TagSelect = (props) => {
                         sx={{m:1}}
             >
                 {configs.resetTagsText}
+            </Typography>
+            <Typography variant="body1"
+                        className={classes.resetCategorySelectText}
+                        onClick={() => {dispatch(addTag(tagList))}}
+                        sx={{m:1}}
+            >
+                {configs.selectAllTagsText}
             </Typography>
         </div>
     )

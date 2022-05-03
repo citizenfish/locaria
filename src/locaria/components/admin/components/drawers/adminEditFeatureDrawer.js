@@ -26,6 +26,7 @@ import {setTitle, setTotal} from "../../redux/slices/adminSlice";
 import Tags from "../../../widgets/tags"
 import Container from "@mui/material/Container";
 import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
+import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 
 
 const  AdminEditFeatureDrawer = (props) => {
@@ -50,6 +51,8 @@ const  AdminEditFeatureDrawer = (props) => {
 			dispatch(closeEditDrawer());
 			dispatch(closeUploadDrawer());
 			dispatch(closeSystemConfigDrawer());
+			dispatch(closeAdminPageDrawer());
+
 			dispatch(setTitle('Feature Edit'));
 
 		}

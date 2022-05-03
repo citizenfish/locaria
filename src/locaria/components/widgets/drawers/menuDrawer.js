@@ -50,7 +50,7 @@ const MenuDrawer = function () {
 					onKeyDown={()=>{dispatch(closeMenuDraw())}}
 				>
 
-					{configs.landing? <ListItem onClick={() => {
+					{configs.landing? <ListItem button onClick={() => {
 						dispatch(openLandingDraw())
 					}} key={'Intro'}>
 						<ListItemIcon>
@@ -81,7 +81,7 @@ const MenuDrawer = function () {
 
 					{window.systemPages.map(function (page) {
 						return (
-							<ListItem onClick={()=>{
+							<ListItem button onClick={()=>{
 								if(page.type==="link") {
 									window.location=page.link;
 								} else {

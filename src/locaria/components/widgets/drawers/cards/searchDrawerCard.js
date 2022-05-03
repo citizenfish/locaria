@@ -6,7 +6,7 @@ import CardImageLoader from "../../cardImageLoader";
 import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 import {Divider} from "@mui/material";
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {openViewDraw} from "../../../redux/slices/viewDrawerSlice";
 import Grid from "@mui/material/Grid";
 import {setLocation} from "../../../redux/slices/layoutSlice";
@@ -19,6 +19,9 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 	const classes = useStyles();
 	const dispatch = useDispatch()
 	const distanceLib = new Distance();
+
+	const distanceType = useSelector((state) => state.searchDraw.distanceType);
+
 
 	const mapOver = (e) => {
 		mapRef.current.setHighlighted("default", "data", [e.currentTarget.getAttribute('data-fid')]);
@@ -33,7 +36,7 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 	const DistanceDisplay = () => {
 		if(properties.distance)
 		return (
-			<Chip label={`Distance: ${distanceLib.distanceFormatNice(properties.distance,'km')}`} size="small" variant="outlined" className={classes.chipLight}></Chip>
+			<Chip label={`Distance: ${distanceLib.distanceFormatNice(properties.distance,distanceType)}`} size="small" variant="outlined" className={classes.chipLight}></Chip>
 		)
 		else
 			return (<></>)

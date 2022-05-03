@@ -167,42 +167,14 @@ const Map = forwardRef((props, ref) => {
 			</>
 		)
 
-		return (
-		<SpeedDial
-			ariaLabel="SpeedDial"
-			icon={<MapIcon fontSize="medium"/>}
-			className={classes.mapDial}
-			direction={'up'}
-		>
-
-			<SpeedDialAction
-				key={'reset'}
-				icon={<RestartAltIcon/>}
-				tooltipTitle={'Reset Map'}
-				onClick={mapReset}
-			/>
-			<SpeedDialAction
-				key={'zoomIn'}
-				icon={<ZoomInIcon/>}
-				tooltipTitle={'Zoom In'}
-				onClick={mapZoomIn}
-			/>
-			<SpeedDialAction
-				key={'zoomOut'}
-				icon={<ZoomOutIcon/>}
-				tooltipTitle={'Zoom Out'}
-				onClick={mapZoomOut}
-			/>
-
-
-		</SpeedDial>
-		)
 	}
 
 	return (
 		<div id={props.id} className={classes[props.className]}>
 			<MapSpeedDial/>
-			<div className={classes.mapAttribution}>{window.systemMain.mapAttribution}</div>
+			{window.systemMain.mapAttribution&&
+				<div className={classes.mapAttribution}>{window.systemMain.mapAttribution}</div>
+			}
 		</div>
 	)
 });

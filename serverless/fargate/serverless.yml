@@ -5,7 +5,19 @@ provider:
   profile: ${file(../../../locaria.json):${self:custom.stage}.profile}
   runtime: nodejs14.x
   region: ${file(../../../locaria.json):${self:custom.stage}.region}
-
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - ecs:*
+          Resource:
+            - "*"
+        - Effect: 'Allow'
+          Action:
+            - iam:*
+          Resource:
+            - "*"
 
 custom:
   stage: "${opt:stage, self:provider.stage}"
@@ -28,7 +40,7 @@ resources:
         Description: LOCARIADB conneciton string
         Name: LOCARIADB_${env:theme}
         SecretString:
-          "postgres://${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}:${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}@${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}:${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}/locaria${env:theme}"
+          "postgresql://${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}:${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}@${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}:${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}/locaria${env:theme}"
     DockerGenericRole:
       Type: "AWS::IAM::Role"
       Properties:
@@ -123,5 +135,17 @@ resources:
                 awslogs-stream-prefix: locaria-cluster-fileloader-${env:theme}
         Cpu: 256
         Memory: 512
+
+functions:
+  ecsRunner:
+    handler: functions/ecsRunTask.run
+    vpc:
+      securityGroupIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):ServerlessSecurityGroup}
+      subnetIds:
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
+        - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
+
+
 plugins:
   - serverless-stack-output

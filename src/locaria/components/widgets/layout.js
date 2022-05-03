@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import {NavProfile} from "./navProfile";
 import {SearchDrawer} from "./drawers/searchDrawer";
 import {ViewDrawer} from "./drawers/viewDrawer";
 import LandingDrawer from "./drawers/landingDrawer";

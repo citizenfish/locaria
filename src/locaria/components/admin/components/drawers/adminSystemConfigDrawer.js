@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react"
 
-import {Drawer, TextField} from "@mui/material";
+import {Drawer, InputLabel, Select, TextField} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
@@ -13,6 +13,9 @@ import {setEditData} from "../../redux/slices/editDrawerSlice";
 import {setSystemConfig, setSystemConfigValue} from "../../redux/slices/systemConfigDrawerSlice";
 import {useCookies} from "react-cookie";
 import Slider from "@mui/material/Slider";
+import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
 
 export default function AdminSystemConfigDrawer(props) {
 
@@ -44,8 +47,10 @@ export default function AdminSystemConfigDrawer(props) {
 
         if (open) {
             history.push(`/Admin/System/`);
-            dispatch(closeUploadDrawer())
-            dispatch(closeEditFeatureDrawer())
+            dispatch(closeUploadDrawer());
+            dispatch(closeEditFeatureDrawer());
+            dispatch(closeAdminPageDrawer());
+
             dispatch(setTitle('System'));
             getConfig();
         }
@@ -172,7 +177,7 @@ export default function AdminSystemConfigDrawer(props) {
                             dispatch(setSystemConfigValue({key:"clusterWidthMod",value:parseInt(e.target.value)}));
                         }}
                     />
-                    <TextField
+                   {/* <TextField
                         id="clusterAlgorithm"
                         label="clusterAlgorithm"
                         defaultValue={"KMEANS"}
@@ -181,8 +186,23 @@ export default function AdminSystemConfigDrawer(props) {
                         onChange={(e)=>{
                             dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
                         }}
-                    />
-
+                    />*/}
+                    <FormControl fullWidth>
+                        <InputLabel id="clusterAlgorithm-label">Age</InputLabel>
+                        <Select
+                            labelId="clusterAlgorithm-label"
+                            id="clusterAlgorithm"
+                            value={config.clusterAlgorithm}
+                            label="Age"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
+                            }}
+                        >
+                            <MenuItem value={"DBSCAN"}>DBSCAN</MenuItem>
+                            <MenuItem value={"KMEANSDBSCAN"}>KMEANSDBSCAN</MenuItem>
+                            <MenuItem value={"KMEANS"}>KMEANS</MenuItem>
+                        </Select>
+                    </FormControl>
                     <Button onClick={(e) => {
                         setConfig(e)
                     }}>Save</Button>

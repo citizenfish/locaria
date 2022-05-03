@@ -17,6 +17,7 @@ import Divider from "@mui/material/Divider";
 import MDEditor from '@uiw/react-md-editor';
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 
 
 export default function AdminPageDrawer(props) {
@@ -56,8 +57,9 @@ export default function AdminPageDrawer(props) {
 
         if (open) {
             history.push(`/Admin/Pages/`);
-            dispatch(closeUploadDrawer())
-            dispatch(closeEditFeatureDrawer())
+            dispatch(closeUploadDrawer());
+            dispatch(closeEditFeatureDrawer());
+            dispatch(closeSystemConfigDrawer());
             dispatch(setTitle('System'));
             getPages();
         }
