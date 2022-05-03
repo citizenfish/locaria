@@ -19,7 +19,7 @@ $$
 
         RAISE NOTICE ' ASYNC %', ret_var;
 
-        test_params = test_params || jsonb_build_object('mode','RequireResponse');
+        test_params = test_params || jsonb_build_object('mode','RequestResponse');
         SELECT locaria_core.aws_lambda_interface(test_params) INTO ret_var;
 
         RAISE NOTICE ' ASYNC %', ret_var;

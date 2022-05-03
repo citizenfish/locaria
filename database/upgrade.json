@@ -13,7 +13,8 @@
     "database/functions/messages/add_message.sql",
     "database/functions/locaria_gateway.sql",
     "database/functions/search/location_search.sql",
-    "database/functions/utility/unique_array_elements.sql"
+    "database/functions/utility/unique_array_elements.sql",
+    "database/functions/utility/aws_lambda_interface.sql"
   ],
   "substitutions": "../tests.json"
 }
