@@ -32,6 +32,8 @@ const Admin= () => {
 	const adminEditDrawer = useSelector((state) => state.adminEditDrawer.open);
 	const systemConfigDrawer = useSelector((state) => state.systemConfigDrawer.open);
 	const adminPageDrawer = useSelector((state) => state.adminPageDrawer.open);
+	const adminUploadDrawer = useSelector((state) => state.adminUploadDrawer.open);
+
 
 
 	useEffect(() => {
@@ -65,7 +67,12 @@ const Admin= () => {
 			return;
 		}
 
-		dispatch(openUploadDrawer());
+		if (location.pathname.match('/Upload/')&&adminUploadDrawer===false) {
+			dispatch(openUploadDrawer());
+			return
+		}
+
+		dispatch(openSystemConfigDrawer());
 
 	}
 

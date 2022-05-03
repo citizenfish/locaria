@@ -21,6 +21,7 @@ import Container from "@mui/material/Container";
 
 import FAQ from "../faq";
 import ContactForm from "../contactForm"
+import ReactDOM from "react-dom";
 
 
 const PageDrawer = () => {
@@ -68,6 +69,11 @@ const PageDrawer = () => {
 
     }, [open]);
 
+    React.useEffect(() => {
+        if(document.getElementById('contact'))
+            ReactDOM.render(<ContactForm/>, document.getElementById('contact'));
+    });
+
     if (pageData) {
         return (
             <Drawer
@@ -86,9 +92,8 @@ const PageDrawer = () => {
                     </IconButton>
                 </div>
                 <Container>
-
                     <MDEditor.Markdown source={pageData.data} className={classes.pageDrawMD}/>
-                    {pageData.plugin? pagePlugins[pageData.plugin]:<></>}
+                    {/*{pageData.plugin? pagePlugins[pageData.plugin]:<></>}*/}
                 </Container>
             </Drawer>
 

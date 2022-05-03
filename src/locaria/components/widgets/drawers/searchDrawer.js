@@ -2,7 +2,7 @@ import React, {forwardRef, useContext, useEffect, useRef} from "react";
 
 import {useHistory} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
-import {setSearch, setTotalPages,} from "../../redux/slices/searchDrawerSlice";
+import {clearRefresh, setSearch, setTotalPages,} from "../../redux/slices/searchDrawerSlice";
 import {closeViewDraw} from "../../redux/slices/viewDrawerSlice";
 import {openLayout, closeLayout} from "../../redux/slices/layoutSlice";
 import {closeLandingDraw} from "../../redux/slices/landingDrawerSlice";
@@ -39,6 +39,8 @@ const SearchDrawer = forwardRef((props, ref) => {
         const locationShow = useSelector((state) => state.searchDraw.locationShow);
         const resolutions = useSelector((state) => state.layout.resolutions);
         const distance = useSelector((state) => state.searchDraw.distance);
+        const distanceType = useSelector((state) => state.searchDraw.distanceType);
+        const refresh = useSelector((state) => state.searchDraw.refresh);
         const tags = useSelector((state) => state.searchDraw.tags);
         const page = useSelector((state) => state.searchDraw.page);
         const homeLocation = useSelector((state) => state.layout.homeLocation);
@@ -70,32 +72,17 @@ const SearchDrawer = forwardRef((props, ref) => {
             }
         }, [open]);
 
-        useEffect(() => {
-            setChannel(channels.getChannelProperties(categories[0]));
-            if (open === true) {
-                history.push(`/Search/${JSON.stringify(categories)}/${search}`);
-                doSearch('new');
-            }
-        }, [categories, tags, open]);
 
         useEffect(() => {
-            if (open === true) {
+            if (refresh === true && open === true) {
+                setChannel(channels.getChannelProperties(categories[0]));
+
                 history.push(`/Search/${JSON.stringify(categories)}/${search}`);
                 document.getElementById('mySearch').value = search;
+                dispatch(clearRefresh());
                 doSearch('new');
             }
-        }, [search]);
-
-        useEffect(() => {
-            doSearch('new');
-        }, [page]);
-
-        useEffect(() => {
-            if (open === true) {
-                doSearch('new');
-            }
-        }, [distance]);
-
+        }, [refresh]);
 
         useEffect(() => {
 
@@ -156,7 +143,7 @@ const SearchDrawer = forwardRef((props, ref) => {
             if (open !== true)
                 return;
             //let newSearchValue = document.getElementById('mySearch').value;
-            let offset = (page-1)*window.systemMain.searchLimit;
+            let offset = (page - 1) * window.systemMain.searchLimit;
             setSearchResults([]);
 
 
@@ -169,7 +156,7 @@ const SearchDrawer = forwardRef((props, ref) => {
                     "search_text": search,
                     "limit": window.systemMain.searchLimit,
                     "offset": offset,
-                    "mask": {distance : true, fid: true, category: true, tags: true, description: {title: true, text: true}}
+                    "mask": {distance: true, fid: true, category: true, tags: true, description: {title: true, text: true}}
                 }
             };
 
@@ -178,7 +165,7 @@ const SearchDrawer = forwardRef((props, ref) => {
             }
 
             if (distance > 0) {
-                packetSearch.data.location_distance = distanceLib.distanceActual(distance, 'km');
+                packetSearch.data.location_distance = distanceLib.distanceActual(distance, distanceType);
                 packetSearch.data.location = `SRID=4326;POINT(${homeLocation.location[0]} ${homeLocation.location[1]})`;
             }
 
@@ -209,8 +196,6 @@ const SearchDrawer = forwardRef((props, ref) => {
             ]);
             //window.websocket.send(packet);
         }
-
-
 
 
         return (

@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
 import Checkbox from '@mui/material/Checkbox';
 import {useCookies} from "react-cookie";
+import {useSelector} from "react-redux";
 
 
 export default function AdminBoundaryLoader(props) {
@@ -14,6 +15,7 @@ export default function AdminBoundaryLoader(props) {
     const [chosenAuthority,setChosenAuthority] = useState({id:0})
     const [chosenBoundaries, setChosenBoundaries] = useState([])
     const [cookies, setCookies] = useCookies(['location'])
+    const open = useSelector((state) => state.adminUploadDrawer.open);
 
 
     const boundaries = [
@@ -34,38 +36,39 @@ export default function AdminBoundaryLoader(props) {
     ]
 
     useEffect(() =>{
+        if(open) {
+            //WS for adding data to system
+            window.websocket.registerQueue("addBoundaryFile", function (json) {
+                props.forceRefresh(Date.now())
+            })
 
-        //WS for adding data to system
-        window.websocket.registerQueue("addBoundaryFile", function (json) {
-            props.forceRefresh(Date.now())
-        })
-
-        //WS for getting a list of authorities
-        window.websocket.registerQueue("getAuthorities", function (json) {
-            let res = json.packet
-            if(res.authorities && res.authorities.length !== 0) {
-                //TODO generic sort function
-                res.authorities.push({id:0, name:'-- Choose Local Authority --'})
-                res.authorities.sort(function(a, b) {
+            //WS for getting a list of authorities
+            window.websocket.registerQueue("getAuthorities", function (json) {
+                let res = json.packet
+                if (res.authorities && res.authorities.length !== 0) {
+                    //TODO generic sort function
+                    res.authorities.push({id: 0, name: '-- Choose Local Authority --'})
+                    res.authorities.sort(function (a, b) {
                         var textA = a.name.toUpperCase();
                         var textB = b.name.toUpperCase();
                         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                     })
 
-                setAuthorities(res.authorities)
-            }
-        })
-        //Get authority list if exists
-        window.websocket.send({
-            "queue" : 'getAuthorities',
-            "api" : "sapi",
-            "data" : {
-                "method": "report",
-                'report_name' :'get_local_authority_list',
-                "id_token": cookies['id_token']
+                    setAuthorities(res.authorities)
                 }
-            }
-        )
+            })
+            //Get authority list if exists
+            window.websocket.send({
+                    "queue": 'getAuthorities',
+                    "api": "sapi",
+                    "data": {
+                        "method": "report",
+                        'report_name': 'get_local_authority_list',
+                        "id_token": cookies['id_token']
+                    }
+                }
+            )
+        }
     },[])
 
 

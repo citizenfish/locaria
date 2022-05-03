@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
 import {useCookies} from "react-cookie";
 import Checkbox from "@mui/material/Checkbox";
+import {useSelector} from "react-redux";
 
 
 export default function AdminEventsLoader(props) {
@@ -14,42 +15,45 @@ export default function AdminEventsLoader(props) {
     const [cookies, setCookies] = useCookies(['location'])
     const [recency,setRecency] = useState(60)
     const [autoUpdate,setAutoUpdate] = useState('')
+    const open = useSelector((state) => state.adminUploadDrawer.open);
 
     useEffect(() =>{
+        if(open) {
+            //WS for adding data to system
+            window.websocket.registerQueue("addEventsFile", function (json) {
+                props.forceRefresh(Date.now())
+            })
 
-        //WS for adding data to system
-        window.websocket.registerQueue("addEventsFile", function (json) {
-            props.forceRefresh(Date.now())
-        })
+            //WS for getting a list of authorities
+            //TODO refactor as we are getting authorities in 2 components
+            window.websocket.registerQueue("getAuthoritiesEvents", function (json) {
+                let res = json.packet
+                if (res.authorities && res.authorities.length !== 0) {
+                    //TODO generic sort function
+                    res.authorities.push({id: 0, name: '-- Choose Local Authority --'})
+                    res.authorities.sort(function (a, b) {
+                        var textA = a.name.toUpperCase();
+                        var textB = b.name.toUpperCase();
+                        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                    })
 
-        //WS for getting a list of authorities
-        //TODO refactor as we are getting authorities in 2 components
-        window.websocket.registerQueue("getAuthoritiesEvents", function (json) {
-            let res = json.packet
-            if(res.authorities && res.authorities.length !== 0) {
-                //TODO generic sort function
-                res.authorities.push({id:0, name:'-- Choose Local Authority --'})
-                res.authorities.sort(function(a, b) {
-                    var textA = a.name.toUpperCase();
-                    var textB = b.name.toUpperCase();
-                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                })
-
-                setAuthorities(res.authorities)
-            }
-        })
-        //Get authority list if exists
-        window.websocket.send({
-                "queue" : 'getAuthoritiesEvents',
-                "api" : "sapi",
-                "data" : {
-                    "method": "report",
-                    'report_name' :'get_local_authority_list',
-                    "id_token": cookies['id_token']
+                    setAuthorities(res.authorities)
                 }
-            }
-        )
-    },[])
+            })
+            //Get authority list if exists
+
+            window.websocket.send({
+                    "queue": 'getAuthoritiesEvents',
+                    "api": "sapi",
+                    "data": {
+                        "method": "report",
+                        'report_name': 'get_local_authority_list',
+                        "id_token": cookies['id_token']
+                    }
+                }
+            )
+        }
+    },[open])
 
 
     const authoritiesList = (arr) => {

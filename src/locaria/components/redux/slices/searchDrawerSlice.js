@@ -8,9 +8,11 @@ export const searchDrawerSlice = createSlice({
 		search: '',
 		locationShow: false,
 		distance: 0,
+		distanceType: 'km',
 		tags: [],
 		resolutionUpdate: false,
 		tagList: [],
+		refresh: false,
 		page: 1,
 		totalPages: 0
 	},
@@ -40,6 +42,7 @@ export const searchDrawerSlice = createSlice({
 			if (action.payload && action.payload.search){
 				state.search = action.payload.search;
 			}
+			state.refresh=true;
 
 		},
 		closeSearchDrawer: (state) => {
@@ -53,17 +56,22 @@ export const searchDrawerSlice = createSlice({
 				state.categories.splice(state.categories.indexOf(action.payload), 1);
 				state.tags = []; //If category changes then so must tags
 			}
+			state.refresh=true;
 		},
 		clearSearchCategory: (state) => {
 			state.categories = [];
 			state.tags = [];
 			state.page=1;
 			state.totalPages=0;
+			state.refresh=true;
+
 		},
 		setSearch: (state,action) => {
 			state.search = action.payload.search;
 			state.page=1;
 			state.totalPages=0;
+			state.refresh=true;
+
 		},
 		toggleLocationShow: (state) => {
 			state.locationShow = !state.locationShow;
@@ -72,36 +80,59 @@ export const searchDrawerSlice = createSlice({
 			state.distance = action.payload;
 			state.page=1;
 			state.totalPages=0;
+			state.refresh=true;
+
+		},
+		setDistanceType: (state,action) => {
+			state.distanceType = action.payload;
+			state.refresh=true;
 		},
 		setTags: (state, action) => {
 			state.tags = action.payload;
 			state.page=1;
 			state.totalPages=0;
+			state.refresh=true;
+
 		},
 		deleteTag: (state,action) => {
 			state.tags.splice(state.tags.indexOf(action.payload),1);
 			state.page=1;
 			state.totalPages=0;
+			state.refresh=true;
+
 		},
 		resetTags: (state,action) => {
 			state.tags = [];
 			state.page=1;
 			state.totalPages=0;
+			state.refresh=true;
+
 		},
 		addTag: (state,action) => {
-			if(state.tags.indexOf(action.payload) === -1)
-				state.tags.push(action.payload);
+			if(Array.isArray(action.payload)) {
+				state.tags=action.payload;
+			} else {
+				if (state.tags.indexOf(action.payload) === -1)
+					state.tags.push(action.payload);
+			}
 			state.page=1;
 			state.totalPages=0;
+			state.refresh=true;
+
 		},
 		setTagList: (state,action) => {
 			state.tagList=action.payload;
 		},
 		setPage: (state,action)=> {
 			state.page=action.payload;
+			state.refresh=true;
+
 		},
 		setTotalPages: (state,action)=> {
 			state.totalPages=parseInt(action.payload);
+		},
+		clearRefresh: (state) => {
+			state.refresh=false;
 		}
 
 	},
@@ -123,7 +154,9 @@ export const {
 	resetTags,
 	setTagList,
 	setPage,
-	setTotalPages
+	setTotalPages,
+	clearRefresh,
+	setDistanceType
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer

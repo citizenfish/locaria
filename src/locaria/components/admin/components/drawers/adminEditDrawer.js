@@ -16,6 +16,7 @@ import {openEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
 import {setEditData} from "../../redux/slices/editDrawerSlice";
 import {setTitle} from "../../redux/slices/adminSlice";
 import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
+import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 
 
 export default function AdminEditDrawer(props) {
@@ -90,6 +91,7 @@ export default function AdminEditDrawer(props) {
 			dispatch(closeUploadDrawer());
 			dispatch(closeEditFeatureDrawer());
 			dispatch(closeSystemConfigDrawer());
+			dispatch(closeAdminPageDrawer());
 			dispatch(setTitle('Edit'));
 			refresh();
 		}
@@ -172,7 +174,7 @@ export default function AdminEditDrawer(props) {
 			</Box>
 			<Button disabled={true}>Edit</Button>
 			{
-				data.length > 0 &&
+				open===true && data.length > 0 &&
 				<DataGrid columns={columns}
 				          rows={data}
 				          autoHeight

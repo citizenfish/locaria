@@ -7,5 +7,8 @@ SELECT 'fargate_config',
                                 'vpcPrivateSubnetA','{{outputs.vpcPrivateSubnetA}}',
                                 'vpcPrivateSubnetB','{{outputs.vpcPrivateSubnetB}}',
                                 'ServerlessSecurityGroup','{{outputs.ServerlessSecurityGroup}}',
-                                'ecrRepositoryUri','{{themeOutputs.ecrRepositoryUri}}'
+                                'ecrRepositoryUri','{{themeOutputs.ecrRepositoryUri}}',
+                                'ecsName','{{themeOutputs.ecsName}}',
+                                'arn','{{themeOutputs.EcsRunnerLambdaFunctionQualifiedArn}}',
+                                'region','{{config.region}}'
                 ));

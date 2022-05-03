@@ -26,7 +26,7 @@ window.websocket = new Websockets();
 window.websocket.init({"url": resources.websocket}, connected, closed, errored);
 
 window.websocket.registerQueue('bulkConfigs', (json) => {
-    window.systemMain = json.systemMain.packet.systemMain;
+    window.systemMain = json.systemMain.packet.systemMain||{};
     window.systemPages = json.systemPages.packet.systemPages||[];
     ReactDOM.render(<Main/>, document.getElementById('root'));
 });

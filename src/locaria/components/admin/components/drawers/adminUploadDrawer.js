@@ -20,6 +20,8 @@ import {closeEditDrawer} from "../../redux/slices/editDrawerSlice";
 import {useHistory} from "react-router-dom";
 import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
 import {setTitle} from "../../redux/slices/adminSlice";
+import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
+import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 //Details of file we are going to map
 let fileDetailsData = {}
 
@@ -48,24 +50,38 @@ export default function AdminUploadDrawer(props) {
     const [planningLoader, setPlanningLoader] = useState(false)
 
     useEffect(() => {
+        let interval;
         //This hook manages the refresh of the files display every X seconds
         if(open) {
             history.push(`/Admin/Upload/`);
             dispatch(closeEditDrawer());
             dispatch(closeEditFeatureDrawer());
+            dispatch(closeSystemConfigDrawer());
+            dispatch(closeAdminPageDrawer());
+
             dispatch(setTitle('Upload'));
+            interval = setInterval(() => {
+                setTime(Date.now())
+            }, props.refreshInterval || defaultRefreshInterval);
+
 
         }
 
-        const interval = setInterval(() => {
-                setTime(Date.now())
-        }, props.refreshInterval || defaultRefreshInterval);
 
-
+        //Register the initial ws queue for getting details of files, only fired once on render
+        window.websocket.registerQueue("getFiles", function(json){
+            let files = []
+            for(let f in json.packet.files) {
+                let file = json.packet.files[f]
+                files.push({id: file.id, attributes : {...file,...file.attributes}, name : file.attributes.name, status : file.status})
+            }
+            setTableData(files)
+        })
 
         return () => {
             clearInterval(interval);
         };
+
     }, [open]);
 
     const showFileDetails = (params) => {
@@ -108,22 +124,11 @@ export default function AdminUploadDrawer(props) {
         {field: 'timestamp', headerName:'Time Stamp', width: 200},
         {field: 'message', headerName:'Message', width: 600}
     ]
-    useEffect(() =>{
-        //Register the initial ws queue for getting details of files, only fired once on render
-        window.websocket.registerQueue("getFiles", function(json){
-            let files = []
-            for(let f in json.packet.files) {
-                let file = json.packet.files[f]
-                files.push({id: file.id, attributes : {...file,...file.attributes}, name : file.attributes.name, status : file.status})
-            }
-            setTableData(files)
-        })
-    },[])
 
     useEffect( () => {
         //Fetch file details every 30 seconds based upon the time hook
         //Don't fetch if we are looking at a file's details
-        if(!openDetails && mapFileDetails === null) {
+        if(open&&!openDetails && mapFileDetails === null) {
             window.websocket.send({
                 "queue": 'getFiles',
                 "api": "sapi",
@@ -139,6 +144,7 @@ export default function AdminUploadDrawer(props) {
     return(
 
         //TODO remove hardcoded style elements
+        // TODO REWRITE!!!
         <Drawer
             anchor="right"
             open={open}
@@ -158,7 +164,7 @@ export default function AdminUploadDrawer(props) {
              }
 
              {
-                 mapFileDetails === null && tableData.length > 0 && openDetails === false &&
+                 open === true && mapFileDetails === null && tableData.length > 0 && openDetails === false &&
                      <DataGrid style={{width: '100%'}}
                          rows={tableData}
                          columns={columns}
@@ -172,7 +178,7 @@ export default function AdminUploadDrawer(props) {
              }
 
              {
-                 mapFileDetails === null && tableData.length > 0 && openDetails === true &&
+                 open === true && mapFileDetails === null && tableData.length > 0 && openDetails === true &&
                      <AdminFileDetails
                          fileDetails = {fileDetailsData}
                          fileColumns = {fileColumns}
@@ -183,7 +189,7 @@ export default function AdminUploadDrawer(props) {
              }
 
              {
-                 mapFileDetails === null && openDetails === false &&
+                 open === true && mapFileDetails === null && openDetails === false &&
                  <>
 
                      <AdminFileUploader
@@ -194,7 +200,7 @@ export default function AdminUploadDrawer(props) {
              }
 
              {
-                 mapFileDetails !== null &&
+                 open === true && mapFileDetails !== null &&
                      <AdminDataMapper
                         fileDetails = {mapFileDetails}
                         open = {setMapFileDetails}
@@ -203,34 +209,34 @@ export default function AdminUploadDrawer(props) {
              }
 
              {
-                 mapFileDetails === null && openDetails === false  &&
+                 open === true && mapFileDetails === null && openDetails === false  &&
                      <AdminPlanningLoader
                          forceRefresh = {setTime}
                      />
              }
 
              {
-                 mapFileDetails === null && openDetails === false  &&
+                 open === true && mapFileDetails === null && openDetails === false  &&
                  <AdminFloodMonitoringLoader
                      forceRefresh = {setTime}
                  />
              }
 
              {
-                 mapFileDetails === null && openDetails === false  &&
+                 open  === true&& mapFileDetails === null && openDetails === false  &&
                  <AdminCrimeLoader
                      forceRefresh = {setTime}
                  />
              }
 
              {
-                 mapFileDetails === null && openDetails === false  &&
+                 open  === true&& mapFileDetails === null && openDetails === false  &&
                  <AdminBoundaryLoader
                      forceRefresh = {setTime}
                  />
              }
              {
-                 mapFileDetails === null && openDetails === false  &&
+                 open  === true&& mapFileDetails === null && openDetails === false  &&
                  <AdminEventsLoader
                      forceRefresh = {setTime}
                  />

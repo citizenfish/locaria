@@ -87,6 +87,9 @@
     {
       "dir": "fargate",
       "outputsSitePrefix": true,
+      "functions": [
+        "ecsRunTask.js"
+      ],
       "outputs": {
         "fileLoaderTask": "!Ref taskFileLoader",
         "ecrRepositoryUri": {
@@ -107,6 +110,7 @@
             "Arn"
           ]
         },
+        "ecsName": "!Ref ECSLocariaCluster",
         "dockerRole": {
           "Fn::GetAtt": [
             "DockerGenericRole",
