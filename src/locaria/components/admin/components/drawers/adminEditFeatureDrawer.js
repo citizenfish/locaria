@@ -27,6 +27,7 @@ import Tags from "../../../widgets/tags"
 import Container from "@mui/material/Container";
 import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
+import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
 
 
 const  AdminEditFeatureDrawer = (props) => {
@@ -52,6 +53,8 @@ const  AdminEditFeatureDrawer = (props) => {
 			dispatch(closeUploadDrawer());
 			dispatch(closeSystemConfigDrawer());
 			dispatch(closeAdminPageDrawer());
+			dispatch(closeDashboardDrawer());
+
 
 			dispatch(setTitle('Feature Edit'));
 

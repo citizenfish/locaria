@@ -1,5 +1,5 @@
 import React from "react"
-import {Drawer} from "@mui/material";
+import {Drawer, Typography} from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
@@ -18,12 +18,14 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import EqualizerIcon from '@mui/icons-material/Equalizer';
 import {useCookies} from "react-cookie";
 import Badge from '@mui/material/Badge';
 import {setTotal} from "./redux/slices/adminSlice";
 import {useHistory} from "react-router-dom";
 import {openSystemConfigDrawer} from "./redux/slices/systemConfigDrawerSlice";
 import {openAdminPageDrawer} from "./redux/slices/adminPageDrawerSlice";
+import {openDashboardDrawer} from "./redux/slices/adminDashboardDrawerSlice";
 
 const systemItems = [{
     "name" : "Users",
@@ -106,7 +108,7 @@ export default function AdminNavigator(props) {
                     </ListItemIcon>
                     <ListItemText primary={`Back to client`} />
                 </ListItem>
-
+                <Divider />
                 <ListItem button onClick={() => dispatch(openSystemConfigDrawer())}>
                     <ListItemIcon >
                         <EditIcon />
@@ -121,6 +123,15 @@ export default function AdminNavigator(props) {
                     <ListItemText primary={"Edit pages"} />
                 </ListItem>
 
+                <ListItem button onClick={() => dispatch(openDashboardDrawer())}>
+                    <ListItemIcon >
+                        <EqualizerIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Dashboard"} />
+                </ListItem>
+
+
+                <Divider />
                 <ListItem button onClick={() => refresh()}>
                         <ListItemIcon >
                             <Badge color="secondary" badgeContent={total}>
@@ -129,6 +140,7 @@ export default function AdminNavigator(props) {
                         </ListItemIcon>
                     <ListItemText primary={`Refresh view`} />
                 </ListItem>
+
                 <ListItem button onClick={() => dispatch(openUploadDrawer())}>
                     <ListItemIcon >
                         <DriveFolderUploadOutlinedIcon />

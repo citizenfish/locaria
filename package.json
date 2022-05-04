@@ -5,6 +5,7 @@
 		"configure": "node scripts/configure.js",
 		"build:multi:main": "node scripts/builder.js multi main",
 		"build:multi:nmrn": "node scripts/builder.js multi nmrn",
+		"build:multi:sailortown": "node scripts/builder.js multi sailortown",
 		"runLocalSite": "webpack serve",
 		"runLocalSite(root)": "sudo webpack serve",
 		"testApi": "grunt apiTest --url=http://localhost:3000",
