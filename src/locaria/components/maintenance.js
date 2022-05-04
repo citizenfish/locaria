@@ -14,13 +14,10 @@ const Maintenance = () => {
 
 	const pageData=pages.getPageData('Maintenance');
 	return (
-		<Layout map={true} fullscreen={true}>
-			<Modal open={true}>
+
 				<Paper className={classes.maintenance}>
 					{pageData}
 				</Paper>
-			</Modal>
-		</Layout>
 	)
 
 };

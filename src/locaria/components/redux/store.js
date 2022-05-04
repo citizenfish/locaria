@@ -13,6 +13,7 @@ import adminEditFeatureDrawerSlice from "../admin/redux/slices/editFeatureDrawer
 import adminSlice from "../admin/redux/slices/adminSlice";
 import systemConfigDrawerSlice from "../admin/redux/slices/systemConfigDrawerSlice";
 import adminPageDrawerSlice from "../admin/redux/slices/adminPageDrawerSlice"
+import adminDashboardDrawerSlice from "../admin/redux/slices/adminDashboardDrawerSlice";
 
 export default configureStore({
 	reducer: {
@@ -29,6 +30,7 @@ export default configureStore({
 		adminEditFeatureDrawer: adminEditFeatureDrawerSlice,
 		adminSlice: adminSlice,
 		systemConfigDrawer:systemConfigDrawerSlice,
-		adminPageDrawer: adminPageDrawerSlice
+		adminPageDrawer: adminPageDrawerSlice,
+		adminDashboardDrawer: adminDashboardDrawerSlice
 	}
 })

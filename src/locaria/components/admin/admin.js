@@ -21,6 +21,7 @@ import AdminSystemConfigDrawer from "./components/drawers/adminSystemConfigDrawe
 import {openSystemConfigDrawer} from "./redux/slices/systemConfigDrawerSlice";
 import AdminPageDrawer from "./components/drawers/adminPageDrawer";
 import {openAdminPageDrawer} from "./redux/slices/adminPageDrawerSlice";
+import AdminDashboardDrawer from "./components/drawers/adminDashboardDrawer";
 
 const Admin= () => {
 
@@ -90,6 +91,7 @@ const Admin= () => {
 				<AdminEditFeatureDrawer></AdminEditFeatureDrawer>
 				<AdminSystemConfigDrawer></AdminSystemConfigDrawer>
 				<AdminPageDrawer></AdminPageDrawer>
+				<AdminDashboardDrawer></AdminDashboardDrawer>
 
 			</Box>
 		</Box>

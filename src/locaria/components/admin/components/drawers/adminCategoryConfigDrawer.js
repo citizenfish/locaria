@@ -16,9 +16,8 @@ import Slider from "@mui/material/Slider";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
-import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
 
-export default function AdminSystemConfigDrawer(props) {
+export default function AdminCategoryConfigDrawer(props) {
 
     const open = useSelector((state) => state.systemConfigDrawer.open);
     const config = useSelector((state) => state.systemConfigDrawer.config);
@@ -51,7 +50,6 @@ export default function AdminSystemConfigDrawer(props) {
             dispatch(closeUploadDrawer());
             dispatch(closeEditFeatureDrawer());
             dispatch(closeAdminPageDrawer());
-            dispatch(closeDashboardDrawer());
 
             dispatch(setTitle('System'));
             getConfig();
