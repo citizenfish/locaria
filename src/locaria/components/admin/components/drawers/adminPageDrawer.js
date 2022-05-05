@@ -19,6 +19,8 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 
 
 export default function AdminPageDrawer(props) {
@@ -62,6 +64,8 @@ export default function AdminPageDrawer(props) {
             dispatch(closeEditFeatureDrawer());
             dispatch(closeSystemConfigDrawer());
             dispatch(closeDashboardDrawer());
+            dispatch(closeAdminCategoryDrawer());
+            dispatch(closeLanguageDrawer());
 
             dispatch(setTitle('System'));
             getPages();

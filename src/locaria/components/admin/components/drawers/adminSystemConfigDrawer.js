@@ -17,6 +17,8 @@ import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 
 export default function AdminSystemConfigDrawer(props) {
 
@@ -52,6 +54,8 @@ export default function AdminSystemConfigDrawer(props) {
             dispatch(closeEditFeatureDrawer());
             dispatch(closeAdminPageDrawer());
             dispatch(closeDashboardDrawer());
+            dispatch(closeAdminCategoryDrawer());
+            dispatch(closeLanguageDrawer());
 
             dispatch(setTitle('System'));
             getConfig();
