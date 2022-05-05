@@ -19,6 +19,8 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
+import LanguageIcon from '@mui/icons-material/Language';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import {useCookies} from "react-cookie";
 import Badge from '@mui/material/Badge';
 import {setTotal} from "./redux/slices/adminSlice";
@@ -26,6 +28,8 @@ import {useHistory} from "react-router-dom";
 import {openSystemConfigDrawer} from "./redux/slices/systemConfigDrawerSlice";
 import {openAdminPageDrawer} from "./redux/slices/adminPageDrawerSlice";
 import {openDashboardDrawer} from "./redux/slices/adminDashboardDrawerSlice";
+import {openAdminCategoryDrawer} from "./redux/slices/adminCategoryDrawerSlice";
+import {openLanguageDrawer} from "./redux/slices/adminLanguageDrawerSlice";
 
 const systemItems = [{
     "name" : "Users",
@@ -122,6 +126,23 @@ export default function AdminNavigator(props) {
                     </ListItemIcon>
                     <ListItemText primary={"Edit pages"} />
                 </ListItem>
+
+                <ListItem button onClick={() => dispatch(openAdminCategoryDrawer())}>
+                    <ListItemIcon >
+                        <FormatListBulletedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Configure categories"} />
+                </ListItem>
+
+
+                <ListItem button onClick={() => dispatch(openLanguageDrawer())}>
+                    <ListItemIcon >
+                        <LanguageIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Language"} />
+                </ListItem>
+
+                <Divider />
 
                 <ListItem button onClick={() => dispatch(openDashboardDrawer())}>
                     <ListItemIcon >

@@ -16,6 +16,8 @@ import Slider from "@mui/material/Slider";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
+import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 
 export default function AdminDashboardDrawer(props) {
 
@@ -42,6 +44,8 @@ export default function AdminDashboardDrawer(props) {
             dispatch(closeUploadDrawer());
             dispatch(closeEditFeatureDrawer());
             dispatch(closeAdminPageDrawer());
+            dispatch(closeAdminCategoryDrawer());
+            dispatch(closeLanguageDrawer());
 
             dispatch(setTitle('Dashboard'));
         }

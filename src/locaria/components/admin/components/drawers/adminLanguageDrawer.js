@@ -18,12 +18,12 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
 import {setAdminCategories, setAdminCategoryValue} from "../../redux/slices/adminCategoryDrawerSlice";
-import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import {setAdminLanguage} from "../../redux/slices/adminLanguageDrawerSlice";
 
-export default function AdminCategoryConfigDrawer(props) {
+export default function AdminLanguageDrawer(props) {
 
-    const open = useSelector((state) => state.adminCategoryDrawer.open);
-    const categories = useSelector((state) => state.adminCategoryDrawer.categories);
+    const open = useSelector((state) => state.adminLanguageDrawer.open);
+    const language = useSelector((state) => state.adminLanguageDrawer.language);
     const dispatch = useDispatch()
     const classes = useStyles();
     const isInitialMount = useRef(true);
@@ -31,7 +31,8 @@ export default function AdminCategoryConfigDrawer(props) {
 
     const [cookies, setCookies] = useCookies(['location']);
 
-    const [category,setCategory]= useState(undefined);
+
+    const [current, setCurrent]=useState('ENG');
 
 
     useEffect(() => {
@@ -39,26 +40,25 @@ export default function AdminCategoryConfigDrawer(props) {
             isInitialMount.current = false;
         }
 
-        window.websocket.registerQueue('getCategories', (json) => {
-            if(json.packet.categories)
-                dispatch(setAdminCategories(json.packet.categories));
+        window.websocket.registerQueue('getLanguage', (json) => {
+            if(json.packet[`lang${current}`])
+                dispatch(setAdminLanguage(json.packet[`lang${current}`]));
             else
-                dispatch(setAdminCategories({}));
+                dispatch(setAdminLanguage({}));
         });
 
-        window.websocket.registerQueue('setConfig', (json) => {
+        window.websocket.registerQueue('setLanguage', (json) => {
             getConfig();
         });
 
         if (open) {
-            history.push(`/Admin/Category/`);
+            history.push(`/Admin/Language/`);
             dispatch(closeUploadDrawer());
             dispatch(closeEditFeatureDrawer());
             dispatch(closeAdminPageDrawer());
             dispatch(closeDashboardDrawer());
-            dispatch(closeLanguageDrawer());
 
-            dispatch(setTitle('System'));
+            dispatch(setTitle('Language'));
             getConfig();
         }
 
@@ -66,11 +66,12 @@ export default function AdminCategoryConfigDrawer(props) {
 
     const getConfig = () => {
         window.websocket.send({
-            "queue": "getCategories",
+            "queue": "getLanguage",
             "api": "api",
             "data": {
-                "method": "list_categories"
-
+                "method": "get_parameters",
+                "parameter_name": `lang${current}`,
+                id_token: cookies['id_token'],
             }
         });
     }
@@ -82,12 +83,12 @@ export default function AdminCategoryConfigDrawer(props) {
             "data": {
                 "method": "set_parameters",
                 "acl": "external",
-                "parameter_name": "systemCategories",
+                "parameter_name": `lang${current}`,
                 id_token: cookies['id_token'],
-                "parameters": categories
+                "parameters": language
             }
         });
-        window.systemCategories=categories;
+        window.systemLanguage=language;
     }
 
 
@@ -99,41 +100,8 @@ export default function AdminCategoryConfigDrawer(props) {
             className={classes.adminDrawers}
 
         >
-            <h1>Categories</h1>
-            <FormControl fullWidth>
-                <InputLabel id="category-label">Select category</InputLabel>
-                <Select
-                    labelId="category-label"
-                    id="category"
-                    value={category}
-                    label="Category"
-                    onChange={(e)=>{
-                        setCategory(e.target.value);
-                    }}
-                >
-                    {categories.map(value => (
-                        <MenuItem value={value}>{value}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+            <h1>Language</h1>
 
-            {category &&
-                <>
-                <TextField
-                    id="key"
-                    label="Key"
-                    defaultValue={"Category"}
-                    variant="filled"
-                    value={categories[category].key}
-                    onChange={(e)=>{
-                        dispatch(setAdminCategoryValue({category:category,key:"key",value:e.target.value}));
-                    }}
-                />
-                <Button onClick={(e) => {
-                    setConfig(e)
-                }}>Save</Button>
-                </>
-            }
 
         </Drawer>
     )

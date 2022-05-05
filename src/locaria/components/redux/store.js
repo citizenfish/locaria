@@ -14,6 +14,8 @@ import adminSlice from "../admin/redux/slices/adminSlice";
 import systemConfigDrawerSlice from "../admin/redux/slices/systemConfigDrawerSlice";
 import adminPageDrawerSlice from "../admin/redux/slices/adminPageDrawerSlice"
 import adminDashboardDrawerSlice from "../admin/redux/slices/adminDashboardDrawerSlice";
+import adminCategoryDrawerSlice from "../admin/redux/slices/adminCategoryDrawerSlice";
+import adminLanguageDrawerSlice from "../admin/redux/slices/adminLanguageDrawerSlice";
 
 export default configureStore({
 	reducer: {
@@ -31,6 +33,8 @@ export default configureStore({
 		adminSlice: adminSlice,
 		systemConfigDrawer:systemConfigDrawerSlice,
 		adminPageDrawer: adminPageDrawerSlice,
-		adminDashboardDrawer: adminDashboardDrawerSlice
+		adminDashboardDrawer: adminDashboardDrawerSlice,
+		adminCategoryDrawer: adminCategoryDrawerSlice,
+		adminLanguageDrawer: adminLanguageDrawerSlice
 	}
 })
