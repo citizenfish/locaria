@@ -21,6 +21,11 @@ import AdminSystemConfigDrawer from "./components/drawers/adminSystemConfigDrawe
 import {openSystemConfigDrawer} from "./redux/slices/systemConfigDrawerSlice";
 import AdminPageDrawer from "./components/drawers/adminPageDrawer";
 import {openAdminPageDrawer} from "./redux/slices/adminPageDrawerSlice";
+import AdminDashboardDrawer from "./components/drawers/adminDashboardDrawer";
+import AdminCategoryConfigDrawer from "./components/drawers/adminCategoryConfigDrawer";
+import {openAdminCategoryDrawer} from "./redux/slices/adminCategoryDrawerSlice";
+import AdminLanguageDrawer from "./components/drawers/adminLanguageDrawer";
+import {openLanguageDrawer} from "./redux/slices/adminLanguageDrawerSlice";
 
 const Admin= () => {
 
@@ -33,6 +38,8 @@ const Admin= () => {
 	const systemConfigDrawer = useSelector((state) => state.systemConfigDrawer.open);
 	const adminPageDrawer = useSelector((state) => state.adminPageDrawer.open);
 	const adminUploadDrawer = useSelector((state) => state.adminUploadDrawer.open);
+	const adminCategoryDrawer = useSelector((state) => state.adminCategoryDrawer.open);
+	const adminLanguageDrawer = useSelector((state) => state.adminLanguageDrawer.open);
 
 
 
@@ -72,6 +79,16 @@ const Admin= () => {
 			return
 		}
 
+		if (location.pathname.match('/Category/')&&adminCategoryDrawer===false) {
+			dispatch(openAdminCategoryDrawer());
+			return
+		}
+
+		if (location.pathname.match('/Language/')&&adminLanguageDrawer===false) {
+			dispatch(openLanguageDrawer());
+			return
+		}
+
 		dispatch(openSystemConfigDrawer());
 
 	}
@@ -90,6 +107,9 @@ const Admin= () => {
 				<AdminEditFeatureDrawer></AdminEditFeatureDrawer>
 				<AdminSystemConfigDrawer></AdminSystemConfigDrawer>
 				<AdminPageDrawer></AdminPageDrawer>
+				<AdminDashboardDrawer></AdminDashboardDrawer>
+				<AdminCategoryConfigDrawer/>
+				<AdminLanguageDrawer/>
 
 			</Box>
 		</Box>

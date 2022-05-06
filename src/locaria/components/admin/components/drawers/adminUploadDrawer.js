@@ -22,6 +22,9 @@ import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice"
 import {setTitle} from "../../redux/slices/adminSlice";
 import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
+import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 //Details of file we are going to map
 let fileDetailsData = {}
 
@@ -58,6 +61,9 @@ export default function AdminUploadDrawer(props) {
             dispatch(closeEditFeatureDrawer());
             dispatch(closeSystemConfigDrawer());
             dispatch(closeAdminPageDrawer());
+            dispatch(closeDashboardDrawer());
+            dispatch(closeAdminCategoryDrawer());
+            dispatch(closeLanguageDrawer());
 
             dispatch(setTitle('Upload'));
             interval = setInterval(() => {

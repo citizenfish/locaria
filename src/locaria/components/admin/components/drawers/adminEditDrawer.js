@@ -17,6 +17,9 @@ import {setEditData} from "../../redux/slices/editDrawerSlice";
 import {setTitle} from "../../redux/slices/adminSlice";
 import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
+import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 
 
 export default function AdminEditDrawer(props) {
@@ -92,6 +95,10 @@ export default function AdminEditDrawer(props) {
 			dispatch(closeEditFeatureDrawer());
 			dispatch(closeSystemConfigDrawer());
 			dispatch(closeAdminPageDrawer());
+			dispatch(closeDashboardDrawer());
+			dispatch(closeAdminCategoryDrawer());
+			dispatch(closeLanguageDrawer());
+
 			dispatch(setTitle('Edit'));
 			refresh();
 		}
