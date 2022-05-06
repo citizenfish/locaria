@@ -2,18 +2,16 @@ import React, {useState} from 'react';
 
 import {Accordion, AccordionDetails, AccordionSummary, Typography} from "@mui/material";
 
-import {configs} from 'themeLocaria';
-//import {useStyles} from "stylesLocaria";
 
 const FAQ = (props) => {
 
     const classes = useStyles();
-    const [faqs,setFaqs] = useState(props.faqs || configs.faqs)
+    const [faqs,setFaqs] = useState(props.faqs || window.systemLang.faqs)
 
     return(
         <div>
             <Typography varient={"h3"} className={classes.faqTitle}>
-                {configs.faqTitle}
+                {window.systemLang.faqTitle}
             </Typography>
             {
                 faqs.map((faq) =>

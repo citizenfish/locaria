@@ -173,7 +173,7 @@ const SearchDrawer = forwardRef((props, ref) => {
             if (channel && channel.searchReport) {
                 packetSearch.data.method = "report";
                 packetSearch.data.report_name = channel.searchReport;
-                if (resolutions.resolution >= configs.clusterCutOff)
+                if (resolutions.resolution >= window.systemMain.clusterCutOff)
                     packetSearch.data.cluster = true;
                 packetSearch.data.bbox = `${resolutions.extent4326[0]} ${resolutions.extent4326[1]},${resolutions.extent4326[2]} ${resolutions.extent4326[3]}`;
             }
@@ -206,7 +206,7 @@ const SearchDrawer = forwardRef((props, ref) => {
                 variant="persistent"
             >
                 <div className={classes.searchDrawerHeader}>
-                    <Typography className={classes.searchDrawerTitle} variant={'h6'}>{configs.searchTitle}</Typography>
+                    <Typography className={classes.searchDrawerTitle} variant={'h6'}>{window.systemLang.searchTitle}</Typography>
                     <IconButton onClick={() => {
                         dispatch(openLayout());
                     }} className={classes.searchDrawerClose} type="submit"
@@ -219,7 +219,7 @@ const SearchDrawer = forwardRef((props, ref) => {
                     <InputBase
                         className={classes.searchDrawerBox}
                         id="mySearch"
-                        placeholder={configs.searchPlaceholder}
+                        placeholder={window.systemLang.searchPlaceholder}
                         variant="filled"
                         onKeyDown={handleKeyDown}
                         autoComplete={'off'}

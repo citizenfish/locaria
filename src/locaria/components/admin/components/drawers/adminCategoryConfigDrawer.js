@@ -69,7 +69,8 @@ export default function AdminCategoryConfigDrawer(props) {
             "queue": "getCategories",
             "api": "api",
             "data": {
-                "method": "list_categories"
+                "method": "list_categories",
+                "attributes" : "true"
 
             }
         });
@@ -112,21 +113,22 @@ export default function AdminCategoryConfigDrawer(props) {
                     }}
                 >
                     {categories.map(value => (
-                        <MenuItem value={value}>{value}</MenuItem>
+                        <MenuItem value={value.key}>{value.key}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
 
             {category &&
                 <>
+                    <h1>{category.key}</h1>
                 <TextField
-                    id="key"
-                    label="Key"
-                    defaultValue={"Category"}
+                    id="name"
+                    label="Name"
+                    defaultValue={category.key}
                     variant="filled"
-                    value={categories[category].key}
+                    value={category.name}
                     onChange={(e)=>{
-                        dispatch(setAdminCategoryValue({category:category,key:"key",value:e.target.value}));
+                        dispatch(setAdminCategoryValue({category:category.key,key:"name",value:e.target.value}));
                     }}
                 />
                 <Button onClick={(e) => {

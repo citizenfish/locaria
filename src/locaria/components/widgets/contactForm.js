@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { Grid, TextField, Button, Card, CardContent, Typography } from '@mui/material';
-import {configs} from 'themeLocaria';
 
 const ContactForm = () => {
 
@@ -42,15 +41,15 @@ const ContactForm = () => {
                 <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto" }}>
                     <CardContent>
                         <Typography gutterBottom variant="h5">
-                            {configs.contactFormSubmittedTitle}
+                            {window.systemLang.contactFormSubmittedTitle}
                         </Typography>
                         <Typography variant="body2" color="textSecondary" component="p" gutterBottom>
-                            {configs.contactFormSubmittedText}
+                            {window.systemLang.contactFormSubmittedText}
                         </Typography>
                         {
                             messageId &&
                             <Typography gutterBottom variant="h5">
-                                configs.contactFormMessageIdText}:{messageId}
+                                window.systemLang.contactFormMessageIdText}:{messageId}
                             </Typography>
                         }
                         <Button>Close</Button>
@@ -66,30 +65,30 @@ const ContactForm = () => {
                 <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto" }}>
                     <CardContent>
                         <Typography gutterBottom variant="h5">
-                            {configs.contactFormTitle}
+                            {window.systemLang.contactFormTitle}
                         </Typography>
                         <Typography variant="body2" color="textSecondary" component="p" gutterBottom>
-                            {configs.contactFormText}
+                            {window.systemLang.contactFormText}
                         </Typography>
                         <form onSubmit={handleSubmit}>
                             <Grid container spacing={1}>
                                 <Grid xs={12} sm={12} item>
                                     <TextField value={name}
                                                onInput={e=>setName(e.target.value)}
-                                               placeholder={configs.contactFormNameLabel} label={configs.contactFormNameLabel} variant="outlined" fullWidth required />
+                                               placeholder={window.systemLang.contactFormNameLabel} label={window.systemLang.contactFormNameLabel} variant="outlined" fullWidth required />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField value={email}
                                                onInput={e=>setEmail(e.target.value)}
-                                               type="email" placeholder={configs.contactFormEmailLabel} label={configs.contactFormEmailLabel} variant="outlined" fullWidth required />
+                                               type="email" placeholder={window.systemLang.contactFormEmailLabel} label={window.systemLang.contactFormEmailLabel} variant="outlined" fullWidth required />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField value={message}
                                                onInput={e=>setMessage(e.target.value)}
-                                               label={configs.contactFormMessageLabel} multiline rows={8} placeholder={configs.contactFormMessageLabel}variant="outlined" fullWidth required />
+                                               label={window.systemLang.contactFormMessageLabel} multiline rows={8} placeholder={window.systemLang.contactFormMessageLabel}variant="outlined" fullWidth required />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Button type="submit" variant="contained" color="primary" fullWidth>{configs.contactFormSubmitLabel}</Button>
+                                    <Button type="submit" variant="contained" color="primary" fullWidth>{window.systemLang.contactFormSubmitLabel}</Button>
                                 </Grid>
                             </Grid>
                         </form>
