@@ -20,7 +20,7 @@ export const adminLanguageDrawerSlice = createSlice({
             state.language=actions.payload;
         },
         setAdminLanguageValue: (state,actions) => {
-            state.language[actions.payload.category][actions.payload.key]=actions.payload.value;
+            state.language[actions.payload.key]=actions.payload.value;
         }
     },
 })

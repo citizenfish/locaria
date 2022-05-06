@@ -2,7 +2,6 @@ import React, {useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Box, Drawer} from "@mui/material";
 import {useStyles} from "stylesLocaria";
-import {configs, theme, channels} from "themeLocaria";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Map from "../map";
@@ -116,10 +115,10 @@ const LandingDrawer = function () {
 			     justifyContent="center"
 			     alignItems="center">
 				<Typography variant="h4" component="div">
-					{configs.siteCallToAction}
+					{window.systemLang.siteCallToAction}
 				</Typography>
 				<Typography variant="body2" component="div" sx={{mt:1}}>
-					{configs.siteSubCallToAction}
+					{window.systemLang.siteSubCallToAction}
 				</Typography>
 			</Box>
 			<Grid container className={classes.landingLocation} spacing={0} justifyContent="center">
@@ -131,12 +130,12 @@ const LandingDrawer = function () {
 				<Grid item md={12} className={classes.landingLocationGrid}>
 					<div className={classes.landingLocationPodSmall}>
 						<Typography variant="body1" component="div" sx={{mb:1}}>
-							{configs.searchInstruction}
+							{window.systemLang.searchInstruction}
 						</Typography>
 						<InputBase
 							className={classes.landingSearchBox}
 							id="landingSearch"
-							placeholder={configs.searchPlaceholder}
+							placeholder={window.systemLang.searchPlaceholder}
 							variant="filled"
 							onKeyUp={handleKeyUp}
 							onChange={handleChange}

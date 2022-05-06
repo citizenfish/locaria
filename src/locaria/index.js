@@ -5,7 +5,7 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import {theme, configs, resources} from "themeLocaria";
+import {theme, resources} from "themeLocaria";
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -20,7 +20,6 @@ import {setSystemConfig} from "./components/admin/redux/slices/systemConfigDrawe
 
 let tries = 0;
 
-document.title = configs.siteTitle;
 window.websocket = new Websockets();
 
 window.websocket.init({"url": resources.websocket}, connected, closed, errored);
@@ -28,6 +27,9 @@ window.websocket.init({"url": resources.websocket}, connected, closed, errored);
 window.websocket.registerQueue('bulkConfigs', (json) => {
     window.systemMain = json.systemMain.packet.systemMain||{};
     window.systemPages = json.systemPages.packet.systemPages||[];
+    window.systemLang=json.langLoad.packet.langENG||{};
+    document.title = window.systemLang.siteTitle;
+
     ReactDOM.render(<Main/>, document.getElementById('root'));
 });
 
@@ -47,6 +49,14 @@ function connected() {
             "data": {
                 "method": "get_parameters",
                 "parameter_name": "systemPages",
+
+            }
+        },{
+            "queue": "langLoad",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": "langENG",
 
             }
         }
