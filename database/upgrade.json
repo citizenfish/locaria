@@ -14,7 +14,12 @@
     "database/functions/locaria_gateway.sql",
     "database/functions/search/location_search.sql",
     "database/functions/utility/unique_array_elements.sql",
-    "database/functions/utility/aws_lambda_interface.sql"
+    "database/functions/utility/aws_lambda_interface.sql",
+    "database/functions/internal/admin/update_category.sql",
+    "database/functions/search/list_categories.sql",
+    "database/schema_and_tables/create_assets_table.sql",
+    "database/functions/internal/admin/add_asset.sql",
+    "database/functions/internal/admin/get_asset.sql"
   ],
   "substitutions": "../tests.json"
 }

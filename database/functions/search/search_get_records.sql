@@ -171,3 +171,5 @@ BEGIN
 END;
 $$
 LANGUAGE PLPGSQL;
+
+GRANT EXECUTE ON FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER) TO locaria_report_user;

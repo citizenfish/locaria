@@ -120,3 +120,5 @@ BEGIN
 END;
 $$
 LANGUAGE PLPGSQL;
+
+GRANT EXECUTE ON FUNCTION locaria_core.cluster(search_parameters JSONB) TO locaria_report_user;

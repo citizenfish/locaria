@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS locaria_core.statistics_view;
 CREATE VIEW locaria_core.statistics_view AS
 SELECT id,
        log_type,
@@ -9,7 +10,8 @@ SELECT id,
        date_part('year', log_timestamp) AS yr,
        COALESCE(log_message#>>'{parameters,search_text}', log_message#>>'{parameters,address}', '') AS srch,
        COALESCE(log_message#>'{parameters,category}', '[]') as cat,
-       COALESCE(log_message->>'_connectionIdWS', 'anon') as usr,
+       COALESCE(log_message#>'{parameters,tags}', '[]') as tags,
+       COALESCE(log_message#>>'{parameters,_connectionIdWS}', 'anon') as usr,
        COALESCE(log_message#>>'{search_stats,count}', '0')::INTEGER AS t_cnt,
        COALESCE(log_message#>>'{search_stats,feature_count}', '0')::INTEGER AS f_cnt,
        CASE WHEN log_type IN('get_item','report') THEN log_message#>>'{parameters,fid}' ELSE '' END AS fid,

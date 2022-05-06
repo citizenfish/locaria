@@ -19,6 +19,7 @@ files_to_process = get_files_to_process(db,schema)
 
 count = 0
 
+## TODO rewrite using python classes as the code is currently in prototype form
 for f in files_to_process["files"]:
     count += 1
     start_time = time.time()
