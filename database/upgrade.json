@@ -19,7 +19,9 @@
     "database/functions/search/list_categories.sql",
     "database/schema_and_tables/create_assets_table.sql",
     "database/functions/internal/admin/add_asset.sql",
-    "database/functions/internal/admin/get_asset.sql"
+    "database/functions/internal/admin/get_asset.sql",
+    "database/reports/statistics_dashboard/statistics_dashboard_overview.sql",
+    "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql"
   ],
   "substitutions": "../tests.json"
 }
