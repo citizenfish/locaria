@@ -187,6 +187,28 @@ export default function AdminDashboardDrawer(props) {
                 </Grid>
             </Grid>
 
+            <Grid container>
+                <Grid  item md={12}>
+                    <Card style = {{margin: "20px"}}>
+                        <CardContent>
+                            {
+                                barCharts.users10 &&
+                                <FlexibleXYPlot
+                                    height = {300}
+                                    xDistance = {100}
+                                    xType={"ordinal"}>
+                                    <VerticalGridLines />
+                                    <HorizontalGridLines />
+                                    <XAxis  />
+                                    <YAxis />
+                                    <VerticalBarSeries data={barCharts.searches10} />
+                                    <VerticalBarSeries  data={barCharts.users10} />
+                                </FlexibleXYPlot>
+                            }
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
         </Drawer>
     )
 }
