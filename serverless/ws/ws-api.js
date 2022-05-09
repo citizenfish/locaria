@@ -140,6 +140,8 @@ module.exports.run = (event, context, callback) => {
             if (packet.data.mask)
                 mask = packet.data.mask;
             packet.data['_connectionIdWS'] = connectionId;
+            if(packet.uuid)
+                packet.data['_uuid'] = packet.uuid;
         }
 
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
@@ -188,14 +190,10 @@ module.exports.run = (event, context, callback) => {
                             packet.data["_user"] = tokenPacket['cognito:username'];
                             packet.data["_group"] = tokenPacket['cognito:groups'];
                             packet.data["_email"] = tokenPacket['email'];
-                            let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
-                            /* For non admins
-                                                        let qarguments = [packet.data, {
-                                                            "owner": tokenPacket['cognito:username'],
-                                                            "view": ["Moderator"]
 
-                                                        }];
-                            */
+
+                            let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
+
                             let qarguments = [packet.data, {
                                 "owner": tokenPacket['cognito:username'],
                                 "email": tokenPacket['email']
@@ -294,6 +292,20 @@ module.exports.run = (event, context, callback) => {
         }
     }
 
+    function add_asset(packet) {
+        let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
+        client = database.getClient();
+        let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB)';
+        packet.data.s3_bucket = process.env.importBucket;
+        packet.data.s3_region = process.env.region;
+        packet.data.status = 'REGISTERED';
+        //packet.data.contentType=packet.data.contentType||'text/csv';
+        if (packet.data.file_attributes === undefined)
+            packet.data = {};
+        packet.data.file_attributes.bucket = process.env.importBucket;
+        packet.data.file_attributes.path = `incoming/`;
+        packet.data.file_attributes.id_as_filename = true;
+    }
     function add_file(packet) {
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
 
