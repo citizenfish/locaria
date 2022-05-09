@@ -154,31 +154,41 @@ module.exports.run = (event, context, callback) => {
             case 'api':
                 times.start("Query");
 
-                client = database.getClient();
-                let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
-                let qarguments = [packet.data];
-                console.log(querysql);
-                console.log(qarguments);
-                client.query(querysql, qarguments, function (err, result) {
-                    times.stop("Query");
+                switch(packet.data.method) {
+                    case "add_asset":
+                        add_asset();
+                        break;
+                    default:
+                        client = database.getClient();
+                        let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
+                        let qarguments = [packet.data];
+                        console.log(querysql);
+                        console.log(qarguments);
+                        client.query(querysql, qarguments, function (err, result) {
+                            times.stop("Query");
 
-                    if (err) {
-                        console.log(err);
-                        payload.packet['response_code'] = 310;
-                        sendToClient(payload);
+                            if (err) {
+                                console.log(err);
+                                payload.packet['response_code'] = 310;
+                                sendToClient(payload);
 
-                    } else {
-                        if (result.rows[0]['locaria_gateway'] === null) {
-                            payload.packet['response_code'] = 500;
-                            sendToClient(payload);
-                        } else {
-                            payload.packet = result.rows[0]['locaria_gateway'];
-                            payload.timing = times.display();
-                            payload.method = packet.data.method;
-                            sendToClient(payload);
-                        }
-                    }
-                });
+                            } else {
+                                if (result.rows[0]['locaria_gateway'] === null) {
+                                    payload.packet['response_code'] = 500;
+                                    sendToClient(payload);
+                                } else {
+                                    payload.packet = result.rows[0]['locaria_gateway'];
+                                    payload.timing = times.display();
+                                    payload.method = packet.data.method;
+                                    sendToClient(payload);
+                                }
+                            }
+                        });
+                        break;
+
+                }
+
+
                 break;
             // Secure API
             case 'sapi':
@@ -294,17 +304,49 @@ module.exports.run = (event, context, callback) => {
 
     function add_asset(packet) {
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
+
+        let uuid=uuidv4();
+        let filePath=`assets/${uuid}.${packet.data.file_attributes.ext}`;
         client = database.getClient();
-        let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB)';
+        let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
         packet.data.s3_bucket = process.env.importBucket;
         packet.data.s3_region = process.env.region;
-        packet.data.status = 'REGISTERED';
-        //packet.data.contentType=packet.data.contentType||'text/csv';
-        if (packet.data.file_attributes === undefined)
-            packet.data = {};
-        packet.data.file_attributes.bucket = process.env.importBucket;
-        packet.data.file_attributes.path = `incoming/`;
-        packet.data.file_attributes.id_as_filename = true;
+        packet.data.s3_path = filePath;
+        packet.data.uuid=uuid;
+
+        client.query(querysql, qarguments, function (err, result) {
+            if (err) {
+                console.log(err);
+                payload.packet['response_code'] = 310;
+                sendToClient(payload);
+
+            } else {
+                console.log(result.rows[0]['locaria_internal_gateway']);
+                if (result.rows[0]['locaria_internal_gateway']['id'] === undefined) {
+                    payload.packet['response_code'] = 500;
+                    sendToClient(payload);
+                } else {
+
+                    let s3 = new AWS.S3();
+                    let s3parameters = {
+                        Bucket: process.env.importBucket,
+                        Key: filePath,
+                        ContentType: packet.data.contentType
+                    };
+                    console.log(s3parameters);
+
+                    let url = s3.getSignedUrl('putObject', s3parameters);
+                    payload.packet = {
+                        "url": url,
+                        "uuid": uuid
+                    };
+                    payload.response_code = 200;
+                    payload.method = packet.data.method;
+                    sendToClient(payload);
+                }
+            }
+        });
+
     }
     function add_file(packet) {
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};

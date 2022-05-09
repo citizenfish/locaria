@@ -13,10 +13,9 @@ export default function UploadWidget(props) {
 
         let extension = file.name.split(".").pop().toLowerCase()
         let contentType = file.type
-        retutn;
         window.websocket.send({
             "queue" : 'addFile',
-            "api" : "lapi",
+            "api" : "api",
             "data" : {
                 "method": "add_file",
                 "file_attributes" : {
@@ -24,8 +23,7 @@ export default function UploadWidget(props) {
                     "name" : file.name,
                     "ext" : extension
                 },
-                "contentType" : contentType,
-                "id_token": cookies['id_token']
+                "contentType" : contentType
             }
         })
 
