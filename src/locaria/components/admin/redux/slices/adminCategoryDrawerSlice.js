@@ -20,7 +20,11 @@ export const adminCategoryDrawerSlice = createSlice({
             state.categories=actions.payload;
         },
         setAdminCategoryValue: (state,actions) => {
-            state.categories[actions.payload.category][actions.payload.key]=actions.payload.value;
+            for(let category in state.categories) {
+                if(actions.payload.category===state.categories[category].key) {
+                    state.categories[category][actions.payload.key] = actions.payload.value;
+                }
+            }
         }
     },
 })

@@ -49,7 +49,8 @@
 		"@uiw/react-md-editor": "^3.12.0",
 		"yaml": "^2.0.0-10",
 		"yauzl": "^2.10.0",
-		"js-base64": "^3.7.2"
+		"js-base64": "^3.7.2",
+		"uuid":"^8.3.2"
 	},
 	"devDependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
