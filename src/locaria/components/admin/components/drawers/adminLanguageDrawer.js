@@ -9,16 +9,13 @@ import {setTitle} from "../../redux/slices/adminSlice";
 import {useStyles} from "../../../../../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
-import {setEditData} from "../../redux/slices/editDrawerSlice";
-import {setSystemConfig, setSystemConfigValue} from "../../redux/slices/systemConfigDrawerSlice";
 import {useCookies} from "react-cookie";
-import Slider from "@mui/material/Slider";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
-import FormControl from "@mui/material/FormControl";
-import MenuItem from "@mui/material/MenuItem";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {setAdminCategories, setAdminCategoryValue} from "../../redux/slices/adminCategoryDrawerSlice";
-import {setAdminLanguage} from "../../redux/slices/adminLanguageDrawerSlice";
+import {setAdminLanguage, setAdminLanguageValue} from "../../redux/slices/adminLanguageDrawerSlice";
+import Box from "@mui/material/Box";
+import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
+import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
 
 export default function AdminLanguageDrawer(props) {
 
@@ -33,6 +30,41 @@ export default function AdminLanguageDrawer(props) {
 
 
     const [current, setCurrent]=useState('ENG');
+
+    const langDef={
+        "siteTitle":{ description:"Sites title", default: "Locaria"},
+        "siteCallToAction": { description: "Call to action on landing page", default: "Learn more about your location" },
+        "siteSubCallToAction": { description: "Sub call to action on landing page", default: "Enter an address or postcode to find information about that area" },
+        "channelCallToAction": { description: "Channel call to action on landing page", default: "Click on one of the channels below to find out more about your selected location." },
+        "searchInstruction": "Search for a location or item",
+        "distanceLabel": "kilometres",
+        "locationResultsHeader": "Locations Found",
+        "featureResultsHeader": "Items Found",
+        "resetCategoryText": "Reset Category",
+        "selectAllCategoryText": "Select All",
+        "resetDistanceText": "Reset Proximity",
+        "distanceSelectText": "Proximity",
+        "tagSelectText": "Tags applied",
+        "noTagsSelectedText": "No Tags active",
+        "resetTagsText": "Clear Tags",
+        "selectAllTagsText": "Select All",
+        "setAsLocationText": "Set as Default",
+        "copyrightCompany": "(c) Nautoguide Ltd. 2022",
+        "copyrightLink": "https://nautoguide.com",
+        "poweredByLink": "https://github.com/nautoguide/locaria",
+        "poweredByText": "Powered by Locaria",
+        "licensedLink": "https://github.com/nautoguide/locaria/blob/master/LICENSE",
+        "licensedText": "Licensed under the GPL 3.0",
+        "contactFormTitle": "Contact Us",
+        "contactFormText": "Feel free to contact us with any questions you may have about Locaria",
+        "contactFormNameLabel": "Name",
+        "contactFormEmailLabel": "Email Address",
+        "contactFormMessageLabel": "Your Message",
+        "contactFormSubmitLabel": "Send Message",
+        "contactFormSubmittedTitle": "Your message has been sent",
+        "contactFormSubmittedText": "Thank you for contacting us we will respond as soon as we possibly can",
+        "contactFormMessageIdText": "Message ID"
+    }
 
 
     useEffect(() => {
@@ -54,9 +86,12 @@ export default function AdminLanguageDrawer(props) {
         if (open) {
             history.push(`/Admin/Language/`);
             dispatch(closeUploadDrawer());
+            dispatch(closeSystemConfigDrawer());
             dispatch(closeEditFeatureDrawer());
             dispatch(closeAdminPageDrawer());
             dispatch(closeDashboardDrawer());
+            dispatch(closeAdminCategoryDrawer());
+
 
             dispatch(setTitle('Language'));
             getConfig();
@@ -88,7 +123,26 @@ export default function AdminLanguageDrawer(props) {
                 "parameters": language
             }
         });
-        window.systemLanguage=language;
+        window.systemLang=language;
+    }
+
+    const field = (field) => {
+        return (
+            <TextField
+                id={field}
+                label={langDef[field].description}
+                defaultValue={langDef[field].default}
+                variant="filled"
+                fullWidth={true}
+                value={language[field]}
+                onChange={(e) => {
+                    dispatch(setAdminLanguageValue({
+                        key: field,
+                        value: e.target.value
+                    }));
+                }}
+            />
+        )
     }
 
 
@@ -100,7 +154,20 @@ export default function AdminLanguageDrawer(props) {
             className={classes.adminDrawers}
 
         >
+            <Box sx={{margin:"50px"}}>
             <h1>Language</h1>
+            {language&&
+                <>
+                    {Object.keys(langDef).map(value => (
+                            field(value)
+                        ))
+                    }
+                    <Button variant={"outlined"} onClick={(e) => {
+                        setConfig(e)
+                    }}>Save</Button>
+                </>
+            }
+            </Box>
 
 
         </Drawer>

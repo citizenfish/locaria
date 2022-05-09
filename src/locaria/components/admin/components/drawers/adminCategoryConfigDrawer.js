@@ -19,6 +19,8 @@ import MenuItem from "@mui/material/MenuItem";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
 import {setAdminCategories, setAdminCategoryValue} from "../../redux/slices/adminCategoryDrawerSlice";
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import Box from "@mui/material/Box";
+import UploadWidget from "../../../widgets/uploadWidget";
 
 export default function AdminCategoryConfigDrawer(props) {
 
@@ -69,22 +71,30 @@ export default function AdminCategoryConfigDrawer(props) {
             "queue": "getCategories",
             "api": "api",
             "data": {
-                "method": "list_categories"
-
+                "method": "list_categories",
+                "attributes" : "true"
             }
         });
     }
 
+    const getCategoryData = () => {
+        for(let cat in categories) {
+            if(categories[cat].key===category)
+                return categories[cat];
+        }
+    }
+
     const setConfig = (e) => {
+
+        let data=getCategoryData();
         window.websocket.send({
             "queue": "setConfig",
             "api": "sapi",
             "data": {
-                "method": "set_parameters",
-                "acl": "external",
-                "parameter_name": "systemCategories",
+                "method": "update_category",
+                "category": category,
                 id_token: cookies['id_token'],
-                "parameters": categories
+                "attributes": data
             }
         });
         window.systemCategories=categories;
@@ -99,6 +109,8 @@ export default function AdminCategoryConfigDrawer(props) {
             className={classes.adminDrawers}
 
         >
+            <Box sx={{margin:"50px"}}>
+
             <h1>Categories</h1>
             <FormControl fullWidth>
                 <InputLabel id="category-label">Select category</InputLabel>
@@ -107,34 +119,72 @@ export default function AdminCategoryConfigDrawer(props) {
                     id="category"
                     value={category}
                     label="Category"
+                    fullWidth={true}
+
                     onChange={(e)=>{
                         setCategory(e.target.value);
                     }}
                 >
                     {categories.map(value => (
-                        <MenuItem value={value}>{value}</MenuItem>
+                        <MenuItem value={value.key}>{value.key}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
 
             {category &&
                 <>
-                <TextField
-                    id="key"
-                    label="Key"
-                    defaultValue={"Category"}
-                    variant="filled"
-                    value={categories[category].key}
-                    onChange={(e)=>{
-                        dispatch(setAdminCategoryValue({category:category,key:"key",value:e.target.value}));
-                    }}
-                />
-                <Button onClick={(e) => {
-                    setConfig(e)
-                }}>Save</Button>
-                </>
-            }
+                    <h1>{category}</h1>
+                    <TextField
+                        id="name"
+                        label="Name"
+                        fullWidth={true}
 
+                        defaultValue={getCategoryData(category).key}
+                        variant="filled"
+                        value={getCategoryData(category).name}
+                        onChange={(e)=>{
+                            dispatch(setAdminCategoryValue({category:category,key:"name",value:e.target.value}));
+                        }}
+                    />
+                    <TextField
+                        id="description"
+                        label="Description"
+                        fullWidth={true}
+
+                        defaultValue={"Describe me"}
+                        variant="filled"
+                        value={getCategoryData(category).description}
+                        onChange={(e)=>{
+                            dispatch(setAdminCategoryValue({category:category,key:"description",value:e.target.value}));
+                        }}
+                    />
+                    // TODO https://github.com/mikbry/material-ui-color
+                    <TextField
+                        id="color"
+                        label="Color"
+                        fullWidth={true}
+
+                        defaultValue={"#b2df8a"}
+                        variant="filled"
+                        value={getCategoryData(category).color}
+                        onChange={(e)=>{
+                            dispatch(setAdminCategoryValue({category:category,key:"color",value:e.target.value}));
+                        }}
+                    />
+
+                    <UploadWidget></UploadWidget>
+
+                    <Button onClick={(e) => {
+                        setConfig(e)
+                    }}>Save</Button>
+
+                    <Button onClick={() => {
+                        setCategory(undefined)
+                    }}>Cancel</Button>
+                </>
+
+            }
+            </Box>
         </Drawer>
     )
 }

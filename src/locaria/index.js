@@ -5,7 +5,7 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import {theme, configs, resources} from "themeLocaria";
+import {theme, resources} from "themeLocaria";
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -14,22 +14,56 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { v4 as uuidv4 } from 'uuid';
 
 import cssOL from './components/css/ol.css';
 import {setSystemConfig} from "./components/admin/redux/slices/systemConfigDrawerSlice";
 
 let tries = 0;
 
-document.title = configs.siteTitle;
 window.websocket = new Websockets();
 
-window.websocket.init({"url": resources.websocket}, connected, closed, errored);
+let cookieUUID=getCookie('uuid');
+
+if(cookieUUID === undefined) {
+    cookieUUID=uuidv4();
+}
+
+setCookie('uuid', cookieUUID, {path: '/', sameSite: true});
+
+console.log(cookieUUID);
+window.websocket.init({"url": resources.websocket, "uuid":cookieUUID}, connected, closed, errored);
 
 window.websocket.registerQueue('bulkConfigs', (json) => {
+
     window.systemMain = json.systemMain.packet.systemMain||{};
     window.systemPages = json.systemPages.packet.systemPages||[];
+    window.systemLang=json.langLoad.packet.langENG||{};
+    document.title = window.systemLang.siteTitle;
+
     ReactDOM.render(<Main/>, document.getElementById('root'));
 });
+
+function setCookie(name,value,options) {
+    let expires = "";
+    if (options.days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (options.days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/; samesite=strict;";
+}
+
+function getCookie(name) {
+    let nameEQ = name + "=";
+    let ca = document.cookie.split(';');
+    for(let i=0;i < ca.length;i++) {
+        let c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return undefined;
+}
 
 function connected() {
     window.websocket.sendBulk('bulkConfigs', [
@@ -47,6 +81,14 @@ function connected() {
             "data": {
                 "method": "get_parameters",
                 "parameter_name": "systemPages",
+
+            }
+        },{
+            "queue": "langLoad",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": "langENG",
 
             }
         }

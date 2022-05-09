@@ -136,6 +136,7 @@ export default class Websockets {
 	 */
 	send(message) {
 		let self = this;
+		message.uuid = this.options.uuid;
 		self.ws.send(message);
 	}
 
@@ -143,7 +144,8 @@ export default class Websockets {
 		let self = this;
 		self.bulks[id]={queues:[],in:[]};
 		for(let m in messages) {
-			self.bulks[id].queues.push(messages[m].queue)
+			self.bulks[id].queues.push(messages[m].queue);
+			messages[m].uuid=self.options.uuid;
 			self.ws.send(messages[m]);
 		}
 	}
