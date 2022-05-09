@@ -1088,6 +1088,13 @@ export default class UseStyles {
 				minWidth: '200px',
 			},
 
+			/* DASHBOARD */
+
+			adminTodayPanel: {
+				minWidth: '220px !important',
+				minHeight: '100px !important',
+				margin: '20px'
+			},
 
 			/*
 			  Other

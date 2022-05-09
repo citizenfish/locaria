@@ -25,8 +25,8 @@ $$;
 GRANT USAGE ON SCHEMA locaria_core TO locaria_report_user;
 GRANT USAGE ON SCHEMA locaria_data TO locaria_report_user;
 
-GRANT EXECUTE ON FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER) TO locaria_report_user;
-GRANT EXECUTE ON FUNCTION locaria_core.cluster(search_parameters JSONB) TO locaria_report_user;
+
+
 
 GRANT SELECT ON ALL TABLES IN SCHEMA locaria_data TO locaria_report_user;
 GRANT USAGE ON SCHEMA public TO locaria_report_user;

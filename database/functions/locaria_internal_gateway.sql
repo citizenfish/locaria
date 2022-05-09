@@ -5,8 +5,7 @@ DECLARE
     debug_var   BOOLEAN DEFAULT FALSE;
     log_var     BOOLEAN DEFAULT FALSE;
     ret_var     JSONB;
-    logid_var   BIGINT;
-    version_var TEXT DEFAULT '0.2';
+    version_var TEXT DEFAULT '0.3';
 BEGIN
 
     --This keeps us within our search schema when running code
@@ -19,8 +18,11 @@ BEGIN
     END IF;
 
     --From the incoming JSON select the method and run it
-    CASE WHEN parameters ->> 'method' IN ('get_tables') THEN
-        ret_var = get_tables(parameters);
+    CASE WHEN parameters->>'method' IN ('version') THEN
+            ret_var = json_build_object('version', version_var);
+
+        WHEN parameters ->> 'method' IN ('get_tables') THEN
+            ret_var = get_tables(parameters);
 
         WHEN parameters ->> 'method' IN ('add_item') THEN
             ret_var = add_item(parameters);
@@ -79,7 +81,16 @@ BEGIN
         WHEN parameters->>'method' IN ('set_parameters') THEN
             ret_var = set_parameters(parameters);
 
-        ELSE
+        WHEN parameters->>'method' IN ('update_category') THEN
+            ret_var = update_category(parameters);
+
+        WHEN parameters->>'method' IN ('add_asset') THEN
+            ret_var = add_asset(parameters);
+
+        WHEN parameters->>'method' IN ('get_asset') THEN
+            ret_var = get_asset(parameters);
+
+            ELSE
 
             RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');
 
