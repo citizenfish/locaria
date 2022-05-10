@@ -65,6 +65,7 @@ function doCopy() {
 
 			const resource = {
 				websocket: outputsSite.ServiceEndpointWebsocket,
+				url: `https://${config.themes[theme].domain}`,
 				cognitoURL: `auth.${config.themes[theme].domain}`,
 				cognitoPoolId: outputsSite.cognitoPoolId,
 				poolClientId: outputsSite.poolClientId
