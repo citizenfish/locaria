@@ -7,10 +7,12 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core', 'public';
 
     INSERT INTO assets(uuid, attributes, acl)
-    SELECT parameters->>'uuid', parameters->'attributes', parameters->'acl'
-    ON CONFLICT (uuid) DO UPDATE SET attributes = EXCLUDED.attributes, acl=EXCLUDED.acl
+    SELECT parameters->>'uuid',
+           COALESCE(parameters->'attributes', jsonb_build_object()) || jsonb_build_object('internal', COALESCE(parameters->>'internal','false')),
+           parameters->'acl'
+    ON CONFLICT (uuid) DO UPDATE SET attributes = EXCLUDED.attributes, acl = EXCLUDED.acl
     RETURNING jsonb_build_object('uuid', uuid)
-        INTO ret_var;
+    INTO ret_var;
 
     RETURN ret_var;
 END;
