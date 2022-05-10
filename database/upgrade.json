@@ -21,7 +21,9 @@
     "database/functions/internal/admin/add_asset.sql",
     "database/functions/internal/admin/get_asset.sql",
     "database/reports/statistics_dashboard/statistics_dashboard_overview.sql",
-    "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql"
+    "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql",
+    "database/reports/statistics_dashboard/statistics_dashboard_pie_charts.sql",
+    "database/reports/statistics_dashboard/statistics_dashboard_line_items.sql"
   ],
   "substitutions": "../tests.json"
 }

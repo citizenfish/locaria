@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react"
-
+import { DataGrid } from '@mui/x-data-grid';
 import {Grid, Drawer, Card, CardContent, Typography, Select, TextField} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
@@ -21,7 +21,7 @@ import {XYPlot,
     VerticalBarSeries,
     VerticalBarSeriesCanvas,
     FlexibleXYPlot,
-    LabelSeries} from 'react-vis'
+    RadialChart} from 'react-vis'
 
 export default function AdminDashboardDrawer(props) {
 
@@ -34,7 +34,11 @@ export default function AdminDashboardDrawer(props) {
     const [cookies, setCookies] = useCookies(['location'])
     const [overview,setOverview] = useState({})
     const [barCharts,setbarCharts] = useState({})
+    const [pieCharts,setPieCharts] = useState({})
+    const [lineItems,setLineItems] = useState({})
 
+    const searchTermCols = [{field: 'srch', headerName: 'Search Term', width: 300}, {field: 'count', headerName: 'Count', width: 150}]
+    const itemCols = [{field: 'title', headerName: 'Title', width: 200}, {field: 'category', headerName: 'Category', width: 200},{field: 'count', headerName: 'Count', width: 150}]
     const BarSeries = VerticalBarSeriesCanvas
 
     useEffect(() => {
@@ -52,10 +56,24 @@ export default function AdminDashboardDrawer(props) {
             }
         })
 
-        window.websocket.registerQueue('getbarCharts', (json) => {
+        window.websocket.registerQueue('getBarCharts', (json) => {
             console.log(json)
             if(json.packet.response_code === 200) {
                 setbarCharts(json.packet)
+            }
+        })
+
+        window.websocket.registerQueue('getPieCharts', (json) => {
+            console.log(json)
+            if(json.packet.response_code === 200) {
+                setPieCharts(json.packet)
+            }
+        })
+
+        window.websocket.registerQueue('getLineItems', (json) => {
+            console.log(json)
+            if(json.packet.response_code === 200) {
+                setLineItems(json.packet)
             }
         })
 
@@ -68,38 +86,57 @@ export default function AdminDashboardDrawer(props) {
             dispatch(closeLanguageDrawer());
 
             dispatch(setTitle('Dashboard'));
+
+            window.websocket.send({
+                queue: 'getOverview',
+                api: "sapi",
+                data: {
+                    method: "report",
+                    report_name: "statistics_dashboard_overview",
+                    id_token: cookies['id_token']
+                }
+            })
+
+            window.websocket.send({
+                queue: 'getBarCharts',
+                api: "sapi",
+                data: {
+                    method: "report",
+                    report_name: "statistics_dashboard_bar_charts",
+                    id_token: cookies['id_token']
+                    //TODO IN FOR DEBUG REMOVE!!!!
+                    //,date : "2022-05-04"
+
+                }
+            })
+
+            window.websocket.send({
+                queue: 'getPieCharts',
+                api: "sapi",
+                data: {
+                    method: "report",
+                    report_name: "statistics_dashboard_pie_charts",
+                    id_token: cookies['id_token']
+                    //TODO IN FOR DEBUG REMOVE!!!!
+                    //,date : "2022-05-04"
+
+                }
+            })
+
+            window.websocket.send({
+                queue: 'getLineItems',
+                api: "sapi",
+                data: {
+                    method: "report",
+                    report_name: "statistics_dashboard_line_items",
+                    id_token: cookies['id_token']
+                    //TODO IN FOR DEBUG REMOVE!!!!
+                    //,date : "2022-05-04"
+                }
+            })
         }
 
     }, [open]);
-
-
-    useEffect(()=>{
-
-        window.websocket.send({
-            queue : 'getOverview',
-            api : "sapi",
-            data : {
-                method: "report",
-                report_name : "statistics_dashboard_overview",
-                id_token: cookies['id_token']
-            }
-        })
-
-        window.websocket.send({
-            queue : 'getbarCharts',
-            api : "sapi",
-            data : {
-                method: "report",
-                report_name : "statistics_dashboard_bar_charts",
-                id_token: cookies['id_token'],
-                //TODO IN FOR DEBUG REMOVE!!!!
-                date : "2022-05-04"
-
-            }
-        })
-
-    },[])
-
 
 
     return (
@@ -171,8 +208,8 @@ export default function AdminDashboardDrawer(props) {
                             {
                                 barCharts.users24 &&
                                 <FlexibleXYPlot
-                                    height = {300}
-                                    xDistance = {100}
+                                    height = {200}
+                                    xDistance = {30}
                                 >
                                     <VerticalGridLines />
                                     <HorizontalGridLines />
@@ -183,6 +220,78 @@ export default function AdminDashboardDrawer(props) {
                                 </FlexibleXYPlot>
                             }
                         </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+
+            <Grid container>
+                <Grid  item md={12}>
+                    <Card style = {{margin: "20px"}}>
+                        <CardContent>
+                            {
+                                barCharts.users10 &&
+                                <FlexibleXYPlot
+                                    height = {300}
+                                    xType={"ordinal"}>
+                                    <VerticalGridLines />
+                                    <HorizontalGridLines />
+                                    <XAxis  />
+                                    <YAxis />
+                                    <VerticalBarSeries data={barCharts.searches10} />
+                                    <VerticalBarSeries  data={barCharts.users10} />
+                                </FlexibleXYPlot>
+                            }
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={4}>
+                <Grid item md={6}>
+                    <Card style = {{margin: "20px"}}>
+                        {
+                            pieCharts.categories &&
+                            <RadialChart height={400}
+                                         data={pieCharts.categories}
+                                         width={400}/>
+                        }
+                    </Card>
+                </Grid>
+                <Grid item md={6}>
+                    <Card style = {{margin: "20px"}}>
+                        {
+                            pieCharts.tags &&
+                            <RadialChart height={400}
+                                         data={pieCharts.tags}
+                                         width={400}/>
+                        }
+                    </Card>
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={4}>
+                <Grid item md={6}>
+                    <Card style = {{margin: "20px"}}>
+                        {
+                            lineItems.search_terms &&
+                                <DataGrid style={{ height: 400, width: '100%' }}
+                                          columns={searchTermCols}
+                                          rows={lineItems.search_terms}
+                                          pageSize={10}
+                                          />
+                        }
+                    </Card>
+                </Grid>
+                <Grid item md={6}>
+                    <Card style = {{margin: "20px"}}>
+                        {
+                            lineItems.items &&
+                            <DataGrid style={{ height: 400, width: '100%' }}
+                                      columns={itemCols}
+                                      rows={lineItems.items}
+                                      pageSize={10}
+                            />
+                        }
                     </Card>
                 </Grid>
             </Grid>
