@@ -88,7 +88,7 @@ module.exports.run = (event, context, callback) => {
             if (err) {
                 console.log(err);
             }
-            console.log(result);
+            //console.log(result);
             callback(null, {statusCode: 200});
             client.end();
 
@@ -108,7 +108,7 @@ module.exports.run = (event, context, callback) => {
                 client.end();
 
             } else {
-                console.log('Done Connect');
+                //console.log('Done Connect');
                 callback(null, {statusCode: 200});
                 client.end();
 
@@ -136,11 +136,11 @@ module.exports.run = (event, context, callback) => {
         const packet = body;
 
 
-        if(packet&&packet.data) {
+        if (packet && packet.data) {
             if (packet.data.mask)
                 mask = packet.data.mask;
             packet.data['_connectionIdWS'] = connectionId;
-            if(packet.uuid)
+            if (packet.uuid)
                 packet.data['_uuid'] = packet.uuid;
         }
 
@@ -154,16 +154,23 @@ module.exports.run = (event, context, callback) => {
             case 'api':
                 times.start("Query");
 
-                switch(packet.data.method) {
+                switch (packet.data.method) {
                     case "add_asset":
-                        add_asset();
+                        validateToken(packet, function (tokenPacket) {
+                                add_asset(packet);
+                            },
+                            function (tokenPacket) {
+                                payload.packet['response_code'] = 300;
+                                payload.packet = tokenPacket;
+                                sendToClient(payload);
+                            });
                         break;
                     default:
                         client = database.getClient();
                         let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
                         let qarguments = [packet.data];
-                        console.log(querysql);
-                        console.log(qarguments);
+                        //console.log(querysql);
+                        //console.log(qarguments);
                         client.query(querysql, qarguments, function (err, result) {
                             times.stop("Query");
 
@@ -208,8 +215,8 @@ module.exports.run = (event, context, callback) => {
                                 "owner": tokenPacket['cognito:username'],
                                 "email": tokenPacket['email']
                             }];
-                            console.log(querysql);
-                            console.log(qarguments);
+                            //console.log(querysql);
+                            //console.log(qarguments);
                             client.query(querysql, qarguments, function (err, result) {
                                 if (err) {
                                     console.log(err);
@@ -305,15 +312,19 @@ module.exports.run = (event, context, callback) => {
     function add_asset(packet) {
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
 
-        let uuid=uuidv4();
-        let filePath=`assets/${uuid}.${packet.data.file_attributes.ext}`;
+        let uuid = uuidv4();
+        let filePath = `${process.env.theme}/assets/${uuid}.${packet.data.attributes.ext}`;
+        let urlPath = `/assets/${uuid}.${packet.data.attributes.ext}`;
         client = database.getClient();
         let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
-        packet.data.s3_bucket = process.env.importBucket;
-        packet.data.s3_region = process.env.region;
-        packet.data.s3_path = filePath;
-        packet.data.uuid=uuid;
-
+        packet.data.attributes.s3_bucket = process.env.importBucket;
+        packet.data.attributes.s3_region = process.env.region;
+        packet.data.attributes.s3_path = filePath;
+        packet.data.attributes.url =urlPath ;
+        packet.data.uuid = uuid;
+        let qarguments = [packet.data];
+        console.log(querysql);
+        console.log(qarguments);
         client.query(querysql, qarguments, function (err, result) {
             if (err) {
                 console.log(err);
@@ -321,33 +332,30 @@ module.exports.run = (event, context, callback) => {
                 sendToClient(payload);
 
             } else {
-                console.log(result.rows[0]['locaria_internal_gateway']);
-                if (result.rows[0]['locaria_internal_gateway']['id'] === undefined) {
-                    payload.packet['response_code'] = 500;
-                    sendToClient(payload);
-                } else {
+                console.log(result.rows[0]['locaria_gateway']);
 
-                    let s3 = new AWS.S3();
-                    let s3parameters = {
-                        Bucket: process.env.importBucket,
-                        Key: filePath,
-                        ContentType: packet.data.contentType
-                    };
-                    console.log(s3parameters);
 
-                    let url = s3.getSignedUrl('putObject', s3parameters);
-                    payload.packet = {
-                        "url": url,
-                        "uuid": uuid
-                    };
-                    payload.response_code = 200;
-                    payload.method = packet.data.method;
-                    sendToClient(payload);
-                }
+                let s3 = new AWS.S3();
+                let s3parameters = {
+                    Bucket: process.env.importBucket,
+                    Key: filePath,
+                    ContentType: packet.data.contentType
+                };
+                console.log(s3parameters);
+
+                let url = s3.getSignedUrl('putObject', s3parameters);
+                payload.packet = {
+                    "url": url,
+                    "uuid": uuid
+                };
+                payload.response_code = 200;
+                payload.method = packet.data.method;
+                sendToClient(payload);
             }
         });
 
     }
+
     function add_file(packet) {
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
 
@@ -364,8 +372,8 @@ module.exports.run = (event, context, callback) => {
         packet.data.file_attributes.id_as_filename = true;
 
         let qarguments = [packet.data];
-        console.log(querysql);
-        console.log(qarguments);
+        //console.log(querysql);
+        //console.log(qarguments);
         client.query(querysql, qarguments, function (err, result) {
             if (err) {
                 console.log(err);
@@ -373,7 +381,7 @@ module.exports.run = (event, context, callback) => {
                 sendToClient(payload);
 
             } else {
-                console.log(result.rows[0]['locaria_internal_gateway']);
+                //console.log(result.rows[0]['locaria_internal_gateway']);
                 if (result.rows[0]['locaria_internal_gateway']['id'] === undefined) {
                     payload.packet['response_code'] = 500;
                     sendToClient(payload);
@@ -387,7 +395,7 @@ module.exports.run = (event, context, callback) => {
                         Key: filePath,
                         ContentType: packet.data.contentType
                     };
-                    console.log(s3parameters);
+                    //console.log(s3parameters);
 
                     let url = s3.getSignedUrl('putObject', s3parameters);
                     payload.packet = {
@@ -409,16 +417,15 @@ module.exports.run = (event, context, callback) => {
             return;
         }
         const token = packet.data.id_token;
-        console.log(token);
+        //console.log(token);
         const url = `https://cognito-idp.eu-west-1.amazonaws.com/${process.env.pool}/.well-known/jwks.json`;
-        console.log(url);
+        //console.log(url);
         fetch(url, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}
         }).then(res => res.json())
             .then(function (json) {
-                console.log(`JSON RETURN`);
-                console.log(json);
+                //console.log(json);
                 let pems = {};
                 let keys = json['keys'];
                 for (let i = 0; i < keys.length; i++) {
@@ -431,10 +438,10 @@ module.exports.run = (event, context, callback) => {
                     let pem = jwkToPem(jwk);
                     pems[key_id] = pem;
                 }
-                console.log(pems);
+                //console.log(pems);
                 //validate the token
                 let decodedJwt = jwt.decode(token, {complete: true});
-                console.log(decodedJwt);
+                //console.log(decodedJwt);
                 if (!decodedJwt) {
                     console.log("Not a valid JWT token");
                     fail({"message": "Not a valid JWT token"});
@@ -451,8 +458,8 @@ module.exports.run = (event, context, callback) => {
                                 console.log("Invalid Token.");
                                 fail({"message": `Invalid token ${err}`});
                             } else {
-                                console.log("Valid Token.");
-                                console.log(tokenPayload);
+                                //console.log("Valid Token.");
+                                //console.log(tokenPayload);
                                 success(tokenPayload);
                             }
                         });
@@ -479,14 +486,14 @@ module.exports.run = (event, context, callback) => {
 
     function recurseProperties(payload, ptr, savePtr, maskPtr) {
         for (let p in ptr) {
-            if (mask === undefined || (maskPtr[p] === true || typeof maskPtr[p] === 'object' )) {
+            if (mask === undefined || (maskPtr[p] === true || typeof maskPtr[p] === 'object')) {
                 if (!payload.packet.options.compress.properties[p]) {
                     payload.packet.options.compress.properties[p] = payload.packet.options.compress.inc.toString(16);
                     payload.packet.options.compress.inc++;
                 }
                 if (typeof ptr[p] === 'object' && !Array.isArray(ptr[p]) && ptr[p] !== null) {
                     savePtr[payload.packet.options.compress.properties[p]] = {};
-                    recurseProperties(payload, ptr[p], savePtr[payload.packet.options.compress.properties[p]], mask&&mask[p]? mask[p]:undefined);
+                    recurseProperties(payload, ptr[p], savePtr[payload.packet.options.compress.properties[p]], mask && mask[p] ? mask[p] : undefined);
                 } else {
                     savePtr[payload.packet.options.compress.properties[p]] = JSON.parse(JSON.stringify(ptr[p]));
                 }
@@ -512,7 +519,7 @@ module.exports.run = (event, context, callback) => {
         payload = JSON.stringify(payload);
         if (payload.length > MAX_BYTES) {
             totalPackets = Math.ceil(payload.length / MAX_BYTES);
-            console.log(`total packets [${totalPackets}`);
+            //console.log(`total packets [${totalPackets}`);
             for (let i = 0; i < totalPackets; i++) {
                 let loc = i * MAX_BYTES;
                 let sub = payload.slice(loc, MAX_BYTES + loc);
@@ -527,7 +534,7 @@ module.exports.run = (event, context, callback) => {
             if (currentPacket < totalPackets) {
                 let packet = Buffer.from(packetArray.shift()).toString('base64');
                 currentPacket++;
-                console.log(`packet:${currentPacket}-${totalPackets} Size: ${packet.length}`);
+                //console.log(`packet:${currentPacket}-${totalPackets} Size: ${packet.length}`);
                 _sendWS(JSON.stringify({
                     "frame": currentPacket,
                     "totalFrames": totalPackets,
@@ -535,7 +542,7 @@ module.exports.run = (event, context, callback) => {
                     "data": packet
                 }), _sendPacket);
             } else {
-                console.log('Done all packets');
+                //console.log('Done all packets');
                 sendSuccess();
             }
         }
@@ -546,15 +553,15 @@ module.exports.run = (event, context, callback) => {
                 .postToConnection({ConnectionId: connectionId, Data: payload})
                 .promise()
                 .then(() => {
-                    console.log(`Message sent to ${connectionId}!`);
+                    //console.log(`Message sent to ${connectionId}!`);
                     success();
                 })
                 .catch(e => {
                     if (e.statusCode === 410 || e.statusCode === 504) {
-                        console.log(`Found stale connection, deleting ${connectionId}`);
+                        //console.log(`Found stale connection, deleting ${connectionId}`);
                         // delete connectionId from your database or cache
                     } else {
-                        console.log(`Failed to post. Error: ${JSON.stringify(e)}`);
+                        //console.log(`Failed to post. Error: ${JSON.stringify(e)}`);
                     }
                     success();
                 });

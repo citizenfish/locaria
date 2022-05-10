@@ -16,6 +16,7 @@ provider:
     pool: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}.json):cognitoPoolId}
     importBucket: locaria-${self:custom.stage}-${env:theme}
     region: ${file(../../../locaria.json):${self:custom.stage}.region}
+    theme: ${env:theme}
   iam:
     role:
       statements:
