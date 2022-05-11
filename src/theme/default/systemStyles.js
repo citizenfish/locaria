@@ -29,8 +29,6 @@ export default class UseStyles {
 					outline: '1px solid slategrey'
 				}
 			},
-
-
 			/*
 				Defaults
 			 */
@@ -1096,6 +1094,9 @@ export default class UseStyles {
 				margin: '20px'
 			},
 
+			radialChart: {
+				margin: "auto !important"
+			},
 			/*
 			  Other
 			 */

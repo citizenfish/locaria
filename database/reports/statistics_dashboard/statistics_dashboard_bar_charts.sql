@@ -7,15 +7,20 @@ SELECT 'statistics_dashboard_bar_charts',
 
    WITH LAST24 AS (
 
-        SELECT jsonb_agg(jsonb_build_object('x', rng, 'y', users)) AS users24,
-               jsonb_agg(jsonb_build_object('x', rng, 'y', searches)) AS searches24
+        SELECT jsonb_agg(jsonb_build_object('x', to_char(rng, 'fm00":00"'), 'y', users)) AS users24,
+               jsonb_agg(jsonb_build_object('x', to_char(rng, 'fm00":00"'), 'y', searches)) AS searches24
         FROM (
             SELECT distinct rng,
                 COALESCE(users,0) AS users,
-                COALESCE(searches,0) AS searches
+                COALESCE(searches,0) AS searches,
+                rng_row_number
             FROM
                 (
-                SELECT DATE_PART('hour', GENERATE_SERIES(now() - INTERVAL '24 hours', now(), Interval '1 hour')) AS rng) RN
+                    SELECT row_number() OVER () AS rng_row_number, *
+                    FROM (
+                        SELECT DATE_PART('hour', GENERATE_SERIES(now() - INTERVAL '23 hours', now(), Interval '1 hour'))::INTEGER AS rng
+                    ) J
+                ) RN
                 LEFT JOIN (
                     SELECT DATE_PART('hour', log_timestamp) AS hour,
                     COUNT(DISTINCT usr) AS   users,
@@ -26,7 +31,7 @@ SELECT 'statistics_dashboard_bar_charts',
                     GROUP BY 1
                 ) LG
             ON rng = hour
-            ORDER BY 1  ASC
+            ORDER BY rng_row_number ASC
         ) L24
 
    ), LAST10 AS (
@@ -62,7 +67,7 @@ SELECT 'statistics_dashboard_bar_charts',
                     GROUP BY 1
                 ) LG
             ON rng = hour
-        ORDER BY rng_row_number
+            ORDER BY rng_row_number
        ) L10
 
        )
