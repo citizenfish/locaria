@@ -29,3 +29,55 @@ A missing attribute implies as follows:-
 "owner" : "no individual ownership"
 "view" : "available to all"
 "update"/"delete"/"moderate" : cannot be updated/deleted/moderated
+
+## API Calls
+
+Calls to the api must provide an acl structure as a SEPARATE parameter to the call, eg:-
+
+- locaria_gateway(PARAMS, ACL)
+- locaria_internal_gateway(PARAMS,ACL)
+
+This ACL structure must provide details of the calling user as follows:-
+
+```json
+{
+  "_userID" : <A unique user ID> | "PUBLIC",
+  "_groups" : ["Group 1", "Group 2", "Group 3"]
+}
+```
+
+The following calls will allow acls to be set and updated:-
+
+- add_asset
+- add_item
+- update_asset
+- update_item
+- update_moderation_status
+
+In this instance the requested new acl must be added to the ACL structure as follows:-
+
+```json
+{
+  "_userID" : <A unique user ID> | "PUBLIC",
+  "_groups" : ["Group 1", "Group 2", "Group 3"],
+  "_newACL" : {
+    "owner" : "NEW USER ID",
+    "view" : [<COGNITO_GROUP_ID>,<COGNITO_GROUP_ID>,..],
+    "update" : [<COGNITO_GROUP_ID>,<COGNITO_GROUP_ID>,..],
+    "delete" : [<COGNITO_GROUP_ID>,<COGNITO_GROUP_ID>,..],
+    "moderate" : [<COGNITO_GROUP_ID>,<COGNITO_GROUP_ID>,..]
+  }
+}
+```
+
+ACL updates are complete overwrites of the requested item, so if a new group is being added to view then send:-
+
+```json
+{
+  "_userID" : <A unique user ID> | "PUBLIC",
+  "_groups" : ["Group 1", "Group 2", "Group 3"],
+  "_newACL" : {
+    "view" : ["NEW GROUP", "OLD GROUP1", "OLD GROUP2"]
+  }
+}
+```

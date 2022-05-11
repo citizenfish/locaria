@@ -1,4 +1,5 @@
 --Single gateway for all Internal API calls to locaria_core
+
 CREATE OR REPLACE FUNCTION locaria_core.locaria_internal_gateway(parameters JSONB, acl JSONB DEFAULT jsonb_build_object()) RETURNS JSONB AS
 $$
 DECLARE
@@ -13,8 +14,9 @@ BEGIN
 
     parameters = parameters - 'id_token';
 
-    IF acl IS NOT NULL THEN
-        parameters = jsonb_insert(parameters #- '{attributes,acl}', '{attributes,acl}', acl);
+    --TODO better way to establish an empty object
+    IF acl::TEXT != '{}' THEN
+        parameters = parameters || jsonb_build_object('acl',acl);
     END IF;
 
     --From the incoming JSON select the method and run it

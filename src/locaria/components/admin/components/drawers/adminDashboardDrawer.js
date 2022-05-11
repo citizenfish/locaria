@@ -12,6 +12,7 @@ import {useCookies} from "react-cookie";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import '../../../../../../node_modules/react-vis/dist/style.css'
 
 import {XYPlot,
     XAxis,
@@ -21,7 +22,8 @@ import {XYPlot,
     VerticalBarSeries,
     VerticalBarSeriesCanvas,
     FlexibleXYPlot,
-    RadialChart} from 'react-vis'
+    RadialChart,
+    DiscreteColorLegend} from 'react-vis'
 
 export default function AdminDashboardDrawer(props) {
 
@@ -39,7 +41,6 @@ export default function AdminDashboardDrawer(props) {
 
     const searchTermCols = [{field: 'srch', headerName: 'Search Term', width: 300}, {field: 'count', headerName: 'Count', width: 150}]
     const itemCols = [{field: 'title', headerName: 'Title', width: 200}, {field: 'category', headerName: 'Category', width: 200},{field: 'count', headerName: 'Count', width: 150}]
-    const BarSeries = VerticalBarSeriesCanvas
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -104,8 +105,6 @@ export default function AdminDashboardDrawer(props) {
                     method: "report",
                     report_name: "statistics_dashboard_bar_charts",
                     id_token: cookies['id_token']
-                    //TODO IN FOR DEBUG REMOVE!!!!
-                    //,date : "2022-05-04"
 
                 }
             })
@@ -117,8 +116,6 @@ export default function AdminDashboardDrawer(props) {
                     method: "report",
                     report_name: "statistics_dashboard_pie_charts",
                     id_token: cookies['id_token']
-                    //TODO IN FOR DEBUG REMOVE!!!!
-                    //,date : "2022-05-04"
 
                 }
             })
@@ -130,8 +127,6 @@ export default function AdminDashboardDrawer(props) {
                     method: "report",
                     report_name: "statistics_dashboard_line_items",
                     id_token: cookies['id_token']
-                    //TODO IN FOR DEBUG REMOVE!!!!
-                    //,date : "2022-05-04"
                 }
             })
         }
@@ -207,17 +202,21 @@ export default function AdminDashboardDrawer(props) {
                         <CardContent>
                             {
                                 barCharts.users24 &&
-                                <FlexibleXYPlot
-                                    height = {200}
-                                    xDistance = {30}
-                                >
-                                    <VerticalGridLines />
-                                    <HorizontalGridLines />
-                                    <XAxis />
-                                    <YAxis />
-                                    <VerticalBarSeries data={barCharts.searches24} />
-                                    <VerticalBarSeries data={barCharts.users24} />
-                                </FlexibleXYPlot>
+                                    <div>
+                                        <DiscreteColorLegend items={[{title:"Searches", color: "rgb(243,156,18)"},{title:"Sessions", color: "rgb(0,192,239)"}]}
+                                                             orientation={"horizontal"}/>
+                                        <FlexibleXYPlot
+                                            height = {200}
+                                            xDistance = {30}
+                                            xType={"ordinal"}
+                                        >
+
+                                            <XAxis />
+                                            <YAxis />
+                                            <VerticalBarSeries data={barCharts.searches24} color={"rgb(243,156,18)"}/>
+                                            <VerticalBarSeries data={barCharts.users24} color={"rgb(0,192,239)"}/>
+                                        </FlexibleXYPlot>
+                                    </div>
                             }
                         </CardContent>
                     </Card>
@@ -230,42 +229,57 @@ export default function AdminDashboardDrawer(props) {
                         <CardContent>
                             {
                                 barCharts.users10 &&
-                                <FlexibleXYPlot
-                                    height = {300}
-                                    xType={"ordinal"}>
-                                    <VerticalGridLines />
-                                    <HorizontalGridLines />
-                                    <XAxis  />
-                                    <YAxis />
-                                    <VerticalBarSeries data={barCharts.searches10} />
-                                    <VerticalBarSeries  data={barCharts.users10} />
-                                </FlexibleXYPlot>
+                                    <div>
+                                        <DiscreteColorLegend items={[{title:"Searches", color: "rgb(243,156,18)"},{title:"Sessions", color: "rgb(0,192,239)"}]}
+                                                             orientation={"horizontal"}/>
+                                        <FlexibleXYPlot
+                                            height = {300}
+                                            xType={"ordinal"}>
+
+                                            <XAxis  />
+                                            <YAxis />
+                                            <VerticalBarSeries data={barCharts.searches10} />
+                                            <VerticalBarSeries  data={barCharts.users10} />
+                                        </FlexibleXYPlot>
+                                    </div>
                             }
                         </CardContent>
                     </Card>
                 </Grid>
             </Grid>
 
-            <Grid container spacing={4}>
+            <Grid container spacing={4} >
                 <Grid item md={6}>
                     <Card style = {{margin: "20px"}}>
+                        <CardContent>
                         {
                             pieCharts.categories &&
-                            <RadialChart height={400}
+                            <RadialChart height={300}
                                          data={pieCharts.categories}
-                                         width={400}/>
+                                         width={300}
+                                         showLabels={true}
+                                         className={"radialChart"}
+                            />
                         }
+                        </CardContent>
                     </Card>
                 </Grid>
                 <Grid item md={6}>
+
                     <Card style = {{margin: "20px"}}>
+                        <CardContent style = {{display:"flex", margin: "auto"}}>
                         {
                             pieCharts.tags &&
-                            <RadialChart height={400}
+                            <RadialChart height={300}
                                          data={pieCharts.tags}
-                                         width={400}/>
+                                         width={300}
+                                         showLabels={true}
+                                         className={"radialChart"}
+                            />
                         }
+                        </CardContent>
                     </Card>
+
                 </Grid>
             </Grid>
 

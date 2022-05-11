@@ -19,7 +19,7 @@ BEGIN
      INTO ret_var
      USING ST_GEOMFROMEWKT(parameters->>'geometry'),
            parameters->'attributes',
-           (SELECT category_id FROM categories WHERE category = parameters->>'category'),
+           (SELECT id FROM categories WHERE category = parameters->>'category'),
            COALESCE (parameters->>'search_date', NOW()::TEXT)::TIMESTAMP;
 
      --Add a history item and return
