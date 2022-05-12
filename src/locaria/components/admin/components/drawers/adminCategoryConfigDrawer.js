@@ -26,7 +26,7 @@ import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 import Box from "@mui/material/Box";
 import UploadWidget from "../../../widgets/uploadWidget";
 import Channels from "../../../../libs/Channels";
-import ColorPicker from 'material-ui-color-picker'
+import { ColorPicker } from 'mui-color';
 import Divider from "@mui/material/Divider";
 
 
@@ -158,11 +158,16 @@ export default function AdminCategoryConfigDrawer(props) {
                     }}
                 />
                 <Divider></Divider>
-                <ColorPicker
+                <ColorPicker value={getCategoryData(category).color} defaultValue="transparent" onChange={(color) => {
+                    dispatch(setAdminCategoryValue({
+                        category: category,
+                        key: "color",
+                        value: `${color.css.backgroundColor}`
+                    }));
+                }}/>
+             {/*   <ColorPicker
                     defaultValue={"Select category color"}
                     name='color'
-                    fullWidth={true}
-
                     value={getCategoryData(category).color}
                     onChange={(color) => {
                         dispatch(setAdminCategoryValue({
@@ -172,7 +177,7 @@ export default function AdminCategoryConfigDrawer(props) {
                         }));
                     }}
 
-                />
+                />*/}
              {/*   <TextField
                     id="color"
                     label="Color"
