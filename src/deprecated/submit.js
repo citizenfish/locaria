@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Layout from './widgets/layout';
-import Map from './widgets/map';
-import ChannelCard from './widgets/channelCard';
+import Layout from '../locaria/components/widgets/layout';
+import Map from '../locaria/components/widgets/map';
+import ChannelCard from './channelCard';
 
 import {useParams, useHistory} from "react-router-dom";
 import Grid from "@mui/material/Grid";
@@ -16,10 +16,10 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Openlayers from "libs/Openlayers";
-import {viewStyle} from "./mapStyles/view"
+import {viewStyle} from "../locaria/components/mapStyles/view"
 import {useCookies} from "react-cookie";
 
-import AutoForm from "./widgets/autoForm";
+import AutoForm from "../locaria/components/widgets/autoForm";
 
 const Submit = () => {
 	let {category} = useParams();

@@ -10,7 +10,11 @@ import {useStyles} from "../../../../../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
 import {setEditData} from "../../redux/slices/editDrawerSlice";
-import {setSystemConfig, setSystemConfigValue} from "../../redux/slices/systemConfigDrawerSlice";
+import {
+    closeSystemConfigDrawer,
+    setSystemConfig,
+    setSystemConfigValue
+} from "../../redux/slices/systemConfigDrawerSlice";
 import {useCookies} from "react-cookie";
 import Slider from "@mui/material/Slider";
 import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
@@ -21,11 +25,16 @@ import {setAdminCategories, setAdminCategoryValue} from "../../redux/slices/admi
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 import Box from "@mui/material/Box";
 import UploadWidget from "../../../widgets/uploadWidget";
+import Channels from "../../../../libs/Channels";
+import ColorPicker from 'material-ui-color-picker'
+import Divider from "@mui/material/Divider";
+
 
 export default function AdminCategoryConfigDrawer(props) {
 
     const open = useSelector((state) => state.adminCategoryDrawer.open);
     const categories = useSelector((state) => state.adminCategoryDrawer.categories);
+
     const dispatch = useDispatch()
     const classes = useStyles();
     const isInitialMount = useRef(true);
@@ -50,6 +59,7 @@ export default function AdminCategoryConfigDrawer(props) {
 
         window.websocket.registerQueue('setConfig', (json) => {
             getConfig();
+
         });
 
         if (open) {
@@ -59,6 +69,7 @@ export default function AdminCategoryConfigDrawer(props) {
             dispatch(closeAdminPageDrawer());
             dispatch(closeDashboardDrawer());
             dispatch(closeLanguageDrawer());
+            dispatch(closeSystemConfigDrawer());
 
             dispatch(setTitle('System'));
             getConfig();
@@ -66,7 +77,8 @@ export default function AdminCategoryConfigDrawer(props) {
 
     }, [open]);
 
-    const getConfig = () => {
+
+        const getConfig = () => {
         window.websocket.send({
             "queue": "getCategories",
             "api": "api",
@@ -84,6 +96,16 @@ export default function AdminCategoryConfigDrawer(props) {
         }
     }
 
+    const setPanel=(uuid) => {
+        dispatch(setAdminCategoryValue({category:category,key:"image",value:uuid}));
+
+    }
+
+    const setIcon=(uuid) => {
+        dispatch(setAdminCategoryValue({category:category,key:"mapIcon",value:uuid}));
+
+    }
+
     const setConfig = (e) => {
 
         let data=getCategoryData();
@@ -97,94 +119,141 @@ export default function AdminCategoryConfigDrawer(props) {
                 "attributes": data
             }
         });
-        window.systemCategories=categories;
+        window.systemCategories=new Channels(categories);
+
+        setCategory(undefined);
+
     }
 
-
-    return (
-        <Drawer
-            anchor="right"
-            open={open}
-            variant="persistent"
-            className={classes.adminDrawers}
-
-        >
-            <Box sx={{margin:"50px"}}>
-
-            <h1>Categories</h1>
-            <FormControl fullWidth>
-                <InputLabel id="category-label">Select category</InputLabel>
-                <Select
-                    labelId="category-label"
-                    id="category"
-                    value={category}
-                    label="Category"
+    if(category) {
+        return (
+            <>
+                <h1>{category}</h1>
+                <TextField
+                    id="name"
+                    label="Name"
+                    fullWidth={true}
+                    variant="filled"
+                    value={getCategoryData(category).name}
+                    onChange={(e) => {
+                        dispatch(setAdminCategoryValue({
+                            category: category,
+                            key: "name",
+                            value: e.target.value
+                        }));
+                    }}
+                />
+                <TextField
+                    id="description"
+                    label="Description"
+                    fullWidth={true}
+                    variant="filled"
+                    value={getCategoryData(category).description}
+                    onChange={(e) => {
+                        dispatch(setAdminCategoryValue({
+                            category: category,
+                            key: "description",
+                            value: e.target.value
+                        }));
+                    }}
+                />
+                <Divider></Divider>
+                <ColorPicker
+                    defaultValue={"Select category color"}
+                    name='color'
                     fullWidth={true}
 
-                    onChange={(e)=>{
-                        setCategory(e.target.value);
+                    value={getCategoryData(category).color}
+                    onChange={(color) => {
+                        dispatch(setAdminCategoryValue({
+                            category: category,
+                            key: "color",
+                            value: color
+                        }));
                     }}
-                >
-                    {categories.map(value => (
-                        <MenuItem value={value.key}>{value.key}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
 
-            {category &&
-                <>
-                    <h1>{category}</h1>
-                    <TextField
-                        id="name"
-                        label="Name"
-                        fullWidth={true}
+                />
+             {/*   <TextField
+                    id="color"
+                    label="Color"
+                    fullWidth={true}
+                    variant="filled"
+                    value={getCategoryData(category).color}
+                    onChange={(e) => {
+                        dispatch(setAdminCategoryValue({
+                            category: category,
+                            key: "color",
+                            value: e.target.value
+                        }));
+                    }}
+                />*/}
 
-                        defaultValue={getCategoryData(category).key}
-                        variant="filled"
-                        value={getCategoryData(category).name}
-                        onChange={(e)=>{
-                            dispatch(setAdminCategoryValue({category:category,key:"name",value:e.target.value}));
-                        }}
-                    />
-                    <TextField
-                        id="description"
-                        label="Description"
-                        fullWidth={true}
+                <UploadWidget usageFilter={"panel"} title={"Select Panel image"} setFunction={setPanel}
+                              uuid={getCategoryData(category).image}></UploadWidget>
 
-                        defaultValue={"Describe me"}
-                        variant="filled"
-                        value={getCategoryData(category).description}
-                        onChange={(e)=>{
-                            dispatch(setAdminCategoryValue({category:category,key:"description",value:e.target.value}));
-                        }}
-                    />
-                    // TODO https://github.com/mikbry/material-ui-color
-                    <TextField
-                        id="color"
-                        label="Color"
-                        fullWidth={true}
+                <UploadWidget usageFilter={"iconMap"} title={"Select map icon"} setFunction={setIcon}
+                              uuid={getCategoryData(category).mapIcon}></UploadWidget>
 
-                        defaultValue={"#b2df8a"}
-                        variant="filled"
-                        value={getCategoryData(category).color}
-                        onChange={(e)=>{
-                            dispatch(setAdminCategoryValue({category:category,key:"color",value:e.target.value}));
-                        }}
-                    />
+                <TextField
+                    id="fields"
+                    label="Field Config"
+                    fullWidth={true}
 
-                    <UploadWidget></UploadWidget>
+                    defaultValue={"{}"}
+                    variant="filled"
+                    value={getCategoryData(category).fields}
+                    onChange={(e) => {
+                        dispatch(setAdminCategoryValue({
+                            category: category,
+                            key: "fields",
+                            value: JSON.parse(e.target.value)
+                        }));
+                    }}
+                />
+                <Button onClick={(e) => {
+                    setConfig(e);
+                }}>Save</Button>
 
-                    <Button onClick={(e) => {
-                        setConfig(e)
-                    }}>Save</Button>
+                <Button onClick={() => {
+                    setCategory(undefined);
+                }}>Cancel</Button>
+            </>
 
-                    <Button onClick={() => {
-                        setCategory(undefined)
-                    }}>Cancel</Button>
-                </>
+        )
+    } else {
 
-            }
-            </Box>
-        </Drawer>
-    )
+
+        return (
+            <Drawer
+                anchor="right"
+                open={open}
+                variant="persistent"
+                className={classes.adminDrawers}
+
+            >
+                <Box sx={{margin: "50px"}}>
+
+                    <h1>Categories</h1>
+                    <FormControl fullWidth>
+                        <InputLabel id="category-label">Select category</InputLabel>
+                        <Select
+                            labelId="category-label"
+                            id="category"
+                            value={category}
+                            label="Category"
+                            fullWidth={true}
+
+                            onChange={(e) => {
+                                setCategory(e.target.value);
+                            }}
+                        >
+                            {categories.map(value => (
+                                <MenuItem value={value.key}>{value.key}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Drawer>
+        )
+    }
 }

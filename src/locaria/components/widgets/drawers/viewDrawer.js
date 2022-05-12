@@ -1,7 +1,7 @@
 import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import {Container, Divider, Drawer, LinearProgress, useMediaQuery} from "@mui/material";
 import {useStyles} from "stylesLocaria";
-import {configs, theme, channels} from "themeLocaria";
+import {configs, theme} from "themeLocaria";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -21,6 +21,8 @@ import Map from "../map";
 import {closeLayout} from "../../redux/slices/layoutSlice";
 import Button from "@mui/material/Button";
 
+import UrlCoder from "../../../libs/urlCoder";
+const url=new UrlCoder();
 
 const ViewDrawer = forwardRef((props, ref) => {
     const dispatch = useDispatch()
@@ -38,7 +40,7 @@ const ViewDrawer = forwardRef((props, ref) => {
 
     const [report, setReport] = React.useState(null);
 
-    let channel = channels.getChannelProperties(category);
+    let channel = window.systemCategories.getChannelProperties(category);
 
     const isInitialMount = useRef(true);
 
@@ -166,8 +168,8 @@ const ViewDrawer = forwardRef((props, ref) => {
             <Container className={classes.ReportProfileHeader}>
                 <div className={classes.ReportProfileImageContainer}>
                     <CardImageLoader className={classes.ReportProfileImage}
-                                     images={report.viewLoader.packet.features[0].properties.description.images}
-                                     defaultImage={channel.image ? channel.image : configs.defaultImage}
+                                     images={url.decode(report.viewLoader.packet.features[0].properties.description.images,true)}
+                                     defaultImage={url.decode(channel.image ? channel.image : configs.defaultImage,true)}
                                      gallery={true}/>
 
                 </div>
@@ -242,8 +244,8 @@ const ViewDrawer = forwardRef((props, ref) => {
                 <Container className={classes.ReportProfileHeader}>
                     <div className={classes.ReportProfileImageContainer}>
                         <CardImageLoader className={classes.ReportProfileImage}
-                                         images={report.viewLoader.packet.features[0].properties.description.images}
-                                         defaultImage={channel.image ? channel.image : configs.defaultImage}
+                                         images={url.decode(report.viewLoader.packet.features[0].properties.description.images,true)}
+                                         defaultImage={url.decode(channel.image ? channel.image : configs.defaultImage,true)}
                                          gallery={true}/>
                     </div>
                     <FieldView data={report.viewLoader.packet.features[0].properties}/>

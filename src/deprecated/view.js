@@ -3,7 +3,7 @@ import React, {useRef} from 'react';
 import Layout from '../locaria/components/widgets/layout';
 import Share from '../locaria/components/widgets/share';
 import Linker from '../locaria/components/widgets/linker';
-import ChannelCard from '../locaria/components/widgets/channelCard';
+import ChannelCard from './channelCard';
 
 import {useParams, useHistory} from "react-router-dom";
 import Grid from "@mui/material/Grid";

@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import AnchorIcon from '@mui/icons-material/Anchor';
 import CardImageLoader from "../../cardImageLoader";
-import {channels, configs} from "themeLocaria";
+import {configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 import {Divider} from "@mui/material";
 import {useDispatch, useSelector} from 'react-redux'
@@ -14,6 +14,9 @@ import IconButton from "@mui/material/IconButton";
 import Tags from "../../tags"
 import Chip from "@mui/material/Chip";
 import Distance from "../../../../libs/Distance";
+
+import UrlCoder from "../../../../libs/urlCoder";
+const url=new UrlCoder();
 
 const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper}) {
 	const classes = useStyles();
@@ -77,7 +80,7 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 
 			)
 		default:
-			const channel = channels.getChannelProperties(properties.category);
+			const channel = window.systemCategories.getChannelProperties(properties.category);
 			if (channel === undefined)
 				return <></>
 			return (
@@ -115,8 +118,8 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 													mapRef.current.clearHighlighted("default", "data");
 													dispatch(openViewDraw({fid: properties.fid, category: properties.category}))
 												}}>
-											<CardImageLoader defaultImage={channel.image ? channel.image : configs.defaultImage}
-															 images={properties.description ? properties.description.images : ''}
+											<CardImageLoader defaultImage={url.decode(channel.image ? channel.image : configs.defaultImage,true)}
+															 images={url.decode(properties.description ? properties.description.images : '',true)}
 
 											/>
 										</div>

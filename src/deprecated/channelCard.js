@@ -10,7 +10,7 @@ import Card from "@mui/material/Card";
 import {channels} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
-import Share from "./share";
+import Share from "../locaria/components/widgets/share";
 
 
 const ChannelCard = ({path}) => {

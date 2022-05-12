@@ -46,10 +46,12 @@ const Admin= () => {
 	useEffect(() => {
 		router();
 	}, []);
-
-	if(cookies['id_token'] === undefined ||
-	   cookies['id_token'] === "null") {
-		window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${window.location.protocol}//${window.location.host}/`;
+	let hash = window.location.hash;
+	if (!hash.match(/#id_token/)) {
+		if (cookies['id_token'] === undefined ||
+			cookies['id_token'] === "null") {
+			window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${window.location.protocol}//${window.location.host}/Admin/`;
+		}
 	}
 
 

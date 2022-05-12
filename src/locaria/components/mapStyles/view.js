@@ -2,7 +2,10 @@ import {Circle, Text, RegularShape, Fill, Stroke, Style, Icon} from 'ol/style.js
 import markerHome from 'themeDefault/images/marker-home.svg';
 import marker from 'themeDefault/images/marker.svg';
 
-import {configs, channels} from "themeLocaria";
+import {configs} from "themeLocaria";
+
+import UrlCoder from "../../libs/urlCoder";
+const url=new UrlCoder();
 
 export function locationStyle(feature, resolution) {
 
@@ -78,9 +81,10 @@ const defaultFeatureStyle = (feature,resolution,ol) => {
 	let category = feature.get('category');
 	let tags = feature.get('tags');
 	let description = feature.get('description');
-	let icon = channels.getChannelMapIcon(category, tags);
+	let icon = window.systemCategories.getChannelMapIcon(category, tags);
 	if (icon === undefined)
 		icon = configs.defaultMapIcon;
+	icon=url.decode(icon,true);
 	const geometry = feature.getGeometry();
 	if (geometry.getType() === 'Point') {
 		let label = category;

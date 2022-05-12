@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {channels, configs} from 'themeLocaria';
+import {configs} from 'themeLocaria';
 import {useStyles} from "stylesLocaria";
 
 import Typography from "@mui/material/Typography";
@@ -16,6 +16,10 @@ import FormControl from '@mui/material/FormControl';
 import {useDispatch, useSelector} from "react-redux";
 import {openSearchDrawer, clearSearchCategory} from "../../redux/slices/searchDrawerSlice";
 import {Divider} from "@mui/material";
+
+import UrlCoder from "../../../libs/urlCoder";
+const url=new UrlCoder();
+
 
 
 const CategorySelect = (props) => {
@@ -36,21 +40,21 @@ const CategorySelect = (props) => {
 			<>
 				<FormControl sx={{ m: 1, width: 200 }}>
 					{
-						channels.listChannels().map((channel) => {
-							const chan = channels.getChannelProperties(channel);
-							const chanIcon = channels.getChannelMapIcon(channel,chan.tags,configs.defaultMapIcon);
+						window.systemCategories.listChannels().map((channel) => {
+							const chan = window.systemCategories.getChannelProperties(channel);
+							const chanIcon = window.systemCategories.getChannelMapIcon(channel,chan.tags,configs.defaultMapIcon);
 							if(chan.display !== false){
 								return(
-									<MenuItem key ={chan.key} value = {chan.category}>
+									<MenuItem key ={chan.key} value = {chan.key}>
 										<Checkbox
-											value = {chan.category}
-											checked={categories.indexOf(chan.category) !== -1}
+											value = {chan.key}
+											checked={categories.indexOf(chan.key) !== -1}
 											onChange={categoryChange}
 										/>
 										<div className={classes.categorySelectIcon}>
-											<img src={chanIcon}/>
+											<img src={url.decode(chanIcon,true)}/>
 										</div>
-										<Typography variant="body1" className={classes.categorySelectText}>{chan.category}</Typography>
+										<Typography variant="body1" className={classes.categorySelectText}>{chan.name}</Typography>
 
 									</MenuItem>
 								)
@@ -69,7 +73,7 @@ const CategorySelect = (props) => {
 				</Typography>
 				<Typography variant="body1"
 							className={classes.resetCategorySelectText}
-							onClick={() => {dispatch(openSearchDrawer({categories:channels.listChannels()}))}}
+							onClick={() => {dispatch(openSearchDrawer({categories:window.systemCategories.listChannels()}))}}
 							sx={{m:1}}
 				>
 					{configs.selectAllCategoryText}
@@ -87,13 +91,13 @@ const CategorySelect = (props) => {
 					<Typography variant="body1" component="div" style = {{color: "black"}}>{configs.channelCallToAction}</Typography>
 				</Box>
 				<Grid container className={classes.root} spacing={2} justifyContent="center">
-					{channels.listChannels().map( (channel) => {
-							const chan = channels.getChannelProperties(channel);
+					{window.systemCategories.listChannels().map( (channel) => {
+							const chan = window.systemCategories.getChannelProperties(channel);
 							if (chan.display !== false) {
 								return (
 									<Grid item md={configs.homeGrid} className={classes.channel} key={chan.key} onClick={() => {dispatch(openSearchDrawer({categories: [channel]}));}}>
 										<div className={classes.channelPod}>
-											<img src={chan.image}/>
+											<img src={url.decode(chan.image,true)}/>
 											<Typography gutterBottom variant="h5" component="h2"
 														style={{color: `${chan.color}`}}>
 												{chan.name}
