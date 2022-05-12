@@ -152,6 +152,7 @@ export default function UploadWidget(props) {
                                 alt={item.name}
                                 loading="lazy"
                                 data-uuid={item.uuid}
+                                style={{"maxHeight":"50px","objectFit": "scale-down"}}
                             />
                             <DeleteForeverIcon sx={{"position": "absolute"}} onClick={(e) => {
                                 deleteAsset(item.uuid);
