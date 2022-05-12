@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 import cssOL from './components/css/ol.css';
 import {setSystemConfig} from "./components/admin/redux/slices/systemConfigDrawerSlice";
 
+import Channels from "libs/Channels";
 let tries = 0;
 
 window.websocket = new Websockets();
@@ -39,6 +40,7 @@ window.websocket.registerQueue('bulkConfigs', (json) => {
     window.systemMain = json.systemMain.packet.systemMain||{};
     window.systemPages = json.systemPages.packet.systemPages||[];
     window.systemLang=json.langLoad.packet.langENG||{};
+    window.systemCategories=new Channels(json.categories.packet.categories||{});
     document.title = window.systemLang.siteTitle;
 
     ReactDOM.render(<Main/>, document.getElementById('root'));
@@ -90,6 +92,13 @@ function connected() {
                 "method": "get_parameters",
                 "parameter_name": "langENG",
 
+            }
+        },{
+            "queue": "categories",
+            "api": "api",
+            "data": {
+                "method": "list_categories",
+                "attributes" : "true"
             }
         }
         ]

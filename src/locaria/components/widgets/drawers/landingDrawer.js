@@ -8,7 +8,7 @@ import Map from "../map";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import ChannelSelect from "../selectors/categorySelect";
+import CategorySelect from "../selectors/categorySelect";
 import {Footer} from "../footer";
 import {useHistory} from "react-router-dom";
 import {useCookies} from "react-cookie";
@@ -155,7 +155,7 @@ const LandingDrawer = function () {
 
 				</Grid>
 			</Grid>
-			<ChannelSelect/>
+			<CategorySelect/>
 			<Footer/>
 		</Drawer>
 	)

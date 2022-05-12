@@ -165,6 +165,16 @@ module.exports.run = (event, context, callback) => {
                                 sendToClient(payload);
                             });
                         break;
+                    case "delete_asset":
+                        validateToken(packet, function (tokenPacket) {
+                                delete_asset(packet);
+                            },
+                            function (tokenPacket) {
+                                payload.packet['response_code'] = 300;
+                                payload.packet = tokenPacket;
+                                sendToClient(payload);
+                            });
+                        break;
                     default:
                         client = database.getClient();
                         let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
@@ -203,20 +213,15 @@ module.exports.run = (event, context, callback) => {
                         client = database.getClient();
                         updateSession(tokenPacket['cognito:groups']);
                         if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
-                            // inject groups / user from token
-                            packet.data["_user"] = tokenPacket['cognito:username'];
-                            packet.data["_group"] = tokenPacket['cognito:groups'];
-                            packet.data["_email"] = tokenPacket['email'];
-
 
                             let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
 
                             let qarguments = [packet.data, {
-                                "owner": tokenPacket['cognito:username'],
-                                "email": tokenPacket['email']
+                                "_userID": tokenPacket['cognito:username'],
+                                "_email": tokenPacket['email'],
+                                "_groups": tokenPacket['cognito:groups']
+
                             }];
-                            //console.log(querysql);
-                            //console.log(qarguments);
                             client.query(querysql, qarguments, function (err, result) {
                                 if (err) {
                                     console.log(err);
@@ -309,19 +314,10 @@ module.exports.run = (event, context, callback) => {
         }
     }
 
-    function add_asset(packet) {
+    function delete_asset(packet) {
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
-
-        let uuid = uuidv4();
-        let filePath = `${process.env.theme}/assets/${uuid}.${packet.data.attributes.ext}`;
-        let urlPath = `/assets/${uuid}.${packet.data.attributes.ext}`;
         client = database.getClient();
         let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
-        packet.data.attributes.s3_bucket = process.env.importBucket;
-        packet.data.attributes.s3_region = process.env.region;
-        packet.data.attributes.s3_path = filePath;
-        packet.data.attributes.url =urlPath ;
-        packet.data.uuid = uuid;
         let qarguments = [packet.data];
         console.log(querysql);
         console.log(qarguments);
@@ -337,11 +333,64 @@ module.exports.run = (event, context, callback) => {
 
                 let s3 = new AWS.S3();
                 let s3parameters = {
+                    Bucket: result.rows[0]['locaria_gateway'].details.s3_bucket,
+                    Key: result.rows[0]['locaria_gateway'].details.s3_path,
+                };
+                console.log(s3parameters);
+
+                s3.deleteObject( s3parameters,function(err,data) {
+                    if(err) {
+                        console.log(err);
+                        payload.packet['response_code'] = 310;
+                        sendToClient(payload);
+                    } else {
+                        payload.packet = {
+                            "message": "deleted"
+                        };
+                        payload.response_code = 200;
+                        payload.method = packet.data.method;
+                        sendToClient(payload);
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    function add_asset(packet) {
+        let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
+
+        let uuid = uuidv4();
+        let filePath = `${process.env.theme}/assets/${uuid}.${packet.data.attributes.ext}`;
+        let urlPath = `/assets/${uuid}.${packet.data.attributes.ext}`;
+        client = database.getClient();
+        let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
+        packet.data.attributes.s3_bucket = process.env.importBucket;
+        packet.data.attributes.s3_region = process.env.region;
+        packet.data.attributes.s3_path = filePath;
+        packet.data.attributes.url =urlPath ;
+        packet.data.uuid = uuid;
+        let qarguments = [packet.data];
+        //console.log(querysql);
+        //console.log(qarguments);
+        client.query(querysql, qarguments, function (err, result) {
+            if (err) {
+                console.log(err);
+                payload.packet['response_code'] = 310;
+                sendToClient(payload);
+
+            } else {
+          //      console.log(result.rows[0]['locaria_gateway']);
+
+
+                let s3 = new AWS.S3();
+                let s3parameters = {
                     Bucket: process.env.importBucket,
                     Key: filePath,
                     ContentType: packet.data.contentType
                 };
-                console.log(s3parameters);
+            //    console.log(s3parameters);
 
                 let url = s3.getSignedUrl('putObject', s3parameters);
                 payload.packet = {

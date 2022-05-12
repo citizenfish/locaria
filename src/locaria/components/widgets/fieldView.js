@@ -1,5 +1,4 @@
 import React from 'react';
-import {channels} from 'theme/locaria';
 import Typography from "@mui/material/Typography";
 import {useStyles} from 'theme/styles';
 import Grid from "@mui/material/Grid";
@@ -13,7 +12,7 @@ import Tags from "./tags";
 const FieldView = ({data}) => {
 	const classes = useStyles();
 
-	let channel = channels.getChannelProperties(data.category);
+	let channel = window.systemCategories.getChannelProperties(data.category);
 
 	let fields = channel.fields;
 
