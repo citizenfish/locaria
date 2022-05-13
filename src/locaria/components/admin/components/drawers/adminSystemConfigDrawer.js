@@ -128,6 +128,25 @@ export default function AdminSystemConfigDrawer(props) {
                             dispatch(setSystemConfigValue({key:"searchCategory",value:e.target.checked}));
                         }}/>
                     </FormGroup>
+
+                    <h1>Results</h1>
+                    <FormControl fullWidth>
+                        <InputLabel id="viewMode-label">View mode</InputLabel>
+                        <Select
+                            labelId="viewMode-label"
+                            id="viewMode"
+                            value={config.viewMode}
+                            label="View Mode"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"viewMode",value:e.target.value}));
+                            }}
+                        >
+                            <MenuItem value={"full"}>Full screen</MenuItem>
+                            <MenuItem value={"left"}>Left draw</MenuItem>
+
+                        </Select>
+                    </FormControl>
+
                     <h1>Maps</h1>
                     <TextField
                         id="mapXYZ"
