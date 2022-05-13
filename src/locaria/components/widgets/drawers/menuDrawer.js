@@ -28,7 +28,7 @@ const MenuDrawer = function () {
 
 
 	function channelDisplay(channel) {
-		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDrawer({categories:[channel.category]}));}}>
+		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDrawer({categories:[channel.key]}));}}>
 			<ListItemIcon>
 				<SearchIcon/>
 			</ListItemIcon>

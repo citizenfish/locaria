@@ -118,7 +118,7 @@ const SearchDrawerCard = function ({properties, geometry, mapRef, closeWrapper})
 													mapRef.current.clearHighlighted("default", "data");
 													dispatch(openViewDraw({fid: properties.fid, category: properties.category}))
 												}}>
-											<CardImageLoader defaultImage={url.decode(channel.image ? channel.image : configs.defaultImage,true)}
+											<CardImageLoader defaultImage={url.decode(channel.image ? channel.image : window.systemMain.defaultImage,true)}
 															 images={url.decode(properties.description ? properties.description.images : '',true)}
 
 											/>

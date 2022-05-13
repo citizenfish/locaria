@@ -123,6 +123,7 @@ const App = () => {
 							<Route path="/Admin/Upload/" user={user} component={Admin}/>
 							<Route path="/Admin/Edit/:feature?" user={user} component={Admin}/>
 							<Route path="/Admin/" user={user} component={Admin}/>
+							<Route exact path="/Admin/:id_token?" component={Admin}/>
 
 							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Search/:category?/:search?" component={Home}/>

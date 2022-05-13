@@ -5,8 +5,7 @@ import {configs, theme} from "themeLocaria";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import LinkIcon from '@mui/icons-material/Link';
-import {useHistory, useParams} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux'
 import {openSearchDrawer, closeSearchDrawer} from "../../redux/slices/searchDrawerSlice";
 import {setPosition} from "../../redux/slices/viewDrawerSlice";
@@ -28,7 +27,6 @@ const ViewDrawer = forwardRef((props, ref) => {
     const dispatch = useDispatch()
     const history = useHistory();
     const localMapRef = useRef();
-
     const open = useSelector((state) => state.viewDraw.open);
     const fid = useSelector((state) => state.viewDraw.fid);
     const category = useSelector((state) => state.viewDraw.category);
@@ -45,7 +43,7 @@ const ViewDrawer = forwardRef((props, ref) => {
     const isInitialMount = useRef(true);
 
     let actualMapRef = props.mapRef;
-    if (configs.viewDrawType === 'full')
+    if (window.systemMain.viewMode === 'full')
         actualMapRef = localMapRef;
 
     React.useEffect(() => {
@@ -91,7 +89,8 @@ const ViewDrawer = forwardRef((props, ref) => {
     }, [open, fid]);
 
     React.useEffect(() => {
-        actualMapRef.current.reset();
+        if(report !== null && open)
+            actualMapRef.current.reset();
     },[report]);
 
         React.useEffect(() => {
@@ -290,7 +289,7 @@ const ViewDrawer = forwardRef((props, ref) => {
         <Drawer
             anchor="bottom"
             open={open}
-            className={configs.viewDrawType === 'full' ? classes.viewDrawFull : classes.viewDraw}
+            className={window.systemMain.viewMode === 'full' ? classes.viewDrawFull : classes.viewDraw}
             variant="persistent"
         >
             <div className={classes.searchDrawHeader}>

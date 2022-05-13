@@ -26,7 +26,7 @@ import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 import Box from "@mui/material/Box";
 import UploadWidget from "../../../widgets/uploadWidget";
 import Channels from "../../../../libs/Channels";
-import { ColorPicker } from 'mui-color';
+import {ColorPicker} from 'mui-color';
 import Divider from "@mui/material/Divider";
 
 
@@ -42,7 +42,7 @@ export default function AdminCategoryConfigDrawer(props) {
 
     const [cookies, setCookies] = useCookies(['location']);
 
-    const [category,setCategory]= useState(undefined);
+    const [category, setCategory] = useState(undefined);
 
 
     useEffect(() => {
@@ -51,8 +51,14 @@ export default function AdminCategoryConfigDrawer(props) {
         }
 
         window.websocket.registerQueue('getCategories', (json) => {
-            if(json.packet.categories)
-                dispatch(setAdminCategories(json.packet.categories));
+            if (json.packet.categories)
+                dispatch(setAdminCategories({
+                    data: json.packet.categories, defaults: {
+                        "name": "My category",
+                        "description": "My description",
+                        "display": true
+                    }
+                }));
             else
                 dispatch(setAdminCategories({}));
         });
@@ -78,37 +84,38 @@ export default function AdminCategoryConfigDrawer(props) {
     }, [open]);
 
 
-        const getConfig = () => {
+    const getConfig = () => {
         window.websocket.send({
             "queue": "getCategories",
             "api": "api",
             "data": {
                 "method": "list_categories",
-                "attributes" : "true"
+                "attributes": "true"
             }
         });
     }
 
     const getCategoryData = () => {
-        for(let cat in categories) {
-            if(categories[cat].key===category)
+        for (let cat in categories) {
+            if (categories[cat].key === category)
                 return categories[cat];
         }
     }
 
-    const setPanel=(uuid) => {
-        dispatch(setAdminCategoryValue({category:category,key:"image",value:uuid}));
+    const setPanel = (uuid) => {
+        dispatch(setAdminCategoryValue({category: category, key: "image", value: uuid}));
 
     }
 
-    const setIcon=(uuid) => {
-        dispatch(setAdminCategoryValue({category:category,key:"mapIcon",value:uuid}));
+    const setIcon = (uuid) => {
+        dispatch(setAdminCategoryValue({category: category, key: "mapIcon", value: uuid}));
 
     }
 
     const setConfig = (e) => {
 
-        let data=getCategoryData();
+        let data = JSON.parse(JSON.stringify(getCategoryData()));
+        data.fields=JSON.parse(data.fields);
         window.websocket.send({
             "queue": "setConfig",
             "api": "sapi",
@@ -119,13 +126,13 @@ export default function AdminCategoryConfigDrawer(props) {
                 "attributes": data
             }
         });
-        window.systemCategories=new Channels(categories);
+        window.systemCategories = new Channels(categories);
 
         setCategory(undefined);
 
     }
 
-    if(category) {
+    if (category) {
         return (
             <>
                 <h1>{category}</h1>
@@ -165,34 +172,6 @@ export default function AdminCategoryConfigDrawer(props) {
                         value: `${color.css.backgroundColor}`
                     }));
                 }}/>
-             {/*   <ColorPicker
-                    defaultValue={"Select category color"}
-                    name='color'
-                    value={getCategoryData(category).color}
-                    onChange={(color) => {
-                        dispatch(setAdminCategoryValue({
-                            category: category,
-                            key: "color",
-                            value: color
-                        }));
-                    }}
-
-                />*/}
-             {/*   <TextField
-                    id="color"
-                    label="Color"
-                    fullWidth={true}
-                    variant="filled"
-                    value={getCategoryData(category).color}
-                    onChange={(e) => {
-                        dispatch(setAdminCategoryValue({
-                            category: category,
-                            key: "color",
-                            value: e.target.value
-                        }));
-                    }}
-                />*/}
-
                 <UploadWidget usageFilter={"panel"} title={"Select Panel image"} setFunction={setPanel}
                               uuid={getCategoryData(category).image}></UploadWidget>
 
@@ -211,10 +190,23 @@ export default function AdminCategoryConfigDrawer(props) {
                         dispatch(setAdminCategoryValue({
                             category: category,
                             key: "fields",
-                            value: JSON.parse(e.target.value)
+                            value: e.target.value
                         }));
                     }}
                 />
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox checked={getCategoryData(category).display}/>}
+                                      label="Display in search" onChange={(e) => {
+                        dispatch(setAdminCategoryValue({
+                            category: category,
+                            key: "display",
+                            value: e.target.checked
+                        }));
+                    }}/>
+                </FormGroup>
+
+
+
                 <Button onClick={(e) => {
                     setConfig(e);
                 }}>Save</Button>
