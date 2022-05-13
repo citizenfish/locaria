@@ -204,6 +204,9 @@ export default function AdminCategoryConfigDrawer(props) {
                         }));
                     }}/>
                 </FormGroup>
+
+
+
                 <Button onClick={(e) => {
                     setConfig(e);
                 }}>Save</Button>

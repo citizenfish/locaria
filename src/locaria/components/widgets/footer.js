@@ -8,6 +8,9 @@ import {openPageDialog} from "../redux/slices/pageDialogSlice";
 import {useDispatch} from "react-redux";
 
 
+import UrlCoder from "../../libs/urlCoder";
+const url=new UrlCoder();
+
 const Footer = () => {
 	const classes = useStyles();
 	const history = useHistory();
@@ -16,7 +19,7 @@ const Footer = () => {
 
 	return (
 		<div className={classes.footer}>
-			<div className={classes.footerLogo} style={{backgroundImage: `url(${configs.siteFooter})`}}></div>
+			<div className={classes.footerLogo} style={{backgroundImage: `url(${url.decode(window.systemMain.siteFooter,true)})`}}></div>
 			{<ul className={classes.footerList}>
 				{window.systemPages.map(function (page) {
 					return (

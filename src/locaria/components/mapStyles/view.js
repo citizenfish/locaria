@@ -83,7 +83,7 @@ const defaultFeatureStyle = (feature,resolution,ol) => {
 	let description = feature.get('description');
 	let icon = window.systemCategories.getChannelMapIcon(category, tags);
 	if (icon === undefined)
-		icon = configs.defaultMapIcon;
+		icon = window.systemMain.defaultMapIcon;
 	icon=url.decode(icon,true);
 	const geometry = feature.getGeometry();
 	if (geometry.getType() === 'Point') {
