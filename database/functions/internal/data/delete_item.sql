@@ -19,15 +19,7 @@ BEGIN
         RETURN jsonb_build_object('error', concat_ws(' ', 'fid not found or cannot be deleted:', parameters->>'fid'));
      END IF;
 
-    RAISE NOTICE 'DEBUG 2 %', item_var#>'{acl,delete}';
-    IF (item_var#>'{acl,delete}') IS NOT NULL
-           AND (
-            NOT item_var #> '{acl,delete}' ?| json2text(parameters->'_group')
-                --OR
-                --item_var#>>'{acl,owner}' != parameters->>'_userID'
-            )
-
-        THEN
+    IF NOT (acl_check(parameters->'acl', item_var->'acl')->>'delete')::BOOLEAN THEN
         RETURN jsonb_build_object('error', 'acl_failure', 'response_code', 602);
     END IF;
 

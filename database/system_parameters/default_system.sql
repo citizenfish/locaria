@@ -1,10 +1,22 @@
+DELETE FROM locaria_core.parameters
+WHERE  parameter_name ='default_acl';
+
+INSERT INTO locaria_core.parameters(parameter_name, parameter,acl)
+SELECT 'default_acl',
+       jsonb_build_object(
+           'delete',    jsonb_build_array('Admins', 'Moderator'),
+           'update',    jsonb_build_array('Admins', 'Moderator'),
+           'moderate',  jsonb_build_array('Admins', 'Moderator')
+           ),
+       jsonb_build_object('update', jsonb_build_array('Admins'),'delete', jsonb_build_array('Admins'));
+
 DELETE
 FROM locaria_core.parameters
 WHERE parameter_name = 'systemMain';
 
 INSERT INTO locaria_core.parameters(parameter_name, acl, parameter)
 SELECT 'systemMain',
-       'external',
+       jsonb_build_object('update', jsonb_build_array('Admins'),'delete', jsonb_build_array('Admins')),
        '{
          "mapXYZ": "https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv",
          "mapBuffer": 50000,
@@ -27,7 +39,7 @@ WHERE parameter_name = 'langENG';
 
 INSERT INTO locaria_core.parameters(parameter_name, acl, parameter)
 SELECT 'langENG',
-       'external',
+       jsonb_build_object('update', jsonb_build_array('Admins'),'delete', jsonb_build_array('Admins')),
        '
                   {
                     "siteCallToAction": "Learn more about your location",

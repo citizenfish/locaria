@@ -1,4 +1,11 @@
---TODO make proper post process report
+DELETE FROM locaria_core.reports WHERE report_name ='business_post_process';
+
+INSERT INTO locaria_core.reports(report_name, report_parameters, admin_privilege)
+SELECT 'business_post_process',
+       jsonb_build_object('sql',
+
+$SQL$
+
 UPDATE locaria_data.imports
 SET attributes = attributes || jsonb_build_object('tags',
                                                   jsonb_build_array(
@@ -25,3 +32,5 @@ SET attributes = attributes || jsonb_build_object('data', attributes->'data' || 
                                                                                                    'postcode', attributes#>>'{data,regaddress.postcode}'))
 
 WHERE category_id=298
+$SQL$),
+TRUE;

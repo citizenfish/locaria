@@ -46,13 +46,16 @@ BEGIN
             ret_var = run_report(parameters, FALSE);
 
          WHEN parameters->>'method' IN ('get_parameters') THEN
-            ret_var = get_parameters(parameters, 'external');
+            ret_var = get_parameters(parameters);
 
         WHEN parameters->>'method' IN ('add_asset') THEN
             ret_var = add_asset(parameters || jsonb_build_object('internal', true));
 
         WHEN parameters->>'method' IN ('get_asset') THEN
             ret_var = get_asset(parameters || jsonb_build_object('internal', true));
+
+        WHEN parameters->>'method' IN ('delete_asset') THEN
+            ret_var = delete_asset(parameters || jsonb_build_object('internal', true));
 
 ELSE
             RETURN json_build_object('error', 'unsupported method');

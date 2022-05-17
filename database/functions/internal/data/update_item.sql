@@ -20,13 +20,11 @@ BEGIN
         RETURN jsonb_build_object('error', concat_ws(' ', 'fid not found or cannot be updated:', parameters->>'fid'));
      END IF;
 
-    IF (item_var#>'{acl,update}') IS NOT NULL AND NOT item_var#>'{acl,update}' ?| json2text(parameters->'_group') THEN
-
+    IF (acl_check(search_parameters->'acl', itme_var->'acl')->>'update')::BOOLEAN THEN
         --Categories can be marked to allow moderated updates, we check and if so put in moderation queue
         IF moderated_update_var THEN
             RETURN add_to_moderation_queue(parameters);
         END IF;
-
         RETURN jsonb_build_object('error', 'acl_failure or category does not allow moderated updates', 'response_code', 601);
     END IF;
 
