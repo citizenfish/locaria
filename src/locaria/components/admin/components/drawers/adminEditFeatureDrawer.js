@@ -19,7 +19,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Input from "@mui/material/Input";
-import {channels} from "themeLocaria";
 import {FieldEdit} from "../../../widgets/fieldEdit";
 import Map from "../../../widgets/map";
 import {setTitle, setTotal} from "../../redux/slices/adminSlice";
@@ -104,7 +103,7 @@ const  AdminEditFeatureDrawer = (props) => {
 	function saveFeature() {
 		let tags=tagRef.current.getTags();
 		let properties=JSON.parse(JSON.stringify(data.features[0].properties));
-		channels.mergeDataWithForm(data.features[0].properties.category,properties);
+		window.systemCategories.mergeDataWithForm(data.features[0].properties.category,properties);
 		properties.tags=tags;
 
 		let packet={
@@ -127,7 +126,7 @@ const  AdminEditFeatureDrawer = (props) => {
 
 
 	function editFields() {
-		let channel = channels.getChannelProperties(data.features[0].properties.category);
+		let channel = window.systemCategories.getChannelProperties(data.features[0].properties.category);
 		if (channel.fields) {
 			return (
 				<FieldEdit data={data.features[0].properties}></FieldEdit>

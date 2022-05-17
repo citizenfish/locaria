@@ -1,5 +1,5 @@
 {
-  "stopOnError": true,
+  "stopOnError": false,
   "tables": [
     "database/schema_and_tables/create_core_schema.sql",
     "database/schema_and_tables/create_categories_table.sql",
@@ -25,7 +25,8 @@
     "database/functions/view_creation/*",
     "database/functions/locaria_gateway.sql",
     "database/functions/locaria_internal_gateway.sql",
-    "database/reports/*",
+    "database/reports/*.sql",
+    "database/reports/**/*.sql",
     "database/system_parameters/system_parameters.sql",
     "database/schema_and_tables/create_search_views.sql",
     "database/system_parameters/default_system.sql"

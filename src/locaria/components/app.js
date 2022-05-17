@@ -2,7 +2,6 @@ import React from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Home from "components/home";
-import Submit from 'components/submit';
 import CMS from 'components/cms';
 import Error from 'components/error';
 import Maintenance from 'components/maintenance';
@@ -124,13 +123,13 @@ const App = () => {
 							<Route path="/Admin/Upload/" user={user} component={Admin}/>
 							<Route path="/Admin/Edit/:feature?" user={user} component={Admin}/>
 							<Route path="/Admin/" user={user} component={Admin}/>
+							<Route exact path="/Admin/:id_token?" component={Admin}/>
 
 							<Route path="/View/:category/:feature" component={Home}/>
 							<Route path="/Search/:category?/:search?" component={Home}/>
 							<Route path="/Page/:pageId" component={Home}/>
 							<Route path="/Map" component={Home}/>
 							<Route path="/CMS" component={CMS}/>
-							<Route path="/Submit/:category" component={Submit}/>
 							<Route path="/" component={Home}></Route>
 							<Route exact path="/:id_token?" component={Home}/>
 

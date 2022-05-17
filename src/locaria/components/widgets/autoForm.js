@@ -1,11 +1,5 @@
 import React from "react";
-
 import FormControl from "@mui/material/FormControl";
-import Slider from '@mui/material/Slider';
-import Typography from "@mui/material/Typography";
-
-
-import {channels} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import InputLabel from "@mui/material/InputLabel";
@@ -15,7 +9,7 @@ import Input from "@mui/material/Input";
 const autoForm = ({category, properties}) => {
 	const classes = useStyles();
 
-	let channel = channels.getChannelProperties(category);
+	let channel = window.systemCategories.getChannelProperties(category);
 
 
 	function onChange(e) {

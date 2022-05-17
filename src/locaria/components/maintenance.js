@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { configs} from 'themeLocaria';
-import {pages} from 'themeLocaria';
 import {useStyles} from "stylesLocaria";
 
 
@@ -12,11 +11,10 @@ import {Modal, Paper} from "@mui/material";
 const Maintenance = () => {
 	const classes = useStyles();
 
-	const pageData=pages.getPageData('Maintenance');
 	return (
 
 				<Paper className={classes.maintenance}>
-					{pageData}
+					<h1>Site Maintenance</h1>
 				</Paper>
 	)
 

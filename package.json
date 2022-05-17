@@ -4,6 +4,7 @@
 	"scripts": {
 		"configure": "node scripts/configure.js",
 		"build:multi:main": "node scripts/builder.js multi main",
+		"build:multi:swindonbid": "node scripts/builder.js multi swindonbid",
 		"build:multi:nmrn": "node scripts/builder.js multi nmrn",
 		"build:multi:sailortown": "node scripts/builder.js multi sailortown",
 		"runLocalSite": "webpack serve",
@@ -51,7 +52,10 @@
 		"yaml": "^2.0.0-10",
 		"yauzl": "^2.10.0",
 		"js-base64": "^3.7.2",
-		"uuid": "^8.3.2"
+		"uuid": "^8.3.2",
+		"mui-color": "^2.0.0-beta.2",
+		"material-ui-popup-state": "^1.7.2",
+		"prop-types": "^15.7.2"
 	},
 	"devDependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",

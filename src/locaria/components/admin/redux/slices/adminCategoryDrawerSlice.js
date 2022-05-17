@@ -17,7 +17,15 @@ export const adminCategoryDrawerSlice = createSlice({
             state.open =false;
         },
         setAdminCategories: (state,actions) => {
-            state.categories=actions.payload;
+            for(let c in actions.payload.data) {
+                for(let d in actions.payload.defaults) {
+                    if(actions.payload.data[c][d]===undefined) {
+                        actions.payload.data[c][d]=actions.payload.defaults[d];
+                    }
+                }
+                actions.payload.data[c].fields=JSON.stringify(actions.payload.data[c].fields);
+            }
+            state.categories=actions.payload.data;
         },
         setAdminCategoryValue: (state,actions) => {
             for(let category in state.categories) {

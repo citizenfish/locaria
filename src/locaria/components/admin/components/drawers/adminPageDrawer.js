@@ -13,9 +13,7 @@ import {addPage, setPages, setPage} from "../../redux/slices/adminPageDrawerSlic
 import {useCookies} from "react-cookie";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Divider from "@mui/material/Divider";
 import MDEditor from '@uiw/react-md-editor';
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";

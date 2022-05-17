@@ -19,6 +19,8 @@ import MenuItem from "@mui/material/MenuItem";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
 import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import UploadWidget from "../../../widgets/uploadWidget";
+import Container from "@mui/material/Container";
 
 export default function AdminSystemConfigDrawer(props) {
 
@@ -92,6 +94,7 @@ export default function AdminSystemConfigDrawer(props) {
     }
 
 
+
     return (
         <Drawer
             anchor="right"
@@ -101,7 +104,7 @@ export default function AdminSystemConfigDrawer(props) {
 
         >
             {config ? (
-                <>
+                <Container>
                     <h1>Search</h1>
                     <TextField
                         id="searchLimit"
@@ -128,6 +131,25 @@ export default function AdminSystemConfigDrawer(props) {
                             dispatch(setSystemConfigValue({key:"searchCategory",value:e.target.checked}));
                         }}/>
                     </FormGroup>
+
+                    <h1>Results</h1>
+                    <FormControl fullWidth>
+                        <InputLabel id="viewMode-label">View mode</InputLabel>
+                        <Select
+                            labelId="viewMode-label"
+                            id="viewMode"
+                            value={config.viewMode}
+                            label="View Mode"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"viewMode",value:e.target.value}));
+                            }}
+                        >
+                            <MenuItem value={"full"}>Full screen</MenuItem>
+                            <MenuItem value={"left"}>Left draw</MenuItem>
+
+                        </Select>
+                    </FormControl>
+
                     <h1>Maps</h1>
                     <TextField
                         id="mapXYZ"
@@ -213,10 +235,28 @@ export default function AdminSystemConfigDrawer(props) {
                             <MenuItem value={"KMEANS"}>KMEANS</MenuItem>
                         </Select>
                     </FormControl>
+
+                    <h1>Look & Feel</h1>
+
+                    <UploadWidget usageFilter={"logo"} title={"Select site logo"} setFunction={(uuid)=>{
+                            dispatch(setSystemConfigValue({key:"siteLogo",value:uuid}));
+                        }} uuid={config.siteLogo}>
+                    </UploadWidget>
+
+                    <UploadWidget usageFilter={"logo"} title={"Select footer image"} setFunction={(uuid)=>{
+                            dispatch(setSystemConfigValue({key:"siteFooter",value:uuid}));
+                        }} uuid={config.siteFooter}>
+                    </UploadWidget>
+
+                    <UploadWidget usageFilter={"iconMap"} title={"Select default map icon"} setFunction={(uuid)=>{
+                            dispatch(setSystemConfigValue({key:"defaultMapIcon",value:uuid}));
+                        }} uuid={config.defaultMapIcon}>
+                    </UploadWidget>
+
                     <Button onClick={(e) => {
                         setConfig(e)
                     }}>Save</Button>
-                </>) : (<></>)
+                </Container>) : (<></>)
             }
 
         </Drawer>
