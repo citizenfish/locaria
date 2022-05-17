@@ -1,4 +1,5 @@
 import requests
+from requests.auth import HTTPBasicAuth
 import time
 import json
 import re
@@ -19,8 +20,44 @@ def custom_loader_main(db,file):
         return crime_loader(db,file)
     elif func == 'thelist_events':
         return thelist_events(db,file)
+    elif func == 'reed_jobs':
+        return reed_jobs(db,file)
     else:
         return 'ERROR'
+
+def reed_jobs(db,file):
+    parameters = get_parameters(db,'reed_jobs').get('reed_jobs',{})
+    apiKey = parameters.get('apiKey')
+    reedUrl = parameters.get('url', 'https://www.reed.co.uk/api/1.0/search')
+    locationName = parameters.get('locationName')
+
+    if apiKey == None or locationName == None:
+        return {'status' : 'ERROR', 'message' : 'Missing apiKey or locationName'}
+
+    locationDistance = parameters.get('locationDistance', 5)
+    reedUrl = f"{reedUrl}?&locationName={locationName}&distanceFromLocation={locationDistance}"
+
+    res = requests.get(reedUrl, auth = HTTPBasicAuth(apiKey, ''))
+    jobs = res.json()
+    tmp_dir = file["attributes"]["tmp_dir"]
+    path = f"{tmp_dir}/reed_jobs.json"
+
+    #Make GeoJson even though we have no coords
+    features = []
+    for f in jobs['results']:
+        features.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [parameters.get('defaultGeometryX'), parameters.get('defaultGeometryY')]}, 'properties' : f})
+
+    data = {'type' : 'FeatureCollection'}
+    data['features'] = features
+    writeFileJson(path,data)
+
+    response = {
+        'filename': path,
+        'table_name': parameters.get('table_name', file['table_name']),
+        'post_process_report': parameters.get('post_process_report', file['attributes'].get('post_process_report',''))
+    }
+
+    return response
 
 def thelist_events(db,file):
     parameters = get_parameters(db,'thelist_events').get('thelist_events',{})

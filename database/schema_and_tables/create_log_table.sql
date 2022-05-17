@@ -10,13 +10,20 @@ CREATE  TABLE locaria_core.logs(
 
 -- Partition management
 -- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/PostgreSQL_Partitions.html
-SELECT partition_management.create_parent(
-    p_parent_table => 'locaria_core.logs',
-    p_control => 'log_timestamp',
-    p_type => 'native',
-    p_interval => 'monthly',
-    p_premake => 12
-    );
+DO
+$$
+BEGIN
+    SELECT partition_management.create_parent(
+        p_parent_table => 'locaria_core.logs',
+        p_control => 'log_timestamp',
+        p_type => 'native',
+        p_interval => 'monthly',
+        p_premake => 12
+        );
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'WARNING %', SQLERRM;
+END;
+$$ LANGUAGE PLPGSQL;
 
 UPDATE partition_management.part_config
 SET infinite_time_partitions = true,

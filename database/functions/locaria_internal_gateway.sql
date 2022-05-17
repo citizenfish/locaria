@@ -12,12 +12,9 @@ BEGIN
     --This keeps us within our search schema when running code
     SET SEARCH_PATH = 'locaria_core', 'locaria_data','public';
 
-    parameters = parameters - 'id_token';
 
-    --TODO better way to establish an empty object
-    IF acl::TEXT != '{}' THEN
-        parameters = parameters || jsonb_build_object('acl',acl);
-    END IF;
+    --delete any user sent acl and add in api one
+    parameters = parameters - 'acl' - 'id_token' || jsonb_build_object('acl',acl);
 
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('version') THEN
@@ -92,6 +89,8 @@ BEGIN
         WHEN parameters->>'method' IN ('get_asset') THEN
             ret_var = get_asset(parameters);
 
+        WHEN parameters->>'method' IN ('delete_asset') THEN
+            ret_var = delete_asset(parameters);
             ELSE
 
             RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');

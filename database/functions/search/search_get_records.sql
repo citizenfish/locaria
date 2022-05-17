@@ -162,7 +162,8 @@ BEGIN
 
             ) INNER_SUB
              --restrict to only allowed groups
-            WHERE attributes#>'{acl,view}' IS NULL OR attributes#>'{acl,view}' ?| json2text(search_parameters->'_group')
+            --WHERE attributes#>'{acl,view}' IS NULL OR attributes#>'{acl,view}' ?| json2text(search_parameters->'_groups')
+            WHERE (acl_check(search_parameters->'acl', attributes->'acl')->>'view')::BOOLEAN
             ORDER by distance ASC, attribute_rank ASC, search_rank DESC
             OFFSET default_offset
             LIMIT default_limit;

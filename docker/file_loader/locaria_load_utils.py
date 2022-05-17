@@ -50,7 +50,7 @@ def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
         if parameter_name != None:
             q_params["parameter_name"] = parameter_name
 
-        parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS p", [json.dumps(q_params)])
+        parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ['Admins']})])
         ret = parameters.fetchone()[0]
         return ret
 

@@ -37,6 +37,8 @@ Calls to the api must provide an acl structure as a SEPARATE parameter to the ca
 - locaria_gateway(PARAMS, ACL)
 - locaria_internal_gateway(PARAMS,ACL)
 
+The gateway functions will inject this into parameters and remove any attempt to send it direct
+
 This ACL structure must provide details of the calling user as follows:-
 
 ```json
@@ -70,7 +72,7 @@ In this instance the requested new acl must be added to the ACL structure as fol
 }
 ```
 
-ACL updates are complete overwrites of the requested item, so if a new group is being added to view then send:-
+ACL updates are complete overwrites of the requested item, so if a new group is being added to "view" then send:-
 
 ```json
 {
@@ -81,3 +83,15 @@ ACL updates are complete overwrites of the requested item, so if a new group is 
   }
 }
 ```
+
+For write/update operations if an ACL is not sent then the following will apply:-
+
+- if the category has a default ACL then use this
+- if the group has a default ACL then use this
+- if neither then default to system ACL default
+
+# Development notes
+
+The function **get_default_acl** has been created to manage the cascade logic for adding an acl if none provided
+
+The function **acl_check** has been created to check acls for all operations that need them

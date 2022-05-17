@@ -82,9 +82,10 @@ export default function AdminFileUploader(props) {
                             onChange={handleFileInput} />
                      <label htmlFor={'fileUploadButton'}>
                          {
-                             fileProgress == 0 && <Button variant="contained"
-                                                          onClick={e => fileInput.current && fileInput.current.click() }
-                                                          component="span">
+                             fileProgress == 0 &&
+                             <Button variant="contained"
+                                     onClick={e => fileInput.current && fileInput.current.click() }
+                                     component="span">
                                  Upload File
                              </Button>
                          }
