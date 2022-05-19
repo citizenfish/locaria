@@ -12,7 +12,7 @@ BEGIN
     INSERT INTO parameters(parameter_name, parameter,acl)
     SELECT parameters_var->>'parameter_name',
            parameters_var->'parameters',
-           COALESCE(parameters_var->>'acl', acl_var)
+           COALESCE(parameters_var->'acl', acl_var)
     ON CONFLICT(parameter_name)
     DO UPDATE set parameter = EXCLUDED.parameter, acl = EXCLUDED.acl
     WHERE (acl_check(parameters_var->'acl', acl)->>'view')::BOOLEAN
