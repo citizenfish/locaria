@@ -1,11 +1,14 @@
 export default class Channels {
 
-	constructor() {
-		this.channels={};
+	constructor(channels) {
+		this.channels=channels;
 	}
 
 	listChannels() {
-		return Object.keys(this.channels).sort();
+		let channelList=[];
+		for(let c in this.channels)
+			channelList.push(this.channels[c].key);
+		return channelList.sort();
 	}
 
 	addChannel(channel,config) {
@@ -13,7 +16,7 @@ export default class Channels {
 	}
 
 	displayChannel(channel) {
-		let display=this.channels[channel]['display'];
+		let display=this._findChannel(channel)['display'];
 		if(display===undefined)
 			display=true;
 		return display;
@@ -25,9 +28,18 @@ export default class Channels {
 
 	}
 
+	_findChannel(channel) {
+		for(let c in this.channels) {
+			if(this.channels[c].key===channel)
+				return this.channels[c];
+		}
+		return undefined;
+	}
+
 	getChannelProperties(channel) {
-		if(this.channels[channel]) {
-			return this.channels[channel];
+		let foundChannel=this._findChannel(channel);
+		if(foundChannel) {
+			return foundChannel;
 		} else {
 			console.log(`Request for [${channel}] that doesn't exits`);
 			return undefined;

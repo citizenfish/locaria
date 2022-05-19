@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 //** LOCARIA **//
 
 import {useStyles} from "stylesLocaria";
-import {configs, channels} from "themeLocaria";
+import {configs} from "themeLocaria";
 import Distance from "../../../libs/Distance";
 import LocationSearchResults from "../searchResults/locationSearchResults";
 import FeatureSearchResults from "../searchResults/featureSearchResults";
@@ -75,7 +75,7 @@ const SearchDrawer = forwardRef((props, ref) => {
 
         useEffect(() => {
             if (refresh === true && open === true) {
-                setChannel(channels.getChannelProperties(categories[0]));
+                setChannel(window.systemCategories.getChannelProperties(categories[0]));
 
                 history.push(`/Search/${JSON.stringify(categories)}/${search}`);
                 document.getElementById('mySearch').value = search;

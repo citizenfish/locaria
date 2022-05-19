@@ -1,29 +1,10 @@
 {
   "stopOnError": true,
   "tables": [
-    "database/functions/view_creation/views_union.sql",
-    "database/functions/view_creation/views_union.sql",
-    "database/functions/view_creation/create_typeahead_search_view.sql",
-    "database/functions/search/typeahead_search.sql",
-    "database/functions/search/search.sql",
-    "database/functions/search/search_get_records.sql",
-    "database/functions/locaria_internal_gateway.sql",
-    "database/functions/internal/admin/set_parameters.sql",
     "database/functions/internal/admin/get_parameters.sql",
-    "database/functions/messages/add_message.sql",
-    "database/functions/locaria_gateway.sql",
-    "database/functions/search/location_search.sql",
-    "database/functions/utility/unique_array_elements.sql",
-    "database/functions/utility/aws_lambda_interface.sql",
-    "database/functions/internal/admin/update_category.sql",
-    "database/functions/search/list_categories.sql",
-    "database/schema_and_tables/create_assets_table.sql",
-    "database/functions/internal/admin/add_asset.sql",
-    "database/functions/internal/admin/get_asset.sql",
-    "database/reports/statistics_dashboard/statistics_dashboard_overview.sql",
-    "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql",
-    "database/reports/statistics_dashboard/statistics_dashboard_pie_charts.sql",
-    "database/reports/statistics_dashboard/statistics_dashboard_line_items.sql"
+    "database/functions/internal/admin/set_parameters.sql",
+    "database/functions/locaria_gateway.sql"
+
   ],
   "substitutions": "../tests.json"
 }

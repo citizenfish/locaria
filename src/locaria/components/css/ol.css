@@ -1,4 +1,8 @@
+/* TODO BETTER SOLUTION for radialChart */
 
+.radialChart {
+  margin: auto !important
+}
 
 .ol-box {
   box-sizing: border-box;

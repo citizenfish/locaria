@@ -1,0 +1,7 @@
+{
+  "stopOnError": true,
+  "tables": [
+    "tests/unit_tests/internal/admin/delete_asset.sql"
+  ],
+  "substitutions": "../tests.json"
+}

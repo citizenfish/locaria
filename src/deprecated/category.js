@@ -2,7 +2,7 @@ import React from 'react';
 import {Link, useHistory, useParams} from 'react-router-dom';
 
 import Layout from '../locaria/components/widgets/layout';
-import ChannelCard from '../locaria/components/widgets/channelCard';
+import ChannelCard from './channelCard';
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import {channels} from "themeLocaria";

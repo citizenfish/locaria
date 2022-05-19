@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import {Link} from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from '@mui/icons-material/Map';
-import {configs, channels, pages} from "themeLocaria";
+import {configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import {useDispatch, useSelector} from "react-redux";
@@ -28,7 +28,7 @@ const MenuDrawer = function () {
 
 
 	function channelDisplay(channel) {
-		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDrawer({categories:[channel.category]}));}}>
+		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDrawer({categories:[channel.key]}));}}>
 			<ListItemIcon>
 				<SearchIcon/>
 			</ListItemIcon>
@@ -72,9 +72,9 @@ const MenuDrawer = function () {
 					<NavProfile/>
 					<Divider/>
 
-					{channels.listChannels().map(function (channel) {
-						if (channels.displayChannel(channel))
-							return channelDisplay(channels.getChannelProperties(channel));
+					{window.systemCategories.listChannels().map(function (channel) {
+						if (window.systemCategories.displayChannel(channel))
+							return channelDisplay(window.systemCategories.getChannelProperties(channel));
 					})}
 
 					<Divider/>

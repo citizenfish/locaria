@@ -9,7 +9,10 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core',  'locaria_data','public';
 
         --If we are in live mode append any moderations resident in the moderations queue
-        IF COALESCE(parameters->>'live','false')::BOOLEAN THEN
+        IF COALESCE(parameters->>'live','false')::BOOLEAN
+            --this acl_check makes sure that the user is in a group that has moderator status
+            AND (acl_check(parameters->'acl', jsonb_build_object())->>'moderation')::BOOLEAN
+            THEN
             SELECT jsonb_agg(J)
             INTO moderations_var
             FROM(
@@ -41,7 +44,7 @@ BEGIN
             )
               FROM %1$s
               WHERE fid = $1
-              AND attributes#>'{acl,view}' IS NULL OR attributes#>'{acl,view}' ?| json2text($4)
+              AND (acl_check($4, attributes->'acl')->>'view')::BOOLEAN
         $SQL$,
         CASE WHEN COALESCE(parameters->>'live','false')::BOOLEAN THEN 'global_search_view_live' ELSE 'global_search_view' END
         )
@@ -49,10 +52,10 @@ BEGIN
         USING COALESCE(parameters->>'fid', 'THISWILLFAIL'),
               COALESCE(parameters->>'live','false')::BOOLEAN,
               COALESCE(moderations_var, jsonb_build_array()),
-              parameters->'_group';
+              parameters->'acl';
 
 
-       RETURN ret_var;
+       RETURN COALESCE(ret_var, jsonb_build_object('features', jsonb_build_array()));
 
 
 END;

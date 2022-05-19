@@ -7,6 +7,8 @@ BEGIN
 
      SET SEARCH_PATH = 'locaria_core', 'locaria_data','public';
 
+     RAISE NOTICE 'DEBUG %', parameters;
+
      SELECT attributes
      INTO item_var
      FROM global_search_view
@@ -17,7 +19,7 @@ BEGIN
         RETURN jsonb_build_object('error', concat_ws(' ', 'fid not found or cannot be deleted:', parameters->>'fid'));
      END IF;
 
-    IF (item_var#>'{acl,delete}') IS NOT NULL AND NOT item_var#>'{acl,delete}' ?| json2text(parameters->'_group') THEN
+    IF NOT (acl_check(parameters->'acl', item_var->'acl')->>'delete')::BOOLEAN THEN
         RETURN jsonb_build_object('error', 'acl_failure', 'response_code', 602);
     END IF;
 

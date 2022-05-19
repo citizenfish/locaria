@@ -15,6 +15,7 @@ BEGIN
            COALESCE(parameters_var->>'acl', acl_var)
     ON CONFLICT(parameter_name)
     DO UPDATE set parameter = EXCLUDED.parameter, acl = EXCLUDED.acl
+    WHERE (acl_check(parameters_var->'acl', acl)->>'view')::BOOLEAN
     RETURNING id
     INTO id_var;
 

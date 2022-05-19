@@ -1,5 +1,4 @@
 import React from 'react';
-import {channels} from 'theme/locaria';
 import {useStyles} from '../../../theme/default/adminStyle';
 
 import InputLabel from "@mui/material/InputLabel";
@@ -12,7 +11,7 @@ const FieldEdit = ({data}) => {
 	const dispatch = useDispatch()
 
 
-	let channel = channels.getChannelProperties(data.category);
+	let channel = window.systemCategories.getChannelProperties(data.category);
 
 	let fields = channel.fields;
 

@@ -37,7 +37,9 @@ resources:
           Ref: CognitoUserPool
         CallbackURLs:
           - http://localhost/
+          - http://localhost/Admin/
           - https://${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}/
+          - https://${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}/Admin/
         AllowedOAuthFlows:
           - code
           - implicit
