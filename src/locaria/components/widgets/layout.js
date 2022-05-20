@@ -38,6 +38,10 @@ import {closeLandingDraw, openLandingDraw} from "../redux/slices/landingDrawerSl
 
 
 import NavFabFilter from "./fabs/navFabFilter";
+import {openHomeDrawer} from "../redux/slices/homeDrawerSlice";
+import HomeDrawer from "./drawers/homeDrawer";
+import NavTypeFull from "./navs/navTypeFull";
+import NavTypeSimple from "./navs/navTypeSimple";
 
 
 const Layout = ({children, map, fullscreen = false}) => {
@@ -55,11 +59,11 @@ const Layout = ({children, map, fullscreen = false}) => {
     const history = useHistory();
 
 
-    const [openError, setOpenError] = React.useState(false);
     const [openSuccess, setOpenSuccess] = React.useState(false);
     const [features, setFeatures] = React.useState({});
     const viewDrawOpen = useSelector((state) => state.viewDraw.open);
     const searchDrawOpen = useSelector((state) => state.searchDraw.open);
+    const homeDrawerOpen = useSelector((state) => state.homeDrawer.open);
     const open = useSelector((state) => state.layout.open);
     const homeLocation = useSelector((state) => state.layout.homeLocation);
 
@@ -73,10 +77,18 @@ const Layout = ({children, map, fullscreen = false}) => {
     const drawStateRouter = () => {
 
         if (location.pathname === '/') {
-            dispatch(openLandingDraw());
+            // This is a default landing so find out if we need to direct them
+            if (window.systemMain.landingRoute && window.systemMain.landingRoute !== '/')
+                history.push(window.systemMain.landingRoute);
+            else
+                dispatch(openLandingDraw());
             return;
         }
 
+        if (location.pathname.match('^/Home') && homeDrawerOpen === false) {
+            dispatch(openHomeDrawer())
+            return;
+        }
 
         if (location.pathname.match('^/Search/.*') && searchDrawOpen === false) {
             if (category) {
@@ -98,6 +110,8 @@ const Layout = ({children, map, fullscreen = false}) => {
             dispatch(openLayout())
             return;
         }
+
+
     }
 
     React.useEffect(() => {
@@ -216,101 +230,53 @@ const Layout = ({children, map, fullscreen = false}) => {
     }, [map]);
 
 
-    function closeError() {
-        setOpenError(false);
-    }
-
     function closeSuccess() {
         setOpenSuccess(false);
     }
 
-    const toggleSearchWrapper = function () {
-        if (searchDrawOpen === true) {
-            //dispatch(closeSearchDrawer());
-            dispatch(openLayout());
-        } else {
-            dispatch(openSearchDrawer());
 
-        }
-
-        /*	dispatch(toggleSearchDrawer());
-            if(open===false) {
-                dispatch(openLayout());
-            }*/
+    const navList = {
+        'Full': <NavTypeFull/>,
+        'Simple': <NavTypeSimple/>
     }
 
+    const RenderNav = () => {
+        if (window.systemMain['navType'] === undefined)
+            return navList['Full'];
+        else
+            return navList[window.systemMain['navType']];
+    }
 
     return (
-        <div>
-            <Snackbar open={openError} autoHideDuration={3000} onClose={closeError}
-                      anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
-                <Alert severity="error">
-                    Postcode not found — <strong>try another!</strong>
-                </Alert>
-            </Snackbar>
+        <>
+            <RenderNav/>
 
-            <Snackbar open={openSuccess} autoHideDuration={2000} onClose={closeSuccess}
-                      anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
-                <Alert severity="success">
-                    Found your location
-                </Alert>
-            </Snackbar>
-            <div>
-                <div className={classes.grow}>
+            <div className={classes.grow}>
+                <SearchDrawer mapRef={mapRef}/>
+                <MenuDrawer/>
+                <ViewDrawer mapRef={mapRef}/>
+                <Multi mapRef={mapRef}/>
 
-                    <SearchDrawer mapRef={mapRef}/>
-                    <MenuDrawer/>
-                    <ViewDrawer mapRef={mapRef}/>
-                    <Multi mapRef={mapRef}/>
-                    <BottomNavigation className={classes.nav} id={"navMain"}>
-                        <BottomNavigationAction className={classes.NavMenuButton} icon={<MenuIcon color="icons"/>}
-                                                onClick={() => {
-                                                    dispatch(openMenuDraw());
-                                                }}/>
-
-                        <Grid container className={classes.NavSiteTitle}>
-                            <Grid item xs={12}>
-                                <Typography className={classes.NavSiteTitleText} variant="h6">
-                                    {configs.siteTitle.toUpperCase()}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography className={classes.NavSiteSubTitleText} variant="body2">
-                                    {configs.siteSubTitle}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-
-
-                        <BottomNavigationAction className={classes.NavSearchButton}
-                                                icon={<SearchIcon color="icons" fontSize="large"/>}
-                                                onClick={() => {
-                                                    toggleSearchWrapper()
-                                                }}/>
-                    </BottomNavigation>
-                    <LandingDrawer/>
-                    <PageDrawer/>
-
-                </div>
-                <div>
-
-                    <div className={classes.mapContainerFull}>
-                        <Map id={'mainMap'}
-                             className={'mapView'}
-                             ref={mapRef}
-                             onFeatureSeleted={handleFeatureSelected}
-                             onZoomChange={onZoomChange}
-                        />
-                    </div>
-                    <NavFabFilter/>
-
-                    {children}
-
-
-                </div>
-
+                <HomeDrawer/>
+                <LandingDrawer/>
+                <PageDrawer/>
+                <Box sx={{
+                    height: 'calc(100vh - 64px)',
+                    position: "relative",
+                    width: '100%'
+                }}>
+                    <Map id={'mainMap'}
+                         className={'mapView'}
+                         ref={mapRef}
+                         onFeatureSeleted={handleFeatureSelected}
+                         onZoomChange={onZoomChange}
+                    />
+                </Box>
             </div>
-        </div>
+
+            <NavFabFilter/>
+            {children}
+        </>
     )
 }
 

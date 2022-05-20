@@ -83,8 +83,8 @@ export default function AdminSystemConfigDrawer(props) {
             "queue": "setConfig",
             "api": "sapi",
             "data": {
+                "acl": {},
                 "method": "set_parameters",
-                "acl": "external",
                 "parameter_name": "systemMain",
                 id_token: cookies['id_token'],
                 "parameters": config
@@ -105,6 +105,19 @@ export default function AdminSystemConfigDrawer(props) {
         >
             {config ? (
                 <Container>
+                    <h1>Theme</h1>
+                    <TextField
+                        id="landingRoute"
+                        label="Landing route"
+                        defaultValue={"/"}
+                        variant="filled"
+                        value={config.landingRoute}
+                        onChange={(e)=>{
+                            dispatch(setSystemConfigValue({key:"landingRoute",value:e.target.value}));
+                        }}
+
+                    />
+
                     <h1>Search</h1>
                     <TextField
                         id="searchLimit"

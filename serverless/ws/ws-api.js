@@ -215,13 +215,16 @@ module.exports.run = (event, context, callback) => {
                         if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
 
                             let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
-
+                            console.log(packet.data);
                             let qarguments = [packet.data, {
                                 "_userID": tokenPacket['cognito:username'],
                                 "_email": tokenPacket['email'],
-                                "_groups": tokenPacket['cognito:groups']
-
+                                "_groups": tokenPacket['cognito:groups'],
+                                "_newACL": packet.data.acl
                             }];
+
+                            console.log(qarguments);
+                            console.log(querysql);
                             client.query(querysql, qarguments, function (err, result) {
                                 if (err) {
                                     console.log(err);
@@ -319,8 +322,8 @@ module.exports.run = (event, context, callback) => {
         client = database.getClient();
         let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
         let qarguments = [packet.data];
-        console.log(querysql);
-        console.log(qarguments);
+        //console.log(querysql);
+        //console.log(qarguments);
         client.query(querysql, qarguments, function (err, result) {
             if (err) {
                 console.log(err);
@@ -328,7 +331,7 @@ module.exports.run = (event, context, callback) => {
                 sendToClient(payload);
 
             } else {
-                console.log(result.rows[0]['locaria_gateway']);
+                //console.log(result.rows[0]['locaria_gateway']);
 
 
                 let s3 = new AWS.S3();
@@ -336,7 +339,7 @@ module.exports.run = (event, context, callback) => {
                     Bucket: result.rows[0]['locaria_gateway'].details.s3_bucket,
                     Key: result.rows[0]['locaria_gateway'].details.s3_path,
                 };
-                console.log(s3parameters);
+                //console.log(s3parameters);
 
                 s3.deleteObject( s3parameters,function(err,data) {
                     if(err) {
