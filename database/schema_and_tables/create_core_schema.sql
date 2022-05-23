@@ -3,7 +3,7 @@
 DO
 $$
 DECLARE
-    postgres_version TEXT;
+postgres_version TEXT;
 BEGIN
 
     RAISE NOTICE 'INSTALLING locaria schema and components sever version reported as %', current_setting('server_version');
@@ -12,7 +12,7 @@ BEGIN
 
     IF (regexp_matches(current_setting('server_version'), '^[0-9]+\.[0-9]+'))[1]::NUMERIC < 9.6 THEN
         RAISE EXCEPTION 'locaria requires postgres 9.6 or higher, please upgrade your database server';
-    END IF;
+END IF;
 
     --Create required extensions if not installed already
 
@@ -23,15 +23,16 @@ BEGIN
     CREATE EXTENSION IF NOT EXISTS aws_s3;
     CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
     CREATE EXTENSION IF NOT EXISTS aws_lambda;
-    CREATE SCHEMA IF NOT EXISTS partition_management;
-    CREATE EXTENSION IF NOT EXISTS pg_partman WITH SCHEMA partition_management;
-    --TODO this needs parameters setting up prior to execution and must be run from postgres database
-    --CREATE EXTENSION IF NOT EXISTS pg_cron;
+    DROP EXTENSION IF EXISTS pg_partman;
+    DROP SCHEMA IF EXISTS partition_management CASCADE;
+    CREATE SCHEMA partition_management;
+    CREATE EXTENSION pg_partman WITH SCHEMA partition_management;
 
-    --Create schema for search functions, data and views.
+    --Create schema for search functions, data, uploads and views.
     RAISE NOTICE 'CREATING CORE SCHEMA';
     DROP SCHEMA IF EXISTS locaria_core CASCADE;
     DROP SCHEMA IF EXISTS locaria_data CASCADE;
+    DROP SCHEMA IF EXISTS locaria_uploads CASCADE;
     CREATE SCHEMA locaria_core;
     CREATE SCHEMA locaria_data;
     CREATE SCHEMA locaria_uploads;
