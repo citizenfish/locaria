@@ -179,7 +179,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 
         if(deployConfig.databases[id]) {
 
-            let databaseName = deployConfig.databases[id].database ? deployConfig.databases[id].database : `locaria${theme}`;
+            let databaseName = deployConfig.databases[id].database? deployConfig.databases[id].database : `locaria${theme}`;
             const conn = {
                 user: configs.custom[stage].auroraMasterUser,
                 host: outputs.postgresHost,
@@ -201,6 +201,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
                         console.log(`Postgress Server NOTICE: ${msg.where} - ${msg.message}`);
                     });
                     //fileList = deployConfig.databases[id].tables;
+                    fileList=[];
                     deployConfig.databases[id].tables.forEach(function (f) {
                         fileList.push(...expand({cwd: './'}, [f]));
                     });
@@ -252,7 +253,6 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 
                     vars = /\{\{theme\}\}/g;
                     while (match = vars.exec(fileData)) {
-                        console.log(match);
                         fileData = fileData.replace(`\{\{theme\}\}`, theme);
                     }
 
