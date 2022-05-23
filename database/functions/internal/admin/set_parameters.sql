@@ -2,7 +2,8 @@
 CREATE OR REPLACE FUNCTION locaria_core.set_parameters(parameters_var JSONB DEFAULT json_build_object())  RETURNS JSONB AS
 $$
 DECLARE
-    acl_var TEXT DEFAULT 'internal';
+    --default is view public, update/delete admins
+    acl_var JSONB DEFAULT jsonb_build_object('update', jsonb_build_array('Admins'), 'delete', jsonb_build_array('Admins'));
     id_var BIGINT;
 
 BEGIN
@@ -12,10 +13,10 @@ BEGIN
     INSERT INTO parameters(parameter_name, parameter,acl)
     SELECT parameters_var->>'parameter_name',
            parameters_var->'parameters',
-           COALESCE(parameters_var->>'acl', acl_var)
+           COALESCE(parameters_var->'_newACL', acl_var)
     ON CONFLICT(parameter_name)
     DO UPDATE set parameter = EXCLUDED.parameter, acl = EXCLUDED.acl
-    WHERE (acl_check(parameters_var->'acl', acl)->>'view')::BOOLEAN
+    WHERE (acl_check(parameters_var->'acl', parameters.acl)->>'update')::BOOLEAN
     RETURNING id
     INTO id_var;
 

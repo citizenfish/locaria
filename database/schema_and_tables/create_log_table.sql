@@ -31,6 +31,6 @@ SET infinite_time_partitions = true,
     retention_keep_table = true
 WHERE parent_table='locaria_core.logs';
 
-
+--TODO into postgres schema
 --GRANT USAGE ON SCHEMA cron TO locaria;
 --SELECT cron.schedule('@hourly', $$CALL partition_management.run_maintenance_proc()$$);

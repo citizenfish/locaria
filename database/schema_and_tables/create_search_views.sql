@@ -4,7 +4,7 @@ GRANT SELECT ON locaria_data.global_search_view TO locaria_report_user;
 
 --Location search view must be created and then populated later by opennames
 
-CREATE MATERIALIZED VIEW locaria_data.location_search_view
+CREATE MATERIALIZED VIEW IF NOT EXISTS locaria_data.location_search_view
 AS
 SELECT
     0 AS id,
