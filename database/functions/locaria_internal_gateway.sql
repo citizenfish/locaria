@@ -12,7 +12,6 @@ BEGIN
     --This keeps us within our search schema when running code
     SET SEARCH_PATH = 'locaria_core', 'locaria_data','public';
 
-
     --delete any user sent acl and add in api one
     parameters = parameters - 'acl' - 'id_token' || jsonb_build_object('acl',acl);
 

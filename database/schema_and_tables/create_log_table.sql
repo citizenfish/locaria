@@ -32,5 +32,5 @@ SET infinite_time_partitions = true,
 WHERE parent_table='locaria_core.logs';
 
 
---GRANT USAGE ON SCHEMA cron TO locaria;
---SELECT cron.schedule('@hourly', $$CALL partition_management.run_maintenance_proc()$$);
+GRANT USAGE ON SCHEMA cron TO locaria;
+SELECT cron.schedule('@hourly', $$CALL partition_management.run_maintenance_proc()$$);

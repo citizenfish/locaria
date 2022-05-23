@@ -9,7 +9,6 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    RAISE NOTICE 'DEBUG %', parameters_var->'acl';
     SELECT jsonb_build_object(parameter_name, parameter)
     INTO ret_var
     FROM parameters
