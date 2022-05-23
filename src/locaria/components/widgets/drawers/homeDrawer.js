@@ -4,6 +4,7 @@ import React, {useRef} from "react";
 import {Drawer} from "@mui/material";
 import {useSelector} from "react-redux";
 import {useStyles} from "stylesLocaria";
+import SiteMap from "../pages/siteMap";
 
 const HomeDrawer = function () {
 
@@ -17,7 +18,7 @@ const HomeDrawer = function () {
             className={classes.homeDrawer}
             variant="persistent"
         >
-            <h1>HOME</h1>
+            <SiteMap/>
         </Drawer>
     )
 }

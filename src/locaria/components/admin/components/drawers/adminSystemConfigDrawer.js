@@ -17,10 +17,11 @@ import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
+import {closeAdminCategoryDrawer, setAdminCategoryValue} from "../../redux/slices/adminCategoryDrawerSlice";
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 import UploadWidget from "../../../widgets/uploadWidget";
 import Container from "@mui/material/Container";
+import {ColorPicker} from "mui-color";
 
 export default function AdminSystemConfigDrawer(props) {
 
@@ -106,17 +107,28 @@ export default function AdminSystemConfigDrawer(props) {
             {config ? (
                 <Container>
                     <h1>Theme</h1>
-                    <TextField
-                        id="landingRoute"
-                        label="Landing route"
-                        defaultValue={"/"}
-                        variant="filled"
-                        value={config.landingRoute}
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"landingRoute",value:e.target.value}));
-                        }}
 
-                    />
+                    <FormControl fullWidth>
+                        <InputLabel id="landingRouteLabel">Landing Page</InputLabel>
+                        <Select
+                            labelId="landingRouteLabel"
+                            id="landingRoute"
+                            value={config.landingRoute}
+                            label="Landing page"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"landingRoute",value:e.target.value}));
+                            }}
+                        >
+                            <MenuItem value={"/"}>/</MenuItem>
+                            <MenuItem value={"/Home"}>Home</MenuItem>
+                            <MenuItem value={"/Map"}>Map</MenuItem>
+                            <MenuItem value={"/Search"}>Search</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <ColorPicker value={config.themePanels} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"themePanels",value:color.css.backgroundColor}));
+                    }}/>
 
                     <h1>Search</h1>
                     <TextField

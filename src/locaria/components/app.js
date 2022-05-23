@@ -1,8 +1,6 @@
 import React from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
-import Home from "components/home";
-import Error from 'components/error';
 import Maintenance from 'components/maintenance';
 import Admin from "components/admin/admin";
 import {useCookies} from "react-cookie";
@@ -12,6 +10,7 @@ import store from './redux/store'
 import { Provider } from 'react-redux'
 
 import AdminRoute from "./adminRoute";
+import Layout from "./layout";
 
 
 
@@ -124,15 +123,15 @@ const App = () => {
 							<Route path="/Admin/" user={user} component={Admin}/>
 							<Route exact path="/Admin/:id_token?" component={Admin}/>
 
-							<Route path="/View/:category/:feature" component={Home}/>
-							<Route path="/Search/:category?/:search?" component={Home}/>
-							<Route path="/Page/:pageId" component={Home}/>
-							<Route path="/Map" component={Home}/>
-							<Route path="/Home" component={Home}/>
-							<Route path="/" component={Home}></Route>
-							<Route exact path="/:id_token?" component={Home}/>
+							<Route path="/View/:category/:feature" component={Layout}/>
+							<Route path="/Search/:category?/:search?" component={Layout}/>
+							<Route path="/Page/:pageId" component={Layout}/>
+							<Route path="/Map" component={Layout}/>
+							<Route path="/Home" component={Layout}/>
+							<Route path="/" component={Layout}></Route>
+							<Route exact path="/:id_token?" component={Layout}/>
 
-							<Route component={Home}/>
+							<Route component={Layout}/>
 						</Switch>
 					</Router>
 			</Provider>

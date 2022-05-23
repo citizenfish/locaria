@@ -3,48 +3,37 @@ import React, {useRef} from 'react';
 import {configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+
 import {useCookies} from 'react-cookie';
 import {Link, useHistory, useLocation, useParams} from 'react-router-dom';
-import Map from "./map";
-import {
-    BottomNavigation,
-    BottomNavigationAction, Box,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import {SearchDrawer} from "./drawers/searchDrawer";
-import {ViewDrawer} from "./drawers/viewDrawer";
-import LandingDrawer from "./drawers/landingDrawer";
-import MenuDrawer from "./drawers/menuDrawer";
-import Multi from "./multi";
-import Grid from "@mui/material/Grid";
+import Map from "./widgets/map";
+import {Box} from "@mui/material";
+import {SearchDrawer} from "./widgets/drawers/searchDrawer";
+import {ViewDrawer} from "./widgets/drawers/viewDrawer";
+import LandingDrawer from "./widgets/drawers/landingDrawer";
+import MenuDrawer from "./widgets/drawers/menuDrawer";
+import Multi from "./widgets/multi";
 import {useSelector, useDispatch} from 'react-redux'
 import {
     closeSearchDrawer,
-    openSearchDrawer,
-    resolutionUpdate,
-    toggleSearchDrawer
-} from '../redux/slices/searchDrawerSlice'
-import {closeViewDraw, openViewDraw} from '../redux/slices/viewDrawerSlice'
-import {closeMultiSelect, openMultiSelect} from '../redux/slices/multiSelectSlice'
-import {openMenuDraw} from '../redux/slices/menuDrawerSlice'
-import PageDrawer from "./drawers/pageDrawer";
-import {closeLayout, openLayout, setLocation, setResolutions} from "../redux/slices/layoutSlice";
-import Typography from "@mui/material/Typography";
-import {openPageDialog} from "../redux/slices/pageDialogSlice";
-import {closeLandingDraw, openLandingDraw} from "../redux/slices/landingDrawerSlice";
+    openSearchDrawer
+} from './redux/slices/searchDrawerSlice'
+import {openViewDraw} from './redux/slices/viewDrawerSlice'
+import {closeMultiSelect, openMultiSelect} from './redux/slices/multiSelectSlice'
+import PageDrawer from "./widgets/drawers/pageDrawer";
+import {openLayout, setLocation, setResolutions} from "./redux/slices/layoutSlice";
+import {openPageDialog} from "./redux/slices/pageDialogSlice";
+import {closeLandingDraw, openLandingDraw} from "./redux/slices/landingDrawerSlice";
 
 
-import NavFabFilter from "./fabs/navFabFilter";
-import {openHomeDrawer} from "../redux/slices/homeDrawerSlice";
-import HomeDrawer from "./drawers/homeDrawer";
-import NavTypeFull from "./navs/navTypeFull";
-import NavTypeSimple from "./navs/navTypeSimple";
+import NavFabFilter from "./widgets/fabs/navFabFilter";
+import {openHomeDrawer} from "./redux/slices/homeDrawerSlice";
+import HomeDrawer from "./widgets/drawers/homeDrawer";
+import NavTypeFull from "./widgets/navs/navTypeFull";
+import NavTypeSimple from "./widgets/navs/navTypeSimple";
 
 
-const Layout = ({children, map, fullscreen = false}) => {
+const Layout = () => {
     const mapRef = useRef();
     const location = useLocation();
     // params?
@@ -119,6 +108,11 @@ const Layout = ({children, map, fullscreen = false}) => {
 
         if (isInitialMount.current) {
             isInitialMount.current = false;
+            if (cookies.location) {
+                dispatch(setLocation(cookies.location))
+            } else {
+                console.log('no location');
+            }
             drawStateRouter();
 
         } else {
@@ -134,11 +128,9 @@ const Layout = ({children, map, fullscreen = false}) => {
         }
 
         window.websocket.registerQueue("homeLoader", function (json) {
-            if (map === true) {
                 if (open === true)
                     mapRef.current.addGeojson(json.packet.geojson);
                 setFeatures(json.packet.geojson);
-            }
         });
 
         return () => {
@@ -191,7 +183,7 @@ const Layout = ({children, map, fullscreen = false}) => {
 
     React.useEffect(() => {
 
-        if (homeLocation !== false && homeLocation !== undefined && map === true && window.systemMain.searchLocation !== false) {
+        if (homeLocation !== false && homeLocation !== undefined && window.systemMain.searchLocation !== false) {
             mapRef.current.markHome(homeLocation.location);
             setCookies('location', homeLocation, {path: '/', sameSite: true});
         }
@@ -213,21 +205,6 @@ const Layout = ({children, map, fullscreen = false}) => {
         };
         window.websocket.send(packet);
     }
-
-
-    React.useEffect(() => {
-
-
-        if (map === true) {
-            if (cookies.location) {
-                dispatch(setLocation(cookies.location))
-            } else {
-                console.log('no location');
-            }
-
-        }
-
-    }, [map]);
 
 
     function closeSuccess() {
@@ -275,7 +252,6 @@ const Layout = ({children, map, fullscreen = false}) => {
             </div>
 
             <NavFabFilter/>
-            {children}
         </>
     )
 }
