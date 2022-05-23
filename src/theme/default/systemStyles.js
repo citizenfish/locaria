@@ -76,6 +76,17 @@ export default class UseStyles {
 			typeAheadPopover: {
 				maxHeight: "30vh"
 			},
+			/*
+				Home draw
+			 */
+
+			homeDrawer:{
+				overflowX: 'hidden',
+				'&	.MuiDrawer-paperAnchorDockedBottom': {
+					width: 'calc(100vw)',
+					height: 'calc(100% - 64px)',
+				},
+			},
 
 			/*
 				Landing draw
@@ -242,43 +253,23 @@ export default class UseStyles {
 			  The Nav bar
 			 */
 
-			"nav": {
+			navTypeSimple: {
 				backgroundColor: `${theme.palette.primary.main} !important`,
-				width: '100vw',
-				position: 'fixed',
 				zIndex: '150',
 				top: 0,
 				justifyContent: 'space-between !important',
 				padding: '5px 0 !important',
-				height: '65px !important'
 			},
-			NavSiteTitle: {
-				width: "calc(100% - 120px)",
-				borderLeft: "2px solid white",
-				borderRight: "2px solid white",
-			},
-			NavSiteTitleText: {
-				flexGrow: 1,
-				textAlign: "center",
-			},
-			NavSiteSubTitleText: {
-				flexGrow: 1,
-				textAlign: "center",
-			},
-			NavMenuButton: {
-				flex: '0 !important',
-				padding: '10px !important',
-			},
-			NavSearchButton: {
 
-				position: 'relative',
-				flex: '0 !important',
-				display: 'flex !important',
-				borderRadius: '100px !important',
-				justifyContent: 'center !important',
-				alignItems: 'center !important',
-				padding: '0 !important'
+
+			navTypeFull: {
+				backgroundColor: `${theme.palette.primary.main} !important`,
+				zIndex: '150',
+				top: 0,
+				justifyContent: 'space-between !important',
+				padding: '5px 0 !important',
 			},
+
 
 			introModal: {
 				outline: 'none',
@@ -756,18 +747,10 @@ export default class UseStyles {
 				height: '100vh'
 			},
 			mapContainerFull: {
-				position: "relative",
-				width: '100%',
-				height: '100vh',
 				[theme.breakpoints.down('md')]: {
 					height: '100vh',
 					overflow: 'hidden',
 				}
-			},
-			map: {
-				width: '100%',
-				height: '50vh',
-				position: "absolute"
 			},
 			mapView: {
 				width: '100%',

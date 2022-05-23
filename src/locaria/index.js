@@ -40,6 +40,7 @@ window.websocket.registerQueue('bulkConfigs', (json) => {
     window.systemMain = json.systemMain.packet.systemMain||{};
     window.systemPages = json.systemPages.packet.systemPages||[];
     window.systemLang=json.langLoad.packet.langENG||{};
+    window.siteMap=json.siteMap.packet.siteMap||[];
     window.systemCategories=new Channels(json.categories.packet.categories||{});
     document.title = window.systemLang.siteTitle;
 
@@ -99,6 +100,14 @@ function connected() {
             "data": {
                 "method": "list_categories",
                 "attributes" : "true"
+            }
+        },{
+            "queue": "siteMap",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": "siteMap",
+
             }
         }
         ]
