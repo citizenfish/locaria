@@ -159,18 +159,6 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 
     const deployConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
 
-    const conn = {
-        user: configs.custom[stage].auroraMasterUser,
-        host: outputs.postgresHost,
-        database: deployConfig.database? deployConfig.database:`locaria${theme}`,
-        password: configs.custom[stage].auroraMasterPass,
-        port: outputs.postgresPort,
-    }
-
-    console.log(`Using: ${outputs.postgresHost}`);
-    let client = new pg.Client(conn);
-
-
     deployConfig.subs = {};
 
     if (deployConfig.substitutions) {
@@ -183,96 +171,131 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
         }
     }
     deployConfig.config = configs.custom[stage];
-    client.connect((err) => {
-        if (err) {
-            console.error("DATABASE CONNECTION FAILURE: ", err.stack);
-        } else {
-            console.log('Connected to db');
-            client.on('notice', msg => {
-                console.log(`Postgress Server NOTICE: ${msg.where} - ${msg.message}`);
-            });
-            //fileList = deployConfig.tables;
-            deployConfig.tables.forEach(function (f) {
-                fileList.push(...expand({cwd: './'}, [f]));
-            });
-            items = fileList.length;
-            sendFile(0);
 
+    let id=0;
+    deployEntry(id);
 
-        }
-    });
+    function deployEntry(id) {
 
-    function sendFile(index) {
-        let f = fileList[index];
-        if (!fs.existsSync(f)) {
-            console.log(`Source file ${f} not found.`);
-            index++;
-            skipped++;
-            if (index >= items) {
-                callBack(stage, theme);
-            } else {
-                sendFile(index);
-            }
-        } else {
-            console.log('Running: ' + f);
-            let fileData = fs.readFileSync(f, 'utf8');
+        if(deployConfig.databases[id]) {
 
-
-            let match;
-            //let vars = /\{\{subs\.(.*?)\}\}/gm;
-            let vars = RegExp('\{\{subs\.(.*?)\}\}', 'g')
-            while (match = vars.exec(fileData)) {
-                console.log(`${match[0]} : ${deployConfig.subs[match[1]]}`)
-                fileData = fileData.replace(match[0], deployConfig.subs[match[1]]);
+            let databaseName = deployConfig.databases[id].database ? deployConfig.databases[id].database : `locaria${theme}`;
+            const conn = {
+                user: configs.custom[stage].auroraMasterUser,
+                host: outputs.postgresHost,
+                database: databaseName,
+                password: configs.custom[stage].auroraMasterPass,
+                port: outputs.postgresPort,
             }
 
-            vars = /\{\{config\.(.*?)\}\}/g;
-            while (match = vars.exec(fileData)) {
-                fileData = fileData.replace(match[0], deployConfig.config[match[1]]);
-            }
+            console.log(`Using: ${outputs.postgresHost} - ${databaseName}`);
+            let client = new pg.Client(conn);
 
-            vars = /\{\{outputs\.(.*?)\}\}/g;
-            while (match = vars.exec(fileData)) {
-                fileData = fileData.replace(match[0], outputs[match[1]]);
-            }
 
-            vars = /\{\{themeOutputs\.(.*?)\}\}/g;
-            while (match = vars.exec(fileData)) {
-                fileData = fileData.replace(match[0], themeOutputs[match[1]]);
-            }
-            //console.log(fileData);
-            client.query(fileData, function (err, result) {
-                index++;
+            client.connect((err) => {
                 if (err) {
-                    console.log(`SQL ${f} failed`);
-                    console.log(err.stack);
-                    failed++;
-                    if (deployConfig.stopOnError === true) {
-                        console.log(`EARLY STOP! DONE ${fileList.length} Records SKIPPED ${skipped}`);
-                        callBack(stage, theme);
-                        return;
-                    }
+                    console.error("DATABASE CONNECTION FAILURE: ", err.stack);
                 } else {
-                    if (deployConfig.output && result.rows) {
-                        console.log(result.rows);
-                    }
-                    console.log(`SQL ${f} OK`);
-                    if (Array.isArray(result)) {
-                        result.forEach(function (res) {
-                            console.log(`Result ${res.command} - ${res.rowCount}`);
-                        })
-                    } else {
-                        console.log(`Result ${result.command} - ${result.rowCount}`);
-                    }
+                    console.log('Connected to db');
+                    client.on('notice', msg => {
+                        console.log(`Postgress Server NOTICE: ${msg.where} - ${msg.message}`);
+                    });
+                    //fileList = deployConfig.databases[id].tables;
+                    deployConfig.databases[id].tables.forEach(function (f) {
+                        fileList.push(...expand({cwd: './'}, [f]));
+                    });
+                    items = fileList.length;
+                    sendFile(0);
+
 
                 }
-                if (index >= items) {
-                    console.log(`DONE ${fileList.length} FAILED ${failed} Records SKIPPED ${skipped}`);
-                    callBack(stage, theme);
-                } else {
-                    sendFile(index);
-                }
             });
+
+            function sendFile(index) {
+                let f = fileList[index];
+                if (!fs.existsSync(f)) {
+                    console.log(`Source file ${f} not found.`);
+                    index++;
+                    skipped++;
+                    if (index >= items) {
+                        callBack(stage, theme);
+                    } else {
+                        sendFile(index);
+                    }
+                } else {
+                    console.log('Running: ' + f);
+                    let fileData = fs.readFileSync(f, 'utf8');
+
+
+                    let match;
+                    //let vars = /\{\{subs\.(.*?)\}\}/gm;
+                    let vars = RegExp('\{\{subs\.(.*?)\}\}', 'g')
+                    while (match = vars.exec(fileData)) {
+                        console.log(`${match[0]} : ${deployConfig.databases[id].subs[match[1]]}`)
+                        fileData = fileData.replace(match[0], deployConfig.subs[match[1]]);
+                    }
+
+                    vars = /\{\{config\.(.*?)\}\}/g;
+                    while (match = vars.exec(fileData)) {
+                        fileData = fileData.replace(match[0], deployConfig.config[match[1]]);
+                    }
+
+                    vars = /\{\{outputs\.(.*?)\}\}/g;
+                    while (match = vars.exec(fileData)) {
+                        fileData = fileData.replace(match[0], outputs[match[1]]);
+                    }
+
+                    vars = /\{\{themeOutputs\.(.*?)\}\}/g;
+                    while (match = vars.exec(fileData)) {
+                        fileData = fileData.replace(match[0], themeOutputs[match[1]]);
+                    }
+
+                    vars = /\{\{theme\}\}/g;
+                    while (match = vars.exec(fileData)) {
+                        console.log(match);
+                        fileData = fileData.replace(`\{\{theme\}\}`, theme);
+                    }
+
+                    //console.log(fileData);
+                    client.query(fileData, function (err, result) {
+                        index++;
+                        if (err) {
+                            console.log(`SQL ${f} failed`);
+                            console.log(err.stack);
+                            failed++;
+                            if (deployConfig.databases[id].stopOnError === true) {
+                                console.log(`EARLY STOP! DONE ${fileList.length} Records SKIPPED ${skipped}`);
+                                callBack(stage, theme);
+                                return;
+                            }
+                        } else {
+                            if (deployConfig.databases[id].output && result.rows) {
+                                console.log(result.rows);
+                            }
+                            console.log(`SQL ${f} OK`);
+                            if (Array.isArray(result)) {
+                                result.forEach(function (res) {
+                                    console.log(`Result ${res.command} - ${res.rowCount}`);
+                                })
+                            } else {
+                                console.log(`Result ${result.command} - ${result.rowCount}`);
+                            }
+
+                        }
+                        if (index >= items) {
+                            console.log(`DONE ${fileList.length} FAILED ${failed} Records SKIPPED ${skipped}`);
+                            id++;
+                            deployEntry(id);
+                            //callBack(stage, theme);
+                        } else {
+                            sendFile(index);
+                        }
+                    });
+                }
+            }
+        }else {
+            console.log('End of databases');
+            callBack(stage, theme);
         }
     }
 
@@ -506,16 +529,12 @@ function deployWEB(stage, theme) {
 function deploySQL(stage, theme) {
     readline.question(`Are you sure you wish to wipe and re-install ${theme} [n]?`, (cmd) => {
         if (cmd === 'y') {
-            sendSQLFiles(stage, theme, 'database/install-pre.json', deploySQLPost);
+            sendSQLFiles(stage, theme, 'database/install.json', deploySystemMain);
         } else {
             console.log('Aborted!');
             deploySystemMain(stage, theme);
         }
     });
-}
-
-function deploySQLPost(stage,theme) {
-    sendSQLFiles(stage, theme, 'database/install.json', deploySystemMain);
 }
 
 function upgradeSQL(stage, theme) {

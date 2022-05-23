@@ -1,7 +1,0 @@
-{
-  "database": "postgres",
-  "stopOnError": true,
-  "tables": [
-    "database/postgres_database/pg_cron.sql"
-    ]
-}
