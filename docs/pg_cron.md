@@ -42,3 +42,12 @@ The cron setup will have three records:-
 - weekly -> triggered at 12 midnight on a Sunday and updates any record with _crontab set to weekly
 - monthly -> triggered at 12 midnight on the first day of each month and updates any record with _crontab set to monthly
 - custom -> triggered hourly and updates any record with _crontab_next set to be on that hour
+
+These records will call the function file_cron with parameters:-
+
+```json
+{
+  "filter": { -- filter to find file records --},
+  "new_status" : "new status to set -- DEFAULT REGISTERED"
+}
+```

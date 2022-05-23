@@ -1,7 +1,7 @@
 {
   "stopOnError": true,
   "tables": [
-    "tests/unit_tests/internal/admin/set_parameters.sql"
+    "tests/unit_tests/cron/file_cron.sql"
   ],
   "substitutions": "../tests.json"
 }

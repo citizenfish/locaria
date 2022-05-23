@@ -1,10 +1,7 @@
 {
   "stopOnError": true,
   "tables": [
-    "database/functions/internal/admin/get_parameters.sql",
-    "database/functions/internal/admin/set_parameters.sql",
-    "database/functions/locaria_gateway.sql"
-
+    "database/cron/file_cron.sql"
   ],
   "substitutions": "../tests.json"
 }
