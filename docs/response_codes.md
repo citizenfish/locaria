@@ -41,3 +41,7 @@
 
 * 1100 - Missing Address in location search
 
+# File cron
+
+* 2000 - file_cron script error
+

@@ -26,6 +26,7 @@
     "database/system_parameters/system_parameters.sql",
     "database/schema_and_tables/create_search_views.sql",
     "database/system_parameters/*.sql",
-    "database/functions/triggers/*"
+    "database/functions/triggers/*",
+    "database/cron/*.sql"
   ]
 }

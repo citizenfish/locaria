@@ -69,6 +69,7 @@ ELSE
     -- Searches can be logged to the logs table. This is set on by default but can be switched off with a parameter
     log_var = COALESCE((SELECT (parameter->>'log_searches')::BOOLEAN FROM locaria_core.parameters WHERE parameter_name = 'log_configuration'), log_var);
 
+    --TODO use log function
     IF log_var THEN
         INSERT INTO logs(log_type, log_message)
         SELECT parameters->>'method',
