@@ -6,6 +6,7 @@ import menuDrawSlice from './slices/menuDrawerSlice'
 import pageDialog from './slices/pageDialogSlice'
 import layoutSlice from './slices/layoutSlice'
 import landingDrawSlice from "./slices/landingDrawerSlice";
+import homeDrawerSlice from "./slices/homeDrawerSlice";
 import typeAhead from "./slices/typeAheadSlice";
 import adminEditDrawerSlice from "../admin/redux/slices/editDrawerSlice";
 import adminUploadDrawerSlice from "../admin/redux/slices/uploadDrawerSlice";
@@ -26,6 +27,7 @@ export default configureStore({
 		pageDialog: pageDialog,
 		layout: layoutSlice,
 		landingDraw: landingDrawSlice,
+		homeDrawer: homeDrawerSlice,
 		typeAhead: typeAhead,
 		adminEditDrawer: adminEditDrawerSlice,
 		adminUploadDrawer: adminUploadDrawerSlice,

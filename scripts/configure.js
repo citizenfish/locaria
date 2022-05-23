@@ -279,7 +279,12 @@ function deploySystem() {
     readline.question(`Stage to deploy [${stage}]?`, (cmd) => {
         if (cmd)
             stage = cmd;
-        let theme = 'main';
+        console.log('Themes configured:');
+        let keys=Object.keys(configs['custom'][stage].themes);
+        for(let t in keys) {
+            console.log(`[${keys[t]}]`);
+        }
+        let theme = keys[0];
         readline.question(`Theme to use [${theme}]?`, (cmd) => {
             if (cmd)
                 theme = cmd;
