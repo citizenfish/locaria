@@ -2,6 +2,6 @@
   "database": "postgres",
   "stopOnError": true,
   "tables": [
-    "database/examples/select.sql"
+    "database/postgres_database/pg_cron.sql"
     ]
 }
