@@ -86,7 +86,7 @@ SELECT 'siteMap',
        jsonb_build_object('update', jsonb_build_array('Admins'),'delete', jsonb_build_array('Admins')),
        '
        [
-          {"key":"explore","name":"Explore Map","description":"Explore the map", "backgroundColor":"#ddaa22","color":"#fff"},
+          {"key":"explore","name":"Explore Map","description":"Explore the map", "backgroundColor":"#ddaa22","color":"#fff","items":[{"name":"Shopping","link":"/search"},{"name":"Hospitality","link":"/search"  }]},
           {"key":"guides","name":"Guides","description":"Guides","backgroundColor":"#e5544c","color":"#fff"},
          {"key":"about","name":"About","description":"About","backgroundColor":"#0099cc","color":"#fff"},
          {"key":"news","name":"News & Events","description":"News and Events","backgroundColor":"#99cc33","color":"#fff"},

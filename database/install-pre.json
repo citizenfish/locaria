@@ -1,0 +1,7 @@
+{
+  "database": "postgres",
+  "stopOnError": true,
+  "tables": [
+    "database/examples/select.sql"
+    ]
+}

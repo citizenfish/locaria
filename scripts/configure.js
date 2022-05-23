@@ -144,16 +144,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 
     //const conn=`pg://${configs.custom[stage].auroraMasterUser}:'${encodeURI(configs.custom[stage].auroraMasterPass)}'@${outputs.postgresHost}:${outputs.postgresPort}/locaria${theme}`;
 
-    const conn = {
-        user: configs.custom[stage].auroraMasterUser,
-        host: outputs.postgresHost,
-        database: `locaria${theme}`,
-        password: configs.custom[stage].auroraMasterPass,
-        port: outputs.postgresPort,
-    }
 
-    console.log(`Using: ${outputs.postgresHost}`);
-    let client = new pg.Client(conn);
     let items = 0;
     let skipped = 0;
     let failed = 0;
@@ -167,7 +158,21 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 
 
     const deployConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+
+    const conn = {
+        user: configs.custom[stage].auroraMasterUser,
+        host: outputs.postgresHost,
+        database: deployConfig.database? deployConfig.database:`locaria${theme}`,
+        password: configs.custom[stage].auroraMasterPass,
+        port: outputs.postgresPort,
+    }
+
+    console.log(`Using: ${outputs.postgresHost}`);
+    let client = new pg.Client(conn);
+
+
     deployConfig.subs = {};
+
     if (deployConfig.substitutions) {
         if (fs.existsSync(deployConfig.substitutions)) {
             deployConfig.subs = JSON.parse(fs.readFileSync(deployConfig.substitutions, 'utf8'));
@@ -501,12 +506,16 @@ function deployWEB(stage, theme) {
 function deploySQL(stage, theme) {
     readline.question(`Are you sure you wish to wipe and re-install ${theme} [n]?`, (cmd) => {
         if (cmd === 'y') {
-            sendSQLFiles(stage, theme, 'database/install.json', deploySystemMain);
+            sendSQLFiles(stage, theme, 'database/install-pre.json', deploySQLPost);
         } else {
             console.log('Aborted!');
             deploySystemMain(stage, theme);
         }
     });
+}
+
+function deploySQLPost(stage,theme) {
+    sendSQLFiles(stage, theme, 'database/install.json', deploySystemMain);
 }
 
 function upgradeSQL(stage, theme) {
