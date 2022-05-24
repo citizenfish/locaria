@@ -21,6 +21,7 @@ import {closeLayout} from "../../redux/slices/layoutSlice";
 import Button from "@mui/material/Button";
 
 import UrlCoder from "../../../libs/urlCoder";
+import {closeHomeDrawer} from "../../redux/slices/homeDrawerSlice";
 const url=new UrlCoder();
 
 const ViewDrawer = forwardRef((props, ref) => {
@@ -55,6 +56,8 @@ const ViewDrawer = forwardRef((props, ref) => {
                 dispatch(closeLayout());
                 dispatch(closeSearchDrawer());
                 dispatch(closeMultiSelect());
+                dispatch(closeHomeDrawer());
+
                 if (homeLocation !== false && homeLocation !== undefined && configs.location !== false)
                     localMapRef.current.markHome(homeLocation.location);
                 if (fid !== false) {

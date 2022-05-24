@@ -1,7 +1,7 @@
 import React from "react";
 import {Divider, Drawer, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import Box from "@mui/material/Box";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from '@mui/icons-material/Map';
 import {configs} from "themeLocaria";
@@ -23,6 +23,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 const MenuDrawer = function () {
 	const classes = useStyles();
 	const dispatch = useDispatch()
+	const history = useHistory();
 
 	const open = useSelector((state) => state.menuDraw.open);
 
@@ -51,7 +52,10 @@ const MenuDrawer = function () {
 				>
 
 					{configs.landing? <ListItem button onClick={() => {
-						dispatch(openLandingDraw())
+						if (window.systemMain.landingRoute && window.systemMain.landingRoute !== '/')
+							history.push(window.systemMain.landingRoute);
+						else
+							history.push('/');
 					}} key={'Intro'}>
 						<ListItemIcon>
 							<HomeIcon/>

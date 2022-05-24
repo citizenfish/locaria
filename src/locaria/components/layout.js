@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 
 import {configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
@@ -21,7 +21,7 @@ import {
 import {openViewDraw} from './redux/slices/viewDrawerSlice'
 import {closeMultiSelect, openMultiSelect} from './redux/slices/multiSelectSlice'
 import PageDrawer from "./widgets/drawers/pageDrawer";
-import {openLayout, setLocation, setResolutions} from "./redux/slices/layoutSlice";
+import {newRoute, openLayout, routeUpdated, setLocation, setResolutions} from "./redux/slices/layoutSlice";
 import {openPageDialog} from "./redux/slices/pageDialogSlice";
 import {closeLandingDraw, openLandingDraw} from "./redux/slices/landingDrawerSlice";
 
@@ -48,12 +48,14 @@ const Layout = () => {
     const history = useHistory();
 
 
-    const [openSuccess, setOpenSuccess] = React.useState(false);
+    const [setOpenSuccess] = React.useState(false);
     const [features, setFeatures] = React.useState({});
+    const [currentPath,setCurrentPath] = useState(false);
     const viewDrawOpen = useSelector((state) => state.viewDraw.open);
     const searchDrawOpen = useSelector((state) => state.searchDraw.open);
     const homeDrawerOpen = useSelector((state) => state.homeDrawer.open);
     const open = useSelector((state) => state.layout.open);
+    const route = useSelector((state) => state.layout.route);
     const homeLocation = useSelector((state) => state.layout.homeLocation);
 
     const resolutions = useSelector((state) => state.layout.resolutions);
@@ -62,6 +64,11 @@ const Layout = () => {
     const [cookies, setCookies] = useCookies(['location']);
 
     const isInitialMount = useRef(true);
+
+    if(location.pathname!==currentPath) {
+        setCurrentPath(location.pathname);
+        dispatch(newRoute());
+    }
 
     const drawStateRouter = () => {
 
@@ -104,6 +111,15 @@ const Layout = () => {
     }
 
     React.useEffect(() => {
+        if(route===true) {
+            drawStateRouter();
+            dispatch(routeUpdated());
+
+        }
+    }, [route]);
+
+
+    React.useEffect(() => {
 
 
         if (isInitialMount.current) {
@@ -113,7 +129,6 @@ const Layout = () => {
             } else {
                 console.log('no location');
             }
-            drawStateRouter();
 
         } else {
             if (open) {
@@ -128,9 +143,9 @@ const Layout = () => {
         }
 
         window.websocket.registerQueue("homeLoader", function (json) {
-                if (open === true)
-                    mapRef.current.addGeojson(json.packet.geojson);
-                setFeatures(json.packet.geojson);
+            if (open === true)
+                mapRef.current.addGeojson(json.packet.geojson);
+            setFeatures(json.packet.geojson);
         });
 
         return () => {

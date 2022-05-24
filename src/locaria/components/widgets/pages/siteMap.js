@@ -1,11 +1,14 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
+import {useHistory} from "react-router-dom";
+
+import UrlCoder from "../../../libs/urlCoder"
 
 const SiteMap = function () {
 
+    const history = useHistory();
+    const url=new UrlCoder();
 
     const Panels = () => {
         let panelArray = [];
@@ -13,7 +16,12 @@ const SiteMap = function () {
             let panelItems=[];
             for(let i in window.siteMap[p].items) {
                 panelItems.push(
-                    <Box sx={{
+                    <Box onClick={()=>{
+                        let route=url.route(window.siteMap[p].items[i].link);
+                        if(route===true) {
+                            history.push(window.siteMap[p].items[i].link);
+                        }
+                    }} sx={{
                         borderTop: `1px solid ${window.siteMap[p].color}`,
                             '&:hover': {
                                 backgroundColor: '#fff'

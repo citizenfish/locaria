@@ -25,6 +25,7 @@ import LocationSearchResults from "../searchResults/locationSearchResults";
 import FeatureSearchResults from "../searchResults/featureSearchResults";
 import {Divider, Drawer} from "@mui/material";
 import PageSearchResults from "../searchResults/pageSearchResults";
+import {closeHomeDrawer} from "../../redux/slices/homeDrawerSlice";
 
 const SearchDrawer = forwardRef((props, ref) => {
 
@@ -63,6 +64,8 @@ const SearchDrawer = forwardRef((props, ref) => {
                     dispatch(closeViewDraw());
                     dispatch(closeLayout());
                     dispatch(closeLandingDraw());
+                    dispatch(closeHomeDrawer());
+
                     props.mapRef.current.addGeojson({"features": searchResults, type: "FeatureCollection"});
                     props.mapRef.current.zoomToLayersExtent(["data", "location", "home"]);
                     /*if (searchResults.length === 0)
