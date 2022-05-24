@@ -24,6 +24,7 @@
         "database/schema_and_tables/create_sessions_table.sql",
         "database/functions/utility/*",
         "database/functions/internal/admin/**/*.sql",
+        "database/functions/internal/admin/*.sql",
         "database/functions/reports/*",
         "database/functions/search/*",
         "database/functions/sessions/*",
