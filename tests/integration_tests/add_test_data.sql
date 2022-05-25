@@ -9,7 +9,6 @@ $$
         RAISE NOTICE 'INSERTING TEST DATA INTO LOCARIA';
 
         SET SEARCH_PATH = 'locaria_core', 'public';
-
         DELETE FROM categories WHERE category IN ('LOCARIA_TEST', 'LOCARIA_TEST_MOD', 'LOCARIA_TEST_NO_DATA');
 
         --Create 2 test categories one that allows moderated updates and one that does not
@@ -51,10 +50,10 @@ $$
         SELECT locaria_core.create_materialised_view() INTO ret_var;
 
         --Add data to address search view
-        RAISE NOTICE '**** WARNING ADDRESS VIEW HAS BEEN REBUILT TO TEST DATA';
+        RAISE NOTICE '**** WARNING LOCATION SEARCH VIEW HAS BEEN REBUILT TO TEST DATA';
 
-        DROP VIEW IF EXISTS locaria_data.address_search_view CASCADE;
-        CREATE VIEW locaria_data.address_search_view AS
+        DROP MATERIALIZED VIEW IF EXISTS locaria_data.location_search_view CASCADE;
+        CREATE MATERIALIZED VIEW locaria_data.location_search_view AS
             SELECT 1 AS id,
                    jsonb_build_object('postcode', 'XX1 1XA', 'address', '1X The road, Town, County, XX1 1XA') AS attributes,
                    ST_GEOMFROMEWKT('SRID=4326;Point (-3.57714069502677917 50.8977689822299908)') AS wkb_geometry;

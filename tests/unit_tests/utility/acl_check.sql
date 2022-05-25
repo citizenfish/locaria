@@ -3,7 +3,7 @@ $$
 DECLARE
     mask JSONB DEFAULT jsonb_build_object(
         'owner', 'Mr Foo',
-        'update', jsonb_build_array('administrator', 'moderator'),
+        'update', jsonb_build_array('administrator', 'moderator', 'updateGroup1'),
         'delete', jsonb_build_array('deleteGroup1', 'deleteGroup2'),
         'moderate', jsonb_build_array('moderator')
         );
@@ -65,7 +65,7 @@ BEGIN
     RAISE NOTICE '%', locaria_tests.test_result_processor('acl_check TEST 6 owner', ret_var , '{owner}', 'false');
     RAISE NOTICE '%', locaria_tests.test_result_processor('acl_check TEST 6 view', ret_var , '{view}', 'true');
     RAISE NOTICE '%', locaria_tests.test_result_processor('acl_check TEST 6 delete', ret_var , '{delete}', 'false');
-    RAISE NOTICE '%', locaria_tests.test_result_processor('acl_check TEST 6 update', ret_var , '{update}', 'false');
+    RAISE NOTICE '%', locaria_tests.test_result_processor('acl_check TEST 6 update', ret_var , '{update}', 'true');
     RAISE NOTICE '%', locaria_tests.test_result_processor('acl_check TEST 6 moderate', ret_var , '{moderate}', 'true');
 
 END;

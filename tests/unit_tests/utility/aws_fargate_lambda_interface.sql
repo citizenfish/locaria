@@ -2,15 +2,15 @@ DO
 
 $$
     DECLARE
-        test_params JSONB DEFAULT jsonb_build_object('function', 'file_loader', 'fargate', 'true');
+        params JSONB DEFAULT jsonb_build_object('function', 'file_loader', 'fargate', 'true', 'mode', 'Event');
         ret_var JSONB;
     BEGIN
 
-        --SELECT locaria_core.aws_lambda_interface(test_params) INTO ret_var;
-        --RAISE NOTICE ' ASYNC %', ret_var;
-
-        test_params = test_params || jsonb_build_object('mode','RequestResponse');
-        SELECT locaria_core.aws_lambda_interface(test_params) INTO ret_var;
+        IF (SELECT 1 FROM locaria_core.parameters WHERE parameter_name = 'fargate_config' AND (parameter->>'file_loader') IS NOT NULL) IS NOT NULL THEN
+            SELECT locaria_core.aws_lambda_interface(params) INTO ret_var;
+        ELSE
+            RAISE EXCEPTION 'fargate_config not set in parameters table';
+        END IF;
 
         RAISE NOTICE ' SYNC %', ret_var;
 

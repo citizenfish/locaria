@@ -11,7 +11,7 @@ BEGIN
         --If we are in live mode append any moderations resident in the moderations queue
         IF COALESCE(parameters->>'live','false')::BOOLEAN
             --this acl_check makes sure that the user is in a group that has moderator status
-            AND (acl_check(parameters->'acl', jsonb_build_object())->>'moderation')::BOOLEAN
+            AND (acl_check(parameters->'acl',NULL)->>'moderate')::BOOLEAN
             THEN
             SELECT jsonb_agg(J)
             INTO moderations_var
