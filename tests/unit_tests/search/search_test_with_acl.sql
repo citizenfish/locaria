@@ -12,7 +12,7 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core', 'public';
 
     IF (SELECT 1 FROM locaria_data.test_acl limit 1) IS NULL THEN
-        RAISE EXCEPTION 'acl_test table missing please run acl_test_data.sql';
+        RAISE EXCEPTION 'acl_test table missing  run acl_test_data.sql';
     END IF;
 
     --TEST 1 - single item with no acl

@@ -8,16 +8,7 @@ $$
         SET SEARCH_PATH = 'locaria_core', 'public';
 
         SELECT locaria_gateway(parameters) INTO ret_var;
-
-        IF (ret_var->'error') IS NOT NULL THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[cluster_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[cluster_test] TEST 1 %',ret_var;
-        END IF;
-
-        RAISE NOTICE '[cluster_test] TEST 1 PASSED %',ret_var;
+        RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 1', ret_var#>'{geojson,features}'->0 , '{properties,count}', '1');
 
     END;
 $$ LANGUAGE PLPGSQL;

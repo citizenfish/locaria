@@ -4,7 +4,7 @@ DECLARE
     returned_acl JSONB;
 BEGIN
 
-    SET SEARCH_PATH = 'locaria_core', 'public';
+    SET SEARCH_PATH = 'locaria_data','locaria_core', 'public';
 
     --A new acl was provided
     IF NULLIF(acl_param->'_newACL', jsonb_build_object()) IS NOT NULL THEN

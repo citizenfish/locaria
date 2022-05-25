@@ -1,5 +1,13 @@
-DELETE FROM locaria_core.parameters
-WHERE  parameter_name ='default_acl';
+DELETE FROM locaria_core.parameters WHERE  parameter_name ='assets_url';
+INSERT INTO locaria_core.parameters(parameter_name, parameter,acl)
+--TODO replace locaria.org with custom domain ability
+SELECT 'assets_url',
+       jsonb_build_object(
+               'url', '~uuid:_UUID_~url:https//{{theme}}.locaria.org/assets/_UUID_._EXT_'
+           ),
+       jsonb_build_object('update', jsonb_build_array('Admins'),'delete', jsonb_build_array('Admins'));
+
+DELETE FROM locaria_core.parameters WHERE  parameter_name ='default_acl';
 
 INSERT INTO locaria_core.parameters(parameter_name, parameter,acl)
 SELECT 'default_acl',

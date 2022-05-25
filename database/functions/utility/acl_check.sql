@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION locaria_core.acl_check(acl JSONB, mask JSONB) RETURNS
 $$
 BEGIN
 
-    SET SEARCH_PATH = 'locaria_core', 'public';
+    SET SEARCH_PATH = 'locaria_data','locaria_core', 'public';
 
     acl = COALESCE(acl, jsonb_build_object());
     mask = COALESCE(mask, get_default_acl());

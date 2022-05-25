@@ -14,15 +14,7 @@ $$
 
         SELECT locaria_gateway(parameters) INTO ret_var;
 
-        IF (ret_var->'tags'->0) IS NULL  OR NOT ret_var->'tags' ? 'test2'   THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[list_tags] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[list_tags] TEST 1 expected [test,test2] got %',ret_var->'tags';
-        END IF;
-
-        RAISE NOTICE '[list_tags] TEST 1 PASSED expected [test,test2] got %',ret_var->'tags';
+        RAISE NOTICE '%', locaria_tests.test_result_processor_array('list_categories TEST 1', ret_var->'tags' , '{0}', 'test', -1);
 
         UPDATE locaria_data.locaria_test_data
         SET attributes = attributes -'tags';

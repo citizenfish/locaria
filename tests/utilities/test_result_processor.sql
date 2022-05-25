@@ -17,6 +17,7 @@ BEGIN
         END IF;
     END IF;
 
+
     IF (ret_var->>'logid') IS NOT NULL THEN
         RAISE EXCEPTION '[%] FAILED - WITH SQL ERROR%',test_name, (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
     END IF;
@@ -28,7 +29,6 @@ BEGIN
     IF ret_value IS NULL OR (test_value ~ '^\[' AND NOT ( ret_value_jsonb ? (test_value::JSONB->>0)::TEXT) AND test_value != '*') THEN
         RAISE EXCEPTION '[%] FAILED ARRAY - EXPECTING % RECEIVED %',test_name, test_value, ret_value_jsonb;
     END IF;
-
 
     RETURN format('[%s] PASSED - EXPECTING %s RECEIVED %s',test_name, test_value, ret_value);
 END;
@@ -44,6 +44,11 @@ BEGIN
 
     IF array_length = 0 THEN
         RETURN format('[%s] PASSED - EXPECTING ARRAY LENGTH %s RECEIVED %s',test_name, array_length, jsonb_array_length(ret_var));
+    END IF;
+
+    --For testing arrays of text items
+    IF ret_path::TEXT = '{0}' THEN
+        ret_var = jsonb_build_array(jsonb_build_object('0', ret_var->0));
     END IF;
 
     RETURN locaria_tests.test_result_processor(test_name, ret_var->0, ret_path, test_value);

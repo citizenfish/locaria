@@ -8,17 +8,7 @@ $$
         SET SEARCH_PATH = 'locaria_core', 'public';
 
         SELECT locaria_gateway(parameters) INTO ret_var;
-
-        IF (ret_var->'categories'->0) IS NULL  OR  ret_var->'categories' ? 'LOCARIA_TEST_NO_DATA'  THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[list_categories] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[list_categories_with_data] TEST 1 expected LOCARIA_TEST got %',ret_var->'categories';
-        END IF;
-
-        RAISE NOTICE '[list_categories_with_data] TEST 1 PASSED expected LOCARIA_TEST got %',ret_var->'categories';
-
+        RAISE NOTICE '%', locaria_tests.test_result_processor_array('list_categories TEST 1', ret_var->'categories' , '{0}', 'acl_test', -1);
 
     END;
 $$ LANGUAGE PLPGSQL;

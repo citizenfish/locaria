@@ -16,32 +16,16 @@ $$
 
         --Simple get_item call
         SELECT locaria_gateway(parameters) INTO ret_var;
-
-        IF (ret_var->'features'->0) IS NULL OR (ret_var->'features'->0->'properties'->'tags'->0) IS NOT NULL THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[get_item_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[get_item_test] TEST 1 expecting <NULL> got %',ret_var;
-        END IF;
-
-        RAISE NOTICE '[get_item_test] TEST 1 PASSED expecting <NULL> got %',ret_var->'features'->0->'properties'->'tags'->0;
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 1', ret_var#>'{features}'->0 , '{properties,description,title}', 'find me two');
 
         --Get live view, tags should be present
 
         parameters = parameters || jsonb_build_object('live', true);
 
+        RAISE NOTICE 'DEBUG %', parameters;
         SELECT locaria_gateway(parameters) INTO ret_var;
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 2', ret_var#>'{features}'->0 , '{properties,fid}', parameters->>'fid');
 
-        IF (ret_var->'features'->0) IS NULL OR (ret_var->'features'->0->'properties'->'tags'->>0) != 'test' THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[get_item_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[get_item_test] TEST 2 expecting test got %',ret_var;
-        END IF;
-
-        RAISE NOTICE '[get_item_test] TEST 2 PASSED expecting test got %',ret_var->'features'->0->'properties'->'tags'->0;
 
         --Add an acl to item and we should now not get it
 
@@ -49,32 +33,14 @@ $$
         SET attributes = attributes || jsonb_build_object('acl', jsonb_build_object('view', jsonb_build_array('test')));
 
         SELECT locaria_gateway(parameters) INTO ret_var;
-
-        IF (ret_var->'features'->0) IS NOT NULL THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[get_item_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[get_item_test] TEST 3 expecting <NULL> got %',ret_var->'features'->0;
-        END IF;
-
-        RAISE NOTICE '[get_item_test] TEST 3 PASSED expecting <NULL> got %',ret_var->'features'->0;
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 3', ret_var#>'{features}' , '{}', 'EMPTY');
 
         --Set _group and we should get it now
 
-        parameters = parameters || jsonb_build_object('_group', jsonb_build_array('test'));
+        --parameters = parameters || jsonb_build_object('acl',jsonb_build_object('_group', jsonb_build_array('test')));
 
-        SELECT locaria_gateway(parameters) INTO ret_var;
-
-        IF (ret_var->'features'->0) IS  NULL THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[get_item_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[get_item_test] TEST 4 expecting test got %',ret_var;
-        END IF;
-
-        RAISE NOTICE '[get_item_test] TEST 4 PASSED expecting test got %',ret_var->'features'->0->'properties'->'tags'->0;
+        SELECT locaria_gateway(parameters, jsonb_build_object('_groups', jsonb_build_array('test'))) INTO ret_var;
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 4', ret_var#>'{features}'->0 , '{properties,description,title}', 'find me two');
 
         --Add a moderation item and check it comes down
 
@@ -85,17 +51,8 @@ $$
                jsonb_build_object('moderate', 'test'),
                'RECEIVED';
 
-        SELECT locaria_gateway(parameters) INTO ret_var;
-
-        IF (ret_var->'features'->0->'properties'->'_moderations') IS  NULL THEN
-            IF (ret_var->>'logid') IS NOT NULL THEN
-                RAISE EXCEPTION '[get_item_test] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
-            END IF;
-
-            RAISE EXCEPTION '[get_item_test] TEST 5 expecting [_moderations] got %',ret_var;
-        END IF;
-
-        RAISE NOTICE '[get_item_test] TEST 5 PASSED expecting [_moderations] got %',ret_var->'features'->0->'properties'->'_moderations';
+        SELECT locaria_gateway(parameters,jsonb_build_object('_groups', jsonb_build_array('test','Admins'))) INTO ret_var;
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 5', ret_var#>'{features}'->0#>'{properties,_moderations}'->0 , '{fid}', parameters->>'fid');
 
         --RESET TEST DATA
 
