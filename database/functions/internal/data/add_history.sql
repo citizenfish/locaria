@@ -7,7 +7,7 @@ BEGIN
      SET SEARCH_PATH = 'locaria_core', 'public';
 
      INSERT INTO history(attributes)
-     SELECT parameters
+     SELECT parameters - 'id_token'
      RETURNING jsonb_build_object('id',id)
      INTO ret_var;
 
