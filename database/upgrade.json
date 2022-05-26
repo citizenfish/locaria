@@ -1,7 +1,11 @@
 {
-  "stopOnError": true,
-  "tables": [
-    "database/cron/file_cron.sql"
-  ],
-  "substitutions": "../tests.json"
+  "databases": [
+    {
+      "stopOnError": true,
+      "tables": [
+        "database/functions/triggers/configuration_history_trigger.sql"
+      ],
+      "substitutions": "../tests.json"
+    }
+  ]
 }
