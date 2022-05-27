@@ -5,9 +5,9 @@ import Grid from "@mui/material/Grid";
 import {Accordion, AccordionDetails, AccordionSummary, Container} from "@mui/material";
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Linker from "./linker";
+import Linker from "../linker";
 import Button from "@mui/material/Button";
-import Tags from "./tags";
+import Tags from "../tags";
 
 const FieldView = ({data}) => {
 	const classes = useStyles();

@@ -253,22 +253,6 @@ export default class UseStyles {
 			  The Nav bar
 			 */
 
-			navTypeSimple: {
-				backgroundColor: `${theme.palette.primary.main} !important`,
-				zIndex: '150',
-				top: 0,
-				justifyContent: 'space-between !important',
-				padding: '5px 0 !important',
-			},
-
-
-			navTypeFull: {
-				backgroundColor: `${theme.palette.primary.main} !important`,
-				zIndex: '150',
-				top: 0,
-				justifyContent: 'space-between !important',
-				padding: '5px 0 !important',
-			},
 
 
 			introModal: {
@@ -773,35 +757,7 @@ export default class UseStyles {
 
 			 */
 
-			viewDraw: {
-				overflow: 'hidden',
-				'&	.MuiDrawer-paperAnchorDockedBottom': {
-					color: theme.palette.icons.main,
-					backgroundColor: theme.palette.primary.darker,
-					width: 'calc(100vw)',
-					height: 'calc(100% - 64px)',
 
-					[theme.breakpoints.up('md')]: {
-						maxWidth: leftWidth,
-						left: 0
-					},
-					[theme.breakpoints.down('md')]: {
-						maxWidth: '100vw',
-						left: 0,
-						overflow: 'hidden',
-					}
-				},
-			},
-
-			viewDrawFull:{
-				overflow: 'hidden',
-				'&	.MuiDrawer-paperAnchorDockedBottom': {
-					color: theme.palette.icons.main,
-					backgroundColor: theme.palette.primary.darker,
-					width: 'calc(100vw)',
-					height: 'calc(100% - 64px)',
-				},
-			},
 
 			viewDrawHeader: {
 				padding: 10,

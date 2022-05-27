@@ -118,9 +118,9 @@ class wspClient {
 
 
 			function deployEvent() {
-				console.log(jsonData);
+				//console.log(jsonData);
 				decompress();
-				console.log(jsonData);
+				//console.log(jsonData);
 				self.onMessage(jsonData);
 			}
 
@@ -128,7 +128,7 @@ class wspClient {
 
 
 				if(jsonData.packet.options&&jsonData.packet.options.compress) {
-					console.log('Compressed Packet');
+					//console.log('Compressed Packet');
 					for(let f in jsonData.packet.geojson.features) {
 						let uncompressedProperties={};
 						recurseProperties(jsonData,jsonData.packet.geojson.features[f].properties,uncompressedProperties);

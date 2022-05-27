@@ -159,7 +159,13 @@ const SearchDrawer = forwardRef((props, ref) => {
                     "search_text": search,
                     "limit": window.systemMain.searchLimit,
                     "offset": offset,
-                    "mask": {distance: true, fid: true, category: true, tags: true, description: {title: true, text: true}}
+                    "mask": {
+                        distance: true,
+                        fid: true,
+                        category: true,
+                        tags: true,
+                        description: {title: true, text: true}
+                    }
                 }
             };
 
@@ -201,73 +207,86 @@ const SearchDrawer = forwardRef((props, ref) => {
         }
 
 
-        return (
-            <Drawer
-                anchor="bottom"
-                open={open}
-                className={classes.searchDrawer}
-                variant="persistent"
-            >
-                <div className={classes.searchDrawerHeader}>
-                    <Typography className={classes.searchDrawerTitle} variant={'h6'}>{window.systemLang.searchTitle}</Typography>
-                    <IconButton onClick={() => {
-                        dispatch(openLayout());
-                    }} className={classes.searchDrawerClose} type="submit"
-                                aria-label="search">
-                        <CloseIcon className={classes.icons}/>
-                    </IconButton>
-                </div>
-                <Divider/>
-                <div className={classes.searchDrawerSearch}>
-                    <InputBase
-                        className={classes.searchDrawerBox}
-                        id="mySearch"
-                        placeholder={window.systemLang.searchPlaceholder}
-                        variant="filled"
-                        onKeyDown={handleKeyDown}
-                        autoComplete={'off'}
-                        autoFocus={true}
-                    />
-                    <IconButton onClick={() => {
-                        setNewSearch()
-                    }}
-                                type="submit"
-                                aria-label="search">
-                        <SearchIcon className={classes.iconsLight}/>
-                    </IconButton>
-                    <Divider orientation="vertical" className={classes.iconsLight}/>
-                    <IconButton type="submit"
-                                size="small"
-                                onClick={clearSearch}
-                    >
-                        <DeleteIcon className={classes.iconsLight}/>
-                    </IconButton>
-                </div>
-                <PageSearchResults></PageSearchResults>
+        const Content = () => {
+            return (
+                <>
+                    <div className={classes.searchDrawerHeader}>
+                        <Typography className={classes.searchDrawerTitle}
+                                    variant={'h6'}>{window.systemLang.searchTitle}</Typography>
+                        <IconButton onClick={() => {
+                            dispatch(openLayout());
+                        }} className={classes.searchDrawerClose} type="submit"
+                                    aria-label="search">
+                            <CloseIcon className={classes.icons}/>
+                        </IconButton>
+                    </div>
+                    <Divider/>
+                    <div className={classes.searchDrawerSearch}>
+                        <InputBase
+                            className={classes.searchDrawerBox}
+                            id="mySearch"
+                            placeholder={window.systemLang.searchPlaceholder}
+                            variant="filled"
+                            onKeyDown={handleKeyDown}
+                            autoComplete={'off'}
+                            autoFocus={true}
+                        />
+                        <IconButton onClick={() => {
+                            setNewSearch()
+                        }}
+                                    type="submit"
+                                    aria-label="search">
+                            <SearchIcon className={classes.iconsLight}/>
+                        </IconButton>
+                        <Divider orientation="vertical" className={classes.iconsLight}/>
+                        <IconButton type="submit"
+                                    size="small"
+                                    onClick={clearSearch}
+                        >
+                            <DeleteIcon className={classes.iconsLight}/>
+                        </IconButton>
+                    </div>
+                    <PageSearchResults></PageSearchResults>
 
-                <LocationSearchResults
-                    locationResults={locationResults}
-                    mapRef={props.mapRef}
-                    locationShow={locationShow}
-                />
-                <Divider/>
-
-
-                <div className={classes.searchDrawerResults}>
-
-
-                    <FeatureSearchResults
-                        featureResults={searchResults}
+                    <LocationSearchResults
+                        locationResults={locationResults}
                         mapRef={props.mapRef}
+                        locationShow={locationShow}
                     />
+                    <Divider/>
 
-                </div>
-                <Divider/>
-                <div>
 
-                </div>
-            </Drawer>
-        )
+                    <div className={classes.searchDrawerResults}>
+
+
+                        <FeatureSearchResults
+                            featureResults={searchResults}
+                            mapRef={props.mapRef}
+                        />
+
+                    </div>
+                    <Divider/>
+                    <div>
+
+                    </div>
+                </>
+            )
+        }
+
+        if (props.mode === 'page') {
+            return (<Content/>)
+        } else {
+            return (
+                <Drawer
+                    anchor="bottom"
+                    open={open}
+                    className={classes.searchDrawer}
+                    variant="persistent"
+                >
+                    <Content/>
+                </Drawer>
+            )
+        }
     }
 );
 

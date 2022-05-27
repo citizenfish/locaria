@@ -24,7 +24,7 @@ import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice
 import {setAdminCategories, setAdminCategoryValue} from "../../redux/slices/adminCategoryDrawerSlice";
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
 import Box from "@mui/material/Box";
-import UploadWidget from "../../../widgets/uploadWidget";
+import UploadWidget from "../../../widgets/data/uploadWidget";
 import Channels from "../../../../libs/Channels";
 import {ColorPicker} from 'mui-color';
 import Divider from "@mui/material/Divider";

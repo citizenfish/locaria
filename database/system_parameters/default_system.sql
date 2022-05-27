@@ -92,10 +92,11 @@ SELECT 'siteMap',
            "description": "Explore the map",
            "backgroundColor": "#ddaa22",
            "color": "#fff",
+           "link":"/Search/[]/",
            "items": [
              {
                "name": "Shopping",
-               "link": "/Search/"
+               "link": "/Search/[\"Shopping\"]/"
              },
              {
                "name": "Hospitality",
@@ -129,7 +130,8 @@ SELECT 'siteMap',
            "name": "Business",
            "description": "Business",
            "backgroundColor": "#993399",
-           "color": "#fff"
+           "color": "#fff",
+           "link":"/Search/[\"Business\"]/"
          }
        ]
        '::JSONB;

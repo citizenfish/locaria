@@ -52,8 +52,8 @@ export default class Websockets {
 			for(let b in self.bulks) {
 				for(let q in self.bulks[b].queues) {
 					if(self.bulks[b].queues[q]===jsonData["queue"]) {
-						if(jsonData.timing)
-							console.log(`${jsonData["queue"]}:${JSON.stringify(jsonData.timing)}`);
+					/*	if(jsonData.timing)
+							console.log(`${jsonData["queue"]}:${JSON.stringify(jsonData.timing)}`);*/
 						bulker=b;
 						self.bulks[b].queues.splice(q,1);
 						self.bulks[b].in[jsonData["queue"]]=jsonData;
@@ -71,8 +71,8 @@ export default class Websockets {
 				}
 			} else {
 				if (self.queues[jsonData["queue"]] !== undefined) {
-					if(jsonData.timing)
-						console.log(`${jsonData["queue"]}:${JSON.stringify(jsonData.timing)}`);
+					/*if(jsonData.timing)
+						console.log(`${jsonData["queue"]}:${JSON.stringify(jsonData.timing)}`);*/
 					self.queues[jsonData["queue"]](jsonData)
 				} else {
 					console.log(`No queue registered for ${jsonData["queue"]}`)
@@ -103,18 +103,18 @@ export default class Websockets {
 
 	registerQueue(queue, hook) {
 		this.queues[queue] = hook;
-		console.log(`WS ADD ${queue}`);
+		//console.log(`WS ADD ${queue}`);
 	}
 
 	removeQueue(queue) {
 		delete this.queues[queue];
-		console.log(`WS DEL ${queue}`);
+		//console.log(`WS DEL ${queue}`);
 
 	}
 
 	clearQueues() {
 		this.queues = [];
-		console.log('WS CLEAR');
+		//console.log('WS CLEAR');
 	}
 
 	close(pid, json) {

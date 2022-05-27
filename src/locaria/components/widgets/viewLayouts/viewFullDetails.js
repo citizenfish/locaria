@@ -1,0 +1,34 @@
+import React from 'react';
+import {useSelector} from "react-redux";
+import {FieldView} from "../data/fieldView";
+import Grid from "@mui/material/Grid";
+import SingleFeatureImageBox from "../images/singleFeatureImageBox";
+import Box from "@mui/material/Box";
+
+const ViewFullDetails = (props) => {
+    const report = useSelector((state) => state.viewDraw.report);
+    if(report) {
+        return (
+                <Grid container spacing={2} sx={{
+                    margin: "5px"
+                }}>
+                    <Grid item xs={8}>
+                        <Box sx={{
+                            padding: "5px"
+                        }}>
+                            <FieldView data={report.viewLoader.packet.features[0].properties}/>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <SingleFeatureImageBox category={report.viewLoader.packet.features[0].properties.category} image={report.viewLoader.packet.features[0].properties.data.images[0]}/>
+                    </Grid>
+                </Grid>
+        )
+    } else {
+        return (
+            <h1>No data</h1>
+        )
+    }
+}
+
+export default ViewFullDetails;

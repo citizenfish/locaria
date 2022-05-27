@@ -8,9 +8,9 @@ import PhotoSizeSelectActualIcon from '@mui/icons-material/PhotoSizeSelectActual
 import CardHeader from "@mui/material/CardHeader";
 import {configs, resources} from "themeLocaria";
 import FormControl from "@mui/material/FormControl";
-import {setSystemConfigValue} from "../admin/redux/slices/systemConfigDrawerSlice";
+import {setSystemConfigValue} from "../../admin/redux/slices/systemConfigDrawerSlice";
 import MenuItem from "@mui/material/MenuItem";
-import UrlCoder from "../../libs/urlCoder";
+import UrlCoder from "../../../libs/urlCoder";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const url = new UrlCoder();
@@ -177,6 +177,7 @@ export default function UploadWidget(props) {
                         <MenuItem value={"icon"}>Icons</MenuItem>
                         <MenuItem value={"iconMap"}>Map Icons</MenuItem>
                         <MenuItem value={"panel"}>Panels</MenuItem>
+                        <MenuItem value={"gallery"}>Gallery</MenuItem>
                     </Select>
                 </FormControl>
 

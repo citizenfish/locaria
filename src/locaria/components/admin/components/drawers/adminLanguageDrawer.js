@@ -33,6 +33,7 @@ export default function AdminLanguageDrawer(props) {
 
     const langDef={
         "siteTitle":{ description:"Sites title", default: "Locaria"},
+        "siteSubTitle":{ description:"Sites sub title", default: "Winning"},
         "siteCallToAction": { description: "Call to action on landing page", default: "Learn more about your location" },
         "siteSubCallToAction": { description: "Sub call to action on landing page", default: "Enter an address or postcode to find information about that area" },
         "channelCallToAction": { description: "Channel call to action on landing page", default: "Click on one of the channels below to find out more about your selected location." },

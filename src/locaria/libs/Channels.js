@@ -41,7 +41,7 @@ export default class Channels {
 		if(foundChannel) {
 			return foundChannel;
 		} else {
-			console.log(`Request for [${channel}] that doesn't exits`);
+			//console.log(`Request for [${channel}] that doesn't exits`);
 			return undefined;
 		}
 	}
