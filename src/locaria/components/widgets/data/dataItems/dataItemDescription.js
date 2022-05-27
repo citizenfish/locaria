@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 
 const DataItemDescription = ({name,data}) => {
     return (
-        <Typography variant="p" sx={{
+        <Typography gutterBottom variant="p" sx={{
             color: window.systemMain.fontMain,
             fontSize: "1rem"
         }}>{data} </Typography>

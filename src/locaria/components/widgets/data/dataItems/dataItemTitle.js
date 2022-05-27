@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 
 const DataItemTitle = ({name,data}) => {
     return (
-        <Typography variant="h1" component="span" sx={{
+        <Typography gutterBottom variant="h1"  sx={{
             color: window.systemMain.fontSecondary,
             fontWeight: 400,
             fontSize: "1.5rem"
