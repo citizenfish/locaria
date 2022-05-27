@@ -33,11 +33,13 @@ const FieldView = ({data}) => {
 const FormatFields = ({fields, data}) => {
 
 	if (fields && fields.length > 0) {
-		return (<Grid container spacing={2}>
+		return (
+			<>
 			{fields.map(value => (
 				<FormatField field={value} data={data} key={value.key}></FormatField>
 			))}
-		</Grid>);
+			</>
+		);
 	}
 	return null;
 
