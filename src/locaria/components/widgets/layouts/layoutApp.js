@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 
 import {configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
@@ -6,34 +6,36 @@ import {useStyles} from "stylesLocaria";
 
 import {useCookies} from 'react-cookie';
 import {Link, useHistory, useLocation, useParams} from 'react-router-dom';
-import Map from "./widgets/map";
+import Map from "../map";
 import {Box} from "@mui/material";
-import {SearchDrawer} from "./widgets/drawers/searchDrawer";
-import {ViewDrawer} from "./widgets/drawers/viewDrawer";
-import LandingDrawer from "./widgets/drawers/landingDrawer";
-import MenuDrawer from "./widgets/drawers/menuDrawer";
-import Multi from "./widgets/multi";
+import {SearchDrawer} from "../drawers/searchDrawer";
+import {ViewDrawer} from "../drawers/viewDrawer";
+import LandingDrawer from "../drawers/landingDrawer";
+import MenuDrawer from "../drawers/menuDrawer";
+import Multi from "../multi";
 import {useSelector, useDispatch} from 'react-redux'
 import {
     closeSearchDrawer,
     openSearchDrawer
-} from './redux/slices/searchDrawerSlice'
-import {openViewDraw} from './redux/slices/viewDrawerSlice'
-import {closeMultiSelect, openMultiSelect} from './redux/slices/multiSelectSlice'
-import PageDrawer from "./widgets/drawers/pageDrawer";
-import {openLayout, setLocation, setResolutions} from "./redux/slices/layoutSlice";
-import {openPageDialog} from "./redux/slices/pageDialogSlice";
-import {closeLandingDraw, openLandingDraw} from "./redux/slices/landingDrawerSlice";
+} from '../../redux/slices/searchDrawerSlice'
+import {openViewDraw} from '../../redux/slices/viewDrawerSlice'
+import {closeMultiSelect, openMultiSelect} from '../../redux/slices/multiSelectSlice'
+import PageDrawer from "../drawers/pageDrawer";
+import {newRoute, openLayout, routeUpdated, setLocation, setResolutions} from "../../redux/slices/layoutSlice";
+import {openPageDialog} from "../../redux/slices/pageDialogSlice";
+import {closeLandingDraw, openLandingDraw} from "../../redux/slices/landingDrawerSlice";
 
 
-import NavFabFilter from "./widgets/fabs/navFabFilter";
-import {openHomeDrawer} from "./redux/slices/homeDrawerSlice";
-import HomeDrawer from "./widgets/drawers/homeDrawer";
-import NavTypeFull from "./widgets/navs/navTypeFull";
-import NavTypeSimple from "./widgets/navs/navTypeSimple";
+import NavFabFilter from "../fabs/navFabFilter";
+import {openHomeDrawer} from "../../redux/slices/homeDrawerSlice";
+import HomeDrawer from "../drawers/homeDrawer";
+import NavTypeFull from "../navs/navTypeFull";
+import NavTypeSimple from "../navs/navTypeSimple";
+import RenderNav from "../navs/renderNav";
+import PathRouter from "../../../libs/PathRouter";
 
 
-const Layout = () => {
+const LayoutApp = () => {
     const mapRef = useRef();
     const location = useLocation();
     // params?
@@ -48,12 +50,14 @@ const Layout = () => {
     const history = useHistory();
 
 
-    const [openSuccess, setOpenSuccess] = React.useState(false);
+    const [setOpenSuccess] = React.useState(false);
     const [features, setFeatures] = React.useState({});
+    const [currentPath,setCurrentPath] = useState(false);
     const viewDrawOpen = useSelector((state) => state.viewDraw.open);
     const searchDrawOpen = useSelector((state) => state.searchDraw.open);
     const homeDrawerOpen = useSelector((state) => state.homeDrawer.open);
     const open = useSelector((state) => state.layout.open);
+    const route = useSelector((state) => state.layout.route);
     const homeLocation = useSelector((state) => state.layout.homeLocation);
 
     const resolutions = useSelector((state) => state.layout.resolutions);
@@ -63,8 +67,28 @@ const Layout = () => {
 
     const isInitialMount = useRef(true);
 
+    if(location.pathname!==currentPath) {
+        setCurrentPath(location.pathname);
+        dispatch(newRoute());
+    }
+
     const drawStateRouter = () => {
 
+        let route = PathRouter(location.pathname);
+
+        switch (route) {
+            case '/':
+                dispatch(openLandingDraw());
+                return;
+            case '/Home':
+                dispatch(openHomeDrawer());
+                return;
+            case '/Map':
+                dispatch(openLayout());
+                return;
+
+        }
+/*
         if (location.pathname === '/') {
             // This is a default landing so find out if we need to direct them
             if (window.systemMain.landingRoute && window.systemMain.landingRoute !== '/')
@@ -73,11 +97,12 @@ const Layout = () => {
                 dispatch(openLandingDraw());
             return;
         }
+*/
 
-        if (location.pathname.match('^/Home') && homeDrawerOpen === false) {
+/*        if (location.pathname.match('^/Home') && homeDrawerOpen === false) {
             dispatch(openHomeDrawer())
             return;
-        }
+        }*/
 
         if (location.pathname.match('^/Search/.*') && searchDrawOpen === false) {
             if (category) {
@@ -94,14 +119,23 @@ const Layout = () => {
             dispatch(openViewDraw({fid: feature, category: category}));
             return;
         }
-
+/*
         if (location.pathname.match('^/Map') && open === false) {
             dispatch(openLayout())
             return;
-        }
+        }*/
 
 
     }
+
+    React.useEffect(() => {
+        if(route===true) {
+            drawStateRouter();
+            dispatch(routeUpdated());
+
+        }
+    }, [route]);
+
 
     React.useEffect(() => {
 
@@ -113,7 +147,6 @@ const Layout = () => {
             } else {
                 console.log('no location');
             }
-            drawStateRouter();
 
         } else {
             if (open) {
@@ -128,9 +161,9 @@ const Layout = () => {
         }
 
         window.websocket.registerQueue("homeLoader", function (json) {
-                if (open === true)
-                    mapRef.current.addGeojson(json.packet.geojson);
-                setFeatures(json.packet.geojson);
+            if (open === true)
+                mapRef.current.addGeojson(json.packet.geojson);
+            setFeatures(json.packet.geojson);
         });
 
         return () => {
@@ -212,17 +245,6 @@ const Layout = () => {
     }
 
 
-    const navList = {
-        'Full': <NavTypeFull/>,
-        'Simple': <NavTypeSimple/>
-    }
-
-    const RenderNav = () => {
-        if (window.systemMain['navType'] === undefined)
-            return navList['Full'];
-        else
-            return navList[window.systemMain['navType']];
-    }
 
     return (
         <>
@@ -257,4 +279,4 @@ const Layout = () => {
 }
 
 
-export default Layout;
+export default LayoutApp;

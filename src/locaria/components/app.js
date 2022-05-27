@@ -10,7 +10,8 @@ import store from './redux/store'
 import { Provider } from 'react-redux'
 
 import AdminRoute from "./adminRoute";
-import Layout from "./layout";
+import LayoutApp from "./widgets/layouts/layoutApp";
+import LayoutPages from "./widgets/layouts/layoutPages";
 
 
 
@@ -102,6 +103,11 @@ const App = () => {
 		}
 	}, []);
 
+	let layout=LayoutApp;
+	if(window.systemMain.layoutType&&window.systemMain.layoutType==='Pages') {
+		layout=LayoutPages;
+	}
+
 	if(configs.siteMaintenance===true) {
 		return (
 			<Provider store={store}>
@@ -123,15 +129,15 @@ const App = () => {
 							<Route path="/Admin/" user={user} component={Admin}/>
 							<Route exact path="/Admin/:id_token?" component={Admin}/>
 
-							<Route path="/View/:category/:feature" component={Layout}/>
-							<Route path="/Search/:category?/:search?" component={Layout}/>
-							<Route path="/Page/:pageId" component={Layout}/>
-							<Route path="/Map" component={Layout}/>
-							<Route path="/Home" component={Layout}/>
-							<Route path="/" component={Layout}></Route>
-							<Route exact path="/:id_token?" component={Layout}/>
+							<Route path="/View/:category/:feature" component={layout}/>
+							<Route path="/Search/:category?/:search?" component={layout}/>
+							<Route path="/Page/:pageId" component={layout}/>
+							<Route path="/Map" component={layout}/>
+							<Route path="/Home" component={layout}/>
+							<Route path="/" component={layout}></Route>
+							<Route exact path="/:id_token?" component={layout}/>
 
-							<Route component={Layout}/>
+							<Route component={layout}/>
 						</Switch>
 					</Router>
 			</Provider>

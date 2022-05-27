@@ -30,13 +30,22 @@ const NavTypeFull = function () {
     }
 
     return (
-        <Box className={classes['navTypeFull']} sx={{width: "100vw",height:64}}>
+        <Box className={classes['navTypeFull']}
+             sx={{
+                 width: "100vw",
+                 height: 64,
+                 backgroundColor: window.systemMain.headerBackground,
+                 zIndex: '150',
+                 top: 0,
+                 justifyContent: 'space-between !important',
+                 padding: '5px 0 !important'
+        }}>
             <Grid container>
                 <Grid item xs={1}>
-                    <IconButton  sx={{margin: "0 auto", display: "flex"}}
-                            onClick={() => {
-                                dispatch(openMenuDraw());
-                            }}>
+                    <IconButton sx={{margin: "0 auto", display: "flex"}}
+                                onClick={() => {
+                                    dispatch(openMenuDraw());
+                                }}>
                         <MenuIcon color="icons" fontSize="large"/>
                     </IconButton>
                 </Grid>
@@ -64,12 +73,12 @@ const NavTypeFull = function () {
                     </Grid>
                 </Grid>
                 <Grid item xs={1}>
-                    <IconButton  sx={{margin: "0 auto", display: "flex"}}
-                            onClick={() => {
-                                toggleSearchWrapper()
-                            }}>
+                    <IconButton sx={{margin: "0 auto", display: "flex"}}
+                                onClick={() => {
+                                    toggleSearchWrapper()
+                                }}>
                         <SearchIcon color="icons" fontSize="large"/>
-                    </IconButton >
+                    </IconButton>
                 </Grid>
             </Grid>
         </Box>

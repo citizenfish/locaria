@@ -19,7 +19,7 @@ import MenuItem from "@mui/material/MenuItem";
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
 import {closeAdminCategoryDrawer, setAdminCategoryValue} from "../../redux/slices/adminCategoryDrawerSlice";
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
-import UploadWidget from "../../../widgets/uploadWidget";
+import UploadWidget from "../../../widgets/data/uploadWidget";
 import Container from "@mui/material/Container";
 import {ColorPicker} from "mui-color";
 
@@ -108,6 +108,23 @@ export default function AdminSystemConfigDrawer(props) {
                 <Container>
                     <h1>Theme</h1>
 
+                    <h2>Layout</h2>
+                    <FormControl fullWidth>
+                        <InputLabel id="layoutTypeLabel">Layout type</InputLabel>
+                        <Select
+                            labelId="layoutTypeLabel"
+                            id="layoutType"
+                            value={config.layoutType}
+                            label="Layout type"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"layoutType",value:e.target.value}));
+                            }}
+                        >
+                            <MenuItem value={"App"}>App</MenuItem>
+                            <MenuItem value={"Pages"}>Pages</MenuItem>
+                        </Select>
+                    </FormControl>
+
                     <FormControl fullWidth>
                         <InputLabel id="landingRouteLabel">Landing Page</InputLabel>
                         <Select
@@ -119,16 +136,55 @@ export default function AdminSystemConfigDrawer(props) {
                                 dispatch(setSystemConfigValue({key:"landingRoute",value:e.target.value}));
                             }}
                         >
-                            <MenuItem value={"/"}>/</MenuItem>
+                            <MenuItem value={"/"}>Landing</MenuItem>
                             <MenuItem value={"/Home"}>Home</MenuItem>
                             <MenuItem value={"/Map"}>Map</MenuItem>
                             <MenuItem value={"/Search"}>Search</MenuItem>
                         </Select>
                     </FormControl>
 
+                    <FormControl fullWidth>
+                        <InputLabel id="navTypeLabel">Navigation type</InputLabel>
+                        <Select
+                            labelId="navTypeLabel"
+                            id="landingRoute"
+                            value={config.navType}
+                            label="Landing page"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"navType",value:e.target.value}));
+                            }}
+                        >
+                            <MenuItem value={"Full"}>Full Nav</MenuItem>
+                            <MenuItem value={"Simple"}>Simple</MenuItem>
+
+                        </Select>
+                    </FormControl>
+
+                    <InputLabel id="headerBackground-label">Header Background color</InputLabel>
+                    <ColorPicker value={config.headerBackground} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"headerBackground",value:color.css.backgroundColor}));
+                    }}/>
+
+                    <InputLabel id="themePanels-label">Panel Background color</InputLabel>
                     <ColorPicker value={config.themePanels} defaultValue="transparent" onChange={(color) => {
                         dispatch(setSystemConfigValue({key:"themePanels",value:color.css.backgroundColor}));
                     }}/>
+
+                    <InputLabel id="fontMainLabel">Primary font color</InputLabel>
+                    <ColorPicker value={config.fontMain} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"fontMain",value:color.css.backgroundColor}));
+                    }}/>
+
+                    <InputLabel id="fontSecondaryLabel">Secondary font color</InputLabel>
+                    <ColorPicker value={config.fontSecondary} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"fontSecondary",value:color.css.backgroundColor}));
+                    }}/>
+
+
+                    <UploadWidget usageFilter={"gallery"} title={"Select gallery image(s)"} setFunction={(uuid)=>{
+                        dispatch(setSystemConfigValue({key:"galleryImage",value:uuid}));
+                    }} uuid={config.galleryImage}>
+                    </UploadWidget>
 
                     <h1>Search</h1>
                     <TextField
@@ -169,8 +225,9 @@ export default function AdminSystemConfigDrawer(props) {
                                 dispatch(setSystemConfigValue({key:"viewMode",value:e.target.value}));
                             }}
                         >
-                            <MenuItem value={"full"}>Full screen</MenuItem>
-                            <MenuItem value={"left"}>Left draw</MenuItem>
+                            <MenuItem value={"Full"}>Full screen (with Map)</MenuItem>
+                            <MenuItem value={"FullDetails"}>Full screen details</MenuItem>
+                            <MenuItem value={"Left"}>Left draw (App Mode only)</MenuItem>
 
                         </Select>
                     </FormControl>

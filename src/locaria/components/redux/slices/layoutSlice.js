@@ -5,7 +5,8 @@ export const layoutSlice = createSlice({
 	initialState: {
 		open: false,
 		homeLocation: false,
-		resolutions: undefined
+		resolutions: undefined,
+		route: false
 	},
 	reducers: {
 		openLayout: (state) => {
@@ -19,11 +20,17 @@ export const layoutSlice = createSlice({
 		},
 		setResolutions: (state,action) => {
 			state.resolutions=action.payload;
+		},
+		newRoute: (state) => {
+			state.route=true;
+		},
+		routeUpdated: (state) => {
+			state.route=false;
 		}
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const {openLayout, closeLayout,setLocation,setResolutions} = layoutSlice.actions
+export const {openLayout, closeLayout,setLocation,setResolutions,newRoute,routeUpdated} = layoutSlice.actions
 
 export default layoutSlice.reducer

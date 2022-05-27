@@ -91,14 +91,56 @@ WHERE parameter_name = 'siteMap';
 
 INSERT INTO locaria_core.parameters(parameter_name, acl, parameter)
 SELECT 'siteMap',
-       jsonb_build_object('update', jsonb_build_array('Admins'),'delete', jsonb_build_array('Admins')),
+       jsonb_build_object('update', jsonb_build_array('Admins'), 'delete', jsonb_build_array('Admins')),
        '
        [
-          {"key":"explore","name":"Explore Map","description":"Explore the map", "backgroundColor":"#ddaa22","color":"#fff","items":[{"name":"Shopping","link":"/search"},{"name":"Hospitality","link":"/search"  }]},
-          {"key":"guides","name":"Guides","description":"Guides","backgroundColor":"#e5544c","color":"#fff"},
-         {"key":"about","name":"About","description":"About","backgroundColor":"#0099cc","color":"#fff"},
-         {"key":"news","name":"News & Events","description":"News and Events","backgroundColor":"#99cc33","color":"#fff"},
-         {"key":"business","name":"Business","description":"Business","backgroundColor":"#993399","color":"#fff"}
+         {
+           "key": "explore",
+           "name": "Explore Map",
+           "description": "Explore the map",
+           "backgroundColor": "#ddaa22",
+           "color": "#fff",
+           "link":"/Search/[]/",
+           "items": [
+             {
+               "name": "Shopping",
+               "link": "/Search/[\"Shopping\"]/"
+             },
+             {
+               "name": "Hospitality",
+               "link": "https://google.com"
+             }
+           ]
+         },
+         {
+           "key": "guides",
+           "name": "Guides",
+           "description": "Guides",
+           "backgroundColor": "#e5544c",
+           "color": "#fff"
+         },
+         {
+           "key": "about",
+           "name": "About",
+           "description": "About",
+           "backgroundColor": "#0099cc",
+           "color": "#fff"
+         },
+         {
+           "key": "news",
+           "name": "News & Events",
+           "description": "News and Events",
+           "backgroundColor": "#99cc33",
+           "color": "#fff"
+         },
+         {
+           "key": "business",
+           "name": "Business",
+           "description": "Business",
+           "backgroundColor": "#993399",
+           "color": "#fff",
+           "link":"/Search/[\"Business\"]/"
+         }
        ]
        '::JSONB;
 
