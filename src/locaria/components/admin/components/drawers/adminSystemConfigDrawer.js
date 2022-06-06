@@ -180,6 +180,27 @@ export default function AdminSystemConfigDrawer(props) {
                         dispatch(setSystemConfigValue({key:"fontSecondary",value:color.css.backgroundColor}));
                     }}/>
 
+                    <InputLabel id="fontH1Label">H1 font color</InputLabel>
+                    <ColorPicker value={config.fontH1} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"fontH1",value:color.css.backgroundColor}));
+                    }}/>
+
+                    <InputLabel id="fontH2Label">H2 font color</InputLabel>
+                    <ColorPicker value={config.fontH2} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"fontH2",value:color.css.backgroundColor}));
+                    }}/>
+
+                    <InputLabel id="fontH3Label">H3 font color</InputLabel>
+                    <ColorPicker value={config.fontH3} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"fontH3",value:color.css.backgroundColor}));
+                    }}/>
+
+                    <InputLabel id="fontPLabel">P font color</InputLabel>
+                    <ColorPicker value={config.fontP} defaultValue="transparent" onChange={(color) => {
+                        dispatch(setSystemConfigValue({key:"fontP",value:color.css.backgroundColor}));
+                    }}/>
+
+
 
                     <UploadWidget usageFilter={"gallery"} title={"Select gallery image(s)"} setFunction={(uuid)=>{
                         dispatch(setSystemConfigValue({key:"galleryImage",value:uuid}));

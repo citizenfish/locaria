@@ -44,7 +44,9 @@ const TopFeatures = (props) => {
                 }}>
                     {results.map((result)=> {
                         return (
-                            <Grid item xs={3} key={result.properties.fid}>
+                            <Grid item md={3} key={result.properties.fid} sx={{
+                                width: "100%"
+                            }}>
                                <BigCard feature={result}></BigCard>
                             </Grid>
                         )

@@ -11,6 +11,7 @@ import SiteMap from "../pages/siteMap";
 import LogoStrapLine from "../logos/logoStrapLine";
 import {openViewDraw} from "../../redux/slices/viewDrawerSlice";
 import {useDispatch} from "react-redux";
+import Divider from "@mui/material/Divider";
 
 
 const LayoutPages = () => {
@@ -42,7 +43,7 @@ const LayoutPages = () => {
             <RenderNav/>
             <SiteMap mode={mode}/>
             <LogoStrapLine/>
-
+            <Divider/>
             <PageRender/>
             <RenderFooter/>
         </>

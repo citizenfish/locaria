@@ -9,7 +9,6 @@ const footerTypeSimple = function () {
     return (
         <Box sx={{
             width: "calc(100vw - 20px)",
-            height: "40px",
             justifyContent: 'space-between',
             padding: '5px 0',
             backgroundColor: window.systemMain.headerBackground,
@@ -19,14 +18,14 @@ const footerTypeSimple = function () {
         }}>
             <Grid container>
                 <Grid item xs={12} sx={{
-                    textAlign: 'center'
+                    textAlign: "left"
                 }}>
                     <Typography variant="p" sx={{
                         flexGrow: 1,
-                        textAlign: "center",
-                        fontSize: "0.8rem"
+                        fontSize: "0.8rem",
+                        paddingLeft: "10px"
                     }}>
-                        Footer stuff
+                        {window.systemLang.siteFooter}
                     </Typography>
                 </Grid>
             </Grid>
