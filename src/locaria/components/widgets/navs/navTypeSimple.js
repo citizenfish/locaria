@@ -14,21 +14,34 @@ const NavTypeSimple = function () {
             padding: '5px 0 !important',
             backgroundColor: window.systemMain.headerBackground,
             marginLeft: "10px",
-            marginRight: "10px"
+            marginRight: "10px",
+            marginTop: "5px",
+
         }}>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Typography variant="h4" sx={{
+            <Grid container sx={{
+                verticalAlign: "middle"
+
+            }}>
+                <Grid item md={6}>
+                    <Typography variant="h1" sx={{
                         flexGrow: 1,
-                        textAlign: "center"
+                        textAlign: "center",
+                        fontSize: "1.5rem"
                     }}>
-                        {window.systemLang.siteTitle ? window.systemLang.siteTitle.toUpperCase() : 'Locaria'}:
+                        {window.systemLang.siteTitle ? window.systemLang.siteTitle.toUpperCase() : 'Locaria'}
                     </Typography>
                 </Grid>
-                <Grid item xs={6}>
-                    <Typography variant="h5" sx={{
+                <Grid item md={6} sx={{
+                    display: {
+                        md: "block",
+                        xs: "none"
+                    }
+                }}>
+                    <Typography variant="h1" sx={{
                         flexGrow: 1,
-                        textAlign: "center"
+                        textAlign: "center",
+                        fontSize: "1rem",
+
                     }}>
                         {window.systemLang.siteSubTitle}
                     </Typography>

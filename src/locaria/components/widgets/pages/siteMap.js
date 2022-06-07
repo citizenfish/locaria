@@ -23,8 +23,9 @@ const SiteMap = function (props) {
                         }
                     }} sx={{
                         borderTop: `1px solid ${window.siteMap[p].color}`,
+                        fontSize: "0.8rem",
                         '&:hover': {
-                            backgroundColor: '#fff'
+                            opacity: "0.5"
                         }
                     }}>
                         {window.siteMap[p].items[i].name}
@@ -32,7 +33,7 @@ const SiteMap = function (props) {
                 )
             }
             panelArray.push(
-                <Grid item xs={2} key={window.siteMap[p].key}>
+                <Grid item md={2} key={window.siteMap[p].key}>
                     <Box sx={{
                         textAlign: 'center',
                         margin: '10px'
@@ -41,8 +42,10 @@ const SiteMap = function (props) {
                         <Box sx={{
                             backgroundColor: window.siteMap[p].backgroundColor,
                             color: window.siteMap[p].color,
-                            border: `2px solid ${window.siteMap[p].color}`,
-                            width: '200px'
+                            fontSize: "0.8rem",
+                            border: { md: `2px solid ${window.siteMap[p].color}`, xs: `1px solid ${window.siteMap[p].color}`},
+                            width: '100%',
+                            padding: "5px"
                         }} onClick={() => {
                             let route = url.route(window.siteMap[p].link);
                             if (route === true) {
@@ -53,8 +56,8 @@ const SiteMap = function (props) {
                             {window.siteMap[p].name}
                         </Box>
                         <Box sx={{
-                            width: '200px',
-                            border: `2px solid ${window.siteMap[p].color}`,
+                            width: '100%',
+                            border: { md: `2px solid ${window.siteMap[p].color}`, xs: `1px solid ${window.siteMap[p].color}`},
                             marginTop: '5px',
                             backgroundColor: window.siteMap[p].backgroundColor,
                         }}>
@@ -80,6 +83,8 @@ const SiteMap = function (props) {
     if(props.mode==='full') {
         sx.backgroundImage=`url(${url.decode(window.systemMain.galleryImage,true)})`;
         sx.height='calc(30vh)';
+        sx.backgroundSize="cover";
+        sx.backgroundPositionY="50%";
     }
 
     return (

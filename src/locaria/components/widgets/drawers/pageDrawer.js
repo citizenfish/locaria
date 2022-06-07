@@ -20,7 +20,6 @@ import MDEditor from '@uiw/react-md-editor';
 import Container from "@mui/material/Container";
 
 import FAQ from "../faq";
-import ContactForm from "../contactForm"
 import ReactDOM from "react-dom";
 
 
@@ -31,8 +30,7 @@ const PageDrawer = () => {
 
 
     const pagePlugins={
-        "FAQ":<FAQ/>,
-        "CONTACT":<ContactForm/>
+        "FAQ":<FAQ/>
     }
 
     const open = useSelector((state) => state.pageDialog.open);

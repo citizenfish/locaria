@@ -17,22 +17,24 @@ const BigCard = (props) => {
         image=props.feature.properties.data.images[0];
     return (
         <Box sx={{
-            height: "270px",
-            border: "1px solid black",
-            backgroundColor: channel.color
+            backgroundColor: channel.color,
+            width: "100%"
         }}>
 
             <Box sx={{
                 backgroundImage:`url(${url.decode(image,true)})`,
                 backgroundSize: "cover",
-                height: "200px"
+                height: { md: "150px", xs: "250px"},
+                width: "100%"
+
             }} onClick={()=>{
                 history.push(`/View/${props.feature.properties.category}/${props.feature.properties.fid}`);
             }}>
 
             </Box>
             <Box sx={{
-                padding: "5px"
+                padding: "5px",
+                height: "50px"
             }}>
                 <Typography>
                     {props.feature.properties.description.title}
