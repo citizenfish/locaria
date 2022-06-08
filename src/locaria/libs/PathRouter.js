@@ -27,6 +27,10 @@ const PathRouter=(location) => {
         return '/View';
     }
 
+    if (location.match('^/Page/.*') ) {
+        return '/Page';
+    }
+
     return '/';
 }
 

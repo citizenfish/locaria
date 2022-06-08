@@ -34,7 +34,7 @@ const ViewDrawer = forwardRef((props, ref) => {
                 "data": {"method": "get_item", "fid": props.fid}
             };
             let bulks = [featureLoader]
-            if (channel.report) {
+            if (channel&&channel.report) {
                 bulks.push(
                     {
                         "queue": "reportLoader",

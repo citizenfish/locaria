@@ -23,6 +23,8 @@ import UploadWidget from "../../../widgets/data/uploadWidget";
 import Container from "@mui/material/Container";
 import {ColorPicker} from "mui-color";
 
+import FontSelector from "../forms/fontSelector";
+
 export default function AdminSystemConfigDrawer(props) {
 
     const open = useSelector((state) => state.systemConfigDrawer.open);
@@ -96,6 +98,7 @@ export default function AdminSystemConfigDrawer(props) {
 
 
 
+
     return (
         <Drawer
             anchor="right"
@@ -160,15 +163,9 @@ export default function AdminSystemConfigDrawer(props) {
                         </Select>
                     </FormControl>
 
-                    <InputLabel id="headerBackground-label">Header Background color</InputLabel>
-                    <ColorPicker value={config.headerBackground} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"headerBackground",value:color.css.backgroundColor}));
-                    }}/>
+                    <FontSelector detail={"Header Background color"} name={"headerBackground"}/>
+                    <FontSelector detail={"Panel Background color"} name={"themePanels"}/>
 
-                    <InputLabel id="themePanels-label">Panel Background color</InputLabel>
-                    <ColorPicker value={config.themePanels} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"themePanels",value:color.css.backgroundColor}));
-                    }}/>
 
                     <InputLabel id="fontMainLabel">Primary font color</InputLabel>
                     <ColorPicker value={config.fontMain} defaultValue="transparent" onChange={(color) => {
@@ -365,3 +362,4 @@ export default function AdminSystemConfigDrawer(props) {
         </Drawer>
     )
 }
+

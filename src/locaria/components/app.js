@@ -131,7 +131,7 @@ const App = () => {
 
 							<Route path="/View/:category/:feature" component={layout}/>
 							<Route path="/Search/:category?/:search?" component={layout}/>
-							<Route path="/Page/:pageId" component={layout}/>
+							<Route path="/Page/:page" component={layout}/>
 							<Route path="/Map" component={layout}/>
 							<Route path="/Home" component={layout}/>
 							<Route path="/" component={layout}></Route>

@@ -12,6 +12,7 @@ import LogoStrapLine from "../logos/logoStrapLine";
 import {openViewDraw} from "../../redux/slices/viewDrawerSlice";
 import {useDispatch} from "react-redux";
 import Divider from "@mui/material/Divider";
+import PageDrawer from "../drawers/pageDrawer";
 
 
 const LayoutPages = () => {
@@ -20,6 +21,7 @@ const LayoutPages = () => {
 
     let {category} = useParams();
     let {feature} = useParams();
+    let {page} = useParams();
 
     let route = PathRouter(location.pathname);
     let mode = route==='/Home'? 'full':'small';
@@ -32,6 +34,8 @@ const LayoutPages = () => {
                 return <SearchDrawer mode={"page"}/>;
             case '/View':
                 return <ViewDrawer mode={"page"} fid={feature} category={category}/>;
+            case '/Page':
+                return <PageDrawer mode={"page"} page={page}/>;
             default:
                 return <LandingDrawer mode={"page"}/>;
         }

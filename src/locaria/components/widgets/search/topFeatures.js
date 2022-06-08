@@ -5,7 +5,7 @@ import BigCard from "../featureCards/bigCard";
 
 
 
-const TopFeatures = (props) => {
+const TopFeatures = ({category,search,limit,tags}) => {
 
     const [results,setResults] = useState(undefined);
 
@@ -19,14 +19,14 @@ const TopFeatures = (props) => {
             "api": "api",
             "data": {
                 "method": "search",
-                "category": props.category,
-                "search_text": props.search,
-                "limit": props.limit
+                "category": category,
+                "search_text": search,
+                "limit": limit
 
             }
         };
-        if(props.tags)
-            packetSearch.data.tags=props.tags;
+        if(tags)
+            packetSearch.data.tags=tags;
         window.websocket.send(packetSearch);
 
     },[]);
