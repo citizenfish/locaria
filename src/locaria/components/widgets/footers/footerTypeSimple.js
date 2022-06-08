@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-const footerTypeSimple = function () {
+const FooterTypeSimple = function () {
 
 
     return (
@@ -33,4 +33,4 @@ const footerTypeSimple = function () {
     )
 }
 
-export default footerTypeSimple;
+export default FooterTypeSimple;

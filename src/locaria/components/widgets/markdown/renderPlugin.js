@@ -1,14 +1,31 @@
 import React from 'react';
 import TopFeatures from "../search/topFeatures";
+import PageList from "../pages/pageList";
+import ContactFull from "../contact/contactFull";
+import FooterTypeSimple from "../footers/footerTypeSimple";
+import NavTypeSimple from "../navs/navTypeSimple";
+import SiteMap from "../pages/siteMap";
+import LogoStrapLine from "../logos/logoStrapLine";
+import LoadFeature from "../loaders/loadFeature";
+import ViewFullDetails from "../viewLayouts/viewFullDetails";
 
 export default function RenderPlugin({plugin}) {
 
+    const pluginMatch=plugin.match(/^([a-zA-Z]*)\s{0,1}/);
 
-    let pluginId=plugin.match(/^(.*?) /)[1];
-    let pluginArgStr=plugin.replace(pluginId+' ','');
+    let pluginId=pluginMatch[1];
+    let pluginArgStr=plugin.replace(pluginMatch[0],'');
 
     const plugins={
-        "TopFeatures":TopFeatures
+        "TopFeatures":TopFeatures,
+        "PageList":PageList,
+        "ContactFull":ContactFull,
+        "FooterTypeSimple":FooterTypeSimple,
+        "NavTypeSimple":NavTypeSimple,
+        "SiteMap":SiteMap,
+        "LogoStrapLine":LogoStrapLine,
+        "LoadFeature":LoadFeature,
+        "ViewFullDetails":ViewFullDetails
     }
 
     if(plugins[pluginId]) {

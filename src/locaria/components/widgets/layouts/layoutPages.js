@@ -13,6 +13,7 @@ import {openViewDraw} from "../../redux/slices/viewDrawerSlice";
 import {useDispatch} from "react-redux";
 import Divider from "@mui/material/Divider";
 import PageDrawer from "../drawers/pageDrawer";
+import RenderPage from "../markdown/renderPage";
 
 
 const LayoutPages = () => {
@@ -29,11 +30,15 @@ const LayoutPages = () => {
     const PageRender = () => {
         switch (route) {
             case '/Home':
+                return <RenderPage page={"Home"}/>;
+/*
                 return <HomeDrawer mode={"page"}/>;
+*/
             case '/Search':
                 return <SearchDrawer mode={"page"}/>;
             case '/View':
-                return <ViewDrawer mode={"page"} fid={feature} category={category}/>;
+               // return <ViewDrawer mode={"page"} fid={feature} category={category}/>;
+                return <RenderPage page={"View"}/>;
             case '/Page':
                 return <PageDrawer mode={"page"} page={page}/>;
             default:
@@ -44,12 +49,8 @@ const LayoutPages = () => {
 
     return (
         <>
-            <RenderNav/>
-            <SiteMap mode={mode}/>
-            <LogoStrapLine/>
-            <Divider/>
             <PageRender/>
-            <RenderFooter/>
+
         </>
     )
 }
