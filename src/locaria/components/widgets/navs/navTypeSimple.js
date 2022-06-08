@@ -8,25 +8,28 @@ const NavTypeSimple = function () {
 
     return (
         <Box sx={{
-            width: "calc(100vw - 20px)",
-            zIndex: '150',
-            justifyContent: 'space-between !important',
-            padding: '5px 0 !important',
-            backgroundColor: window.systemMain.headerBackground,
-            marginLeft: "10px",
-            marginRight: "10px",
-            marginTop: "5px",
-
+            marginBottom: "20px"
         }}>
-            <Grid container sx={{
-                verticalAlign: "middle"
-
+            <Grid container justifyContent="center" spacing={0.5} sx={{
+                verticalAlign: "middle",
+                width: "calc(100vw - 20px)",
+                zIndex: '150',
+                padding: '5px 0 !important',
+                backgroundColor: window.systemMain.headerBackground,
+                marginLeft: "10px",
+                marginRight: "10px",
+                marginTop: "5px",
             }}>
-                <Grid item md={6}>
+                <Grid item md={6} sx={{
+                    textAlign: "right",
+                    verticalAlign: "middle",
+
+                }}>
                     <Typography variant="h1" sx={{
                         flexGrow: 1,
-                        textAlign: "center",
-                        fontSize: "1.5rem"
+                        fontSize: "1.5rem",
+                        display: "inline-block",
+                        fontFamily: window.systemMain.headerBackgroundFont
                     }}>
                         {window.systemLang.siteTitle ? window.systemLang.siteTitle.toUpperCase() : 'Locaria'}
                     </Typography>
@@ -35,13 +38,15 @@ const NavTypeSimple = function () {
                     display: {
                         md: "block",
                         xs: "none"
-                    }
+                    },
+                    verticalAlign: "middle",
+
                 }}>
                     <Typography variant="h1" sx={{
                         flexGrow: 1,
-                        textAlign: "center",
                         fontSize: "1rem",
-
+                        display: "inline-block",
+                        marginLeft: "10px"
                     }}>
                         {window.systemLang.siteSubTitle}
                     </Typography>

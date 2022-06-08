@@ -124,7 +124,8 @@ SELECT 'siteMap',
            "name": "About",
            "description": "About",
            "backgroundColor": "#0099cc",
-           "color": "#fff"
+           "color": "#fff",
+            "link":"/Page/About"
          },
          {
            "key": "news",
