@@ -29,7 +29,7 @@ let configs = {};
 /**
  *  Start
  */
-console.log("Locus config tool");
+console.log("Locaria config tool");
 
 checkEnvironment();
 

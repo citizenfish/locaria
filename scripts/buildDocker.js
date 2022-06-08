@@ -57,6 +57,8 @@ if (configs[stage].themes[theme]) {
 
 function doCopy() {
     const srcPath = './docker/' + docker;
+    const modPath = './docker/modules';
+
     console.log(`cp ${srcPath} -> ${buildDir}`);
     fsExtra.copy(srcPath, buildDir, function (err) {
         if (err) {
@@ -65,19 +67,29 @@ function doCopy() {
         } else {
 
             const resource = {
-                env_var: "LOCARIADB",
-                theme: theme
+                db_var: "LOCARIADB",
+                theme: theme,
+                s3_var: "S3DLBUCKET"
             }
             fs.writeFileSync(`${buildDir}/config.json`, JSON.stringify(resource));
 
-            const cmdLine = `docker buildx build --platform=linux/amd64 -f Dockerfile -t ${docker}:latest .`;
-            exec(cmdLine, {cwd:buildDir}, (err, stdout, stderr) => {
-                console.log(err);
-                console.log(stdout);
-                console.log(stderr);
+            //Copy in any system python modules
+            fsExtra.copy(modPath,buildDir, function(err){
+                if (err) {
+                    console.log('Modules Copy failed!');
+                    console.log(err);
+                } else {
 
+                    const cmdLine = `docker buildx build --platform=linux/amd64 -f Dockerfile -t ${docker}:latest .`;
+                    exec(cmdLine, {cwd:buildDir}, (err, stdout, stderr) => {
+                        console.log(err);
+                        console.log(stdout);
+                        console.log(stderr);
 
+                    })
+                }
             })
+
         }
     });
 }
