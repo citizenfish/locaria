@@ -1,5 +1,6 @@
-from locaria_load_utils import *
 import sys
+sys.path[0:0] = ['../modules']
+from locaria_file_utils import *
 import os
 import re
 import time
@@ -12,7 +13,7 @@ upload_schema = config.get('upload_schema','locaria_uploads')
 table_name_mask = config.get('table_name_mask', 'upload_file_')
 
 # Make database connection, retrieve any parameters and then a list of files to
-db = database_connect(f"{config['env_var']}_{config['theme']}")
+db = database_connect(f"{config['db_var']}_{config['theme']}")
 print("Database connection established")
 parameters = get_parameters(db,"file_upload")
 files_to_process = get_files_to_process(db,schema)

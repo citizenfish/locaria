@@ -37,10 +37,17 @@ resources:
     SecretDBURI:
       Type: AWS::SecretsManager::Secret
       Properties:
-        Description: LOCARIADB conneciton string
+        Description: LOCARIADB connection string
         Name: LOCARIADB_${env:theme}
         SecretString:
           "postgresql://${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}:${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}@${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}:${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}/locaria${env:theme}"
+    SecretDLBUCKET:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Description: LOCARIADB Download S3 Bucket
+        Name: S3DLBUCKET_${env:theme}
+        SecretString:
+          "locaria-${self:custom.stage}-${env:theme}"
     DockerGenericRole:
       Type: "AWS::IAM::Role"
       Properties:

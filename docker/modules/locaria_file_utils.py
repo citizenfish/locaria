@@ -8,19 +8,17 @@ def get_local_config(path):
         config = json.load(f)
         f.close()
     except FileNotFoundError:
-        return {'env_var': 'LOCARIADB', 'theme':'main'}
+        print("Using defaults for theme")
+        return {'db_var': 'LOCARIADB', 'theme':'main', 's3_var': 'S3DLBUCKET'}
 
     return config
 
 def database_connect(env_var):
     try:
         print("Establishing database connection")
-        ##TODO DEBUG REMOVE
-        for k, v in sorted(os.environ.items()):
-            print(k+':', v)
+
         #This will be used later by ogr2ogr so set a standard named environment variable
         os.environ['LOCARIADB'] = os.environ[env_var]
-        print(f"Got: {os.environ[env_var]} FROM {env_var}")
         return psycopg.connect(os.environ[env_var])
 
     except Exception as error:
@@ -40,6 +38,8 @@ def run_post_process_report(db, file, schema = 'locaria_core'):
     except Exception as error:
         print("Cannot run report", error)
         return {'error' : f"SQL error when running {file['report_name']}", "sql_error" : error}
+
+
 
 def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
 
@@ -71,8 +71,8 @@ def update_file_status(db,schema,id,update):
         print("Cannot update file", error)
         return {"error" : error}
 
-def get_files_to_process(db,schema):
-    files = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS files", [json.dumps({"method" : "get_files", "status" : "REGISTERED"})])
+def get_files_to_process(db,schema, status = 'REGISTERED'):
+    files = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s) AS files", [json.dumps({"method" : "get_files", "status" : f"{status}"})])
     return files.fetchone()[0]
 
 def get_record_count(db,table):

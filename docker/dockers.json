@@ -2,7 +2,7 @@
   "file_loader": {
     "description": "File loader"
   },
-  "foobar": {
-    "description": "foobar"
+  "file_download": {
+    "description": "File Download"
   }
 }
