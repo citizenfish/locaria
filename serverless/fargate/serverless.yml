@@ -30,6 +30,12 @@ resources:
         RepositoryName: locaria-repo-fileloader-${env:theme}
         ImageScanningConfiguration:
           ScanOnPush: "true"
+    ECRLocariaRepoDownload:
+      Type: AWS::ECR::Repository
+      Properties:
+        RepositoryName: locaria-repo-download-${env:theme}
+        ImageScanningConfiguration:
+          ScanOnPush: "true"
     ECSLocariaCluster:
       Type: AWS::ECS::Cluster
       Properties:

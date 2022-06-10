@@ -2,15 +2,15 @@ import React from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Maintenance from 'components/maintenance';
-import Admin from "components/admin/admin";
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
 import store from './redux/store'
 import { Provider } from 'react-redux'
 
-import AdminRoute from "./adminRoute";
-import Layout from "./layout";
+import RenderPage from "./widgets/markdown/renderPage";
+
+
 
 
 
@@ -102,6 +102,7 @@ const App = () => {
 		}
 	}, []);
 
+
 	if(configs.siteMaintenance===true) {
 		return (
 			<Provider store={store}>
@@ -118,20 +119,13 @@ const App = () => {
 			<Provider store={store}>
 					<Router>
 						<Switch>
-							<Route path="/Admin/Upload/" user={user} component={Admin}/>
-							<Route path="/Admin/Edit/:feature?" user={user} component={Admin}/>
-							<Route path="/Admin/" user={user} component={Admin}/>
-							<Route exact path="/Admin/:id_token?" component={Admin}/>
+							<Route path="/:page/fp/:category?/:feature?" component={RenderPage}/>
+							<Route path="/:page/sp/:category?/:search?" component={RenderPage}/>
+							<Route path="/:page/" component={RenderPage}/>
+							<Route path="/" component={RenderPage}></Route>
+							<Route exact path="/:id_token?" component={RenderPage}/>
 
-							<Route path="/View/:category/:feature" component={Layout}/>
-							<Route path="/Search/:category?/:search?" component={Layout}/>
-							<Route path="/Page/:pageId" component={Layout}/>
-							<Route path="/Map" component={Layout}/>
-							<Route path="/Home" component={Layout}/>
-							<Route path="/" component={Layout}></Route>
-							<Route exact path="/:id_token?" component={Layout}/>
-
-							<Route component={Layout}/>
+							<Route component={RenderPage}/>
 						</Switch>
 					</Router>
 			</Provider>

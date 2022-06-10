@@ -19,6 +19,7 @@ import {closeViewDraw} from "../../redux/slices/viewDrawerSlice";
 import TypeAhead from "../typeAhead";
 import {closeTypeAhead, openTypeAhead} from "../../redux/slices/typeAheadSlice";
 import Button from "@mui/material/Button";
+import {closeHomeDrawer} from "../../redux/slices/homeDrawerSlice";
 
 const LandingDrawer = function () {
 
@@ -49,6 +50,7 @@ const LandingDrawer = function () {
 				dispatch(closeSearchDrawer());
 				dispatch(closeViewDraw());
 				dispatch(closeMultiSelect());
+				dispatch(closeHomeDrawer());
 			}
 		}
 

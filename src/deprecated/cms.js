@@ -30,7 +30,7 @@ const CMS = () => {
 
 	React.useEffect(() => {
 		if (document.getElementById('layout')) {
-			//ReactDOM.render(<Layout map={true} fullscreen={true}/>, document.getElementById('layout'));
+			//ReactDOM.render(<LayoutApp map={true} fullscreen={true}/>, document.getElementById('layout'));
 			//ReactDOM.render(<ContactForm/>, document.getElementById('layout'));
 			ReactDOM.render(<ContactForm/>, document.getElementById('layout'));
 		}
@@ -45,8 +45,8 @@ const CMS = () => {
 		return (
 			<MDEditor.Markdown source={pageData.data} className={classes.pageDrawMD}/>
 
-			/*<Layout map={true} fullscreen={true}>
-            </Layout>*/
+			/*<LayoutApp map={true} fullscreen={true}>
+            </LayoutApp>*/
 		)
 	} else {
 		return (<></>)

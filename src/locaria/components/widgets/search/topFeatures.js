@@ -1,0 +1,60 @@
+import React, {useEffect, useState} from 'react';
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import BigCard from "../featureCards/bigCard";
+
+
+
+const TopFeatures = ({category,search,limit,tags}) => {
+
+    const [results,setResults] = useState(undefined);
+
+    useEffect(() => {
+        window.websocket.registerQueue("topFeatures", function (json) {
+            setResults(json.packet.geojson.features);
+        });
+
+        let packetSearch = {
+            "queue": "topFeatures",
+            "api": "api",
+            "data": {
+                "method": "search",
+                "category": category,
+                "search_text": search,
+                "limit": limit
+
+            }
+        };
+        if(tags)
+            packetSearch.data.tags=tags;
+        window.websocket.send(packetSearch);
+
+    },[]);
+
+    if(results===undefined) {
+        return (<></>);
+    }
+    else {
+        return (
+            <Box sx={{
+                margin: "10px",
+            }}>
+                <Grid container spacing={2} sx={{
+                    flexGrow: 1
+                }}>
+                    {results.map((result)=> {
+                        return (
+                            <Grid item md={3} key={result.properties.fid} sx={{
+                                width: "100%"
+                            }}>
+                               <BigCard feature={result}></BigCard>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+            </Box>
+        );
+    }
+}
+
+export default TopFeatures;

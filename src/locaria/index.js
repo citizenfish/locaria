@@ -37,10 +37,10 @@ window.websocket.init({"url": resources.websocket, "uuid":cookieUUID}, connected
 
 window.websocket.registerQueue('bulkConfigs', (json) => {
 
-    window.systemMain = json.systemMain.packet.systemMain||{};
-    window.systemPages = json.systemPages.packet.systemPages||[];
-    window.systemLang=json.langLoad.packet.langENG||{};
-    window.siteMap=json.siteMap.packet.siteMap||[];
+    window.systemMain = json.systemParams.packet.parameters.systemMain||{};
+    window.systemPages = json.systemPages.packet.parameters||{};
+    window.systemLang=json.systemParams.packet.parameters.langENG||{};
+    window.siteMap=json.systemParams.packet.parameters.siteMap||[];
     window.systemCategories=new Channels(json.categories.packet.categories||{});
     document.title = window.systemLang.siteTitle;
 
@@ -71,43 +71,28 @@ function getCookie(name) {
 function connected() {
     window.websocket.sendBulk('bulkConfigs', [
         {
-            "queue": "systemMain",
+            "queue": "systemParams",
             "api": "api",
             "data": {
                 "method": "get_parameters",
-                "parameter_name": "systemMain",
-
+                "usage":"Config"
             }
-        },{
+        },
+        {
             "queue": "systemPages",
             "api": "api",
             "data": {
                 "method": "get_parameters",
-                "parameter_name": "systemPages",
-
+                "usage":"Page",
+                "delete_key":"data"
             }
-        },{
-            "queue": "langLoad",
-            "api": "api",
-            "data": {
-                "method": "get_parameters",
-                "parameter_name": "langENG",
-
-            }
-        },{
+        },
+        {
             "queue": "categories",
             "api": "api",
             "data": {
                 "method": "list_categories",
                 "attributes" : "true"
-            }
-        },{
-            "queue": "siteMap",
-            "api": "api",
-            "data": {
-                "method": "get_parameters",
-                "parameter_name": "siteMap",
-
             }
         }
         ]

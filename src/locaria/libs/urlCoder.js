@@ -1,3 +1,5 @@
+
+
 export default class UrlCoder {
 
 
@@ -21,6 +23,19 @@ export default class UrlCoder {
         }
         // its not encoded
         return str;
+    }
+
+    route(url) {
+        if(typeof url !== 'string') {
+            console.log('requested url is not of type string');
+            return false;
+        }
+        if(url.match(/^http|https/)) {
+            window.location=url;
+            return false;
+        }
+        // must be local then
+        return true;
     }
 
 
