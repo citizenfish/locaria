@@ -42,13 +42,13 @@ export default function AdminPageDrawer(props) {
         }
 
         window.websocket.registerQueue('getPages', (json) => {
-            if (json.packet.systemPages)
-                dispatch(setPages(json.packet.systemPages));
+            if (json.packet)
+                dispatch(setPages(json.packet.parameters));
             else
-                dispatch(setPages([]));
+                dispatch(setPages({}));
         });
 
-        window.websocket.registerQueue('setPages', (json) => {
+        window.websocket.registerQueue('addPage', (json) => {
             getPages();
         });
 
@@ -77,8 +77,8 @@ export default function AdminPageDrawer(props) {
         }
 
         window.websocket.registerQueue('getPageData', (json) => {
-            if (json.packet[`page_${page}`])
-                dispatch(setPageData(json.packet[`page_${page}`]));
+            if (json.packet.parameters[page])
+                dispatch(setPageData(json.packet.parameters[page]));
             else
                 dispatch(setPageData({data:"# New file",type:"Markdown",title:"My page title"}));
         });
@@ -94,7 +94,8 @@ export default function AdminPageDrawer(props) {
             "api": "sapi",
             "data": {
                 "method": "get_parameters",
-                "parameter_name": "systemPages",
+                "usage": "Page",
+                "delete_key":"data",
                 id_token: cookies['id_token'],
 
             }
@@ -107,15 +108,33 @@ export default function AdminPageDrawer(props) {
             "api": "sapi",
             "data": {
                 "method": "get_parameters",
-                "parameter_name": `page_${page}`,
+                "parameter_name": page,
                 id_token: cookies['id_token'],
 
             }
         });
     }
 
+    const addPage = () => {
+        window.websocket.send({
+            "queue": "addPage",
+            "api": "sapi",
+            "data": {
+                "method": "set_parameters",
+                "acl": "external",
+                "parameter_name": document.getElementById('pageId').value,
+                id_token: cookies['id_token'],
+                "usage":"Page",
+                "parameters": {
+                    "data":"new page data",
+                    "title":document.getElementById('pageName').value
+                }
+            }
+        });
+    }
 
-    const setPagesApi = (e) => {
+
+  /*  const setPagesApi = (e) => {
         window.websocket.send({
             "queue": "setPages",
             "api": "sapi",
@@ -133,12 +152,13 @@ export default function AdminPageDrawer(props) {
         });
         window.systemPages = pages;
     }
-
+*/
 
 
 
     const PageDetails = () => {
         const [data, setData] = useState(pageData.data);
+        const [title, setTitle] = useState(pageData.title);
         const [plugin, setPlugin] = useState(pageData.plugin);
 
         const setPageDataApi = (e) => {
@@ -148,11 +168,12 @@ export default function AdminPageDrawer(props) {
                 "data": {
                     "method": "set_parameters",
                     "acl": "external",
-                    "parameter_name": `page_${page}`,
+                    "parameter_name": page,
                     id_token: cookies['id_token'],
+                    "usage":"Page",
                     "parameters": {
                         "data": data,
-                        "plugin": plugin
+                        "title": title
                     }
                 }
             });
@@ -164,6 +185,17 @@ export default function AdminPageDrawer(props) {
             } else {
                 return (
                     <Container>
+                        <TextField
+                            id="pageName"
+                            label="Page Name"
+                            variant="filled"
+                            defaultValue={"My page title"}
+                            fullWidth
+                            margin={"dense"}
+                            value={title}
+                            onChange={(e)=>{setTitle(e.target.value)}}
+
+                        />
                         <MDEditor
                             id={"pageData"}
                             value={data}
@@ -171,20 +203,6 @@ export default function AdminPageDrawer(props) {
                             height={500}
 
                         />
-                        <Select
-                            labelId="pagePluginLabel"
-                            id="pagePlugin"
-                            label="Plugin"
-                            fullWidth
-                            margin={"dense"}
-                            value={plugin}
-                            onChange={(e)=>{
-                                setPlugin(e.target.value);
-                            }}
-                        >
-                            <MenuItem value={"FAQ"}>FAQS</MenuItem>
-                            <MenuItem value={"CONTACT"}>Contact form</MenuItem>
-                        </Select>
                         <Button onClick={setPageDataApi}>Save</Button>
                         <Button onClick={()=>{
                             dispatch(setPage(undefined));
@@ -200,6 +218,10 @@ export default function AdminPageDrawer(props) {
         }
     }
 
+    let pageList=[];
+    for(let p in pages) {
+        pageList.push( <MenuItem key={p} value={p}>{p} - {pages[p].title}</MenuItem>)
+    }
 
     return (
         <Drawer
@@ -229,20 +251,8 @@ export default function AdminPageDrawer(props) {
                             margin={"dense"}
 
                         />
-                        <InputLabel id="pageTypeLabel">Page Type</InputLabel>
-                        <Select
-                            labelId="pageTypeLabel"
-                            id="pageType"
-                            label="Page"
-                            fullWidth
-                            margin={"dense"}
-
-                        >
-                            <MenuItem value={"Markdown"}>Markdown</MenuItem>
-                            <MenuItem value={"Link"}>Link</MenuItem>
-                        </Select>
                         <Button variant={"outlined"} onClick={() => {
-                            setPagesApi();
+                            addPage();
                         }}>Add Page</Button>
 
                         <h2>Edit Page</h2>
@@ -257,11 +267,7 @@ export default function AdminPageDrawer(props) {
                                     dispatch(setPage(e.target.value));
                                 }}
                             >
-                                {pages.map((page) => {
-                                    return (
-                                        <MenuItem key={page.id} value={page.id}>{page.id} - {page.name}</MenuItem>
-                                    )
-                                })}
+                                {pageList}
                             </Select>
                         </FormControl>
                 </Container>) : (<></>)}

@@ -43,8 +43,8 @@ export default function AdminSystemConfigDrawer(props) {
         }
 
         window.websocket.registerQueue('getConfig', (json) => {
-            if(json.packet.systemMain)
-                dispatch(setSystemConfig(json.packet.systemMain));
+            if(json.packet.parameters.systemMain)
+                dispatch(setSystemConfig(json.packet.parameters.systemMain));
             else
                 dispatch(setSystemConfig({}));
         });
@@ -90,6 +90,7 @@ export default function AdminSystemConfigDrawer(props) {
                 "method": "set_parameters",
                 "parameter_name": "systemMain",
                 id_token: cookies['id_token'],
+                "usage":"Config",
                 "parameters": config
             }
         });

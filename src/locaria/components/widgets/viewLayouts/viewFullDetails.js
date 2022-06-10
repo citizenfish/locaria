@@ -7,7 +7,9 @@ import Box from "@mui/material/Box";
 
 const ViewFullDetails = (props) => {
     const report = useSelector((state) => state.viewDraw.report);
-    if(report) {
+
+
+    if(report&&report.viewLoader) {
         return (
                 <Grid container spacing={2} sx={{
                     margin: "5px"

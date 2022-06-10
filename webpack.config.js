@@ -4,7 +4,8 @@ const theme = 'src/theme/builder';
 module.exports = {
 	mode: 'development',
 	entry: {
-		full: './src/locaria/index.js'
+		full: './src/locaria/index.js',
+		admin: './src/locaria/adminIndex.js'
 	},
 	output: {
 		filename: '[name].bundle.js',
@@ -92,7 +93,10 @@ module.exports = {
 		compress: true,
 		port: 80,
 		historyApiFallback: {
-			index: 'index.html'
+			index: 'index.html',
+			rewrites: [
+					{ from: /^\/Admin\//, to: '/admin.html' }
+				]
 		},
 		liveReload: false,
 		hot: true
