@@ -9,13 +9,18 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    SELECT jsonb_build_object(parameter_name, parameter)
+    SELECT jsonb_object_agg(parameter_name, parameter - COALESCE(parameters_var->>'delete_key', ''))
     INTO ret_var
     FROM parameters
     WHERE (acl_check(parameters_var->'acl', acl)->>'view')::BOOLEAN
-    AND parameter_name = COALESCE(parameters_var->>'parameter_name', parameter_name);
+    AND parameter_name = COALESCE(parameters_var->>'parameter_name', parameter_name)
+    AND ((parameters_var->>'usage') IS NULL OR usage = parameters_var->>'usage');
 
-    RETURN COALESCE(ret_var, jsonb_build_object('error', 'parameter not found'));
+    IF ret_var IS NOT NULL THEN
+        RETURN jsonb_build_object('parameters',ret_var);
+    END IF;
+
+    RETURN jsonb_build_object('error', 'parameter not found');
 
 END;
 $$

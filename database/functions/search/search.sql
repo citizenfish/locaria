@@ -36,6 +36,7 @@ BEGIN
                                         jsonb_build_object( 'id', _attributes->>'fid',
                                                             'title', _attributes#>>'{description,title}',
                                                             'text', _attributes#>>'{description,text}',
+                                                            'description', _attributes->'description',
                                                             'data', _attributes->'data',
                                                             'tags', _attributes->'tags',
                                                             'category', _attributes->'category',
