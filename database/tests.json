@@ -3,20 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/integration_tests/add_test_data.sql",
-        "tests/integration_tests/core_schema_test.sql",
-        "tests/unit_tests/internal/data/acl_tests/acl_test_data.sql",
-        "tests/unit_tests/search/search_test.sql",
-        "tests/unit_tests/search/search_test_with_acl.sql",
-        "tests/unit_tests/search/list_categories_test.sql",
-        "tests/unit_tests/search/list_categories_with_data.sql",
-        "tests/unit_tests/search/list_tags_test.sql",
-        "tests/unit_tests/search/location_search.sql",
-        "tests/unit_tests/search/cluster_test.sql",
-        "tests/unit_tests/search/get_item_test.sql",
-        "tests/unit_tests/search/get_item_test_with_acl.sql",
-        "tests/unit_tests/sessions/search_id.sql",
-        "tests/unit_tests/utility/acl_check.sql"
+      "tests/unit_tests/internal/admin/get_parameter.sql"
       ],
       "substitutions": "../tests.json"
     }

@@ -1,6 +1,7 @@
 import psycopg
 import os,subprocess
 import json
+import re
 
 def get_local_config(path):
     try:
@@ -79,7 +80,6 @@ def get_record_count(db,table):
 
     if table == 'ignore':
         return "Multiple tables loaded"
-
     try:
         count = db.execute(f"SELECT count(*) FROM {table}")
         return count.fetchone()[0]
@@ -114,7 +114,7 @@ def process_file_gpx(db,file):
 
 def process_file_generic(db,file,parameters):
     print(f"GENERIC PROCESSING {file['id']}")
-    parameters.extend(['-lco','FID=ogc_fid', '-lco', 'GEOMETRY_NAME=wkb_geometry',  '--config', 'PG_USE_COPY', 'YES',  '-t_srs', 'EPSG:4326', '-overwrite'])
+    parameters.extend(['-lco','FID=ogc_fid', '-lco', 'GEOMETRY_NAME=wkb_geometry',  '--config', 'PG_USE_COPY', 'YES',  '-t_srs', 'EPSG:4326', '-lco', 'OVERWRITE=YES'])
 
     if 'flatten' in file and file['flatten']:
         parameters.extend(['-oo','FLATTEN_NESTED_ATTRIBUTES=YES'])
@@ -178,6 +178,8 @@ def ogr_loader(file, parameters):
 
     if file['table_name'] != 'ignore':
         ogr_parameters.extend(['-nln', file['table_name']])
+    else:
+        ogr_parameters.extend(['-lco', f"SCHEMA={file['upload_schema']}"])
 
     ogr_parameters.extend(['-f', 'PostgreSQL',ogrConn, filename])
 
@@ -186,6 +188,7 @@ def ogr_loader(file, parameters):
     if 'layer' in file['attributes']:
         command.extend(file['attributes']['layer'])
 
+    #print(' '.join(command))
     print(f"Running ogr2ogr on {filename} with table {file['table_name']}")
 
     try:
@@ -196,4 +199,20 @@ def ogr_loader(file, parameters):
         # never return the error here as it can leak the database password in command line
         return {'status' : 'ERROR', 'message': "OGR2OGR Error in execution"}
 
-    return {'status' : 'FARGATE_PROCESSED', 'result' : {'filename' : filename, 'stdout' : result.stdout.decode('utf-8'), 'returncode' : result.returncode}, 'message' : 'OGR SUCCESS'}
+    # Get a list of the layers that have been loaded and return
+
+    command = ['ogrinfo', '-nomd', '-nogeomtype', filename]
+    layers = []
+    try:
+    	ogrinfo = subprocess.run(command,check=True, capture_output=True, text=True)
+    	for layer in ogrinfo.stdout.split('\n'):
+            match = re.search(r'^[-0-9]+: (.*)$',layer)
+            if match:
+                matched = re.sub(r'\-#\\', '_',match.group(1))
+                layers.append(matched.lower())
+
+    except subprocess.CalledProcessError  as error:
+            #print(f"ogrinfo Error: {error.stderr.decode('utf-8')}")
+            print(error.stderr)
+
+    return {'status' : 'FARGATE_PROCESSED', 'result' : {'schema': file.get('upload_schema',''), 'layers': layers, 'filename' : filename,  'message' : 'OGR SUCCESS'}}
