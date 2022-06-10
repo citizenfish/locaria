@@ -28,7 +28,7 @@ const BigCard = (props) => {
                 width: "100%"
 
             }} onClick={()=>{
-                history.push(`/View/${props.feature.properties.category}/${props.feature.properties.fid}`);
+                history.push(`/${channel.page||'View'}/fp/${props.feature.properties.category}/${props.feature.properties.fid}`);
             }}>
 
             </Box>

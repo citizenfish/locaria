@@ -538,7 +538,15 @@ function deploySQL(stage, theme) {
 }
 
 function upgradeSQL(stage, theme) {
-    sendSQLFiles(stage, theme, 'database/upgrade.json', deploySystemMain);
+    sendSQLFiles(stage, theme, 'database/upgrade.json', upgradeThemeSQL);
+}
+
+function upgradeThemeSQL(stage, theme) {
+    executeWithCatch(`node scripts/builder.js ${stage} ${theme}`, "./", () => {
+        sendSQLFiles(stage, theme, 'src/theme/builder/database/upgrade.json', deploySystemMain);
+    }, () => {
+        deploySystemMain(stage, theme);
+    });
 }
 
 function deleteConfig() {

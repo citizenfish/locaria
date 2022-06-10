@@ -4,7 +4,7 @@ import Websockets from "./libs/Websockets";
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import AdminApp from './components/adminApp';
 import {theme, resources} from "themeLocaria";
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from "@mui/material/CssBaseline";
@@ -37,10 +37,10 @@ window.websocket.init({"url": resources.websocket, "uuid":cookieUUID}, connected
 
 window.websocket.registerQueue('bulkConfigs', (json) => {
 
-    window.systemMain = json.systemParams.packet.parameters.systemMain||{};
-    window.systemPages = json.systemPages.packet.parameters||{};
-    window.systemLang=json.systemParams.packet.parameters.langENG||{};
-    window.siteMap=json.systemParams.packet.parameters.siteMap||[];
+    window.systemMain = json.systemMain.packet.systemMain||{};
+    window.systemPages = json.systemPages.packet.systemPages||[];
+    window.systemLang=json.langLoad.packet.langENG||{};
+    window.siteMap=json.siteMap.packet.siteMap||[];
     window.systemCategories=new Channels(json.categories.packet.categories||{});
     document.title = window.systemLang.siteTitle;
 
@@ -71,28 +71,43 @@ function getCookie(name) {
 function connected() {
     window.websocket.sendBulk('bulkConfigs', [
         {
-            "queue": "systemParams",
+            "queue": "systemMain",
             "api": "api",
             "data": {
                 "method": "get_parameters",
-                "usage":"Config"
+                "parameter_name": "systemMain",
+
             }
-        },
-        {
+        },{
             "queue": "systemPages",
             "api": "api",
             "data": {
                 "method": "get_parameters",
-                "usage":"Page",
-                "delete_key":"data"
+                "parameter_name": "systemPages",
+
             }
-        },
-        {
+        },{
+            "queue": "langLoad",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": "langENG",
+
+            }
+        },{
             "queue": "categories",
             "api": "api",
             "data": {
                 "method": "list_categories",
                 "attributes" : "true"
+            }
+        },{
+            "queue": "siteMap",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "parameter_name": "siteMap",
+
             }
         }
         ]
@@ -117,7 +132,7 @@ function Main() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <App/>
+            <AdminApp/>
         </ThemeProvider>
     )
 }
