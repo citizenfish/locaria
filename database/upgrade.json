@@ -3,7 +3,10 @@
     {
       "stopOnError": true,
       "tables": [
-        "database/functions/triggers/configuration_history_trigger.sql"
+        "scripts/upgrades/upgrade_parameters_table.sql",
+        "database/functions/internal/admin/get_parameters.sql",
+        "database/functions/internal/admin/set_parameters.sql",
+        "database/functions/internal/file_upload/update_file.sql"
       ],
       "substitutions": "../tests.json"
     }
