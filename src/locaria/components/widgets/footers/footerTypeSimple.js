@@ -8,12 +8,9 @@ const FooterTypeSimple = function () {
 
     return (
         <Box sx={{
-            width: "calc(100vw - 20px)",
+            width: "100%",
             justifyContent: 'space-between',
-            padding: '5px 0',
             backgroundColor: window.systemMain.headerBackground,
-            marginLeft: "10px",
-            marginRight: "10px",
             marginTop: "10px"
         }}>
             <Grid container>

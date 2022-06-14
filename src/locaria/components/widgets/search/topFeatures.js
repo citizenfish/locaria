@@ -37,7 +37,6 @@ const TopFeatures = ({category,search,limit,tags}) => {
     else {
         return (
             <Box sx={{
-                margin: "10px",
             }}>
                 <Grid container spacing={2} sx={{
                     flexGrow: 1

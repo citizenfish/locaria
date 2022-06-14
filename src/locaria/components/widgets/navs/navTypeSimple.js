@@ -2,29 +2,38 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import BurgerMenu from "./burgerMenu";
 
-const NavTypeSimple = function () {
+const NavTypeSimple = function ({menu}) {
+
 
 
     return (
         <Box sx={{
             marginBottom: "20px"
         }}>
-            <Grid container justifyContent="center" spacing={0.5} sx={{
+            <Grid container justifyContent="left" spacing={0.5} sx={{
                 verticalAlign: "middle",
                 width: "calc(100vw - 20px)",
                 zIndex: '150',
                 padding: '5px 0 !important',
                 backgroundColor: window.systemMain.headerBackground,
-                marginLeft: "10px",
-                marginRight: "10px",
                 marginTop: "5px",
             }}>
+                <Grid item md={1} sx={{
+                    textAlign: "left",
+                    verticalAlign: "middle",
+
+                }}>
+                    <BurgerMenu></BurgerMenu>
+
+                </Grid>
                 <Grid item md={6} sx={{
                     textAlign: "right",
                     verticalAlign: "middle",
 
                 }}>
+
                     <Typography variant="h1" sx={{
                         flexGrow: 1,
                         fontSize: "1.5rem",
@@ -34,7 +43,7 @@ const NavTypeSimple = function () {
                         {window.systemLang.siteTitle ? window.systemLang.siteTitle.toUpperCase() : 'Locaria'}
                     </Typography>
                 </Grid>
-                <Grid item md={6} sx={{
+                <Grid item md={5} sx={{
                     display: {
                         md: "block",
                         xs: "none"
