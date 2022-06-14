@@ -33,9 +33,13 @@ for f in downloads_to_process['files']:
     attributes["tmp_dir"] = tempfile.gettempdir()
 
     if attributes['type'] == 'all_data':
+        # TODO repeated code could be better
         if attributes.get('format') == 'json':
             attributes['s3_path'] = f"downloads/{f['id']}.json"
             attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.json"
+        elif attributes.get('format') == 'geopackage':
+            attributes['s3_path'] = f"downloads/{f['id']}.gpkg"
+            attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.gpkg"
         else:
             attributes['format'] = 'xlsx'
             attributes['s3_path'] = f"downloads/{f['id']}.xslx"

@@ -216,3 +216,4 @@ def ogr_loader(file, parameters):
             print(error.stderr)
 
     return {'status' : 'FARGATE_PROCESSED', 'result' : {'schema': file.get('upload_schema',''), 'layers': layers, 'filename' : filename,  'message' : 'OGR SUCCESS'}}
+
