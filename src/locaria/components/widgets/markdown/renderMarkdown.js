@@ -15,8 +15,17 @@ export default function RenderMarkdown({markdown})  {
         let match=splitMarkdown[line].match(/^#+ /);
         if(match) {
             let headerType=match[0].length-1;
+            let cleanedMatch=splitMarkdown[line].replace(match[0],'');
+
+            let sxMatch=cleanedMatch.match(/\{(.*?)\}/);
+            let sx={};
+            if(sxMatch!==null) {
+                sx = JSON.parse(sxMatch[0]);
+                cleanedMatch=cleanedMatch.replace(sxMatch[0],'');
+            }
+
             renderedMarkdown.push(
-                <TypographyHeader element={"h"+headerType}>{splitMarkdown[line].replace(match[0],'')}</TypographyHeader>
+                <TypographyHeader sx={sx} element={"h"+headerType}>{cleanedMatch}</TypographyHeader>
             );
             continue;
         }

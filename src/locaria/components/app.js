@@ -1,5 +1,5 @@
 import React from 'react';
-import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
+import {Switch, BrowserRouter as Router, Route,Redirect } from 'react-router-dom';
 
 import Maintenance from 'components/maintenance';
 import {useCookies} from "react-cookie";
@@ -9,8 +9,7 @@ import store from './redux/store'
 import { Provider } from 'react-redux'
 
 import RenderPage from "./widgets/markdown/renderPage";
-
-
+import * as PropTypes from "prop-types";
 
 
 
@@ -119,6 +118,8 @@ const App = () => {
 			<Provider store={store}>
 					<Router>
 						<Switch>
+							<Route path="/Login/" component={()=> { window.location=`https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`; }}/>
+							<Route path="/SignUp/" component={()=> { window.location=`https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`; }}/>
 							<Route path="/:page/fp/:category?/:feature?" component={RenderPage}/>
 							<Route path="/:page/sp/:category?/:search?" component={RenderPage}/>
 							<Route path="/:page/" component={RenderPage}/>

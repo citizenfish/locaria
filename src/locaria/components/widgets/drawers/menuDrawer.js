@@ -1,107 +1,149 @@
-import React from "react";
-import {Divider, Drawer, ListItem, ListItemIcon, ListItemText} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {Collapse, Divider, Drawer, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import Box from "@mui/material/Box";
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-import MapIcon from '@mui/icons-material/Map';
-import {configs} from "themeLocaria";
-import {useStyles} from "stylesLocaria";
+
 
 import {useDispatch, useSelector} from "react-redux";
 import {closeMenuDraw} from "../../redux/slices/menuDrawerSlice";
-import {openSearchDrawer} from "../../redux/slices/searchDrawerSlice";
-import SearchIcon from "@mui/icons-material/Search";
-import {openPageDialog} from "../../redux/slices/pageDialogSlice";
-import {openLandingDraw} from "../../redux/slices/landingDrawerSlice";
-import {openLayout} from "../../redux/slices/layoutSlice";
-import {NavProfile} from "../navProfile";
-import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 
+
+import UrlCoder from "../../../libs/urlCoder"
+import List from "@mui/material/List";
+import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import {alpha} from "@mui/material/styles";
+import {preventDefault} from "ol/events/Event";
 
 
 const MenuDrawer = function () {
-	const classes = useStyles();
+
 	const dispatch = useDispatch()
-	const history = useHistory();
 
 	const open = useSelector((state) => state.menuDraw.open);
-
-
-	function channelDisplay(channel) {
-		return (<ListItem button key={channel.key} onClick={() =>{dispatch(openSearchDrawer({categories:[channel.key]}));}}>
-			<ListItemIcon>
-				<SearchIcon/>
-			</ListItemIcon>
-			<ListItemText primary={channel.name}/>
-		</ListItem>)
-	}
-
 
 	return (
 			<Drawer
 				anchor={'left'}
 				open={open}
-				className={classes.drawLeft}
+				sx={{
+					'& .MuiPaper-root': {
+						backgroundColor: window.systemMain.headerBackground,
+						paddingRight: '40px',
+						'& .MuiSvgIcon-root': {
+						}
+					}
+				}}
 				onClose={()=>{dispatch(closeMenuDraw())}}
 			>
-				<Box
-					role="presentation"
-					onClick={()=>{dispatch(closeMenuDraw())}}
-					onKeyDown={()=>{dispatch(closeMenuDraw())}}
-				>
-
-					{configs.landing? <ListItem button onClick={() => {
-						if (window.systemMain.landingRoute && window.systemMain.landingRoute !== '/')
-							history.push(window.systemMain.landingRoute);
-						else
-							history.push('/');
-					}} key={'Intro'}>
-						<ListItemIcon>
-							<HomeIcon/>
-						</ListItemIcon>
-						<ListItemText primary={'Home'}/>
-					</ListItem> : <></>}
-
-					<ListItem button key={'Map'} onClick={() => {
-						dispatch(openLayout());
-					}}>
-						<ListItemIcon>
-							<MapIcon/>
-						</ListItemIcon>
-						<ListItemText primary={'Map'}/>
-					</ListItem>
-
-					<Divider/>
-					<NavProfile/>
-					<Divider/>
-
-					{window.systemCategories.listChannels().map(function (channel) {
-						if (window.systemCategories.displayChannel(channel))
-							return channelDisplay(window.systemCategories.getChannelProperties(channel));
-					})}
-
-					<Divider/>
-
-					{window.systemPages.map(function (page) {
-						return (
-							<ListItem button onClick={()=>{
-								if(page.type==="link") {
-									window.location=page.link;
-								} else {
-									dispatch(openPageDialog(page.id));
-								}
-							}} key={page.id}>
-								<ListItemIcon>
-									<MenuBookIcon/>
-								</ListItemIcon>
-								<ListItemText primary={page.name}/>
-							</ListItem>
-						)
-					})}
+				<Box role="presentation">
+					<DrawSiteMap></DrawSiteMap>
 				</Box>
 			</Drawer>
 	);
+}
+
+
+function DrawSiteMap() {
+
+	const url = new UrlCoder();
+	const history = useHistory();
+	const dispatch = useDispatch()
+
+	const [collapseOpen,setCollapseOpen] = useState({});
+	const [render,forceRender]=useState(0);
+
+	useEffect(() => {
+		let state=collapseOpen;
+
+		for (let p in window.siteMap) {
+			state[p]=false;
+		}
+
+		setCollapseOpen(state);
+
+
+	},[]);
+
+	function toggleCollapseOpen(id) {
+		let state=collapseOpen;
+		state[id]=!state[id];
+		setCollapseOpen(state);
+		forceRender(render+1);
+
+	}
+
+	let topMenuArray=[];
+
+	topMenuArray.push(
+		<ListItem button key={"InitialHome"} onClick={() => {
+			history.push('/');
+			dispatch(closeMenuDraw());
+
+		}}>
+			<ListItemIcon>
+				<HomeIcon/>
+			</ListItemIcon>
+			<ListItemText primary={"Home"}/>
+		</ListItem>
+	)
+
+	for (let p in window.siteMap) {
+		let subMenuArray=[];
+		for (let i in window.siteMap[p].items) {
+			subMenuArray.push(
+
+				<ListItem sx={{ pl: 4 }} button key={i} onClick={() => {
+
+					let route = url.route(window.siteMap[p].items[i].link);
+					if (route === true) {
+						history.push(window.siteMap[p].items[i].link);
+						dispatch(closeMenuDraw());
+					}
+				}}>
+					<ListItemText primary={window.siteMap[p].items[i].name}/>
+				</ListItem>
+			)
+		}
+
+
+		topMenuArray.push(
+
+			<ListItem button key={window.siteMap[p].key} onClick={(e) => {
+				e.preventDefault();
+				if(window.siteMap[p].items) {
+					toggleCollapseOpen(p);
+				} else {
+					let route = url.route(window.siteMap[p].link);
+					if (route === true) {
+						history.push(window.siteMap[p].link);
+						dispatch(closeMenuDraw());
+					}
+				}
+			}}>
+
+				<ListItemText primary={window.siteMap[p].name}/>
+				{subMenuArray.length>0? (collapseOpen[p]? <ExpandLess /> : <ExpandMore />):<></>}
+			</ListItem>
+
+		)
+
+		if(subMenuArray.length>0) {
+			topMenuArray.push(
+				<Collapse in={collapseOpen[p]} timeout="auto" unmountOnExit key={p+'Col'}>
+					<List component="div" disablePadding>
+						{subMenuArray}
+					</List>
+				</Collapse>
+			)
+
+		}
+
+
+	}
+
+	return (<>{topMenuArray}</>);
 }
 
 export default MenuDrawer;
