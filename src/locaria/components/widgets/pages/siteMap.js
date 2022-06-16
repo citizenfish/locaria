@@ -10,7 +10,7 @@ const SiteMap = function (props) {
 
 	const url = new UrlCoder();
 
-	const sizeMatches = useMediaQuery('(min-width:650px)');
+	const sizeMatches = useMediaQuery('(min-width:600px)');
 
 
 	let sx = {
@@ -86,6 +86,7 @@ const Panels = () => {
 		for (let i in window.siteMap[p].items) {
 			panelItems.push(
 				<Box key={i} onClick={() => {
+					collapseAll();
 					let route = url.route(window.siteMap[p].items[i].link);
 					if (route === true) {
 						history.push(window.siteMap[p].items[i].link);

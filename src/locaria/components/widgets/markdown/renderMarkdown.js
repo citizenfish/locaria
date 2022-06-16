@@ -9,8 +9,14 @@ export default function RenderMarkdown({markdown})  {
 
     let splitMarkdown=markdown.split('\n');
     let renderedMarkdown=[];
+    let lineId=0;
     for(let line in splitMarkdown) {
-
+        lineId++;
+        if(splitMarkdown[line]==="") {
+            renderedMarkdown.push(
+                <p></p>
+            );
+        }
         // Headers IE H1 H2 etc
         let match=splitMarkdown[line].match(/^#+ /);
         if(match) {
@@ -25,7 +31,7 @@ export default function RenderMarkdown({markdown})  {
             }
 
             renderedMarkdown.push(
-                <TypographyHeader sx={sx} element={"h"+headerType}>{cleanedMatch}</TypographyHeader>
+                <TypographyHeader sx={sx} element={"h"+headerType} key={`md${lineId}`}>{cleanedMatch}</TypographyHeader>
             );
             continue;
         }
@@ -34,7 +40,7 @@ export default function RenderMarkdown({markdown})  {
         match=splitMarkdown[line].match(/^%(.*?)%/);
         if(match) {
             renderedMarkdown.push(
-                <RenderPlugin plugin={match[1]}></RenderPlugin>
+                <RenderPlugin plugin={match[1]} key={`md${lineId}`}></RenderPlugin>
             );
             continue;
         }
@@ -43,11 +49,11 @@ export default function RenderMarkdown({markdown})  {
         match=splitMarkdown[line].match(/^----------/);
         if(match) {
             renderedMarkdown.push(
-                <Divider/>
+                <Divider key={`md${lineId}`}/>
             );
             continue;
         }
-        renderedMarkdown.push(<TypographyParagraph>{splitMarkdown[line]}</TypographyParagraph>);
+        renderedMarkdown.push(<TypographyParagraph key={`md${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
     }
 
     return (

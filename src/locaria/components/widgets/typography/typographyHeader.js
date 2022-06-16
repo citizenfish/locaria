@@ -31,7 +31,7 @@ export default function TypographyHeader({children,element,sx})  {
         }
     }
 
-    let elementSx={...elements[element],...sx};
+    let elementSx={...elements[element],...sx||{}};
 
     return (
         <Typography variant={element} sx={elementSx}>
