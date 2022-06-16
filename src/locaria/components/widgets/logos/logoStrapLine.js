@@ -11,7 +11,6 @@ const LogoStrapLine = () => {
     return (
         <Box sx={{
             width: "calc(100vw - 20px)",
-            margin: "10px"
         }}>
             <Grid container>
                 <Grid item xs={2} sx={{

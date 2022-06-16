@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 
-export default function TypographyHeader({children,element})  {
+export default function TypographyHeader({children,element,sx})  {
 
     const elements = {
         "h1":{
@@ -31,7 +31,7 @@ export default function TypographyHeader({children,element})  {
         }
     }
 
-    let elementSx=elements[element];
+    let elementSx={...elements[element],...sx||{}};
 
     return (
         <Typography variant={element} sx={elementSx}>

@@ -9,14 +9,29 @@ export default function RenderMarkdown({markdown})  {
 
     let splitMarkdown=markdown.split('\n');
     let renderedMarkdown=[];
+    let lineId=0;
     for(let line in splitMarkdown) {
-
+        lineId++;
+        if(splitMarkdown[line]==="") {
+            renderedMarkdown.push(
+                <p></p>
+            );
+        }
         // Headers IE H1 H2 etc
         let match=splitMarkdown[line].match(/^#+ /);
         if(match) {
             let headerType=match[0].length-1;
+            let cleanedMatch=splitMarkdown[line].replace(match[0],'');
+
+            let sxMatch=cleanedMatch.match(/\{(.*?)\}/);
+            let sx={};
+            if(sxMatch!==null) {
+                sx = JSON.parse(sxMatch[0]);
+                cleanedMatch=cleanedMatch.replace(sxMatch[0],'');
+            }
+
             renderedMarkdown.push(
-                <TypographyHeader element={"h"+headerType}>{splitMarkdown[line].replace(match[0],'')}</TypographyHeader>
+                <TypographyHeader sx={sx} element={"h"+headerType} key={`md${lineId}`}>{cleanedMatch}</TypographyHeader>
             );
             continue;
         }
@@ -25,7 +40,7 @@ export default function RenderMarkdown({markdown})  {
         match=splitMarkdown[line].match(/^%(.*?)%/);
         if(match) {
             renderedMarkdown.push(
-                <RenderPlugin plugin={match[1]}></RenderPlugin>
+                <RenderPlugin plugin={match[1]} key={`md${lineId}`}></RenderPlugin>
             );
             continue;
         }
@@ -34,11 +49,11 @@ export default function RenderMarkdown({markdown})  {
         match=splitMarkdown[line].match(/^----------/);
         if(match) {
             renderedMarkdown.push(
-                <Divider/>
+                <Divider key={`md${lineId}`}/>
             );
             continue;
         }
-        renderedMarkdown.push(<TypographyParagraph>{splitMarkdown[line]}</TypographyParagraph>);
+        renderedMarkdown.push(<TypographyParagraph key={`md${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
     }
 
     return (

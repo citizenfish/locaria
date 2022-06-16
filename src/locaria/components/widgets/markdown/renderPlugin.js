@@ -6,8 +6,8 @@ import FooterTypeSimple from "../footers/footerTypeSimple";
 import NavTypeSimple from "../navs/navTypeSimple";
 import SiteMap from "../pages/siteMap";
 import LogoStrapLine from "../logos/logoStrapLine";
-import LoadFeature from "../loaders/loadFeature";
 import ViewFullDetails from "../viewLayouts/viewFullDetails";
+import TextSearchWidget from "../search/textSearchWidget";
 
 export default function RenderPlugin({plugin}) {
 
@@ -24,8 +24,8 @@ export default function RenderPlugin({plugin}) {
         "NavTypeSimple":NavTypeSimple,
         "SiteMap":SiteMap,
         "LogoStrapLine":LogoStrapLine,
-        "LoadFeature":LoadFeature,
-        "ViewFullDetails":ViewFullDetails
+        "ViewFullDetails":ViewFullDetails,
+        "TextSearchWidget":TextSearchWidget
     }
 
     if(plugins[pluginId]) {

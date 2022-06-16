@@ -1,9 +1,11 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import RenderMarkdown from "./renderMarkdown";
 import {LinearProgress} from "@mui/material";
 import {useParams} from "react-router-dom";
 import {setReport} from "../../redux/slices/viewDrawerSlice";
 import {useDispatch} from "react-redux";
+import Box from "@mui/material/Box";
+import MenuDrawer from "../drawers/menuDrawer";
 
 export default function RenderPage() {
 
@@ -72,8 +74,16 @@ export default function RenderPage() {
     }, [page]);
 
     if (pageData) {
+        document.title=pageData.title;
         return (
-            <RenderMarkdown markdown={pageData.data}/>
+            <>
+            <Box sx={{
+                padding: "10px"
+            }}>
+                <RenderMarkdown markdown={pageData.data}/>
+            </Box>
+            <MenuDrawer></MenuDrawer>
+            </>
         )
     } else {
         return (<LinearProgress></LinearProgress>)
