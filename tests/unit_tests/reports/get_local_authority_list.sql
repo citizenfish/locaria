@@ -9,6 +9,6 @@ $$
 
         SELECT locaria_internal_gateway(parameters) INTO ret_var;
 
-        RAISE NOTICE '%', locaria_tests.test_result_processor('get_local_authority_list TEST 1', ret_var , '{}', '[12346]');
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_local_authority_list TEST 1', ret_var , '{authorities}', '*');
     END;
 $$ LANGUAGE PLPGSQL;

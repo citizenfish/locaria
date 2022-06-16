@@ -4,7 +4,9 @@ import time
 import json
 import re
 from zipfile import ZipFile
-from locaria_load_utils import get_parameters
+import sys
+sys.path[0:0] = ['../modules']
+from locaria_file_utils import get_parameters
 from dateutil.relativedelta import relativedelta
 import datetime
 
@@ -63,6 +65,9 @@ def thelist_events(db,file):
     parameters = get_parameters(db,'thelist_events').get('thelist_events',{})
     eventsUrl = parameters.get('url', 'https://api.list.co.uk/v1/events')
     eventsAPIKey = parameters.get('key', 'WILLFAIL')
+    if eventsAPIKey == 'WILLFAIL':
+        print(parameters)
+        return {'status' : 'ERROR', 'message' : 'NO API KEY'}
 
     # Step one, get the max distance in miles for our chose authority
     la_id = file['attributes'].get('bounding_la_id', '')
@@ -87,6 +92,7 @@ def thelist_events(db,file):
     while True:
         res = requests.get(url, headers={'Authorization': f"Bearer {eventsAPIKey}"})
         events.extend(res.json())
+        print(res.json())
         url = res.links.get('next', '')
         if url == '':
             break
@@ -96,6 +102,7 @@ def thelist_events(db,file):
     path = f"{tmp_dir}/events.json"
     features = []
     for f in events:
+        print(f)
         lon = f['schedules'][0]['place']['lng']
         lat = f['schedules'][0]['place']['lat']
         features.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [lon,lat]}, 'properties' : f})
