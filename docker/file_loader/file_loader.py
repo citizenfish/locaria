@@ -48,7 +48,7 @@ for f in files_to_process["files"]:
 
     # Custom loaders pull their data directly from API calls and do not need files in S3
     if 'custom_loader' in f['attributes']:
-        update_file_status(db,schema,f['id'],{'status': f['attributes']['custom_loader'].upper()})
+        #update_file_status(db,schema,f['id'],{'status': f['attributes']['custom_loader'].upper()})
         f['schema'] = upload_schema
         # We need a temporary directory and filename to download to
         f["attributes"]["tmp_dir"] = tempfile.gettempdir()

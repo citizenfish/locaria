@@ -41,7 +41,6 @@ def run_post_process_report(db, file, schema = 'locaria_core'):
         return {'error' : f"SQL error when running {file['report_name']}", "sql_error" : error}
 
 
-
 def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
 
     try:
@@ -51,9 +50,9 @@ def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
         if parameter_name != None:
             q_params["parameter_name"] = parameter_name
 
-        parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ['Admins']})])
+        parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ["Admins"]})])
         ret = parameters.fetchone()[0]
-        return ret
+        return ret.get('parameters', {'error', 'parameter not found'})
 
     except Exception as error:
         print("Cannot get parameter", error)

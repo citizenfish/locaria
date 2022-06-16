@@ -4,7 +4,7 @@ file_loader.py is a python script for loading data into locaria. It is designed 
 
 # Running file_loader.py
 
-The script can be run via two mecahnisms:-
+The script can be run via two mechanisms:-
 
 - command line
 - Fargate docker process
