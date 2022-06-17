@@ -64,7 +64,7 @@ const FormatField = ({field, data}) => {
 		let Element = dataItems[field.display];
 
 		return (
-			<Element name={field.name} data={dataActual}/>
+			<Element name={field.name} data={dataActual} sx={field.sx}/>
 		)
 	} else {
 		return (
@@ -72,6 +72,12 @@ const FormatField = ({field, data}) => {
 		)
 	}
 
+}
+
+const safeEval = (str,data) => {
+	let jData=JSON.stringify(data);
+	let call=`'use strict'; const data=${jData}; return (${str})`;
+	return window.Function(call)();
 }
 
 const getData = (data, path, func) => {
@@ -82,7 +88,7 @@ const getData = (data, path, func) => {
 		return func(data, classes);
 
 	try {
-		result = eval('data.' + path);
+		result = safeEval(path,data);
 	} catch (e) {
 		console.log(e);
 		return "";

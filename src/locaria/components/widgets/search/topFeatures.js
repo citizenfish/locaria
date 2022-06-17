@@ -1,33 +1,51 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import BigCard from "../featureCards/bigCard";
 import {useDispatch, useSelector} from "react-redux";
-import {setSearch} from "../../redux/slices/searchDrawerSlice";
+import {clearRefresh, newSearch, setSearch} from "../../redux/slices/searchDrawerSlice";
 
 
-const TopFeatures = ({category, limit, tags, sx, sxArray,resetSearch}) => {
-	const dispatch = useDispatch()
+const TopFeatures = ({id, category, limit, tags, sx, sxArray}) => {
 
+	const dispatch = useDispatch();
 	const search = useSelector((state) => state.searchDraw.search);
+	const categories = useSelector((state) => state.searchDraw.categories);
+	const refresh = useSelector((state) => state.searchDraw.refresh);
 
-	if(resetSearch===true) {
-		dispatch(setSearch(''));
-	}
 	const [results, setResults] = useState(undefined);
+	const [searchId, setSearchId] = useState(undefined);
 	let sxId = 0;
+
+
+
+	useEffect(() => {
+		if (id !== searchId) {
+			setSearchId(id);
+			dispatch(newSearch({categories: category}));
+		}
+	}, [id]);
+
 
 	useEffect(() => {
 		window.websocket.registerQueue("topFeatures", function (json) {
 			setResults(json.packet.geojson.features);
 		});
 
+
+		if (refresh === true) {
+			doSearch();
+		}
+
+	}, [refresh]);
+
+	function doSearch() {
 		let packetSearch = {
 			"queue": "topFeatures",
 			"api": "api",
 			"data": {
 				"method": "search",
-				"category": category,
+				"category": categories,
 				"search_text": search,
 				"limit": limit
 
@@ -36,15 +54,15 @@ const TopFeatures = ({category, limit, tags, sx, sxArray,resetSearch}) => {
 		if (tags)
 			packetSearch.data.tags = tags;
 		window.websocket.send(packetSearch);
-
-	}, [search]);
+		dispatch(clearRefresh());
+	}
 
 	function getSx() {
 		if (sxArray) {
 			let ret = sxArray[sxId]
 			sxId++;
-			if(sxId>=sxArray.length)
-				sxId=0;
+			if (sxId >= sxArray.length)
+				sxId = 0;
 			return ret;
 		} else {
 			return {};

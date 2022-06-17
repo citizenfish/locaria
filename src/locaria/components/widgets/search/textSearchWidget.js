@@ -1,16 +1,25 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TypographyHeader from "../typography/typographyHeader";
 import {TextField} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import {useDispatch, useSelector} from "react-redux";
-import {setSearch} from "../../redux/slices/searchDrawerSlice";
+import {newSearch, setSearch} from "../../redux/slices/searchDrawerSlice";
 
-export default function TextSearchWidget({sx, heading, placeholder}) {
+export default function TextSearchWidget({id,sx, heading, placeholder}) {
 	const dispatch = useDispatch()
 
 	const [searchString, setSearchString] = useState("");
 	const search = useSelector((state) => state.searchDraw.search);
+	const [searchId, setSearchId] = useState(undefined);
+
+	useEffect(() => {
+		debugger;
+		if (id !== searchId) {
+			setSearchId(id);
+			dispatch(setSearch({search: '',refresh:false}));
+		}
+	}, [id]);
 
 	return (
 		<Box sx={{
