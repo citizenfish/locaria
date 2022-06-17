@@ -119,6 +119,15 @@
         },
         "secretRef": "!Ref SecretDBURI"
       }
+    },
+    {
+      "dir": "auroraTriggers",
+      "outputsSitePrefix": true,
+      "outputs": {
+      },
+      "functions": [
+        "triggerEmail.js"
+      ]
     }
   ]
 }

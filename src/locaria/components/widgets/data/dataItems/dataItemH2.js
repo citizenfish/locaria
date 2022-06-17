@@ -1,14 +1,10 @@
 import React from 'react';
-import Typography from "@mui/material/Typography";
+import TypographyHeader from "../../typography/typographyHeader";
 
-const DataItemH2 = ({name,data}) => {
-    return (
-        <Typography gutterBottom variant="h2" sx={{
-            color: window.systemMain.fontSecondary,
-            fontWeight: 200,
-            fontSize: "1rem"
-        }}>{data} </Typography>
-    )
+const DataItemH2 = ({name, data, sx}) => {
+	return (
+		<TypographyHeader sx={sx} element={"h2"}>{data}</TypographyHeader>
+	)
 }
 
 export default DataItemH2;
