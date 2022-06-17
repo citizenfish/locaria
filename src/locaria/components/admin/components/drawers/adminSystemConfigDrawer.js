@@ -1,5 +1,9 @@
 import React, {useRef, useState} from "react"
 
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+
 import {Checkbox, Drawer, FormControlLabel, FormGroup, InputLabel, Select, TextField} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
@@ -9,7 +13,6 @@ import {setTitle} from "../../redux/slices/adminSlice";
 import {useStyles} from "../../../../../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
-import {setEditData} from "../../redux/slices/editDrawerSlice";
 import {setSystemConfig, setSystemConfigValue} from "../../redux/slices/systemConfigDrawerSlice";
 import {useCookies} from "react-cookie";
 import Slider from "@mui/material/Slider";
@@ -33,9 +36,13 @@ export default function AdminSystemConfigDrawer(props) {
     const classes = useStyles();
     const isInitialMount = useRef(true);
     const history = useHistory();
+    const [tabc,setTabc] = useState('Layout')
 
     const [cookies, setCookies] = useCookies(['location'])
 
+    const tabChange = (e, s) => {
+        setTabc(s)
+    }
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -106,257 +113,289 @@ export default function AdminSystemConfigDrawer(props) {
             open={open}
             variant="persistent"
             className={classes.adminDrawers}
-
         >
             {config ? (
                 <Container>
-                    <h1>Theme</h1>
+                    <Box sx = {{width: '100%'}}>
+                        <Tabs value = {tabc}
+                              onChange = {tabChange}
+                              >
+                            <Tab value="Layout" label="Layout" />
+                            <Tab value="Look and Feel" label="Look and Feel" />
+                            <Tab value="Search" label="Search" />
+                            <Tab value="Results" label="Results" />
+                            <Tab value="Maps" label="Maps" />
 
-                    <h2>Layout</h2>
-                    <FormControl fullWidth>
-                        <InputLabel id="layoutTypeLabel">Layout type</InputLabel>
-                        <Select
-                            labelId="layoutTypeLabel"
-                            id="layoutType"
-                            value={config.layoutType}
-                            label="Layout type"
-                            onChange={(e)=>{
-                                dispatch(setSystemConfigValue({key:"layoutType",value:e.target.value}));
-                            }}
-                        >
-                            <MenuItem value={"App"}>App</MenuItem>
-                            <MenuItem value={"Pages"}>Pages</MenuItem>
-                        </Select>
-                    </FormControl>
+                        </Tabs>
+                    </Box>
 
-                    <FormControl fullWidth>
-                        <InputLabel id="landingRouteLabel">Landing Page</InputLabel>
-                        <Select
-                            labelId="landingRouteLabel"
-                            id="landingRoute"
-                            value={config.landingRoute}
-                            label="Landing page"
-                            onChange={(e)=>{
-                                dispatch(setSystemConfigValue({key:"landingRoute",value:e.target.value}));
-                            }}
-                        >
-                            <MenuItem value={"/"}>Landing</MenuItem>
-                            <MenuItem value={"/Home"}>Home</MenuItem>
-                            <MenuItem value={"/Map"}>Map</MenuItem>
-                            <MenuItem value={"/Search"}>Search</MenuItem>
-                        </Select>
-                    </FormControl>
+                    { tabc === 'Layout' && <div value = "Layout">
+                        <FormControl fullWidth>
+                            <InputLabel id="layoutTypeLabel">Layout type</InputLabel>
+                            <Select
+                                labelId="layoutTypeLabel"
+                                id="layoutType"
+                                value={config.layoutType}
+                                label="Layout type"
+                                onChange={(e)=>{
+                                    dispatch(setSystemConfigValue({key:"layoutType",value:e.target.value}));
+                                }}
+                            >
+                                <MenuItem value={"App"}>App</MenuItem>
+                                <MenuItem value={"Pages"}>Pages</MenuItem>
+                            </Select>
+                        </FormControl>
 
-                    <FormControl fullWidth>
-                        <InputLabel id="navTypeLabel">Navigation type</InputLabel>
-                        <Select
-                            labelId="navTypeLabel"
-                            id="landingRoute"
-                            value={config.navType}
-                            label="Landing page"
-                            onChange={(e)=>{
-                                dispatch(setSystemConfigValue({key:"navType",value:e.target.value}));
-                            }}
-                        >
-                            <MenuItem value={"Full"}>Full Nav</MenuItem>
-                            <MenuItem value={"Simple"}>Simple</MenuItem>
+                        <FormControl fullWidth>
+                            <InputLabel id="landingRouteLabel">Landing Page</InputLabel>
+                            <Select
+                                labelId="landingRouteLabel"
+                                id="landingRoute"
+                                value={config.landingRoute}
+                                label="Landing page"
+                                onChange={(e)=>{
+                                    dispatch(setSystemConfigValue({key:"landingRoute",value:e.target.value}));
+                                }}
+                            >
+                                <MenuItem value={"/"}>Landing</MenuItem>
+                                <MenuItem value={"/Home"}>Home</MenuItem>
+                                <MenuItem value={"/Map"}>Map</MenuItem>
+                                <MenuItem value={"/Search"}>Search</MenuItem>
+                            </Select>
+                        </FormControl>
 
-                        </Select>
-                    </FormControl>
+                        <FormControl fullWidth>
+                            <InputLabel id="navTypeLabel">Navigation type</InputLabel>
+                            <Select
+                                labelId="navTypeLabel"
+                                id="landingRoute"
+                                value={config.navType}
+                                label="Landing page"
+                                onChange={(e)=>{
+                                    dispatch(setSystemConfigValue({key:"navType",value:e.target.value}));
+                                }}
+                            >
+                                <MenuItem value={"Full"}>Full Nav</MenuItem>
+                                <MenuItem value={"Simple"}>Simple</MenuItem>
 
-                    <FontSelector detail={"Header Background color"} name={"headerBackground"}/>
-                    <FontSelector detail={"Panel Background color"} name={"themePanels"}/>
+                            </Select>
+                        </FormControl>
 
-
-                    <InputLabel id="fontMainLabel">Primary font color</InputLabel>
-                    <ColorPicker value={config.fontMain} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"fontMain",value:color.css.backgroundColor}));
-                    }}/>
-
-                    <InputLabel id="fontSecondaryLabel">Secondary font color</InputLabel>
-                    <ColorPicker value={config.fontSecondary} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"fontSecondary",value:color.css.backgroundColor}));
-                    }}/>
-
-                    <InputLabel id="fontH1Label">H1 font color</InputLabel>
-                    <ColorPicker value={config.fontH1} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"fontH1",value:color.css.backgroundColor}));
-                    }}/>
-
-                    <InputLabel id="fontH2Label">H2 font color</InputLabel>
-                    <ColorPicker value={config.fontH2} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"fontH2",value:color.css.backgroundColor}));
-                    }}/>
-
-                    <InputLabel id="fontH3Label">H3 font color</InputLabel>
-                    <ColorPicker value={config.fontH3} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"fontH3",value:color.css.backgroundColor}));
-                    }}/>
-
-                    <InputLabel id="fontPLabel">P font color</InputLabel>
-                    <ColorPicker value={config.fontP} defaultValue="transparent" onChange={(color) => {
-                        dispatch(setSystemConfigValue({key:"fontP",value:color.css.backgroundColor}));
-                    }}/>
+                        <FontSelector detail={"Header Background color"} name={"headerBackground"}/>
+                        <FontSelector detail={"Panel Background color"} name={"themePanels"}/>
 
 
-
-                    <UploadWidget usageFilter={"gallery"} title={"Select gallery image(s)"} setFunction={(uuid)=>{
-                        dispatch(setSystemConfigValue({key:"galleryImage",value:uuid}));
-                    }} uuid={config.galleryImage}>
-                    </UploadWidget>
-
-                    <h1>Search</h1>
-                    <TextField
-                        id="searchLimit"
-                        label="Search limit"
-                        defaultValue={40}
-                        variant="filled"
-                        value={config.searchLimit}
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"searchLimit",value:parseInt(e.target.value)}));
-                        }}
-
-                    />
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox defaultChecked checked={config.searchDistance}/>} label="Distance Enabled" onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"searchDistance",value:e.target.checked}));
+                        <InputLabel id="fontMainLabel">Primary font color</InputLabel>
+                        <ColorPicker value={config.fontMain} defaultValue="transparent" onChange={(color) => {
+                            dispatch(setSystemConfigValue({key:"fontMain",value:color.css.backgroundColor}));
                         }}/>
-                        <FormControlLabel control={<Checkbox defaultChecked checked={config.searchLocation}/>} label="Location Enabled" onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"searchLocation",value:e.target.checked}));
+
+                        <InputLabel id="fontSecondaryLabel">Secondary font color</InputLabel>
+                        <ColorPicker value={config.fontSecondary} defaultValue="transparent" onChange={(color) => {
+                            dispatch(setSystemConfigValue({key:"fontSecondary",value:color.css.backgroundColor}));
                         }}/>
-                        <FormControlLabel control={<Checkbox defaultChecked  checked={config.searchTags}/>} label="Tags Enabled" onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"searchTags",value:e.target.checked}));
+
+                        <InputLabel id="fontH1Label">H1 font color</InputLabel>
+                        <ColorPicker value={config.fontH1} defaultValue="transparent" onChange={(color) => {
+                            dispatch(setSystemConfigValue({key:"fontH1",value:color.css.backgroundColor}));
                         }}/>
-                        <FormControlLabel control={<Checkbox defaultChecked checked={config.searchCategory}/>} label="Category Enabled" onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"searchCategory",value:e.target.checked}));
+
+                        <InputLabel id="fontH2Label">H2 font color</InputLabel>
+                        <ColorPicker value={config.fontH2} defaultValue="transparent" onChange={(color) => {
+                            dispatch(setSystemConfigValue({key:"fontH2",value:color.css.backgroundColor}));
                         }}/>
-                    </FormGroup>
 
-                    <h1>Results</h1>
-                    <FormControl fullWidth>
-                        <InputLabel id="viewMode-label">View mode</InputLabel>
-                        <Select
-                            labelId="viewMode-label"
-                            id="viewMode"
-                            value={config.viewMode}
-                            label="View Mode"
-                            onChange={(e)=>{
-                                dispatch(setSystemConfigValue({key:"viewMode",value:e.target.value}));
-                            }}
-                        >
-                            <MenuItem value={"Full"}>Full screen (with Map)</MenuItem>
-                            <MenuItem value={"FullDetails"}>Full screen details</MenuItem>
-                            <MenuItem value={"Left"}>Left draw (App Mode only)</MenuItem>
+                        <InputLabel id="fontH3Label">H3 font color</InputLabel>
+                        <ColorPicker value={config.fontH3} defaultValue="transparent" onChange={(color) => {
+                            dispatch(setSystemConfigValue({key:"fontH3",value:color.css.backgroundColor}));
+                        }}/>
 
-                        </Select>
-                    </FormControl>
+                        <InputLabel id="fontPLabel">P font color</InputLabel>
+                        <ColorPicker value={config.fontP} defaultValue="transparent" onChange={(color) => {
+                            dispatch(setSystemConfigValue({key:"fontP",value:color.css.backgroundColor}));
+                        }}/>
 
-                    <h1>Maps</h1>
-                    <TextField
-                        id="mapXYZ"
-                        label="mapXYZ URL"
-                        defaultValue={"https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv"}
-                        variant="filled"
-                        value={config.mapXYZ}
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"mapXYZ",value:e.target.value}));
-                        }}
-                    />
-                    <TextField
-                        id="mapAttribution"
-                        label="Attribution"
-                        defaultValue={"© Crown copyright and database rights 2022 OS"}
-                        variant="filled"
-                        value={config.mapAttribution}
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"mapAttribution",value:e.target.value}));
-                        }}
-                    />
-                    <TextField
-                        id="mapBuffer"
-                        label="Buffer"
-                        defaultValue={50000}
-                        variant="filled"
-                        value={config.mapBuffer}
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"mapBuffer",value:parseInt(e.target.value)}));
-                        }}
-                    />
-                    <h2>Default Zoom</h2>
-                    <Slider
-                        id="defaultZoom"
-                        aria-label="Default Zoom"
-                        value={config.defaultZoom}
-                        defaultValue={15}
-                        min={1}
-                        max={25}
-                        step={1}
-                        valueLabelDisplay="on"
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"defaultZoom",value:parseInt(e.target.value)}));
-                        }}
-                    />
-                    <h2>Cluster cut off</h2>
-                    <Slider
-                        id="clusterCutOff"
-                        aria-label="Cluster cut off"
-                        value={config.clusterCutOff}
-                        defaultValue={5}
-                        min={1}
-                        max={25}
-                        step={1}
-                        valueLabelDisplay="on"
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"clusterCutOff",value:parseInt(e.target.value)}));
-                        }}
-                    />
-                    <TextField
-                        id="clusterWidthMod"
-                        label="clusterWidthMod"
-                        defaultValue={20}
-                        variant="filled"
-                        value={config.clusterWidthMod}
-                        onChange={(e)=>{
-                            dispatch(setSystemConfigValue({key:"clusterWidthMod",value:parseInt(e.target.value)}));
-                        }}
-                    />
-                    <FormControl fullWidth>
-                        <InputLabel id="clusterAlgorithm-label">Age</InputLabel>
-                        <Select
-                            labelId="clusterAlgorithm-label"
-                            id="clusterAlgorithm"
-                            value={config.clusterAlgorithm}
-                            label="Age"
-                            onChange={(e)=>{
-                                dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
-                            }}
-                        >
-                            <MenuItem value={"DBSCAN"}>DBSCAN</MenuItem>
-                            <MenuItem value={"KMEANSDBSCAN"}>KMEANSDBSCAN</MenuItem>
-                            <MenuItem value={"KMEANS"}>KMEANS</MenuItem>
-                        </Select>
-                    </FormControl>
 
-                    <h1>Look & Feel</h1>
 
-                    <UploadWidget usageFilter={"logo"} title={"Select site logo"} setFunction={(uuid)=>{
+                        <UploadWidget usageFilter={"gallery"} title={"Select gallery image(s)"} setFunction={(uuid)=>{
+                            dispatch(setSystemConfigValue({key:"galleryImage",value:uuid}));
+                        }} uuid={config.galleryImage}>
+                        </UploadWidget>
+
+                        <Button onClick={(e) => {
+                            setConfig(e)
+                        }}>Save</Button>
+                    </div> }
+
+                    {tabc === 'Look and Feel' && <div>
+                        <UploadWidget usageFilter={"logo"} title={"Select site logo"} setFunction={(uuid)=>{
                             dispatch(setSystemConfigValue({key:"siteLogo",value:uuid}));
                         }} uuid={config.siteLogo}>
-                    </UploadWidget>
+                        </UploadWidget>
 
-                    <UploadWidget usageFilter={"logo"} title={"Select footer image"} setFunction={(uuid)=>{
+                        <UploadWidget usageFilter={"logo"} title={"Select footer image"} setFunction={(uuid)=>{
                             dispatch(setSystemConfigValue({key:"siteFooter",value:uuid}));
                         }} uuid={config.siteFooter}>
-                    </UploadWidget>
+                        </UploadWidget>
 
-                    <UploadWidget usageFilter={"iconMap"} title={"Select default map icon"} setFunction={(uuid)=>{
+                        <UploadWidget usageFilter={"iconMap"} title={"Select default map icon"} setFunction={(uuid)=>{
                             dispatch(setSystemConfigValue({key:"defaultMapIcon",value:uuid}));
                         }} uuid={config.defaultMapIcon}>
-                    </UploadWidget>
+                        </UploadWidget>
 
-                    <Button onClick={(e) => {
-                        setConfig(e)
-                    }}>Save</Button>
+                        <Button onClick={(e) => {
+                            setConfig(e)
+                        }}>Save</Button>
+                    </div>}
+
+                    {tabc === 'Search' && <div>
+                        <TextField
+                            id="searchLimit"
+                            label="Search limit"
+                            defaultValue={40}
+                            variant="filled"
+                            value={config.searchLimit}
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"searchLimit",value:parseInt(e.target.value)}));
+                            }}
+
+                        />
+                        <FormGroup>
+                            <FormControlLabel control={<Checkbox defaultChecked checked={config.searchDistance}/>} label="Distance Enabled" onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"searchDistance",value:e.target.checked}));
+                            }}/>
+                            <FormControlLabel control={<Checkbox defaultChecked checked={config.searchLocation}/>} label="Location Enabled" onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"searchLocation",value:e.target.checked}));
+                            }}/>
+                            <FormControlLabel control={<Checkbox defaultChecked  checked={config.searchTags}/>} label="Tags Enabled" onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"searchTags",value:e.target.checked}));
+                            }}/>
+                            <FormControlLabel control={<Checkbox defaultChecked checked={config.searchCategory}/>} label="Category Enabled" onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"searchCategory",value:e.target.checked}));
+                            }}/>
+                        </FormGroup>
+
+                        <Button onClick={(e) => {
+                            setConfig(e)
+                        }}>Save</Button>
+
+                    </div>}
+
+                    {tabc === 'Results' && <div>
+                        <FormControl fullWidth>
+                            <InputLabel id="viewMode-label">View mode</InputLabel>
+                            <Select
+                                labelId="viewMode-label"
+                                id="viewMode"
+                                value={config.viewMode}
+                                label="View Mode"
+                                onChange={(e)=>{
+                                    dispatch(setSystemConfigValue({key:"viewMode",value:e.target.value}));
+                                }}
+                            >
+                                <MenuItem value={"Full"}>Full screen (with Map)</MenuItem>
+                                <MenuItem value={"FullDetails"}>Full screen details</MenuItem>
+                                <MenuItem value={"Left"}>Left draw (App Mode only)</MenuItem>
+
+                            </Select>
+                        </FormControl>
+                        <Button onClick={(e) => {
+                            setConfig(e)
+                        }}>Save</Button>
+                    </div>}
+
+                    {tabc === 'Maps' && <div>
+
+                        <TextField
+                            id="mapXYZ"
+                            label="mapXYZ URL"
+                            defaultValue={"https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv"}
+                            variant="filled"
+                            value={config.mapXYZ}
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"mapXYZ",value:e.target.value}));
+                            }}
+                        />
+                        <TextField
+                            id="mapAttribution"
+                            label="Attribution"
+                            defaultValue={"© Crown copyright and database rights 2022 OS"}
+                            variant="filled"
+                            value={config.mapAttribution}
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"mapAttribution",value:e.target.value}));
+                            }}
+                        />
+                        <TextField
+                            id="mapBuffer"
+                            label="Buffer"
+                            defaultValue={50000}
+                            variant="filled"
+                            value={config.mapBuffer}
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"mapBuffer",value:parseInt(e.target.value)}));
+                            }}
+                        />
+                        <h2>Default Zoom</h2>
+                        <Slider
+                            id="defaultZoom"
+                            aria-label="Default Zoom"
+                            value={config.defaultZoom}
+                            defaultValue={15}
+                            min={1}
+                            max={25}
+                            step={1}
+                            valueLabelDisplay="on"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"defaultZoom",value:parseInt(e.target.value)}));
+                            }}
+                        />
+                        <h2>Cluster cut off</h2>
+                        <Slider
+                            id="clusterCutOff"
+                            aria-label="Cluster cut off"
+                            value={config.clusterCutOff}
+                            defaultValue={5}
+                            min={1}
+                            max={25}
+                            step={1}
+                            valueLabelDisplay="on"
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"clusterCutOff",value:parseInt(e.target.value)}));
+                            }}
+                        />
+                        <TextField
+                            id="clusterWidthMod"
+                            label="clusterWidthMod"
+                            defaultValue={20}
+                            variant="filled"
+                            value={config.clusterWidthMod}
+                            onChange={(e)=>{
+                                dispatch(setSystemConfigValue({key:"clusterWidthMod",value:parseInt(e.target.value)}));
+                            }}
+                        />
+                        <FormControl fullWidth>
+                            <InputLabel id="clusterAlgorithm-label">Age</InputLabel>
+                            <Select
+                                labelId="clusterAlgorithm-label"
+                                id="clusterAlgorithm"
+                                value={config.clusterAlgorithm}
+                                label="Age"
+                                onChange={(e)=>{
+                                    dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
+                                }}
+                            >
+                                <MenuItem value={"DBSCAN"}>DBSCAN</MenuItem>
+                                <MenuItem value={"KMEANSDBSCAN"}>KMEANSDBSCAN</MenuItem>
+                                <MenuItem value={"KMEANS"}>KMEANS</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <Button onClick={(e) => {
+                            setConfig(e)
+                        }}>Save</Button>
+
+                    </div>}
                 </Container>) : (<></>)
             }
 
