@@ -22,21 +22,21 @@ const BigCard = ({feature, sx}) => {
 		}, ...sx? sx:{}
 	};
 	return (
-		<Box sx={actualSx}>
+		<Box sx={actualSx} onClick={() => {
+			history.push(`/${channel.page || 'View'}/fp/${feature.properties.category}/${feature.properties.fid}`);
+		}}>
 
 			<Box sx={{
 				backgroundImage: `url(${url.decode(image, true)})`,
 				backgroundSize: "cover",
 				height: {md: "150px", xs: "250px"},
 				width: "100%"
-			}} onClick={() => {
-				history.push(`/${channel.page || 'View'}/fp/${feature.properties.category}/${feature.properties.fid}`);
-			}}>
+			}} >
 
 			</Box>
 			<Box sx={{
-				padding: "5px",
-				height: "50px"
+				padding: "15px",
+				height: "100px"
 			}}>
 				<Typography>
 					{feature.properties.description.title}

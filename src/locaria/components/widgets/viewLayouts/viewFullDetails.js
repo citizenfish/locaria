@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import SingleFeatureImageBox from "../images/singleFeatureImageBox";
 import Box from "@mui/material/Box";
 
-const ViewFullDetails = (props) => {
+const ViewFullDetails = ({}) => {
     const report = useSelector((state) => state.viewDraw.report);
 
 

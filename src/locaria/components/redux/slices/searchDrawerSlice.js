@@ -17,7 +17,36 @@ export const searchDrawerSlice = createSlice({
 		totalPages: 0
 	},
 	reducers: {
+		/// OLD kill when search draw is gone
 		openSearchDrawer: (state, action) => {
+			state.open = true;
+			state.page=1;
+			state.totalPages=0;
+			if (action.payload && action.payload.categories){
+				if(action.payload.mode==='add') {
+					for(let c in action.payload.categories) {
+						if(state.categories.indexOf(action.payload.categories[c])===-1)
+							state.categories.push(action.payload.categories[c]);
+						else
+							state.categories.splice(state.categories.indexOf(action.payload.categories[c]),1);
+					}
+				}
+				else
+					state.categories = action.payload.categories;
+				state.tags = []; //If category changes then so must tags
+			}
+
+			if(action.payload && action.payload.distance) {
+				state.distance=action.payload.distance;
+			}
+
+			if (action.payload && action.payload.search){
+				state.search = action.payload.search;
+			}
+			state.refresh=true;
+
+		},
+		newSearch: (state, action) => {
 			state.open = true;
 			state.page=1;
 			state.totalPages=0;
@@ -70,7 +99,10 @@ export const searchDrawerSlice = createSlice({
 			state.search = action.payload.search;
 			state.page=1;
 			state.totalPages=0;
-			state.refresh=true;
+			if(action.payload.refresh)
+				state.refresh=action.payload.refresh;
+			else
+				state.refresh=true;
 
 		},
 		toggleLocationShow: (state) => {
@@ -156,7 +188,8 @@ export const {
 	setPage,
 	setTotalPages,
 	clearRefresh,
-	setDistanceType
+	setDistanceType,
+	newSearch
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer
