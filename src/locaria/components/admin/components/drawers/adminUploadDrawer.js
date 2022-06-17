@@ -12,6 +12,7 @@ import AdminFloodMonitoringLoader from "../adminFloodMonitoringLoader";
 import AdminCrimeLoader from "../adminCrimeLoader.js";
 import AdminBoundaryLoader from "../adminBoundaryLoader";
 import AdminEventsLoader from "../adminEventsLoader";
+import AdminDataDownload from "../adminDataDownload";
 import {Drawer} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useStyles} from "../../../../../theme/default/adminStyle";
@@ -204,6 +205,12 @@ export default function AdminUploadDrawer(props) {
                  </>
 
              }
+            {
+                open === true && mapFileDetails === null && openDetails === false &&
+                    <>
+                    <AdminDataDownload/>
+                    </>
+            }
 
              {
                  open === true && mapFileDetails !== null &&

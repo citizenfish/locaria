@@ -3,7 +3,9 @@
     {
       "stopOnError": true,
       "tables": [
-      "database/functions/utility/asset_url_maker.sql"
+      "database/functions/utility/aws_lambda_interface.sql",
+        "database/functions/triggers/messages_trigger.sql"
+
       ],
       "substitutions": "../tests.json"
     }

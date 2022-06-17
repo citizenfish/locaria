@@ -3,8 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/utilities/test_result_processor.sql",
-      "tests/unit_tests/internal/admin/get_parameter.sql"
+        "tests/unit_tests/messages/send_email.sql"
       ],
       "substitutions": "../tests.json"
     }

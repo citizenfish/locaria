@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION locaria_core.aws_lambda_interface(lambda_parameters J
 $$
 DECLARE
     lambda_config JSONB;
-    mode_var TEXT DEFAULT 'Event'; -- Event =  asynchronous call, RequireResponse = synchronous call
+    mode_var TEXT DEFAULT 'Event'; -- Event =  asynchronous call, ReqquestResponse = synchronous call
     log_var TEXT DEFAULT 'None';
     status_code_var INT;
     payload_var JSONB;
@@ -13,12 +13,16 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    SELECT parameter::JSONB
+    SELECT parameter
     INTO lambda_config
     FROM parameters
-    WHERE parameter_name = CASE WHEN COALESCE(lambda_parameters->>'fargate', '') != '' THEN 'fargate_config' ELSE 'lambda_config' END;
+    WHERE parameter_name = CASE WHEN COALESCE(lambda_parameters->>'fargate', '') != '' THEN 'fargate_config'
+                           ELSE COALESCE(lambda_parameters->>'config','lambda_config') END;
 
-    RAISE NOTICE 'DEBUG %', COALESCE(lambda_parameters->'parameters', jsonb_extract_path(lambda_config, lambda_parameters->>'function'), jsonb_build_object());
+    RAISE NOTICE 'DEBUG %', lambda_parameters->'parameters';
+    RAISE NOTICE 'DEBUG1 %', lambda_config;
+    RAISE NOTICE 'DEBUG2 %', jsonb_extract_path_text(lambda_config, lambda_parameters->>'function', 'arn');
+    RAISE NOTICE 'DEBUG 3[%]', lambda_parameters->>'function';
 
     SELECT status_code,
            payload,
@@ -32,8 +36,8 @@ BEGIN
                            jsonb_extract_path_text(lambda_config::JSONB, lambda_parameters->>'function', 'arn'),
                            jsonb_extract_path_text(lambda_config::JSONB, lambda_parameters->>'function', 'region')),
                            COALESCE(lambda_parameters->'parameters', jsonb_extract_path(lambda_config, lambda_parameters->>'function'), jsonb_build_object()),
-                           COALESCE(lambda_parameters->>'mode', mode_var),
-                           COALESCE(lambda_parameters->>'log_type', log_var));
+                           COALESCE(lambda_parameters->>'mode', jsonb_extract_path_text(lambda_config::JSONB, lambda_parameters->>'function', 'mode'), mode_var),
+                           COALESCE(lambda_parameters->>'log_type', jsonb_extract_path_text(lambda_config::JSONB, lambda_parameters->>'function', 'log'), log_var));
 
     RETURN jsonb_build_object('status_code',      status_code_var,
                              'payload',           payload_var::JSONB,
