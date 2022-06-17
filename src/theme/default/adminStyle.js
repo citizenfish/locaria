@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 	adminDrawers: {
 		'&	.MuiDrawer-paperAnchorDockedRight': {
 			top: 140,
-			width: "calc(100vw - 245px)",
+			width: "calc(100vw - 240px)",
 			height: "calc(100vh - 140px)",
 			overflowY:"auto"
 		}

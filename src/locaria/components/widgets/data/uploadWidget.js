@@ -133,7 +133,7 @@ export default function UploadWidget(props) {
     }
 
     return (
-        <Card>
+        <Card sx={props.sx}>
             <CardContent>
                 <CardHeader title={props.title}
                             subheader="Select or upload an image">
@@ -161,7 +161,7 @@ export default function UploadWidget(props) {
                     ))}
                 </ImageList>
             </CardContent>
-            <CardActions>
+            <CardActions sx={{alignItems: 'stretch', maxWidth: '400px'}}>
                 <FormControl fullWidth>
                     <InputLabel id="filterUsageLabel">Usage Filter</InputLabel>
                     <Select
@@ -185,14 +185,24 @@ export default function UploadWidget(props) {
                        id={`fileUploadButton${idRef.current}`}
                        style={{display: 'none'}}
                        onChange={handleFileInput}/>
-                <label htmlFor={`fileUploadButton${idRef.current}`}>
-                    {
-                        fileProgress == 0 && <Button variant="contained"
-                                                     onClick={(e) => {
-                                                         if (fileInput.current)
-                                                             fileInput.current.click();
-                                                     }}
-                                                     component="span">
+                <label
+                  htmlFor={`fileUploadButton${idRef.current}`}
+                  style={{
+                      marginLeft: 8
+                  }}
+                >
+                    {fileProgress == 0 && <Button
+                        variant="contained"
+                        onClick={(e) => {
+                            if (fileInput.current) {
+                                fileInput.current.click();
+                            }
+                        }}
+                        component="span"
+                        sx={{
+                            width: 'max-content',
+                            height: '100%',
+                        }}>
                             Upload File
                         </Button>
                     }
