@@ -20,7 +20,20 @@ export default function AdminDataDownload(props) {
 
     const downLoadData = (e) => {
         console.log(e)
-
+        window.websocket.send({
+            "queue" : 'addFile',
+            "api" : "lapi",
+            "data" : {
+                "method": "add_file",
+                "file_attributes" : {
+                    "file_type" : contentType,
+                    "name" : file.name,
+                    "ext" : extension
+                },
+                "contentType" : contentType,
+                "id_token": cookies['id_token']
+            }
+        })
     }
 
     return (

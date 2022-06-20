@@ -3,7 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/unit_tests/messages/send_email.sql"
+        "tests/unit_tests/internal/file_upload/add_file.sql"
       ],
       "substitutions": "../tests.json"
     }
