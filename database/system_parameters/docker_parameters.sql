@@ -15,3 +15,4 @@ SELECT 'fargate_config',
        jsonb_build_object(  'view', jsonb_build_array('Admins'),
                             'update', jsonb_build_array('Admins'),
                             'delete', jsonb_build_array('Admins'));
+

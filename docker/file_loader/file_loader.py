@@ -1,4 +1,5 @@
 import sys
+#This is simply for testing locally
 sys.path[0:0] = ['../modules']
 from locaria_file_utils import *
 import os
