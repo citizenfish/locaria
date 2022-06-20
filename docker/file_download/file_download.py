@@ -11,6 +11,11 @@ config = get_local_config('config.json')
 db = database_connect(f"{config['db_var']}_{config['theme']}")
 print("Database connection established")
 parameters = get_parameters(db,"file_download")
+
+if parameters.get('error', '') != '':
+    print('ERROR file_download parameters not configured')
+    exit()
+
 schema = config.get('schema','locaria_core')
 
 # We need an s3 bucket to drop fies into

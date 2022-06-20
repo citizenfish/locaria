@@ -19,18 +19,18 @@ export default function AdminDataDownload(props) {
     },[])
 
     const downLoadData = (e) => {
-        console.log(e)
+        //TODO add json/geopackage options and filters/category selection
         window.websocket.send({
-            "queue" : 'addFile',
-            "api" : "lapi",
+            "queue" : 'downLoadData',
+            "api" : "sapi",
             "data" : {
-                "method": "add_file",
+                "method": "request_download_data",
                 "file_attributes" : {
-                    "file_type" : contentType,
-                    "name" : file.name,
-                    "ext" : extension
+                    "format" : format,
+                    "filters": filters,
+                    "categories": categories
                 },
-                "contentType" : contentType,
+                "status" : "DOWNLOAD_REQUESTED",
                 "id_token": cookies['id_token']
             }
         })
