@@ -40,7 +40,7 @@ BEGIN
         WHEN parameters ->> 'method' IN ('get_files') THEN
             ret_var = get_files(parameters);
 
-        WHEN parameters ->> 'method' IN ('add_file') THEN
+        WHEN parameters ->> 'method' IN ('add_file', 'request_download_data') THEN
             ret_var = add_file(parameters);
 
         WHEN parameters ->> 'method' IN ('update_file') THEN

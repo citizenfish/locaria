@@ -8,6 +8,8 @@ import os,subprocess
 def download_all(db, schema, parameters):
     print("Downloading all data")
     categories = get_categories(db)
+    #TODO only pick selected categories
+
     # Microsoft Excel output
     features = []
     if parameters['format'] == 'xlsx':
@@ -55,7 +57,7 @@ def get_category_data(db, category, filters, format):
     data = {'count' : 1}
     offset = 0
     while data['count'] > 0:
-        data = get_data(db,category, offset, filters, format)
+        data = get_data(db, category, offset, filters, format)
         if format == 'geojson':
             features.extend(data['geojson']['features'])
             data['count'] = data['options']['count']
