@@ -1,5 +1,6 @@
 import sys
 import os
+#This is simply for testing locally
 sys.path[0:0] = ['../modules']
 from locaria_file_utils import *
 from locaria_downloaders import *
@@ -12,9 +13,9 @@ db = database_connect(f"{config['db_var']}_{config['theme']}")
 print("Database connection established")
 parameters = get_parameters(db,"file_download")
 
-if parameters.get('error', '') != '':
-    print('ERROR file_download parameters not configured')
-    exit()
+#if parameters.get('error', '') != '':
+#    print('ERROR file_download parameters not configured')
+#    exit()
 
 schema = config.get('schema','locaria_core')
 
@@ -37,7 +38,7 @@ for f in downloads_to_process['files']:
     # We need a temporary directory and filename to download to
     attributes["tmp_dir"] = tempfile.gettempdir()
 
-    if attributes['type'] == 'all_data':
+    if attributes.get('type', 'all_data') == 'all_data':
         # TODO repeated code could be better
         if attributes.get('format') == 'json':
             attributes['s3_path'] = f"downloads/{f['id']}.json"
@@ -50,7 +51,11 @@ for f in downloads_to_process['files']:
             attributes['s3_path'] = f"downloads/{f['id']}.xslx"
             attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.xlsx"
 
-        result = download_all(db, schema, attributes)
+        try:
+            result = download_all(db, schema, attributes)
+        except Exception as e:
+            result = {'status': 'DOWNLOAD_ERROR', 'message' : str(e)}
+
         update_file_status(db,schema,f['id'],result)
 
     print(f"Processed download {f['id']}")

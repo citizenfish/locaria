@@ -28,7 +28,8 @@ export default function AdminDataDownload(props) {
                 "file_attributes" : {
                     "format" : format,
                     "filters": filters,
-                    "categories": categories
+                    "categories": categories,
+                    "type" : "all_data"
                 },
                 "status" : "DOWNLOAD_REQUESTED",
                 "id_token": cookies['id_token']
