@@ -24,7 +24,7 @@ custom:
 
 resources:
   Resources:
-    ECRLocariaRepo:
+    ECRLocariaRepoFileUpload:
       Type: AWS::ECR::Repository
       Properties:
         RepositoryName: locaria-repo-fileloader-${env:theme}
@@ -40,6 +40,12 @@ resources:
       Type: AWS::ECS::Cluster
       Properties:
         ClusterName: locaria-cluster-fileloader-${env:theme}
+    SecretS3Bucket:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Description: LOCARIA S3DLBUCKET
+        Name: S3DLBUCKET_${env:theme}
+        SecretString: locaria-${self:custom.stage}-${env:theme}
     SecretDBURI:
       Type: AWS::SecretsManager::Secret
       Properties:
@@ -133,7 +139,7 @@ resources:
         ExecutionRoleArn: { 'Fn::GetAtt': [ DockerGenericExecuteRole, Arn ] }
         ContainerDefinitions:
           -
-            Image: { 'Fn::GetAtt': [ ECRLocariaRepo, RepositoryUri ] }
+            Image: { 'Fn::GetAtt': [ ECRLocariaRepoFileUpload, RepositoryUri ] }
             Essential: true
             Name: "FileLoader"
             Secrets:
@@ -148,7 +154,31 @@ resources:
                 awslogs-stream-prefix: locaria-cluster-fileloader-${env:theme}
         Cpu: 256
         Memory: 512
-
+    taskFileDownload:
+      Type: AWS::ECS::TaskDefinition
+      Properties:
+        RequiresCompatibilities:
+          - FARGATE
+        NetworkMode: awsvpc
+        TaskRoleArn: { 'Fn::GetAtt': [ DockerGenericRole, Arn ] }
+        ExecutionRoleArn: { 'Fn::GetAtt': [ DockerGenericExecuteRole, Arn ] }
+        ContainerDefinitions:
+          - Image: { 'Fn::GetAtt': [ ECRLocariaRepoDownload, RepositoryUri ] }
+            Essential: true
+            Name: "FileDownload"
+            Secrets:
+              - Name: LOCARIADB_${env:theme}
+                ValueFrom: !Ref SecretDBURI
+              - Name: S3DLBUCKET_${env.theme}
+                ValueFrom: !Ref SecretS3Bucket
+            LogConfiguration:
+              LogDriver: awslogs
+              Options:
+                awslogs-group: locaria-cluster-log-${env:theme}
+                awslogs-region: ${file(../../../locaria.json):${self:custom.stage}.region}
+                awslogs-stream-prefix: locaria-cluster-filedownload-${env:theme}
+        Cpu: 256
+        Memory: 512
 functions:
   ecsRunner:
     handler: functions/ecsRunTask.run
