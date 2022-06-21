@@ -126,7 +126,9 @@ export default function AdminLanguageDrawer(props) {
                 "acl": "external",
                 "parameter_name": `lang${current}`,
                 id_token: cookies['id_token'],
-                "parameters": language
+                "parameters": language,
+                "usage":"Config"
+
             }
         });
         window.systemLang=language;

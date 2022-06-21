@@ -4,7 +4,7 @@
 	"scripts": {
 		"configure": "node scripts/configure.js",
 		"build:multi:main": "node scripts/builder.js multi main",
-		"build:multi:swindonbid": "node scripts/builder.js multi swindonbid",
+		"build:multi:swindonbid": "node scripts/builder.js sb swindonbid",
 		"build:multi:nmrn": "node scripts/builder.js multi nmrn",
 		"build:multi:sailortown": "node scripts/builder.js multi sailortown",
 		"runLocalSite": "webpack serve",
