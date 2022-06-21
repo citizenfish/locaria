@@ -427,7 +427,7 @@ function deployStageNode(stage, theme) {
     readline.question(`node to deploy on stage ${stage}, theme ${theme}? [${node}]`, (cmd) => {
         if (cmd)
             node = cmd;
-        executeWithCatch(`node scripts/serverlessStageBuilder.js ../serverless/multi.json ${stage} ${node} ${theme}`, "./", () => {
+        executeWithCatch(`node scripts/serverlessStageBuilder.js ../serverless/${configs['custom'][stage].serverlessType}.json ${stage} ${node} ${theme}`, "./", () => {
             console.log('Done')
             deploySystemMain(stage, theme);
 
