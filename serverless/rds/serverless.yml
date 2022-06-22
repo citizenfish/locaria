@@ -1,4 +1,4 @@
-service: locaria-aurora
+service: locaria-rds
 projectDir: ../../../
 provider:
   name: aws
@@ -54,14 +54,6 @@ resources:
         SubnetIds:
           - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetA}
           - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
-    AuroraRDSClusterParameter:
-      Type: AWS::RDS::DBClusterParameterGroup
-      Properties:
-        Description: Parameter group for the Serverless Aurora RDS DB.
-        Family: ${file(../../../locaria.json):${self:custom.stage}.auroraFamily}
-        Parameters:
-          max_connections: 5000
-          shared_preload_libraries: pg_cron
     AuroraRDSInstanceParameter:
       Type: AWS::RDS::DBParameterGroup
       Properties:
@@ -69,38 +61,28 @@ resources:
         Family: ${file(../../../locaria.json):${self:custom.stage}.auroraFamily}
         Parameters:
           max_connections: 5000
-    AuroraRDSCluster:
-      Type: "AWS::RDS::DBCluster"
-      Properties:
-        MasterUsername: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
-        MasterUserPassword: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
-        DBSubnetGroupName:
-          Ref: AuroraSubnetGroup
-        Engine: aurora-postgresql
-        EngineMode: provisioned
-        EngineVersion: ${file(../../../locaria.json):${self:custom.stage}.auroraVersion}
-        DatabaseName: locariamain
-        BackupRetentionPeriod: 3
-        DBClusterParameterGroupName:
-          Ref: AuroraRDSClusterParameter
-        VpcSecurityGroupIds:
-          - Fn::GetAtt: AuroraStorageSecurityGroup.GroupId
-        AssociatedRoles:
-          - FeatureName: Lambda
-            RoleArn: !GetAtt [ AuroraLambdaRole, Arn ]
-    AuroraRDSInstance:
+          shared_preload_libraries: pg_cron
+    RDSInstance:
       Type: "AWS::RDS::DBInstance"
       Properties:
         DBSubnetGroupName:
           Ref: AuroraSubnetGroup
-        Engine: aurora-postgresql
+        Engine: postgres
         EngineVersion: ${file(../../../locaria.json):${self:custom.stage}.auroraVersion}
         DBInstanceClass: ${file(../../../locaria.json):${self:custom.stage}.DBInstanceClass}
-        PubliclyAccessible: false
+        PubliclyAccessible: ${file(../../../locaria.json):${self:custom.stage}.DBPubliclyAccessible}
+        MasterUsername: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
+        MasterUserPassword: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
+        DBName: locariamain
+        BackupRetentionPeriod: 3
+        VPCSecurityGroups:
+          - Ref: AuroraStorageSecurityGroup
+        AssociatedRoles:
+          - FeatureName: Lambda
+            RoleArn: !GetAtt [ AuroraLambdaRole, Arn ]
+        AllocatedStorage: 50
+        Port: ${file(../../../locaria.json):${self:custom.stage}.DBPort}
         DBParameterGroupName:
           Ref: AuroraRDSInstanceParameter
-        DBClusterIdentifier:
-          Ref: AuroraRDSCluster
-
 plugins:
   - serverless-stack-output

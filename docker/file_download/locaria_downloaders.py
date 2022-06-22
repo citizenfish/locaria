@@ -7,21 +7,28 @@ import os,subprocess
 
 def download_all(db, schema, parameters):
     print("Downloading all data")
-    categories = get_categories(db)
+
+    # If user has chosen a subset then use that
+    if parameters['categories']:
+        categories = parameters['categories']
+    else:
+        categories = get_categories(db)
+
     # Microsoft Excel output
     features = []
     if parameters['format'] == 'xlsx':
         print("Outputting XLSX")
         with pd.ExcelWriter(parameters['path']) as writer:
             for category in categories['categories']:
-                features = get_category_data(db, category, parameters.get('filters',''))
+                features = get_category_data(db, category, parameters.get('filters',''), 'datagrid')
                 df = pd.json_normalize(features)
                 df.to_excel(writer, sheet_name=f"{category}")
+
     # JSON output
     elif parameters['format'] == 'json':
         print("Outputting JSON")
         for category in categories['categories']:
-            features.extend(get_category_data(db, category, parameters.get('filters','')))
+            features.extend(get_category_data(db, category, parameters.get('filters',''), 'datagrid'))
 
         writeFileJson(parameters['path'], features)
     # GEOPACKAGE OUTPUT
@@ -55,41 +62,39 @@ def get_category_data(db, category, filters, format):
     data = {'count' : 1}
     offset = 0
     while data['count'] > 0:
-        data = get_data(db,category, offset, filters, format)
+        data = get_data(db, category, offset, filters, format)
         if format == 'geojson':
             features.extend(data['geojson']['features'])
             data['count'] = data['options']['count']
         else:
             features.extend(data['features'])
         offset = offset + 10000
+
     if format == 'geojson':
         return {'type': 'FeatureCollection', 'features': features}
 
     return features
 
 def get_categories(db,schema = 'locaria_core'):
-    try:
-        print(f"Retrieving categories")
-        q_params = {"method" : "list_categories_with_data"}
-        categories = db.execute(f"SELECT {schema}.locaria_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ['Admins']})])
-        ret = categories.fetchone()[0]
-        return ret
-    except Exception as error:
-        print("Cannot get categories", error)
-        exit()
+
+    print(f"Retrieving categories")
+    q_params = {"method" : "list_categories_with_data"}
+    categories = db.execute(f"SELECT {schema}.locaria_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ['Admins']})])
+    ret = categories.fetchone()[0]
+    return ret
+
 
 def get_data(db, category, offset, filters, format='datagrid', schema = 'locaria_core'):
-    try:
-        print(f"Retrieving data for {category} on offset {offset}")
-        q_params =   {"method" : "search", "format" : format, "category" : f"{category}", "offset" : offset}
-        if filters != '':
-            q_params.extend(filters)
-        data = db.execute(f"SELECT {schema}.locaria_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ['Admins']})])
-        ret = data.fetchone()[0]
-        return ret
-    except Exception as error:
-        print("Cannot get data", error)
-        exit()
+
+    print(f"Retrieving data for {category} on offset {offset}")
+    q_params =   {"method" : "search", "format" : format, "category" : f"{category}", "offset" : offset}
+    if filters != '':
+        q_params.update(filters)
+
+    data = db.execute(f"SELECT {schema}.locaria_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ['Admins']})])
+    ret = data.fetchone()[0]
+    return ret
+
 
 def writeFileJson(path,data):
     print(f"Writing {path}")

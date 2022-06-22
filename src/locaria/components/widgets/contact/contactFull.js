@@ -30,7 +30,7 @@ const ContactFull = () => {
             api: "api",
             data: {
                 method: "add_message",
-                attributes: {type: "contact"},
+                attributes: {email_type: "contact_us", "send_email": true},
                 message : {
                     email: email,
                     name: name,

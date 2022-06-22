@@ -17,6 +17,13 @@ SELECT cron.schedule_in_database('Hourly files processor',
                                      SELECT locaria_core.file_cron(jsonb_build_object('filter', jsonb_build_object('cron', 'hourly')))
                                  $$, 'locaria{{theme}}');
 
+--Setup the daily file processor
+SELECT cron.schedule_in_database('Daily files processor',
+                                 '0 0 * * *',
+                                 $$
+                                     SELECT locaria_core.file_cron(jsonb_build_object('filter', jsonb_build_object('cron', 'daily')))
+                                 $$, 'locaria{{theme}}');
+
 --Setup the weekly file processor
 SELECT cron.schedule_in_database('Weekly files processor',
                                  '0 0 * * 1',
@@ -25,7 +32,7 @@ SELECT cron.schedule_in_database('Weekly files processor',
                                  $$, 'locaria{{theme}}');
 
 --Setup the monthly file processor
-SELECT cron.schedule_in_database('Daily files processor',
+SELECT cron.schedule_in_database('Monthly files processor',
                                  '0 0 1 * *',
                                  $$
                                      SELECT locaria_core.file_cron(jsonb_build_object('filter', jsonb_build_object('cron', 'monthly')))

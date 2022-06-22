@@ -130,19 +130,6 @@ resources:
         GroupDescription: SecurityGroup for Serverless Functions
         VpcId:
           Ref: VPC
-    ServerlessStorageSecurityGroup:
-      DependsOn: VPC
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: Ingress for Redis Cluster
-        VpcId:
-          Ref: VPC
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: '6379'
-            ToPort: '6379'
-            SourceSecurityGroupId:
-              Ref: ServerlessSecurityGroup
     # Make some security for VPN
     VPNSecurityGroup:
       DependsOn: VPC
@@ -156,12 +143,6 @@ resources:
             FromPort: '443'
             ToPort: '443'
             CidrIp: 0.0.0.0/0
-    ServerlessCacheSubnetGroup:
-      Type: AWS::ElastiCache::SubnetGroup
-      Properties:
-        Description: "Cache Subnet Group"
-        SubnetIds:
-          - Ref: PrivateSubnetA
     FarGateSecurityGroup:
       DependsOn: VPC
       Type: AWS::EC2::SecurityGroup
