@@ -332,7 +332,16 @@ export default function AdminSystemConfigDrawer(props) {
                         />
                     </div> }
 
-                    {tabc === 'Look and Feel' && <div>
+                    {tabc === 'Look and Feel' && <div
+                      style={{
+                          paddingTop: 16,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          width: '100%',
+                          maxWidth: 1200,
+                      }}
+                    >
                         <UploadWidget
                             usageFilter={"logo"}
                             title={"Select site logo"}
@@ -341,7 +350,12 @@ export default function AdminSystemConfigDrawer(props) {
                                 dispatch(setSystemConfigValue({key:"siteLogo",value:uuid}));
                             }}
                             uuid={config.siteLogo}
+                            sx={{
+                                width: '100%',
+                            }}
                         />
+
+                        <Divider sx={{width: '100%', marginTop: 1, marginBottom: 2}} />
 
                         <UploadWidget
                             usageFilter={"logo"}
@@ -351,7 +365,12 @@ export default function AdminSystemConfigDrawer(props) {
                                 dispatch(setSystemConfigValue({key:"siteFooter",value:uuid}));
                             }}
                             uuid={config.siteFooter}
+                            sx={{
+                                width: '100%',
+                            }}
                         />
+
+                        <Divider sx={{width: '100%', marginTop: 1, marginBottom: 2}} />
 
                         <UploadWidget
                             usageFilter={"iconMap"}
@@ -361,10 +380,22 @@ export default function AdminSystemConfigDrawer(props) {
                                 dispatch(setSystemConfigValue({key:"defaultMapIcon",value:uuid}));
                             }}
                             uuid={config.defaultMapIcon}
+                            sx={{
+                                width: '100%',
+                            }}
                         />
                     </div>}
 
-                    {tabc === 'Search' && <div>
+                    {tabc === 'Search' && <div
+                      style={{
+                          paddingTop: 16,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          width: '100%',
+                          maxWidth: 1200,
+                      }}
+                    >
                         <TextField
                             id="searchLimit"
                             label="Search limit"

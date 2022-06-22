@@ -138,25 +138,55 @@ export default function UploadWidget(props) {
                 <CardHeader title={props.title}
                             subheader="Select or upload an image">
                 </CardHeader>
-                <ImageList sx={{width: "100%", height: 100}} cols={10} rowHeight={50}>
+                <ImageList sx={{width: "100%", height: '100%', paddingBottom: 2}} cols={10}>
                     {list.map((item) => (
-                        <ImageListItem sx={{"border": `${selected === item.uuid ? 2 : 0}px solid red`}} key={item.uuid}
-                                       cols={1} rows={1} onClick={(e) => {
-                            const uuid = e.target.getAttribute('data-uuid');
-                            props.setFunction(url.encode(`${resources.url}${item.url}`, uuid));
-                            setSelected(uuid);
-                        }}>
+                        <ImageListItem
+                            sx={{
+                                "border": `${selected === item.uuid ? 2 : 0}px solid red`,
+                                boxShadow: '0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%)',
+                                height: '100%',
+                                cursor: 'pointer',
+                                transition: 'box-shadow .2s ease-out',
+                                ':hover': {
+                                    boxShadow: '0 1px 2px rgb(50 50 93 / 11%), 0 0px 1px rgb(0 0 0 / 8%)',
+                                }
+                            }}
+                            key={item.uuid}
+                            cols={1}
+                            rows={1}
+                            onClick={(e) => {
+                                const uuid = e.target.getAttribute('data-uuid');
+                                props.setFunction(url.encode(`${resources.url}${item.url}`, uuid));
+                                setSelected(uuid);
+                            }}
+                        >
 
                             <img
                                 src={`${resources.url}${item.url}`}
                                 alt={item.name}
                                 loading="lazy"
                                 data-uuid={item.uuid}
-                                style={{"maxHeight":"50px","objectFit": "scale-down"}}
+                                style={{"objectFit": "scale-down"}}
                             />
-                            <DeleteForeverIcon sx={{"position": "absolute"}} onClick={(e) => {
-                                deleteAsset(item.uuid);
-                            }}></DeleteForeverIcon>
+                            <DeleteForeverIcon
+                                sx={{
+                                    position: 'absolute',
+                                    right: 2,
+                                    top: 2,
+                                    color: '#d35252',
+                                    backgroundColor: '#FFFFFF',
+                                    borderRadius: '100%',
+                                    cursor: 'pointer',
+                                    transition: 'background-color .2s ease-out',
+                                    ':hover': {
+                                        backgroundColor: '#d3B0A1',
+                                    }
+                                }}
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    deleteAsset(item.uuid);
+                                }}
+                            />
                         </ImageListItem>
                     ))}
                 </ImageList>
