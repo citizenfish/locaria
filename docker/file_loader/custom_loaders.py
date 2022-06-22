@@ -88,6 +88,7 @@ def thelist_events(db,file):
     # Step two call events api to get events within this distance
     events = []
     url = f"{eventsUrl}?near={mbr[2]},{mbr[1]}/{mbr[0]}"
+
     count = 0
     while True:
         res = requests.get(url, headers={'Authorization': f"Bearer {eventsAPIKey}"})
