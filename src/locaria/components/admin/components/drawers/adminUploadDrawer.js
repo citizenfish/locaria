@@ -158,6 +158,12 @@ export default function AdminUploadDrawer(props) {
             variant="persistent"
             className={classes.adminDrawers}
             style={{color: '#000'}}
+            sx={{
+                '.MuiDrawer-paper': {
+                    borderLeft: 'none',
+                    zIndex: 0,
+                },
+            }}
         >
 
              { dataFetching &&

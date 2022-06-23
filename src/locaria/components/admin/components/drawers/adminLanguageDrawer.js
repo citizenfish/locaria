@@ -179,7 +179,12 @@ export default function AdminLanguageDrawer(props) {
             open={open}
             variant="persistent"
             className={classes.adminDrawers}
-
+            sx={{
+                '.MuiDrawer-paper': {
+                    borderLeft: 'none',
+                    zIndex: 0,
+                },
+            }}
         >
             <Box>
             <h1 style={{marginLeft: 32}}>Language</h1>

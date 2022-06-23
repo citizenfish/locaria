@@ -147,7 +147,12 @@ export default function AdminEditDrawer(props) {
 			open={open}
 			variant="persistent"
 			className={classes.adminDrawers}
-
+			sx={{
+				'.MuiDrawer-paper': {
+					borderLeft: 'none',
+					zIndex: 0,
+				},
+			}}
 		>
 			<Box
 				component="form"

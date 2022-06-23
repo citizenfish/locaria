@@ -235,7 +235,12 @@ const  AdminEditFeatureDrawer = (props) => {
 			open={open}
 			variant="persistent"
 			className={classes.adminDrawers}
-
+			sx={{
+				'.MuiDrawer-paper': {
+					borderLeft: 'none',
+					zIndex: 0,
+				},
+			}}
 		>
 			<ControlActual/>
 		</Drawer>

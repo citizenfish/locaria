@@ -271,7 +271,12 @@ export default function AdminCategoryConfigDrawer(props) {
                 open={open}
                 variant="persistent"
                 className={classes.adminDrawers}
-
+                sx={{
+                  '.MuiDrawer-paper': {
+                    borderLeft: 'none',
+                    zIndex: 0,
+                  },
+                }}
             >
                 <Box sx={{margin: "0 50px"}}>
                     <h1>Categories</h1>

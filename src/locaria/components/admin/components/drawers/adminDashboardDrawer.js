@@ -144,7 +144,11 @@ export default function AdminDashboardDrawer(props) {
                 '.MuiDrawer-paperAnchorDockedRight': {
                     display: 'flex',
                     alignItems: 'center',
-                }
+                },
+                '.MuiDrawer-paper': {
+                    borderLeft: 'none',
+                    zIndex: 0,
+                },
             }}
         >
             <div style={{

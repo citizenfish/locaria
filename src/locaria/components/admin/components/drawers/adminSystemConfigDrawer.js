@@ -127,6 +127,7 @@ export default function AdminSystemConfigDrawer(props) {
             sx={{
                 '.MuiDrawer-paper': {
                     borderLeft: 'none',
+                    zIndex: 0,
                 },
             }}
         >
@@ -140,15 +141,16 @@ export default function AdminSystemConfigDrawer(props) {
                     paddingLeft: '0 !important',
                     paddingRight: '0 !important',
                 }}>
-                    <Box sx = {{width: '100%'}}>
-                        <Tabs value = {tabc}
-                              onChange = {tabChange}
-                              >
+                    <Box sx={{width: '100%'}}>
+                        <Tabs
+                            value={tabc}
+                            onChange={tabChange}
+                            sx={{height: '50px'}}
+                        >
                             <Tab value="Layout" label="Layout" />
                             <Tab value="Look and Feel" label="Look and Feel" />
                             <Tab value="Search" label="Search" />
                             <Tab value="Maps" label="Maps" />
-
                         </Tabs>
                     </Box>
 
