@@ -14,7 +14,6 @@ export default function TextSearchWidget({id,sx, heading, placeholder}) {
 	const [searchId, setSearchId] = useState(undefined);
 
 	useEffect(() => {
-		debugger;
 		if (id !== searchId) {
 			setSearchId(id);
 			dispatch(setSearch({search: '',refresh:false}));

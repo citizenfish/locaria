@@ -8,6 +8,7 @@ import SiteMap from "../pages/siteMap";
 import LogoStrapLine from "../logos/logoStrapLine";
 import ViewFullDetails from "../viewLayouts/viewFullDetails";
 import TextSearchWidget from "../search/textSearchWidget";
+import SocialIcons from "../social/socialIcons";
 
 export default function RenderPlugin({plugin}) {
 
@@ -25,7 +26,8 @@ export default function RenderPlugin({plugin}) {
         "SiteMap":SiteMap,
         "LogoStrapLine":LogoStrapLine,
         "ViewFullDetails":ViewFullDetails,
-        "TextSearchWidget":TextSearchWidget
+        "TextSearchWidget":TextSearchWidget,
+        "SocialIcons":SocialIcons
     }
 
     if(plugins[pluginId]) {
