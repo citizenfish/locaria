@@ -57,6 +57,10 @@ if (configs[stage].themes[theme]) {
 function doCopy() {
 	const srcPath = config.themeDir + theme;
 	console.log(`cp ${srcPath} -> ${buildDir}`);
+
+	fsExtra.emptyDirSync(buildDir);
+
+
 	fsExtra.copy(srcPath, buildDir, function (err) {
 		if (err) {
 			console.log('Copy failed!');
