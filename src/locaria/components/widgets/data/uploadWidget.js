@@ -176,6 +176,7 @@ export default function UploadWidget(props) {
                         <MenuItem value={"logo"}>Logos</MenuItem>
                         <MenuItem value={"icon"}>Icons</MenuItem>
                         <MenuItem value={"iconMap"}>Map Icons</MenuItem>
+                        <MenuItem value={"iconSocial"}>Social Icons</MenuItem>
                         <MenuItem value={"panel"}>Panels</MenuItem>
                         <MenuItem value={"gallery"}>Gallery</MenuItem>
                     </Select>
