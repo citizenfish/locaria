@@ -13,8 +13,8 @@ const customFile = '../locaria.json';
  */
 const fs = require('fs')
 const {exec} = require('child_process');
-const dotenv = require('dotenv')
-
+//const dotenv = require('dotenv')
+const AWS = require('aws-sdk')
 
 const readline = require('readline').createInterface({
     input: process.stdin,
@@ -208,7 +208,6 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
                     items = fileList.length;
                     sendFile(0);
 
-
                 }
             });
 
@@ -331,6 +330,7 @@ function deploySystemMain(stage, theme) {
                 console.log('web - Deploy a themed build');
                 console.log('sql - Deploy SQL');
                 console.log('usql - Upgrade SQL');
+                console.log('usqlnt - Upgrade SQL without theme SQL files')
                 console.log('docker - deploy a docker instance');
                 console.log('tests - Run Tests');
                 console.log('q - Exit deploy mode');
@@ -350,6 +350,9 @@ function deploySystemMain(stage, theme) {
                 break;
             case 'usql':
                 upgradeSQL(stage, theme);
+                break;
+            case 'usqlnt':
+                upgradeSQL(stage, theme, false);
                 break;
             case 'docker':
                 deployDocker(stage, theme);
@@ -537,8 +540,62 @@ function deploySQL(stage, theme) {
     });
 }
 
-function upgradeSQL(stage, theme) {
-    sendSQLFiles(stage, theme, 'database/upgrade.json', upgradeThemeSQL);
+
+function upgradeSQL(stage, theme, theme_files= true) {
+
+    //See if we have an image upload config file
+    const image_upload_path = 'src/theme/builder/images'
+    const image_upload_file = `${image_upload_path}/image_upload.json`
+    if(fs.existsSync(image_upload_file)) {
+        console.log(`Found image_upload.json reading image config file Using profile ${process.env.AWS_PROFILE}`)
+        process.env.AWS_PROFILE = configs.custom[stage].profile
+
+
+        const bucket = `locaria-${stage}-${theme}`
+        const path = '/Assets'
+        let files = JSON.parse(fs.readFileSync(image_upload_file))
+        uploadFilesToS3(files,bucket,path,image_upload_path).then( (files) => {
+            fs.writeFileSync(image_upload_file,JSON.stringify(files))
+            usqlSQL(stage,theme,theme_files)
+        })
+
+    } else {
+        console.log('No image config file found for theme')
+        usqlSQL(stage,theme,theme_files)
+    }
+
+}
+
+const usqlSQL = (stage,theme, theme_files) => {
+    if(theme_files){
+        sendSQLFiles(stage, theme, 'database/upgrade.json', upgradeThemeSQL);
+    } else {
+        sendSQLFiles(stage, theme, 'database/upgrade.json', deploySystemMain);
+    }
+}
+
+const uploadFilesToS3 = async(files, bucket, path, image_upload_path) => {
+
+    for(let i in files){
+        if(files[i]['url'] === undefined){
+            let file = `${image_upload_path}/${i}`
+            console.log(`Uploading ${file} to ${bucket}${path}/${i}`)
+            const body = fs.readFileSync(file)
+            const s3 = new AWS.S3()
+
+            const upload = await s3.upload({
+                Bucket: bucket,
+                Key: `${bucket}${path}`,
+                Body: body
+            }).promise()
+
+            if(upload.Location !== undefined){
+                files[i]['url'] = upload.Location
+            }
+        }
+    }
+
+    return files
 }
 
 function upgradeThemeSQL(stage, theme) {

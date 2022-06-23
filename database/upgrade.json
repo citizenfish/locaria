@@ -3,11 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-      "database/functions/utility/aws_lambda_interface.sql",
-        "database/functions/triggers/messages_trigger.sql",
-        "database/functions/internal/file_upload/add_file.sql",
-        "database/functions/locaria_internal_gateway.sql"
-
+        "tests/unit_tests/no_op.sql"
       ],
       "substitutions": "../tests.json"
     }
