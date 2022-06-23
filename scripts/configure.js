@@ -547,15 +547,15 @@ function upgradeSQL(stage, theme, theme_files= true) {
     const image_upload_path = 'src/theme/builder/images'
     const image_upload_file = `${image_upload_path}/image_upload.json`
     if(fs.existsSync(image_upload_file)) {
-        console.log(`Found image_upload.json reading image config file Using profile ${process.env.AWS_PROFILE}`)
-        process.env.AWS_PROFILE = configs.custom[stage].profile
 
+        process.env.AWS_PROFILE = configs.custom[stage].profile
+        console.log(`Found image_upload.json reading image config file Using profile ${process.env.AWS_PROFILE}`)
 
         const bucket = `locaria-${stage}-${theme}`
         const path = '/Assets'
         let files = JSON.parse(fs.readFileSync(image_upload_file))
         uploadFilesToS3(files,bucket,path,image_upload_path).then( (files) => {
-            fs.writeFileSync(image_upload_file,JSON.stringify(files))
+            fs.writeFileSync(image_upload_file, JSON.stringify(files))
             usqlSQL(stage,theme,theme_files)
         })
 
