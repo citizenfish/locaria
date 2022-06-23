@@ -101,33 +101,17 @@ export default function AdminEventsLoader(props) {
 
 
     return(
-        <Box
-            component="div" sx={{
-            p:2,
-            mt:2,
-            border: '1px solid grey',
-            borderRadius: '5px' }}>
-
-
+        <Box component="div"
+             sx={{
+                 p:2,
+                 mt:2,
+             }}
+        >
             {authorities !== null &&
             <>
-                <Button
-                    variant="outlined"
-                    onClick={() => {
-                        loadEventsData()
-                    }}
-                    component="span"
-                    disabled={chosenAuthority.id === 0 }
-                >
-                    Load Events
-                </Button>
-
-                &nbsp;&nbsp;
                 <Select
                     id="laSelectControl"
                     value={chosenAuthority.id}
-                    label={chosenAuthority.name}
-
                     onChange={handleAuthorityChosen}
                 >
                     {authoritiesList(authorities)}
@@ -156,6 +140,17 @@ export default function AdminEventsLoader(props) {
 
                     </Checkbox>
                 </>}
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                      loadEventsData()
+                  }}
+                  component="span"
+                  disabled={chosenAuthority.id === 0}
+                  sx={{marginLeft: 2}}
+                >
+                    Load Events
+                </Button>
             </>
             }
 

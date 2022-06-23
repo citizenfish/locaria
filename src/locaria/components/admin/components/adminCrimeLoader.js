@@ -82,30 +82,15 @@ export default function AdminCrimeLoader(props) {
     }
 
     return(
-        <Box
-            component="div" sx={{
-            p:2,
-            mt:2,
-            border: '1px solid grey',
-            borderRadius: '5px' }}>
-
-            <Button
-                variant="outlined"
-                onClick={() => {
-                    loadCrimeData()
-                }}
-                component="span"
-                disabled={chosenForce.id === 0 ? true : false}
-            >
-                Load Crime Data
-            </Button>
-
-            &nbsp;&nbsp;
+        <Box component="div"
+            sx={{
+                p:2,
+                mt:2,
+            }}
+        >
             <Select
                 id="laSelectControl"
                 value={chosenForce.id}
-                label={chosenForce.name}
-
                 onChange={handleForceChosen}
             >
                 {
@@ -122,6 +107,17 @@ export default function AdminCrimeLoader(props) {
                 </>
 
             }
+            <Button
+                variant="outlined"
+                onClick={() => {
+                    loadCrimeData()
+                }}
+                component="span"
+                disabled={chosenForce.id === 0}
+                sx={{marginLeft: 2}}
+            >
+                Load Crime Data
+            </Button>
         </Box>
     )
 }

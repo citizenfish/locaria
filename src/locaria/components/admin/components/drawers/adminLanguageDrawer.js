@@ -1,6 +1,16 @@
 import React, {useRef, useState} from "react"
 
-import {Checkbox, Drawer, FormControlLabel, FormGroup, InputLabel, Select, TextField} from "@mui/material";
+import {
+    Alert,
+    Checkbox,
+    Drawer,
+    FormControlLabel,
+    FormGroup,
+    InputLabel,
+    Select,
+    Snackbar,
+    TextField
+} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
@@ -27,9 +37,8 @@ export default function AdminLanguageDrawer(props) {
     const history = useHistory();
 
     const [cookies, setCookies] = useCookies(['location']);
-
-
-    const [current, setCurrent]=useState('ENG');
+    const [unsavedChanges, setUnsavedChanges] = useState(false);
+    const [current, setCurrent] = useState('ENG');
 
     const langDef={
         "siteTitle":{ description:"Sites title", default: "Locaria"},
@@ -136,20 +145,30 @@ export default function AdminLanguageDrawer(props) {
 
     const field = (field) => {
         return (
-            <TextField
-                id={field}
-                label={langDef[field].description}
-                defaultValue={langDef[field].default}
-                variant="filled"
-                fullWidth={true}
-                value={language[field]}
-                onChange={(e) => {
-                    dispatch(setAdminLanguageValue({
-                        key: field,
-                        value: e.target.value
-                    }));
-                }}
-            />
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: '300px 1fr',
+                padding: '8px 32px',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                columnGap: 16,
+            }}>
+                <span style={{alignSelf: 'center'}}>{langDef[field].description || field}</span>
+                <TextField
+                    id={field}
+                    // label={langDef[field].description}
+                    defaultValue={langDef[field].default || langDef[field]}
+                    variant="outlined"
+                    fullWidth={true}
+                    value={language[field]}
+                    onChange={(e) => {
+                        setUnsavedChanges(true);
+                        dispatch(setAdminLanguageValue({
+                            key: field,
+                            value: e.target.value
+                        }));
+                    }}
+                />
+            </div>
         )
     }
 
@@ -162,22 +181,41 @@ export default function AdminLanguageDrawer(props) {
             className={classes.adminDrawers}
 
         >
-            <Box sx={{margin:"50px"}}>
-            <h1>Language</h1>
-            {language&&
-                <>
-                    {Object.keys(langDef).map(value => (
-                            field(value)
-                        ))
-                    }
-                    <Button variant={"outlined"} onClick={(e) => {
-                        setConfig(e)
-                    }}>Save</Button>
-                </>
+            <Box>
+            <h1 style={{marginLeft: 32}}>Language</h1>
+            {language &&
+                <div style={{marginBottom: 105}}>
+                    {Object.keys(langDef).map(field)}
+                </div>
             }
             </Box>
-
-
+            <Snackbar
+              anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+              open={unsavedChanges}
+            >
+                <Alert
+                  severity={"warning"}
+                  sx={{
+                      width: '100%',
+                      alignItems: 'center',
+                  }}
+                >
+                    You have unsaved changes
+                    <Button
+                      variant={"contained"}
+                      size={"small"}
+                      sx={{
+                          marginLeft: 2,
+                      }}
+                      onClick={(e) => {
+                          setUnsavedChanges(false);
+                          setConfig(e);
+                      }}
+                    >
+                        Save
+                    </Button>
+                </Alert>
+            </Snackbar>
         </Drawer>
     )
 }

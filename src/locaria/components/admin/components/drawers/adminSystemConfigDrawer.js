@@ -147,7 +147,6 @@ export default function AdminSystemConfigDrawer(props) {
                             <Tab value="Layout" label="Layout" />
                             <Tab value="Look and Feel" label="Look and Feel" />
                             <Tab value="Search" label="Search" />
-                            <Tab value="Results" label="Results" />
                             <Tab value="Maps" label="Maps" />
 
                         </Tabs>
@@ -352,10 +351,9 @@ export default function AdminSystemConfigDrawer(props) {
                             uuid={config.siteLogo}
                             sx={{
                                 width: '100%',
+                                marginBottom: 3,
                             }}
                         />
-
-                        <Divider sx={{width: '100%', marginTop: 1, marginBottom: 2}} />
 
                         <UploadWidget
                             usageFilter={"logo"}
@@ -367,10 +365,9 @@ export default function AdminSystemConfigDrawer(props) {
                             uuid={config.siteFooter}
                             sx={{
                                 width: '100%',
+                                marginBottom: 3,
                             }}
                         />
-
-                        <Divider sx={{width: '100%', marginTop: 1, marginBottom: 2}} />
 
                         <UploadWidget
                             usageFilter={"iconMap"}
@@ -396,18 +393,48 @@ export default function AdminSystemConfigDrawer(props) {
                           maxWidth: 1200,
                       }}
                     >
-                        <TextField
-                            id="searchLimit"
-                            label="Search limit"
-                            defaultValue={40}
-                            variant="filled"
-                            value={config.searchLimit}
-                            onChange={(e)=>{
-                                setUnsavedChanges(true);
-                                dispatch(setSystemConfigValue({key:"searchLimit",value:parseInt(e.target.value)}));
-                            }}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                        }}>
+                            <TextField
+                                id="searchLimit"
+                                label="Search limit"
+                                defaultValue={40}
+                                variant="outlined"
+                                value={config.searchLimit}
+                                onChange={(e)=>{
+                                    setUnsavedChanges(true);
+                                    dispatch(setSystemConfigValue({key:"searchLimit",value:parseInt(e.target.value)}));
+                                }}
+                                sx={{
+                                    marginRight: 2,
+                                    minWidth: '150px',
+                                }}
+                            />
+                            <FormControl fullWidth>
+                                <InputLabel id="viewMode-label">View mode</InputLabel>
+                                <Select
+                                  labelId="viewMode-label"
+                                  id="viewMode"
+                                  value={config.viewMode}
+                                  label="View Mode"
+                                  onChange={(e)=>{
+                                      setUnsavedChanges(true);
+                                      dispatch(setSystemConfigValue({key:"viewMode",value:e.target.value}));
+                                  }}
+                                >
+                                    <MenuItem value={"Full"}>Full screen (with Map)</MenuItem>
+                                    <MenuItem value={"FullDetails"}>Full screen details</MenuItem>
+                                    <MenuItem value={"Left"}>Left draw (App Mode only)</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
 
-                        />
+                        <Divider sx={{width: '100%', marginTop: 2, marginBottom: 2}} />
+
                         <FormGroup>
                             <FormControlLabel
                                 control={<Checkbox defaultChecked checked={config.searchDistance}/>}
@@ -444,120 +471,164 @@ export default function AdminSystemConfigDrawer(props) {
                         </FormGroup>
                     </div>}
 
-                    {tabc === 'Results' && <div>
-                        <FormControl fullWidth>
-                            <InputLabel id="viewMode-label">View mode</InputLabel>
-                            <Select
-                                labelId="viewMode-label"
-                                id="viewMode"
-                                value={config.viewMode}
-                                label="View Mode"
+                    {tabc === 'Maps' && <div
+                          style={{
+                              paddingTop: 16,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'flex-start',
+                              width: '100%',
+                              maxWidth: 1200,
+                          }}
+                    >
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                            <TextField
+                                id="mapXYZ"
+                                label="mapXYZ URL"
+                                defaultValue={"https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv"}
+                                variant="outlined"
+                                value={config.mapXYZ}
                                 onChange={(e)=>{
                                     setUnsavedChanges(true);
-                                    dispatch(setSystemConfigValue({key:"viewMode",value:e.target.value}));
+                                    dispatch(setSystemConfigValue({key:"mapXYZ",value:e.target.value}));
                                 }}
-                            >
-                                <MenuItem value={"Full"}>Full screen (with Map)</MenuItem>
-                                <MenuItem value={"FullDetails"}>Full screen details</MenuItem>
-                                <MenuItem value={"Left"}>Left draw (App Mode only)</MenuItem>
-
-                            </Select>
-                        </FormControl>
-                    </div>}
-
-                    {tabc === 'Maps' && <div>
-
-                        <TextField
-                            id="mapXYZ"
-                            label="mapXYZ URL"
-                            defaultValue={"https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=w69znUGxB6IW5FXkFMH5LQovdZxZP7jv"}
-                            variant="filled"
-                            value={config.mapXYZ}
-                            onChange={(e)=>{
-                                setUnsavedChanges(true);
-                                dispatch(setSystemConfigValue({key:"mapXYZ",value:e.target.value}));
-                            }}
-                        />
-                        <TextField
-                            id="mapAttribution"
-                            label="Attribution"
-                            defaultValue={"© Crown copyright and database rights 2022 OS"}
-                            variant="filled"
-                            value={config.mapAttribution}
-                            onChange={(e)=>{
-                                setUnsavedChanges(true);
-                                dispatch(setSystemConfigValue({key:"mapAttribution",value:e.target.value}));
-                            }}
-                        />
-                        <TextField
-                            id="mapBuffer"
-                            label="Buffer"
-                            defaultValue={50000}
-                            variant="filled"
-                            value={config.mapBuffer}
-                            onChange={(e)=>{
-                                setUnsavedChanges(true);
-                                dispatch(setSystemConfigValue({key:"mapBuffer",value:parseInt(e.target.value)}));
-                            }}
-                        />
-                        <h2>Default Zoom</h2>
-                        <Slider
-                            id="defaultZoom"
-                            aria-label="Default Zoom"
-                            value={config.defaultZoom}
-                            defaultValue={15}
-                            min={1}
-                            max={25}
-                            step={1}
-                            valueLabelDisplay="on"
-                            onChange={(e)=>{
-                                setUnsavedChanges(true);
-                                dispatch(setSystemConfigValue({key:"defaultZoom",value:parseInt(e.target.value)}));
-                            }}
-                        />
-                        <h2>Cluster cut off</h2>
-                        <Slider
-                            id="clusterCutOff"
-                            aria-label="Cluster cut off"
-                            value={config.clusterCutOff}
-                            defaultValue={5}
-                            min={1}
-                            max={25}
-                            step={1}
-                            valueLabelDisplay="on"
-                            onChange={(e)=>{
-                                setUnsavedChanges(true);
-                                dispatch(setSystemConfigValue({key:"clusterCutOff",value:parseInt(e.target.value)}));
-                            }}
-                        />
-                        <TextField
-                            id="clusterWidthMod"
-                            label="clusterWidthMod"
-                            defaultValue={20}
-                            variant="filled"
-                            value={config.clusterWidthMod}
-                            onChange={(e)=>{
-                                setUnsavedChanges(true);
-                                dispatch(setSystemConfigValue({key:"clusterWidthMod",value:parseInt(e.target.value)}));
-                            }}
-                        />
-                        <FormControl fullWidth>
-                            <InputLabel id="clusterAlgorithm-label">Age</InputLabel>
-                            <Select
-                                labelId="clusterAlgorithm-label"
-                                id="clusterAlgorithm"
-                                value={config.clusterAlgorithm}
-                                label="Age"
+                                sx={{
+                                    minWidth: 320,
+                                    marginRight: 1,
+                                }}
+                            />
+                            <TextField
+                                id="mapAttribution"
+                                label="Attribution"
+                                defaultValue={"© Crown copyright and database rights 2022 OS"}
+                                variant="outlined"
+                                value={config.mapAttribution}
                                 onChange={(e)=>{
                                     setUnsavedChanges(true);
-                                    dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
+                                    dispatch(setSystemConfigValue({key:"mapAttribution",value:e.target.value}));
                                 }}
-                            >
-                                <MenuItem value={"DBSCAN"}>DBSCAN</MenuItem>
-                                <MenuItem value={"KMEANSDBSCAN"}>KMEANSDBSCAN</MenuItem>
-                                <MenuItem value={"KMEANS"}>KMEANS</MenuItem>
-                            </Select>
-                        </FormControl>
+                                sx={{
+                                    minWidth: 320,
+                                    marginRight: 1,
+                                }}
+                            />
+                            <TextField
+                                id="mapBuffer"
+                                label="Buffer"
+                                defaultValue={50000}
+                                variant="outlined"
+                                value={config.mapBuffer}
+                                onChange={(e)=>{
+                                    setUnsavedChanges(true);
+                                    dispatch(setSystemConfigValue({key:"mapBuffer",value:parseInt(e.target.value)}));
+                                }}
+                                sx={{
+                                    minWidth: 160,
+                                }}
+                            />
+                        </div>
+
+                        <Divider sx={{width: '100%', marginTop: 2}} />
+
+                        <div style={{
+                            display: 'grid',
+                            columnGap: 2,
+                            rowGap: 1,
+                            gridTemplateColumns: '160px 1fr',
+                            width: '100%',
+                        }}>
+                            <h3>Default Zoom</h3>
+                            <Slider
+                                id="defaultZoom"
+                                aria-label="Default Zoom"
+                                value={config.defaultZoom}
+                                defaultValue={15}
+                                min={1}
+                                max={25}
+                                step={1}
+                                valueLabelDisplay="on"
+                                onChange={(e)=>{
+                                    setUnsavedChanges(true);
+                                    dispatch(setSystemConfigValue({key:"defaultZoom",value:parseInt(e.target.value)}));
+                                }}
+                                sx={{
+                                    alignSelf: 'center',
+                                }}
+                            />
+                        </div>
+
+                        <div style={{
+                            display: 'grid',
+                            columnGap: 2,
+                            rowGap: 1,
+                            gridTemplateColumns: '160px 1fr',
+                            width: '100%',
+                        }}>
+                            <h3>Cluster cut off</h3>
+                            <Slider
+                                id="clusterCutOff"
+                                aria-label="Cluster cut off"
+                                value={config.clusterCutOff}
+                                defaultValue={5}
+                                min={1}
+                                max={25}
+                                step={1}
+                                valueLabelDisplay="on"
+                                onChange={(e)=>{
+                                    setUnsavedChanges(true);
+                                    dispatch(setSystemConfigValue({key:"clusterCutOff",value:parseInt(e.target.value)}));
+                                }}
+                                sx={{
+                                    alignSelf: 'center',
+                                }}
+                            />
+                        </div>
+
+                        <Divider sx={{width: '100%', marginTop: 2, marginBottom: 2}} />
+
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                            <TextField
+                                id="clusterWidthMod"
+                                label="clusterWidthMod"
+                                defaultValue={20}
+                                variant="outlined"
+                                value={config.clusterWidthMod}
+                                onChange={(e)=>{
+                                    setUnsavedChanges(true);
+                                    dispatch(setSystemConfigValue({key:"clusterWidthMod",value:parseInt(e.target.value)}));
+                                }}
+                                sx={{
+                                    marginRight: 1,
+                                }}
+                            />
+                            <FormControl fullWidth>
+                                <InputLabel id="clusterAlgorithm-label">Age</InputLabel>
+                                <Select
+                                    labelId="clusterAlgorithm-label"
+                                    id="clusterAlgorithm"
+                                    value={config.clusterAlgorithm}
+                                    label="Age"
+                                    onChange={(e)=>{
+                                        setUnsavedChanges(true);
+                                        dispatch(setSystemConfigValue({key:"clusterAlgorithm",value:e.target.value}));
+                                    }}
+                                >
+                                    <MenuItem value={"DBSCAN"}>DBSCAN</MenuItem>
+                                    <MenuItem value={"KMEANSDBSCAN"}>KMEANSDBSCAN</MenuItem>
+                                    <MenuItem value={"KMEANS"}>KMEANS</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
                     </div>}
 
                     <Snackbar
