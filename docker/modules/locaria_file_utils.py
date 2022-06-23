@@ -2,6 +2,7 @@ import psycopg
 import os,subprocess
 import json
 import re
+import boto3
 
 def get_local_config(path):
     try:
@@ -215,4 +216,17 @@ def ogr_loader(file, parameters):
             print(error.stderr)
 
     return {'status' : 'FARGATE_PROCESSED', 'result' : {'schema': file.get('upload_schema',''), 'layers': layers, 'filename' : filename,  'message' : 'OGR SUCCESS'}}
+
+def upload_to_s3(profile, path, bucket, s3_path):
+    try:
+        boto3.setup_default_session(profile_name=profile)
+        s3_client = boto3.client('s3')
+        obj_path = f"{s3_path}/{os.path.basename(path)}"
+        res = s3_client.upload_file(path, bucket, obj_path, ExtraArgs={'ACL':'public-read'})
+        url = f'https://{bucket}.s3.amazonaws.com/{obj_path}'
+    except Exception as e:
+        return {"error" : str(e)}
+
+    return {"url" :url}
+
 
