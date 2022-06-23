@@ -238,7 +238,7 @@ const  AdminEditFeatureDrawer = (props) => {
 			sx={{
 				'.MuiDrawer-paper': {
 					borderLeft: 'none',
-					zIndex: 0,
+					zIndex: 2,
 				},
 			}}
 		>

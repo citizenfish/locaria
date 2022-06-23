@@ -127,7 +127,8 @@ export default function AdminSystemConfigDrawer(props) {
             sx={{
                 '.MuiDrawer-paper': {
                     borderLeft: 'none',
-                    zIndex: 0,
+                    zIndex: 2,
+                    backgroundColor: 'white',
                 },
             }}
         >

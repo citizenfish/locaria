@@ -147,7 +147,8 @@ export default function AdminDashboardDrawer(props) {
                 },
                 '.MuiDrawer-paper': {
                     borderLeft: 'none',
-                    zIndex: 0,
+                    zIndex: 2,
+                    backgroundColor: 'white',
                 },
             }}
         >
@@ -221,7 +222,7 @@ export default function AdminDashboardDrawer(props) {
                                 }}>
                                     {overview.week && overview.week.searches}
                                 </Typography>
-                                <Typography sx={{fontSize:14}}>
+                                <Typography sx={{fontSize:12}}>
                                     Sessions this week: {overview.week && overview.week.sessions}
                                 </Typography>
                             </CardContent>
@@ -248,7 +249,7 @@ export default function AdminDashboardDrawer(props) {
                                 color: 'white',
                                 padding: 1,
                             }}>
-                                <Typography sx ={{fontSize:14}}>
+                                <Typography>
                                     Searches this month:
                                 </Typography>
                                 <Typography sx={{
@@ -257,7 +258,7 @@ export default function AdminDashboardDrawer(props) {
                                 }}>
                                     {overview.month && overview.month.searches}
                                 </Typography>
-                                <Typography sx ={{fontSize:14}}>
+                                <Typography sx ={{fontSize:12}}>
                                     Sessions this month: {overview.month && overview.month.sessions}
                                 </Typography>
                             </CardContent>
@@ -284,7 +285,7 @@ export default function AdminDashboardDrawer(props) {
                                 color: 'white',
                                 padding: 1,
                             }}>
-                                <Typography sx ={{fontSize:14}}>
+                                <Typography>
                                     Searches this year:
                                 </Typography>
                                 <Typography sx={{
@@ -293,7 +294,7 @@ export default function AdminDashboardDrawer(props) {
                                 }}>
                                     {overview.year && overview.year.searches}
                                 </Typography>
-                                <Typography sx ={{fontSize:14}}>
+                                <Typography sx ={{fontSize:12}}>
                                     Sessions this year: {overview.year && overview.year.sessions}
                                 </Typography>
                             </CardContent>

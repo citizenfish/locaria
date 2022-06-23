@@ -134,7 +134,7 @@ export default function AdminCategoryConfigDrawer(props) {
 
     if (category) {
         return (
-            <>
+            <div style={{zIndex: 0}}>
                 <h1 style={{color: 'black'}}>{category}</h1>
                 <TextField
                     id="name"
@@ -261,7 +261,7 @@ export default function AdminCategoryConfigDrawer(props) {
                 >
                     Cancel
                 </Button>
-            </>
+            </div>
 
         )
     } else {
@@ -274,7 +274,7 @@ export default function AdminCategoryConfigDrawer(props) {
                 sx={{
                   '.MuiDrawer-paper': {
                     borderLeft: 'none',
-                    zIndex: 0,
+                    zIndex: 2,
                   },
                 }}
             >
