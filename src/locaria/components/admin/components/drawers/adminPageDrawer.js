@@ -19,6 +19,7 @@ import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlic
 import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
 import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
 import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import Divider from "@mui/material/Divider";
 
 
 export default function AdminPageDrawer(props) {
@@ -194,31 +195,61 @@ export default function AdminPageDrawer(props) {
                             margin={"dense"}
                             value={title}
                             onChange={(e)=>{setTitle(e.target.value)}}
-
+                            sx={{
+                                marginBottom: 0,
+                            }}
                         />
                         <MDEditor
                             id={"pageData"}
                             value={data}
                             onChange={setData}
                             height={500}
-
+                            style={{
+                                borderTopLeftRadius: 0,
+                                borderTopRightRadius: 0,
+                            }}
                         />
-                        <Button onClick={setPageDataApi}>Save</Button>
-                        <Button onClick={()=>{
-                            dispatch(setPage(undefined));
-                        }}>Cancel</Button>
-                        <Button color={"warning"}>Delete</Button>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            marginTop: 16,
+                        }}>
+                            <Button
+                              variant={"contained"}
+                              onClick={setPageDataApi}
+                              sx={{
+                                  marginRight: 1,
+                              }}
+                            >
+                                Save
+                            </Button>
+                            <Button
+                              variant={"contained"}
+                              onClick={()=>{
+                                    dispatch(setPage(undefined));
+                                }}
+                              sx={{
+                                  marginRight: 1,
+                              }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant={"contained"}
+                                color={"warning"}
+                            >
+                                Delete
+                            </Button>
+                        </div>
                     </Container>
                 )
             }
         } else {
-            return (
-                <></>
-            )
+            return null
         }
     }
 
-    let pageList=[];
+    let pageList = [];
     for(let p in pages) {
         pageList.push( <MenuItem key={p} value={p}>{p} - {pages[p].title}</MenuItem>)
     }
@@ -229,50 +260,64 @@ export default function AdminPageDrawer(props) {
             open={open}
             variant="persistent"
             className={classes.adminDrawers}
-
+            sx={{
+                '.MuiDrawer-paper': {
+                    borderLeft: 'none',
+                    zIndex: 2,
+                },
+            }}
         >
-            {pages&&!page ? (
+            {pages && !page ? (
                 <Container>
-                        <h2>Add Page</h2>
-                        <TextField
-                            id="pageId"
-                            label="Page Id"
-                            variant="filled"
-                            defaultValue={"My New Page"}
-                            fullWidth
-                            margin={"dense"}
-                        />
-                        <TextField
-                            id="pageName"
-                            label="Page Name"
-                            variant="filled"
-                            defaultValue={"My page title"}
-                            fullWidth
-                            margin={"dense"}
-
-                        />
-                        <Button variant={"outlined"} onClick={() => {
+                    <h2>Add Page</h2>
+                    <TextField
+                        id="pageId"
+                        label="Page Id"
+                        variant="outlined"
+                        defaultValue={"My New Page"}
+                        fullWidth
+                        margin={"dense"}
+                    />
+                    <TextField
+                        id="pageName"
+                        label="Page Name"
+                        variant="outlined"
+                        defaultValue={"My page title"}
+                        fullWidth
+                        margin={"dense"}
+                    />
+                    <Button
+                        variant="contained"
+                        onClick={() => {
                             addPage();
-                        }}>Add Page</Button>
+                        }}
+                        sx={{
+                            marginTop: 2,
+                        }}
+                    >
+                        Add Page
+                    </Button>
 
-                        <h2>Edit Page</h2>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Edit Page</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={page}
-                                label="Page"
-                                onChange={(e) => {
-                                    dispatch(setPage(e.target.value));
-                                }}
-                            >
-                                {pageList}
-                            </Select>
-                        </FormControl>
-                </Container>) : (<></>)}
-            <PageDetails></PageDetails>
+                    <Divider sx={{width: '100%', marginTop: 2}} />
 
+                    <h2>Edit Page</h2>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Edit Page</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={page}
+                            label="Page"
+                            onChange={(e) => {
+                                dispatch(setPage(e.target.value));
+                            }}
+                        >
+                            {pageList}
+                        </Select>
+                    </FormControl>
+                </Container>
+            ) : null}
+            <PageDetails />
         </Drawer>
     )
 }

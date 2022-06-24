@@ -134,13 +134,13 @@ export default function AdminCategoryConfigDrawer(props) {
 
     if (category) {
         return (
-            <>
-                <h1>{category}</h1>
+            <div style={{zIndex: 0}}>
+                <h1 style={{color: 'black'}}>{category}</h1>
                 <TextField
                     id="name"
                     label="Name"
                     fullWidth={true}
-                    variant="filled"
+                    variant="outlined"
                     value={getCategoryData(category).name}
                     onChange={(e) => {
                         dispatch(setAdminCategoryValue({
@@ -149,12 +149,15 @@ export default function AdminCategoryConfigDrawer(props) {
                             value: e.target.value
                         }));
                     }}
+                    sx={{
+                        marginBottom: 1,
+                    }}
                 />
                 <TextField
                     id="description"
                     label="Description"
                     fullWidth={true}
-                    variant="filled"
+                    variant="outlined"
                     value={getCategoryData(category).description}
                     onChange={(e) => {
                         dispatch(setAdminCategoryValue({
@@ -163,28 +166,65 @@ export default function AdminCategoryConfigDrawer(props) {
                             value: e.target.value
                         }));
                     }}
+                    sx={{
+                        marginBottom: 1,
+                    }}
                 />
-                <Divider></Divider>
-                <ColorPicker value={getCategoryData(category).color} defaultValue="transparent" onChange={(color) => {
-                    dispatch(setAdminCategoryValue({
-                        category: category,
-                        key: "color",
-                        value: `${color.css.backgroundColor}`
-                    }));
-                }}/>
-                <UploadWidget usageFilter={"panel"} title={"Select Panel image"} setFunction={setPanel}
-                              uuid={getCategoryData(category).image}></UploadWidget>
 
-                <UploadWidget usageFilter={"iconMap"} title={"Select map icon"} setFunction={setIcon}
-                              uuid={getCategoryData(category).mapIcon}></UploadWidget>
+                <div style={{width: 250, marginBottom: 16,}} className={"colour-picker-container"}>
+                    <ColorPicker
+                        value={getCategoryData(category).color}
+                        defaultValue="transparent"
+                        onChange={(color) => {
+                            dispatch(setAdminCategoryValue({
+                                category: category,
+                                key: "color",
+                                value: `${color.css.backgroundColor}`
+                            }));
+                        }}
+                    />
+                </div>
+
+                <FormGroup style={{color: 'black'}}>
+                    <FormControlLabel
+                      control={<Checkbox checked={getCategoryData(category).display}/>}
+                      label="Display in search"
+                      onChange={(e) => {
+                          dispatch(setAdminCategoryValue({
+                              category: category,
+                              key: "display",
+                              value: e.target.checked
+                          }));
+                      }}
+                    />
+                </FormGroup>
+
+                <Divider sx={{marginTop: 1, marginBottom: 2,}} />
+
+                <UploadWidget
+                    usageFilter={"panel"}
+                    title={"Select Panel image"}
+                    setFunction={setPanel}
+                    uuid={getCategoryData(category).image}
+                />
+                <div style={{marginTop: 16}} />
+                <UploadWidget
+                    usageFilter={"iconMap"}
+                    title={"Select map icon"}
+                    setFunction={setIcon}
+                    uuid={getCategoryData(category).mapIcon}
+                />
+
+                <Divider sx={{marginTop: 2, marginBottom: 1,}} />
 
                 <TextField
+                    multiline
+                    rows={6}
                     id="fields"
                     label="Field Config"
                     fullWidth={true}
-
                     defaultValue={"{}"}
-                    variant="filled"
+                    variant="outlined"
                     value={getCategoryData(category).fields}
                     onChange={(e) => {
                         dispatch(setAdminCategoryValue({
@@ -193,43 +233,52 @@ export default function AdminCategoryConfigDrawer(props) {
                             value: e.target.value
                         }));
                     }}
+                    sx={{
+                        marginTop: 2,
+                        marginBottom: 1,
+                    }}
                 />
-                <FormGroup>
-                    <FormControlLabel control={<Checkbox checked={getCategoryData(category).display}/>}
-                                      label="Display in search" onChange={(e) => {
-                        dispatch(setAdminCategoryValue({
-                            category: category,
-                            key: "display",
-                            value: e.target.checked
-                        }));
-                    }}/>
-                </FormGroup>
 
+                <Divider sx={{marginTop: 1, marginBottom: 3,}} />
 
+                <Button
+                    variant={"contained"}
+                    onClick={(e) => {
+                        setConfig(e);
+                    }}
+                >
+                    Save
+                </Button>
 
-                <Button onClick={(e) => {
-                    setConfig(e);
-                }}>Save</Button>
-
-                <Button onClick={() => {
-                    setCategory(undefined);
-                }}>Cancel</Button>
-            </>
+                <Button
+                    variant={"contained"}
+                    onClick={() => {
+                        setCategory(undefined);
+                    }}
+                    sx={{
+                        marginLeft: 1,
+                    }}
+                >
+                    Cancel
+                </Button>
+            </div>
 
         )
     } else {
-
-
         return (
             <Drawer
                 anchor="right"
                 open={open}
                 variant="persistent"
                 className={classes.adminDrawers}
-
+                sx={{
+                  '.MuiDrawer-paper': {
+                    borderLeft: 'none',
+                    zIndex: 2,
+                  },
+                }}
             >
-                <Box sx={{margin: "50px"}}>
-
+                <Box sx={{margin: "0 50px"}}>
                     <h1>Categories</h1>
                     <FormControl fullWidth>
                         <InputLabel id="category-label">Select category</InputLabel>
@@ -239,7 +288,6 @@ export default function AdminCategoryConfigDrawer(props) {
                             value={category}
                             label="Category"
                             fullWidth={true}
-
                             onChange={(e) => {
                                 setCategory(e.target.value);
                             }}

@@ -24,9 +24,9 @@ const theme = createTheme({
 const useStyles = makeStyles({
 	adminDrawers: {
 		'&	.MuiDrawer-paperAnchorDockedRight': {
-			top: 140,
-			width: "calc(100vw - 245px)",
-			height: "calc(100vh - 140px)",
+			top: 64,
+			width: "calc(100vw - 240px)",
+			height: "calc(100vh - 64px)",
 			overflowY:"auto"
 		}
 	},

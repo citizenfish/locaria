@@ -68,37 +68,30 @@ export default function AdminFloodMonitoringLoader(props) {
     }
 
     return(
-        <Box
-            component="div" sx={{
-            p:2,
-            mt:2,
-            border: '1px solid grey',
-            borderRadius: '5px' }}>
-
-            <Button
-                variant="outlined"
-                onClick={() => {
-                    loadFloodData()
-                }}
-                disabled = {chosenCounty ==='-- Select County --' ? true : false}
-                component="span"
-            >
-                Load Flood Data
-            </Button>
-            &nbsp;:&nbsp;
-
+        <Box component="div"
+            sx={{
+                p:2,
+                mt:2,
+            }}
+        >
             <Select
                 id="countySelectControl"
                 value={chosenCounty}
-                label={chosenCounty}
                 onChange={handleCountyChosen}
             >
-                {
-                    counties && countyList(counties)
-                }
+                {counties && countyList(counties)}
             </Select>
-
-
+            <Button
+              variant="outlined"
+              onClick={() => {
+                  loadFloodData()
+              }}
+              disabled = {chosenCounty ==='-- Select County --'}
+              component="span"
+              sx={{marginLeft: 2}}
+            >
+                Load Flood Data
+            </Button>
         </Box>
     )
 }
