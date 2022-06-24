@@ -68,14 +68,16 @@ export default function AdminFileUploader(props) {
     },[])
 
    return (
-       <Box component="div" sx={{
-           p:2,
-           mt:2,
-           border: '1px solid grey',
-           borderRadius: '5px' }}
+       <Box
+           component="div"
+           sx={{
+               p:2,
+               mt:2,
+               flexGrow: 1,
+           }}
        >
-           <Grid container spacing = {3}>
-                 <Grid item xs={4}>
+           <Grid container spacing={3}>
+               <Grid item xs={2}>
                      <input type="file"
                             id = "fileUploadButton"
                             style = {{display :'none'}}
@@ -93,12 +95,12 @@ export default function AdminFileUploader(props) {
                          { fileProgress === -1 && <Button variant={"contained"}
                                                           onClick={() => {setFileProgress(0)}}>Upload ERROR</Button>}
                      </label>
-                 </Grid>
-                <Grid item xs={4}>
-                    <Typography variant="subtitle1" noWrap>
-                        {file !== undefined && fileProgress != 0 && file.name}
-                    </Typography>
-                </Grid>
+               </Grid>
+               <Grid item xs={4}>
+                   <Typography variant="subtitle1" noWrap>
+                       {file !== undefined && fileProgress !== 0 && file.name}
+                   </Typography>
+               </Grid>
                <Grid item xs={4}>
                    {fileProgress > 0 && <LinearProgressWithLabel value={fileProgress} />}
                </Grid>

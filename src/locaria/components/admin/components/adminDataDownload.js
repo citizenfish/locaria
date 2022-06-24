@@ -38,11 +38,12 @@ export default function AdminDataDownload(props) {
     }
 
     return (
-        <Box component="div" sx={{
-            p:2,
-            mt:2,
-            border: '1px solid grey',
-            borderRadius: '5px' }}
+        <Box
+            component="div"
+            sx={{
+                p:2,
+                mt:2,
+            }}
         >
             <Button variant="contained"
                     onClick={downLoadData}

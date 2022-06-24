@@ -99,13 +99,13 @@ export default function AdminNavigator(props) {
                 '& .MuiDrawer-paper': {
                     width: props.dw,
                     boxSizing: 'border-box',
+                    paddingTop: '64px',
+                    zIndex: 101,
                 },
             }}
             >
-            <Toolbar />
-            <Toolbar />
             <Divider />
-            <List>
+            <List sx={{paddingTop: 0}}>
                 <ListItem button onClick={() => {    history.push(`/`);}}>
                     <ListItemIcon >
                             <HomeOutlinedIcon />

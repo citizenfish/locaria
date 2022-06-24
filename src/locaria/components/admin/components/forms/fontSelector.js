@@ -7,21 +7,24 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 
-export default function FontSelector({name,detail})  {
+export default function FontSelector({name, detail, sx})  {
     const dispatch = useDispatch()
     const config = useSelector((state) => state.systemConfigDrawer.config);
 
 
     return (
         <Box sx={{
-            padding: "10px"
+            padding: "10px",
+            ...sx,
         }}>
             <InputLabel id={name+"-label"}>{detail}</InputLabel>
-            <ColorPicker value={config[name]} defaultValue="transparent" onChange={(color) => {
-                dispatch(setSystemConfigValue({key:name,value:color.css.backgroundColor}));
-            }}/>
+            <div className={"colour-picker-container"}>
+                <ColorPicker value={config[name]} defaultValue="transparent" onChange={(color) => {
+                    dispatch(setSystemConfigValue({key:name,value:color.css.backgroundColor}));
+                }}/>
+            </div>
 
-            <FormControl>
+            <FormControl sx={{marginTop: 1}}>
                 <InputLabel id={name+"-fontLabel"}>Font</InputLabel>
                 <Select
                     labelId={name+"-fontLabel"}
@@ -30,6 +33,7 @@ export default function FontSelector({name,detail})  {
                     onChange={(e)=>{
                         dispatch(setSystemConfigValue({key:name+'Font',value:e.target.value}));
                     }}
+                    sx={{minWidth: '150px'}}
                 >
                     <MenuItem value={"Roboto"}>Roboto</MenuItem>
                     <MenuItem value={"Montserrat"}>Montserrat</MenuItem>
