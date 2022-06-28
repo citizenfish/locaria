@@ -52,6 +52,8 @@ export default function AdminUploadDrawer(props) {
     const [mapFileDetails,setMapFileDetails] = useState(null)
     //hook used to display planning loader component
     const [planningLoader, setPlanningLoader] = useState(false)
+    //Used to switch file list fetching on/off
+    const [fetchList, setFetchList] = useState(true)
 
     useEffect(() => {
         let interval;
@@ -135,7 +137,7 @@ export default function AdminUploadDrawer(props) {
     useEffect( () => {
         //Fetch file details every 30 seconds based upon the time hook
         //Don't fetch if we are looking at a file's details
-        if(open&&!openDetails && mapFileDetails === null) {
+        if(open && !openDetails && mapFileDetails === null && fetchList) {
             window.websocket.send({
                 "queue": 'getFiles',
                 "api": "sapi",
@@ -207,7 +209,10 @@ export default function AdminUploadDrawer(props) {
                  flexDirection: 'row',
                  width: '100%',
              }}>
-                 {open && mapFileDetails === null && !openDetails && <AdminDataDownload/> }
+                 {open && mapFileDetails === null && !openDetails &&
+                 <AdminDataDownload
+                     setFetchList = {setFetchList}
+                 /> }
                  {open && mapFileDetails === null && !openDetails &&
                      <AdminFileUploader
                          forceRefresh = {setTime}

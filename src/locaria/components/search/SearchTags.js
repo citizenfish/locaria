@@ -24,10 +24,11 @@ const SearchTags = ({category, changeFunction, currentValue}) => {
 
 		window.websocket.registerQueue("tagsLoader", function (json) {
 			//setTagList(json.packet.tags);
+
 			dispatch(setTagList(json.packet.tags));
 		});
 
-		if (tags.length === 0&&categories[0]) {
+		if (tags.length === 0 && categories[0]) {
 
 			window.websocket.send({
 				"queue": "tagsLoader",

@@ -6,7 +6,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Checkbox from '@mui/material/Checkbox';
 import {useCookies} from "react-cookie";
-import Typography from "@mui/material/Typography";
 
 export default function AdminPlanningLoader(props) {
 
