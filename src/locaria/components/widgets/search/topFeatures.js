@@ -73,7 +73,7 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray}) => {
 		return (<></>);
 	} else {
 		return (
-			<Box sx={sx ? sx : {}}>
+			<Box sx={sx ? sx : {}} key={"topFeatures"}>
 				<Grid container spacing={2} sx={{
 					flexGrow: 1
 				}}>

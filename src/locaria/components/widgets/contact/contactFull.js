@@ -45,8 +45,11 @@ const ContactFull = () => {
 
 
 	return (
-		<Grid container spacing={2} sx={{
-			margin: "10px"
+		<Grid container key={"contactFull"} spacing={2} sx={{
+			margin: "10px",
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center"
 		}}>
 			<Grid item md={4} sx={{
 				textAlign: "left"
@@ -79,7 +82,11 @@ const ContactFull = () => {
 						<TextField
 							id={"contactName"}
 							sx={{
-								marginTop: "10px"
+								marginTop: "10px",
+								"& input": {
+									color: window.systemMain.fontInput,
+									fontFamily: window.systemMain['fontInputFont']
+								}
 							}}
 							label={"Your name"}
 							fullWidth={true}
@@ -91,7 +98,11 @@ const ContactFull = () => {
 
 						<TextField
 							sx={{
-								marginTop: "10px"
+								marginTop: "10px",
+								"& input": {
+									color: window.systemMain.fontInput,
+									fontFamily: window.systemMain['fontInputFont']
+								}
 							}}
 							id={"contactEmail"}
 							label={"Your email"}

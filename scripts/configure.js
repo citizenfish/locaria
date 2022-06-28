@@ -3,6 +3,7 @@
  * @type {string}
  */
 const pg = require("pg");
+const format = require('pg-format');
 
 const expand = require('glob-expand');
 
@@ -16,6 +17,7 @@ const fs = require('fs')
 const {exec} = require('child_process');
 //const dotenv = require('dotenv')
 const AWS = require('aws-sdk')
+const {v4: uuidv4} = require("uuid");
 
 const readline = require('readline').createInterface({
 	input: process.stdin,
@@ -254,9 +256,14 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 						fileData = fileData.replace(match[0], themeOutputs[match[1]]);
 					}
 
-					vars = /\{\{images\.(.*?)\}\}/g;
+					vars = /\{\{assets\.(.*?)\}\}/g;
 					while (match = vars.exec(fileData)) {
-						fileData = fileData.replace(match[0], imageFiles[match[1]].url);
+						fileData = fileData.replace(match[0], `~uuid:${imageFiles[match[1]].uuid}~url:${imageFiles[match[1]].url}`);
+					}
+
+					vars = /\{\{assetUUID\.(.*?)\}\}/g;
+					while (match = vars.exec(fileData)) {
+						fileData = fileData.replace(match[0], imageFiles[match[1]].uuid);
 					}
 
 					vars = /\{\{theme\}\}/g;
@@ -566,7 +573,7 @@ function upgradeSQL(stage, theme, theme_files = true) {
 	}
 
 	function next() {
-		const image_upload_path = `${configs.custom[stage].themeDir}/${theme}/images`
+		const image_upload_path = `${configs.custom[stage].themeDir}${theme}/images`
 		const image_upload_file = `${image_upload_path}/image_upload.json`
 		if (fs.existsSync(image_upload_file)) {
 			console.log(`Found image_upload.json reading image config file Using profile ${configs.custom[stage].profile}`)
@@ -574,12 +581,12 @@ function upgradeSQL(stage, theme, theme_files = true) {
 
 
 			const bucket = `locaria-${stage}-${theme}`
-			const path = '/Assets'
+			const path = 'assets'
 			let files = JSON.parse(fs.readFileSync(image_upload_file))
-			uploadFilesToS3(configs.custom[stage].profile, files, bucket, path, image_upload_path).then((files) => {
-				fs.writeFileSync(image_upload_file, JSON.stringify(files))
-				usqlSQL(stage, theme, theme_files)
-			})
+			uploadFilesToS3(stage, theme, configs.custom[stage].profile, files, bucket, path, image_upload_path, (files) => {
+				fs.writeFileSync(image_upload_file, JSON.stringify(files));
+				usqlSQL(stage, theme, theme_files);
+			});
 
 		} else {
 			console.log('No image config file found for theme')
@@ -597,13 +604,29 @@ const usqlSQL = (stage, theme, theme_files) => {
 	}
 }
 
-const uploadFilesToS3 = async (profile, files, bucket, path, image_upload_path) => {
+const uploadFilesToS3 = async (stage, theme, profile, files, bucket, path, image_upload_path, success) => {
 
+	const outputs = getSageOutputs(stage);
+
+	const conn = {
+		user: configs.custom[stage].auroraMasterUser,
+		host: outputs.postgresHost,
+		database: `locaria${theme}`,
+		password: configs.custom[stage].auroraMasterPass,
+		port: outputs.postgresPort
+	};
+
+	console.log(`Using: ${outputs.postgresHost} - locaria${theme}`);
+	let client = new pg.Client(conn);
+
+	let updates=[];
 	for (let i in files) {
 		if (files[i]['url'] === undefined) {
+			let uuid = uuidv4();
+
 			let file = `${image_upload_path}/${i}`
-			console.log(`Uploading ${file} to ${bucket}${path}/${i}`)
-			const body = fs.readFileSync(file)
+			console.log(`Uploading ${file} to ${bucket}:/${theme}/${path}/${uuid}`)
+			const body = fs.readFileSync(file);
 
 			let credentials = new AWS.SharedIniFileCredentials({profile: profile});
 			AWS.config.credentials = credentials;
@@ -612,18 +635,44 @@ const uploadFilesToS3 = async (profile, files, bucket, path, image_upload_path) 
 
 			const upload = await s3.upload({
 				Bucket: bucket,
-				Key: `${bucket}${path}`,
-				Body: body
-			}).promise()
+				Key: `${theme}/${path}/${uuid}.${files[i]['ext']}`,
+				Body: body,
+				ContentType: files[i]['mime_type']
+			}).promise();
 			if (upload.Location !== undefined) {
-				files[i]['url'] = upload.Location
+				files[i]['url'] = `https://${configs.custom[stage].themes[theme].domain}/${path}/${uuid}.${files[i]['ext']}`;
+				files[i]['uuid'] = uuid;
+				updates.push([uuid,{ext:files[i]['ext'],url:`${path}/${uuid}.${files[i]['ext']}`,name:i,usage:files[i]['usage'],s3_path:`${theme}/${path}/${uuid}.${files[i]['ext']}`,s3_bucket:bucket}])
 			} else {
 				console.log(`Upload failed!`);
 			}
 		}
 	}
+	if(updates.length>0) {
+		client.connect((err) => {
+			if (err) {
+				console.error("DATABASE CONNECTION FAILURE: ", err.stack);
+			} else {
+				console.log('Connected to db');
+				console.log(updates);
+				console.log(format("INSERT INTO locaria_core.assets (uuid,attributes) VALUES %L", updates));
+				client.query(format("INSERT INTO locaria_core.assets (uuid,attributes) VALUES %L", updates), [], function (err, result) {
+					if (err) {
+						console.log(err);
+					}
+					success(files);
+				});
 
-	return files
+			}
+		});
+	} else {
+		console.log('No assets to update');
+		success(files);
+	}
+	/*		}
+		});*/
+
+	//return files
 }
 
 function upgradeThemeSQL(stage, theme) {
@@ -756,7 +805,6 @@ function writeConfig() {
 	fs.writeFileSync(customFile, JSON.stringify(configs.custom));
 	console.log('Config files written');
 	commandLoop();
-
 }
 
 function listConfig() {
@@ -764,5 +812,4 @@ function listConfig() {
 		console.log(`[${i}]`);
 	}
 	commandLoop();
-
 }

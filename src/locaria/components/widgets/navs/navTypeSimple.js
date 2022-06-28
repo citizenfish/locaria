@@ -9,16 +9,17 @@ const NavTypeSimple = function ({menu}) {
 
 
     return (
-        <Box sx={{
-            marginBottom: "20px"
+        <Box key={"navTypeSimple"} sx={{
+            marginBottom: "20px",
         }}>
             <Grid container justifyContent="left" spacing={0.5} sx={{
-                verticalAlign: "middle",
                 width: "calc(100vw - 20px)",
                 zIndex: '150',
-                padding: '5px 0 !important',
                 backgroundColor: window.systemMain.headerBackground,
                 marginTop: "5px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
             }}>
                 <Grid item md={1} sx={{
                     textAlign: "left",
@@ -31,6 +32,7 @@ const NavTypeSimple = function ({menu}) {
                 <Grid item md={6} sx={{
                     textAlign: "right",
                     verticalAlign: "middle",
+
 
                 }}>
 
@@ -48,8 +50,6 @@ const NavTypeSimple = function ({menu}) {
                         md: "block",
                         xs: "none"
                     },
-                    verticalAlign: "middle",
-
                 }}>
                     <Typography variant="h1" sx={{
                         flexGrow: 1,
