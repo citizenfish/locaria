@@ -7,7 +7,7 @@ const FooterTypeSimple = function () {
 
 
     return (
-        <Box sx={{
+        <Box key={"footerTypeSimple"} sx={{
             width: "100%",
             justifyContent: 'space-between',
             backgroundColor: window.systemMain.headerBackground,

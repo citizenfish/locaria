@@ -9,7 +9,7 @@ const url=new UrlCoder();
 const LogoStrapLine = () => {
 
     return (
-        <Box sx={{
+        <Box key={"logoStrapLine"} sx={{
             width: "calc(100vw - 20px)",
         }}>
             <Grid container>

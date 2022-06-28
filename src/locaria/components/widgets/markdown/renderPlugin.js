@@ -48,10 +48,10 @@ export default function RenderPlugin({plugin}) {
 			}
 		}
 		return (
-			<PluginComponent {...pluginArgs}/>
+			<PluginComponent key={"plugin"} {...pluginArgs}/>
 		)
 	} else {
-		return (<h1>NO SUCH Component {pluginId}</h1>)
+		return (<h1 key={"renderError"}>NO SUCH Component {pluginId}</h1>)
 	}
 
 }
