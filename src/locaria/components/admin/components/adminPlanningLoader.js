@@ -6,7 +6,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Checkbox from '@mui/material/Checkbox';
 import {useCookies} from "react-cookie";
-import Typography from "@mui/material/Typography";
 
 export default function AdminPlanningLoader(props) {
 
@@ -87,59 +86,51 @@ export default function AdminPlanningLoader(props) {
     }
 
     return(
-        <Box
-            component="div" sx={{
-            p:2,
-            mt:2,
-            border: '1px solid grey',
-            borderRadius: '5px' }}>
-
-            <Button
-                variant="outlined"
-                onClick={() => {
-                    loadPlanningData()
-                }}
-                component="span"
-                disabled={chosenLA.id === 0 ? true : false}
-            >
-                Load Planning Data
-            </Button>
-
-            &nbsp;&nbsp;
+        <Box component="div"
+            sx={{
+                p:2,
+                mt:2,
+            }}
+        >
             <Select
                 id="laSelectControl"
                 value={chosenLA.id}
-                label={chosenLA.id}
-
                 onChange={handleLAChosen}
             >
-                {
-                    authorities && authorityList(authorities)
-                }
+                {authorities && authorityList(authorities)}
             </Select>
             {chosenLA.id !== 0 && <>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recency (Days):&nbsp;
-                        <Select
-                            id="recencySelect"
-                            value={recency}
-                            label={"Recency (Days)"}
-                            onChange={handleRecencyChosen}
-                            >
-                            <MenuItem value={10}>10</MenuItem>
-                            <MenuItem value={20}>20</MenuItem>
-                            <MenuItem value={30}>30</MenuItem>
-                            <MenuItem value={50}>50</MenuItem>
-                            <MenuItem value={60}>60</MenuItem>
-                        </Select>
-
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auto Update:&nbsp;
-                        <Checkbox
-                            id="autoUpdate"
-                            onChange={handleAutoUpdateChosen}
-                        >
-
-                        </Checkbox>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recency (Days):&nbsp;
+                <Select
+                    id="recencySelect"
+                    value={recency}
+                    label={"Recency (Days)"}
+                    onChange={handleRecencyChosen}
+                >
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={20}>20</MenuItem>
+                    <MenuItem value={30}>30</MenuItem>
+                    <MenuItem value={50}>50</MenuItem>
+                    <MenuItem value={60}>60</MenuItem>
+                </Select>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auto Update:&nbsp;
+                <Checkbox
+                    id="autoUpdate"
+                    onChange={handleAutoUpdateChosen}
+                />
             </>}
+
+            <Button
+              variant="outlined"
+              onClick={() => {
+                  loadPlanningData()
+              }}
+              component="span"
+              disabled={chosenLA.id === 0}
+              sx={{marginLeft: 2}}
+            >
+                Load Planning Data
+            </Button>
         </Box>
     )
 }

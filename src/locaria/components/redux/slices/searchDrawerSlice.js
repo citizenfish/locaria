@@ -105,6 +105,12 @@ export const searchDrawerSlice = createSlice({
 				state.refresh=true;
 
 		},
+		setCategoryList : (state, action) => {
+			if (action.payload) {
+				state.categories = action.payload
+			}
+			state.refresh=true
+		},
 		toggleLocationShow: (state) => {
 			state.locationShow = !state.locationShow;
 		},
@@ -181,6 +187,7 @@ export const {
 	toggleLocationShow,
 	setDistance,
 	setTags,
+	setCategoryList,
 	deleteTag,
 	addTag,
 	resetTags,

@@ -52,6 +52,8 @@ export default function AdminUploadDrawer(props) {
     const [mapFileDetails,setMapFileDetails] = useState(null)
     //hook used to display planning loader component
     const [planningLoader, setPlanningLoader] = useState(false)
+    //Used to switch file list fetching on/off
+    const [fetchList, setFetchList] = useState(true)
 
     useEffect(() => {
         let interval;
@@ -135,7 +137,7 @@ export default function AdminUploadDrawer(props) {
     useEffect( () => {
         //Fetch file details every 30 seconds based upon the time hook
         //Don't fetch if we are looking at a file's details
-        if(open&&!openDetails && mapFileDetails === null) {
+        if(open && !openDetails && mapFileDetails === null && fetchList) {
             window.websocket.send({
                 "queue": 'getFiles',
                 "api": "sapi",
@@ -157,21 +159,29 @@ export default function AdminUploadDrawer(props) {
             open={open}
             variant="persistent"
             className={classes.adminDrawers}
+            style={{color: '#000'}}
+            sx={{
+                '.MuiDrawer-paper': {
+                    borderLeft: 'none',
+                    zIndex: 2,
+                },
+            }}
         >
 
              { dataFetching &&
-                 <Box component="div" sx={{
-                     p:2,
-                     mt:2,
-                     border: '1px solid grey',
-                     borderRadius: '5px' }}
+                 <Box
+                    component="div"
+                    sx={{
+                         p:2,
+                         mt:2,
+                         borderRadius: '5px'
+                    }}
                  >
                      <LinearProgress />
                  </Box>
              }
 
-             {
-                 open === true && mapFileDetails === null && tableData.length > 0 && openDetails === false &&
+             {open === true && mapFileDetails === null && tableData.length > 0 && openDetails === false &&
                      <DataGrid style={{width: '100%'}}
                          rows={tableData}
                          columns={columns}
@@ -184,8 +194,7 @@ export default function AdminUploadDrawer(props) {
                      />
              }
 
-             {
-                 open === true && mapFileDetails === null && tableData.length > 0 && openDetails === true &&
+             {open && mapFileDetails === null && tableData.length > 0 && openDetails &&
                      <AdminFileDetails
                          fileDetails = {fileDetailsData}
                          fileColumns = {fileColumns}
@@ -195,25 +204,23 @@ export default function AdminUploadDrawer(props) {
                      />
              }
 
-             {
-                 open === true && mapFileDetails === null && openDetails === false &&
-                 <>
-
+             <div style={{
+                 display: 'flex',
+                 flexDirection: 'row',
+                 width: '100%',
+             }}>
+                 {open && mapFileDetails === null && !openDetails &&
+                 <AdminDataDownload
+                     setFetchList = {setFetchList}
+                 /> }
+                 {open && mapFileDetails === null && !openDetails &&
                      <AdminFileUploader
                          forceRefresh = {setTime}
                      />
-                 </>
+                 }
+             </div>
 
-             }
-            {
-                open === true && mapFileDetails === null && openDetails === false &&
-                    <>
-                    <AdminDataDownload/>
-                    </>
-            }
-
-             {
-                 open === true && mapFileDetails !== null &&
+             {open && mapFileDetails !== null &&
                      <AdminDataMapper
                         fileDetails = {mapFileDetails}
                         open = {setMapFileDetails}
@@ -221,35 +228,30 @@ export default function AdminUploadDrawer(props) {
 
              }
 
-             {
-                 open === true && mapFileDetails === null && openDetails === false  &&
+             {open && mapFileDetails === null && !openDetails  &&
                      <AdminPlanningLoader
                          forceRefresh = {setTime}
                      />
              }
 
-             {
-                 open === true && mapFileDetails === null && openDetails === false  &&
+             {open && mapFileDetails === null && !openDetails  &&
                  <AdminFloodMonitoringLoader
                      forceRefresh = {setTime}
                  />
              }
 
-             {
-                 open  === true&& mapFileDetails === null && openDetails === false  &&
+             {open && mapFileDetails === null && !openDetails  &&
                  <AdminCrimeLoader
                      forceRefresh = {setTime}
                  />
              }
 
-             {
-                 open  === true&& mapFileDetails === null && openDetails === false  &&
+             {open && mapFileDetails === null && !openDetails  &&
                  <AdminBoundaryLoader
                      forceRefresh = {setTime}
                  />
              }
-             {
-                 open  === true&& mapFileDetails === null && openDetails === false  &&
+             {open && mapFileDetails === null && !openDetails  &&
                  <AdminEventsLoader
                      forceRefresh = {setTime}
                  />

@@ -290,3 +290,41 @@
 .no-controls .ol-control {
   display: none;
 }
+
+/* We have to use some CSS here for the ColorPicker component since it doesn't actually allow us to override it... */
+.colour-picker-container {
+  margin-bottom: 8px;
+}
+
+.colour-picker-container>div {
+  align-items: center;
+  width: unset;
+  box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+  border-radius: 4px;
+}
+
+.colour-picker-container>div>button {
+  margin: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  height: 56px;
+  min-width: 56px;
+  box-shadow: none;
+}
+
+.colour-picker-container>div>button>div {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  height: 56px;
+  min-width: 56px;
+  box-shadow: none;
+}
+
+.colour-picker-container>div>div {
+  width: 100%;
+}
+
+.colour-picker-container>div>div>div {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}

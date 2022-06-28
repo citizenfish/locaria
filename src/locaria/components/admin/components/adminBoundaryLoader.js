@@ -139,14 +139,14 @@ export default function AdminBoundaryLoader(props) {
     }
 
     return(
-        <Box
-            component="div" sx={{
-            p:2,
-            mt:2,
-            border: '1px solid grey',
-            borderRadius: '5px' }}>
+        <Box component="div"
+             sx={{
+                p:2,
+                mt:2,
+            }}
+        >
 
-            {authorities === null &&
+            {authorities === null ? (
                 <Button
                     variant="outlined"
                     component="span"
@@ -155,9 +155,15 @@ export default function AdminBoundaryLoader(props) {
                 >
                     Load Local Authority Boundaries
                 </Button>
-            }
-            {authorities !== null &&
+            ) : (
                 <>
+                    <Select
+                        id="laSelectControl"
+                        value={chosenAuthority.id}
+                        onChange={handleAuthorityChosen}
+                    >
+                        {authoritiesList(authorities)}
+                    </Select>
                     <Button
                         variant="outlined"
                         onClick={() => {
@@ -165,27 +171,14 @@ export default function AdminBoundaryLoader(props) {
                         }}
                         component="span"
                         disabled={chosenAuthority.id === 0 || chosenBoundaries.length === 0}
+                        sx={{marginLeft: 2, marginRight: 2}}
                     >
                         Load Boundary Data
                     </Button>
-
-                    &nbsp;&nbsp;
-                    <Select
-                        id="laSelectControl"
-                        value={chosenAuthority.id}
-                        label={chosenAuthority.name}
-
-                        onChange={handleAuthorityChosen}
-                    >
-                        {authoritiesList(authorities)}
-
-                    </Select>
                 </>
-            }
-            {
-                chosenAuthority.id !== 0 &&
+            )}
+            {chosenAuthority.id !== 0 &&
                 <>
-
                     <Select
                         id="boundarySelectControl"
                         multiple
