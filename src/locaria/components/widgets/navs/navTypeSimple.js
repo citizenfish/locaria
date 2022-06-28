@@ -9,7 +9,7 @@ const NavTypeSimple = function ({menu}) {
 
 
     return (
-        <Box sx={{
+        <Box key={"navTypeSimple"} sx={{
             marginBottom: "20px"
         }}>
             <Grid container justifyContent="left" spacing={0.5} sx={{

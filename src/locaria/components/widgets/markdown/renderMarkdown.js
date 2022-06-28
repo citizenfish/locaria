@@ -4,11 +4,13 @@ import TypographyParagraph from "../typography/typographyParagraph";
 import RenderPlugin from "./renderPlugin";
 import Divider from "@mui/material/Divider";
 import UrlCoder from "../../../libs/urlCoder";
+import { v4 as uuidv4 } from 'uuid';
 
 const url = new UrlCoder();
 
 export default function RenderMarkdown({markdown}) {
 
+	const mdid=uuidv4();
 	let splitMarkdown = markdown.split('\n');
 	let renderedMarkdown = [];
 	let lineId = 0;
@@ -16,8 +18,9 @@ export default function RenderMarkdown({markdown}) {
 		lineId++;
 		if (splitMarkdown[line] === "") {
 			renderedMarkdown.push(
-				<p></p>
+				<p key={`md${mdid}${lineId}`}></p>
 			);
+			continue;
 		}
 		// Headers IE H1 H2 etc
 		let match = splitMarkdown[line].match(/^#+ /);
@@ -34,7 +37,7 @@ export default function RenderMarkdown({markdown}) {
 
 			renderedMarkdown.push(
 				<TypographyHeader sx={sx} element={"h" + headerType}
-								  key={`md${lineId}`}>{cleanedMatch}</TypographyHeader>
+								  key={`md${mdid}${lineId}`}>{cleanedMatch}</TypographyHeader>
 			);
 			continue;
 		}
@@ -43,7 +46,7 @@ export default function RenderMarkdown({markdown}) {
 		match = splitMarkdown[line].match(/^%(.*?)%/);
 		if (match) {
 			renderedMarkdown.push(
-				<RenderPlugin plugin={match[1]} key={`md${lineId}`}></RenderPlugin>
+				<RenderPlugin key={`plugin${match[1]}`} plugin={match[1]}></RenderPlugin>
 			);
 			continue;
 		}
@@ -52,7 +55,7 @@ export default function RenderMarkdown({markdown}) {
 		match = splitMarkdown[line].match(/^----------/);
 		if (match) {
 			renderedMarkdown.push(
-				<Divider key={`md${lineId}`}/>
+				<Divider key={`md${mdid}${lineId}`}/>
 			);
 			continue;
 		}
@@ -60,12 +63,12 @@ export default function RenderMarkdown({markdown}) {
 		match = splitMarkdown[line].match(/^\!\[(.*?)\]\((.*?)\)/);
 		if (match) {
 			renderedMarkdown.push(
-				<img src={url.decode(match[2],true)}/>
+				<img key={`md${mdid}${lineId}`} src={url.decode(match[2],true)}/>
 			);
 			continue;
 		}
 
-		renderedMarkdown.push(<TypographyParagraph key={`md${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
+		renderedMarkdown.push(<TypographyParagraph key={`md${mdid}${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
 	}
 
 	return (

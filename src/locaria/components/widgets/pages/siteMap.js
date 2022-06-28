@@ -6,7 +6,7 @@ import {useHistory} from "react-router-dom";
 import UrlCoder from "../../../libs/urlCoder"
 import {useMediaQuery} from "@mui/material";
 
-const SiteMap = function (props) {
+const SiteMap = function ({mode}) {
 
 	const url = new UrlCoder();
 
@@ -19,7 +19,7 @@ const SiteMap = function (props) {
 		textAlign: 'center'
 	}
 
-	if (props.mode === 'full') {
+	if (mode === 'full') {
 		sx.backgroundImage = `url(${url.decode(window.systemMain.galleryImage, true)})`;
 		sx.height = 'calc(30vh)';
 		sx.backgroundSize = "cover";
@@ -27,7 +27,7 @@ const SiteMap = function (props) {
 	}
 
 	return (
-		<Box sx={sx}>
+		<Box sx={sx} key={"siteMap"}>
 			<Box sx={{
 				paddingLeft: '10px'
 			}}>

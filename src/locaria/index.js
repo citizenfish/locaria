@@ -32,7 +32,7 @@ if(cookieUUID === undefined) {
 
 setCookie('uuid', cookieUUID, {path: '/', sameSite: true});
 
-console.log(cookieUUID);
+//console.log(cookieUUID);
 window.websocket.init({"url": resources.websocket, "uuid":cookieUUID}, connected, closed, errored);
 
 window.websocket.registerQueue('bulkConfigs', (json) => {

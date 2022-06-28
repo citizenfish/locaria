@@ -32,7 +32,7 @@ const PageList = function () {
     }
 
     return (
-        <Box sx={{
+        <Box key={"pageList"} sx={{
             flexGrow: 1,
             textAlign: 'center'
         }}>

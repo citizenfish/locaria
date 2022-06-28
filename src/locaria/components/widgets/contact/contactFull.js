@@ -45,7 +45,7 @@ const ContactFull = () => {
 
 
 	return (
-		<Grid container spacing={2} sx={{
+		<Grid container key={"contactFull"} spacing={2} sx={{
 			margin: "10px"
 		}}>
 			<Grid item md={4} sx={{
