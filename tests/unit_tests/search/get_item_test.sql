@@ -8,6 +8,7 @@ $$
 
         SET SEARCH_PATH = 'locaria_data','locaria_core', 'public';
 
+        RAISE NOTICE '**********MAKE SURE add_test_data.sql HAS BEEN RUN ************';
         parameters = parameters || jsonb_build_object('fid', (SELECT fid FROM global_search_view WHERE edit AND moderated_update AND attributes#>>'{description,title}' = 'find me two'));
 
         --Update base data but not the global search view
@@ -51,14 +52,24 @@ $$
                jsonb_build_object('moderate', 'test'),
                'RECEIVED';
 
-        SELECT locaria_gateway(parameters,jsonb_build_object('_groups', jsonb_build_array('test','Admins'))) INTO ret_var;
+        SELECT locaria_gateway(parameters, jsonb_build_object('_groups', jsonb_build_array('test','Admins'))) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 5', ret_var#>'{features}'->0#>'{properties,_moderations}'->0 , '{fid}', parameters->>'fid');
+
+        --Simple get_item call with _identifier not fid
+        --parameters = parameters - 'fid' || jsonb_build_object('_identifier', 'foo1');
+        --RAISE NOTICE '%', parameters;
+        --SELECT locaria_gateway(parameters) INTO ret_var;
+        --RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 6', ret_var#>'{features}'->0 , '{properties,description,title}', 'find me one');
 
         --RESET TEST DATA
 
         UPDATE locaria_data.locaria_test_data
         SET attributes = attributes -'acl' -'tags';
         PERFORM locaria_internal_gateway(jsonb_build_object('method', 'refresh_search_view'));
+
+        parameters = parameters - 'fid' || jsonb_build_object('_identifier', 'foo1');
+        SELECT locaria_gateway(parameters) INTO ret_var;
+        RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 6', ret_var#>'{features}'->0 , '{properties,description,title}', 'find me one');
 
     END;
 $$ LANGUAGE PLPGSQL;

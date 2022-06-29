@@ -3,7 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/unit_tests/no_op.sql"
+        "database/functions/search/get_item.sql"
       ],
       "substitutions": "../tests.json"
     }
