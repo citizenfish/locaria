@@ -5,8 +5,6 @@ import RenderPlugin from "./renderPlugin";
 import Divider from "@mui/material/Divider";
 import UrlCoder from "../../../libs/urlCoder";
 import { v4 as uuidv4 } from 'uuid';
-import {useHistory} from "react-router-dom";
-import {Link} from "@mui/material";
 import TypographyLink from "../typography/typographyLink";
 
 const url = new UrlCoder();
@@ -19,6 +17,9 @@ export default function RenderMarkdown({markdown}) {
 	let lineId = 0;
 	for (let line in splitMarkdown) {
 		lineId++;
+		// Clean any formatters
+
+		splitMarkdown[line] = splitMarkdown[line].replace(/\r/, '');
 
 		// extract any SX params first for the line
 
@@ -34,8 +35,11 @@ export default function RenderMarkdown({markdown}) {
 
 		if (splitMarkdown[line] === "") {
 			renderedMarkdown.push(
-				<p key={`md${mdid}${lineId}`}></p>
-			);
+/*
+				<p style={{}} key={`md${mdid}${lineId}`}></p>
+*/
+				<TypographyParagraph sx={{display:"block"}} key={`md${mdid}${lineId}`}></TypographyParagraph>
+		);
 			continue;
 		}
 		// Headers IE H1 H2 etc
@@ -64,7 +68,7 @@ export default function RenderMarkdown({markdown}) {
 		match = splitMarkdown[line].match(/^----------/);
 		if (match) {
 			renderedMarkdown.push(
-				<Divider key={`md${mdid}${lineId}`}/>
+				<Divider sx={{marginTop:"10px",marginBottom:"10px"}} key={`md${mdid}${lineId}`}/>
 			);
 			continue;
 		}
@@ -72,7 +76,7 @@ export default function RenderMarkdown({markdown}) {
 		match = splitMarkdown[line].match(/^\[(.*?)\]\((.*?)\)/);
 		if (match) {
 			renderedMarkdown.push(
-				<TypographyLink link={match[2]}>{match[1]}</TypographyLink>
+				<TypographyLink sx={{display: "inline-block",paddingRight: "5px"}} link={match[2]}>{match[1]}</TypographyLink>
 			);
 			continue;
 		}
@@ -86,7 +90,7 @@ export default function RenderMarkdown({markdown}) {
 			continue;
 		}
 
-		renderedMarkdown.push(<TypographyParagraph key={`md${mdid}${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
+		renderedMarkdown.push(<TypographyParagraph sx={{display:"inline-block",  paddingRight: "5px"}} key={`md${mdid}${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
 	}
 
 	return (

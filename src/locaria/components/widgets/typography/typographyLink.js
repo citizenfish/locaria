@@ -9,7 +9,7 @@ export default function TypographyLink({children,sx,link}) {
 
 	const localSx={
 		fontSize: "0.8rem",
-		fontWeight: 400,
+		fontWeight: 600,
 		paddingTop: "2px",
 		paddingBottom: "2px",
 		fontFamily: window.systemMain['fontLinkFont'],
@@ -21,7 +21,7 @@ export default function TypographyLink({children,sx,link}) {
 
 
 	return (
-		<Link sx={elementSx} underline="hover"  onClick={()=>{
+		<Link sx={elementSx}  onClick={()=>{
 			let route = url.route(link);
 			if (route === true) {
 				history.push(link);

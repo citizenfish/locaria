@@ -30,6 +30,9 @@ export default class UrlCoder {
             console.log('requested url is not of type string');
             return false;
         }
+        if(url.match(/~uuid/)) {
+            url=this.decode(url,true);
+        }
         if(url.match(/^http|https/)) {
             window.location=url;
             return false;
