@@ -13,8 +13,8 @@ export default function AdminFileDetails(props) {
     let fileDetails = props.fileDetails
     //Add a mandatory id to each column
     fileDetails.log_messages = fileDetails.log_messages.map((x,i) => {x.id = i + 1;return x})
-    let statusColour = fileDetails.status === 'FARGATE_PROCESSED' ? 'success' :
-                       fileDetails.status === 'FARGATE_ERROR' ? 'error' : 'secondary'
+    let statusColour = /COMPLETED|PROCESSED/.test(fileDetails.status) ? 'success' :
+                       /ERROR/.test(fileDetails.status)  ? 'error' : 'secondary'
 
     //Dialogues
     const [dialogProps, setDialogueProps] = React.useState({open : false});
@@ -125,7 +125,9 @@ export default function AdminFileDetails(props) {
                                    {fileDetails.status}
                                </Button>
                                {
-                                   fileDetails.status !== 'REGISTERED' &&
+                                   fileDetails.status !== 'REGISTERED'
+                                   && !/DOWNLOAD/.test(fileDetails.status)
+                                   &&
                                    <Button variant='outlined'
                                            color = 'error'
                                            style = {{marginLeft: 10 }}
@@ -154,67 +156,87 @@ export default function AdminFileDetails(props) {
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="subtitle1" style = {{textTransform: 'uppercase'}} noWrap>
-                            {fileDetails.ext}
+                            {fileDetails.ext || fileDetails.format}
                         </Typography>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Typography variant="subtitle1" noWrap>
-                            Loaded
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Typography variant="subtitle1" noWrap>
-                            {
-                                fileDetails.status !== 'REGISTERED' && <div>
-                                    {fileDetails.processed || 0} of {fileDetails.record_count} records
-                                </div>
+                        {!/DOWNLOAD/.test(fileDetails.status) &&
+                            <>
+                                <Grid item xs={4}>
+                                    <Typography variant="subtitle1" noWrap>
+                                        Loaded
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Typography variant="subtitle1" noWrap>
+                                        {
+                                            fileDetails.status !== 'REGISTERED' && <div>
+                                                {fileDetails.processed || 0} of {fileDetails.record_count} records
+                                            </div>
 
-                            }
-                            {
-                                fileDetails.status === 'REGISTERED' && <div>
-                                    Awaiting file load
-                                </div>
-                            }
+                                        }
+                                        {
+                                            fileDetails.status === 'REGISTERED' && <div>
+                                                Awaiting file load
+                                            </div>
+                                        }
 
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Typography variant="subtitle1" noWrap>
-                            Load Time
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Typography variant="subtitle1" noWrap>
-                            {fileDetails.processing_time || 0} seconds
-                        </Typography>
-                    </Grid>
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography variant="subtitle1" noWrap>
+                                        Load Time
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Typography variant="subtitle1" noWrap>
+                                        {fileDetails.processing_time || 0} seconds
+                                    </Typography>
+                                </Grid>
+                            </>
+                        }
                         {
                             (fileDetails.status === 'FARGATE_PROCESSED' || fileDetails.status === 'IMPORTING') &&
                             <>
-                        <Grid item xs={4}>
-                            <Typography variant="subtitle1" noWrap>
-                                File Actions
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                                <Button variant='contained'
-                                        color='success'
-                                        onClick = {() => {
+                                <Grid item xs={4}>
+                                    <Typography variant="subtitle1" noWrap>
+                                        File Actions
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                        <Button variant='contained'
+                                                color='success'
+                                                onClick = {() => {
 
-                                            if(fileDetails.status === 'IMPORTING'){
-                                                fileDetails['continueLoad'] = true
-                                            }
+                                                    if(fileDetails.status === 'IMPORTING'){
+                                                        fileDetails['continueLoad'] = true
+                                                    }
 
-                                            props.setFileDetails(fileDetails)
-                                            props.open(false)
-                                        }}
-                                >
-                                    {fileDetails.status === 'IMPORTING' && 'Continue Loading'}
-                                    {fileDetails.status !== 'IMPORTING' && 'Map Data'}
-                                </Button>
-                        </Grid>
-                        </>
-                    }
+                                                    props.setFileDetails(fileDetails)
+                                                    props.open(false)
+                                                }}
+                                        >
+                                            {fileDetails.status === 'IMPORTING' && 'Continue Loading'}
+                                            {fileDetails.status !== 'IMPORTING' && 'Map Data'}
+                                        </Button>
+                                </Grid>
+                            </>
+                        }
+                        {
+                            fileDetails.status === 'DOWNLOAD_COMPLETED' &&
+                            <>
+                                <Grid item xs={4}>
+                                    <Typography variant="subtitle1" noWrap>
+                                        Actions
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Button variant='contained'
+                                            color={statusColour}>
+                                        Download
+                                    </Button>
+                                </Grid>
+                            </>
+                        }
                     </Grid>
                 </Box>
 

@@ -54,9 +54,9 @@ for f in downloads_to_process['files']:
         try:
             result = download_all(db, schema, attributes)
         except Exception as e:
-            result = {'status': 'DOWNLOAD_ERROR', 'message' : str(e)}
+            result = {'status': 'DOWNLOAD_ERROR', 'message' : f"Error: {str(e)}"}
 
-        update_file_status(db,schema,f['id'],result)
+        update_file_status(db, schema,f['id'],result)
 
     print(f"Processed download {f['id']}")
 

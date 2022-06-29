@@ -43,16 +43,17 @@ BEGIN
                                     )
             )
               FROM %1$s
-              WHERE fid = $1
+              WHERE (($1 != '' AND fid = $1) OR ($1 = '' AND attributes @> jsonb_build_object('data', jsonb_build_object('_identifier', $5))))
               AND (acl_check($4, attributes->'acl')->>'view')::BOOLEAN
         $SQL$,
         CASE WHEN COALESCE(parameters->>'live','false')::BOOLEAN THEN 'global_search_view_live' ELSE 'global_search_view' END
         )
         INTO ret_var
-        USING COALESCE(parameters->>'fid', 'THISWILLFAIL'),
+        USING COALESCE(parameters->>'fid', ''),
               COALESCE(parameters->>'live','false')::BOOLEAN,
               COALESCE(moderations_var, jsonb_build_array()),
-              parameters->'acl';
+              parameters->'acl',
+              parameters->>'_identifier';
 
 
        RETURN COALESCE(ret_var, jsonb_build_object('features', jsonb_build_array()));

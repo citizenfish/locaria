@@ -105,9 +105,12 @@ export default function AdminUploadDrawer(props) {
 
             <Button
                 variant="contained"
-                color={params.value.status== 'FARGATE_PROCESSED'? "primary" :
-                        params.value.status === 'ERROR' ? "error" :
-                           (params.value.status === 'REGISTERED' || params.value.status === 'FARGATE_PROCESSING') ? 'secondary'
+                color={params.value.status === 'FARGATE_PROCESSED'? "primary" :
+                        /ERROR/.test(params.value.status) ? "error" :
+                           (   params.value.status === 'REGISTERED' ||
+                               params.value.status === 'FARGATE_PROCESSING' ||
+                               params.value.status === 'DOWNLOAD_REQUESTED'
+                           ) ? 'secondary'
                                :"success"}
                 size="small"
                 onClick ={() => showFileDetails(params.value)}
