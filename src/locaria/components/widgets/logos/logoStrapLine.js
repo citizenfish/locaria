@@ -10,7 +10,7 @@ const LogoStrapLine = () => {
 
     return (
         <Box key={"logoStrapLine"} sx={{
-            width: "calc(100vw - 20px)",
+            width: "calc(100% - 20px)",
         }}>
             <Grid container>
                 <Grid item xs={2} sx={{
