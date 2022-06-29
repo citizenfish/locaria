@@ -13,7 +13,7 @@ const NavTypeSimple = function ({menu}) {
             marginBottom: "20px",
         }}>
             <Grid container justifyContent="left" spacing={0.5} sx={{
-                width: "calc(100vw - 20px)",
+                width: "100%",
                 zIndex: '150',
                 backgroundColor: window.systemMain.headerBackground,
                 marginTop: "5px",

@@ -9,83 +9,91 @@ import MenuDrawer from "../drawers/menuDrawer";
 
 export default function RenderPage() {
 
-    const dispatch = useDispatch()
+	const dispatch = useDispatch()
 
-    let {category} = useParams();
-    let {page} = useParams();
-    let {feature} = useParams();
-    const [pageData, setPageData] = React.useState(undefined);
-
-
-    let channel;
-
-    if (category)
-        channel = window.systemCategories.getChannelProperties(category);
+	let {category} = useParams();
+	let {page} = useParams();
+	let {feature} = useParams();
+	const [pageData, setPageData] = React.useState(undefined);
 
 
-    const getAllData = () => {
-        let bulkPackage = [];
-        bulkPackage.push(
-            {
-                "queue": "getPageData",
-                "api": "api",
-                "data": {
-                    "method": "get_parameters",
-                    "parameter_name": page||'Home'
-                }
-            }
-        );
+	let channel;
 
-        if (feature) {
-            bulkPackage.push(
-                {
-                    "queue": "viewLoader",
-                    "api": "api",
-                    "data": {"method": "get_item", "fid": feature}
-                }
-            )
-        }
+	if (category)
+		channel = window.systemCategories.getChannelProperties(category);
 
-        if (channel && channel.report) {
-            bulkPackage.push(
-                {
-                    "queue": "reportLoader",
-                    "api": "api",
-                    "data": {
-                        "method": "report",
-                        "report_name": channel.report,
-                        "fid": feature
-                    }
-                }
-            )
-        }
 
-        window.websocket.sendBulk('pageBulkLoader', bulkPackage);
-    }
+	const getAllData = () => {
+		let bulkPackage = [];
+		bulkPackage.push(
+			{
+				"queue": "getPageData",
+				"api": "api",
+				"data": {
+					"method": "get_parameters",
+					"parameter_name": page || 'Home'
+				}
+			}
+		);
 
-    React.useEffect(() => {
+		if (feature) {
+			bulkPackage.push(
+				{
+					"queue": "viewLoader",
+					"api": "api",
+					"data": {"method": "get_item", "fid": feature}
+				}
+			)
+		}
 
-        window.websocket.registerQueue('pageBulkLoader', (json) => {
-            setPageData(json.getPageData.packet.parameters[page||'Home']);
-            dispatch(setReport(json));
-        });
+		if (channel && channel.report) {
+			bulkPackage.push(
+				{
+					"queue": "reportLoader",
+					"api": "api",
+					"data": {
+						"method": "report",
+						"report_name": channel.report,
+						"fid": feature
+					}
+				}
+			)
+		}
 
-        getAllData();
-    }, [page]);
+		window.websocket.sendBulk('pageBulkLoader', bulkPackage);
+	}
 
-    if (pageData) {
-        document.title=pageData.title;
-        return (
-            <>
-            <Box sx={{
-                padding: "10px"
-            }}>
-                <RenderMarkdown markdown={pageData.data}/>
-            </Box>
-            <MenuDrawer></MenuDrawer>
-            </>
-        )
-    } else {
-        return (<LinearProgress></LinearProgress>)
-    }
+	React.useEffect(() => {
+
+		window.websocket.registerQueue('pageBulkLoader', (json) => {
+			setPageData(json.getPageData.packet.parameters[page || 'Home']);
+			dispatch(setReport(json));
+		});
+
+		getAllData();
+	}, [page]);
+
+	if (pageData) {
+		document.title = pageData.title;
+		return (
+			<Box sx={{
+				display: "flex",
+				alignItems: "center",
+				width: "100%"
+
+			}}>
+				<Box sx={{
+					padding: "10px",
+					maxWidth: "1100px",
+					margin: "0 auto"
+
+				}}>
+					<RenderMarkdown markdown={pageData.data}/>
+				</Box>
+				<MenuDrawer></MenuDrawer>
+			</Box>
+		)
+	} else {
+		return (<LinearProgress></LinearProgress>)
+	}
 }
