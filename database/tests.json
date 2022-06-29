@@ -3,7 +3,8 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/unit_tests/internal/file_upload/add_file.sql"
+        "tests/integration_tests/add_test_data.sql",
+        "tests/unit_tests/search/get_item_test.sql"
       ],
       "substitutions": "../tests.json"
     }

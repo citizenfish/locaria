@@ -9,8 +9,8 @@ def download_all(db, schema, parameters):
     print("Downloading all data")
 
     # If user has chosen a subset then use that
-    if parameters['categories']:
-        categories = parameters['categories']
+    if parameters.get('categories'):
+        categories = {'categories' : parameters['categories']}
     else:
         categories = get_categories(db)
 
@@ -54,7 +54,7 @@ def download_all(db, schema, parameters):
     s3 = boto3.client('s3')
     s3.upload_file(parameters['path'], parameters['s3_bucket'],  parameters['s3_path'])
 
-    return {"status" : "DOWNLOAD_COMPLETED", "s3_path" : parameters['s3_path'], "s3_bucket": parameters['s3_bucket']}
+    return {"status" : "DOWNLOAD_COMPLETED", "message" : "Download Completed", "attributes" : {"name" : parameters['s3_path'], "s3_path" : parameters['s3_path'], "s3_bucket": parameters['s3_bucket']}}
 
 def get_category_data(db, category, filters, format):
     print(f"Writing :{category}")

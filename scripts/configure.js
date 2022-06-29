@@ -176,7 +176,14 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 	deployConfig.config = configs.custom[stage];
 
 	const image_upload_file = `${configs.custom[stage].themeDir}/${theme}/images/image_upload.json`
-	const imageFiles = JSON.parse(fs.readFileSync(image_upload_file, 'utf8'));
+
+	let imageFiles = {}
+	try {
+		imageFiles = JSON.parse(fs.readFileSync(image_upload_file, 'utf8'));
+	} catch (err) {
+		console.log("No image upload file")
+	}
+
 
 	let id = 0;
 	deployEntry(id);
