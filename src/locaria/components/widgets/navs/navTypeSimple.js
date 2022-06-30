@@ -11,6 +11,8 @@ const NavTypeSimple = function ({menu}) {
     return (
         <Box key={"navTypeSimple"} sx={{
             marginBottom: "20px",
+            marginLeft: "5px",
+            width: "100%"
         }}>
             <Grid container justifyContent="left" spacing={0.5} sx={{
                 width: "100%",
@@ -29,7 +31,7 @@ const NavTypeSimple = function ({menu}) {
                     <BurgerMenu></BurgerMenu>
 
                 </Grid>
-                <Grid item md={6} sx={{
+                <Grid item md={5} sx={{
                     textAlign: "right",
                     verticalAlign: "middle",
 
@@ -42,10 +44,10 @@ const NavTypeSimple = function ({menu}) {
                         display: "inline-block",
                         fontFamily: window.systemMain.headerBackgroundFont
                     }}>
-                        {window.systemLang.siteTitle ? window.systemLang.siteTitle.toUpperCase() : 'Locaria'}
+                        {window.systemLang.siteTitle ? window.systemLang.siteTitle : 'Locaria'}
                     </Typography>
                 </Grid>
-                <Grid item md={5} sx={{
+                <Grid item md={6} sx={{
                     display: {
                         md: "block",
                         xs: "none"

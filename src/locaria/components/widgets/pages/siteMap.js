@@ -5,6 +5,7 @@ import {useHistory} from "react-router-dom";
 
 import UrlCoder from "../../../libs/urlCoder"
 import {useMediaQuery} from "@mui/material";
+import TypographyHeader from "../typography/typographyHeader";
 
 const SiteMap = function ({mode}) {
 
@@ -21,7 +22,7 @@ const SiteMap = function ({mode}) {
 
 	if (mode === 'full') {
 		sx.backgroundImage = `url(${url.decode(window.systemMain.galleryImage, true)})`;
-		sx.height = 'calc(30vh)';
+		sx.height = "300px";
 		sx.backgroundSize = "cover";
 		sx.backgroundPositionY = "50%";
 	}
@@ -29,10 +30,11 @@ const SiteMap = function ({mode}) {
 	return (
 		<Box sx={sx} key={"siteMap"}>
 			<Box sx={{
-				paddingLeft: '10px'
 			}}>
 				<Grid container spacing={2} sx={{
-					flexGrow: 1
+					flexGrow: 1,
+					display: "flex",
+					justifyContent: "center"
 				}}>
 					{sizeMatches ? <Panels></Panels> : <></>}
 				</Grid>
@@ -98,7 +100,7 @@ const Panels = () => {
 						opacity: "0.5"
 					}
 				}}>
-					{window.siteMap[p].items[i].name}
+					<TypographyHeader sx={{color: window.siteMap[p].color,fontWeight:200,padding: "5px"}} element={"h4"}>{window.siteMap[p].items[i].name}</TypographyHeader>
 				</Box>
 			)
 		}
@@ -137,7 +139,7 @@ const Panels = () => {
 							 //collapseAll();
 						 }}
 					>
-						{window.siteMap[p].name}
+						<TypographyHeader sx={{color: window.siteMap[p].color}} element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
 					<Box sx={{
 						width: '100%',

@@ -37,13 +37,23 @@ export default function RenderPage() {
 		);
 
 		if (feature) {
-			bulkPackage.push(
-				{
-					"queue": "viewLoader",
-					"api": "api",
-					"data": {"method": "get_item", "fid": feature}
-				}
-			)
+			if(feature.match(/^\@/)) {
+				bulkPackage.push(
+					{
+						"queue": "viewLoader",
+						"api": "api",
+						"data": {"method": "get_item", "_identifier": feature.replace(/@/,'')}
+					}
+				)
+			} else {
+				bulkPackage.push(
+					{
+						"queue": "viewLoader",
+						"api": "api",
+						"data": {"method": "get_item", "fid": feature}
+					}
+				)
+			}
 		}
 
 		if (channel && channel.report) {

@@ -1,8 +1,9 @@
 import React from 'react';
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import UrlCoder from "../../../libs/urlCoder"
 import {useHistory} from "react-router-dom";
+import TypographyHeader from "../typography/typographyHeader";
+import TypographyParagraph from "../typography/typographyParagraph";
 
 
 const BigCard = ({feature, sx}) => {
@@ -36,11 +37,17 @@ const BigCard = ({feature, sx}) => {
 			</Box>
 			<Box sx={{
 				padding: "15px",
-				height: "100px"
+				height: "120px"
 			}}>
-				<Typography>
+				<TypographyHeader element={"h3"} sx={{color:"white"}}>
 					{feature.properties.description.title}
-				</Typography>
+				</TypographyHeader>
+				<TypographyParagraph sx={{color:"white"}}>
+					{feature.properties.data.dateDisplay}
+				</TypographyParagraph>
+				<TypographyHeader element={"h3"} sx={{color:"white"}}>
+					Read more...
+				</TypographyHeader>
 			</Box>
 		</Box>
 	)

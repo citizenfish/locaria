@@ -5,9 +5,10 @@ export default function TypographyHeader({children,element,sx})  {
 
     const elements = {
         "h1":{
-            fontSize:"1.5rem",
+            fontSize:"1.2rem",
             fontFamily: window.systemMain['font'+element.toUpperCase()+'Font'],
-            color: window.systemMain['font'+element.toUpperCase()]
+            color: window.systemMain['font'+element.toUpperCase()],
+            fontWeight: 800
         },
         "h2":{
             fontSize:"1rem",

@@ -46,9 +46,8 @@ const ContactFull = () => {
 
 	return (
 		<Grid container key={"contactFull"} spacing={2} sx={{
-			margin: "10px",
 			display: "flex",
-			alignItems: "center",
+			alignItems: "top",
 			justifyContent: "center"
 		}}>
 			<Grid item md={4} sx={{
@@ -73,8 +72,8 @@ const ContactFull = () => {
 						</Typography>
 						<Typography variant="h3" sx={{
 							fontSize: "1rem",
-							color: window.systemMain.fontH3
-
+							color: window.systemMain.fontH3,
+							fontWeight: "600"
 						}}>
 							<RenderMarkdown markdown={window.systemLang.contactSubHeading}/>
 						</Typography>
@@ -117,8 +116,8 @@ const ContactFull = () => {
 							marginTop: "10px",
 							backgroundColor: window.systemMain.headerBackground,
 							borderRadius: "0px",
-							paddingLeft: "10px",
-							paddingRight: "10px"
+							paddingLeft: "30px",
+							paddingRight: "30px"
 						}}
 								onClick={(e) => {
 									handleSubmit(e);
