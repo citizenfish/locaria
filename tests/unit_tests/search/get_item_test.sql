@@ -55,13 +55,6 @@ $$
         SELECT locaria_gateway(parameters, jsonb_build_object('_groups', jsonb_build_array('test','Admins'))) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 5', ret_var#>'{features}'->0#>'{properties,_moderations}'->0 , '{fid}', parameters->>'fid');
 
-        --Simple get_item call with _identifier not fid
-        --parameters = parameters - 'fid' || jsonb_build_object('_identifier', 'foo1');
-        --RAISE NOTICE '%', parameters;
-        --SELECT locaria_gateway(parameters) INTO ret_var;
-        --RAISE NOTICE '%', locaria_tests.test_result_processor('get_item TEST 6', ret_var#>'{features}'->0 , '{properties,description,title}', 'find me one');
-
-        --RESET TEST DATA
 
         UPDATE locaria_data.locaria_test_data
         SET attributes = attributes -'acl' -'tags';

@@ -18,7 +18,9 @@ BEGIN
             FROM(
                     SELECT row_to_json(MQ.*) AS J FROM locaria_core.moderation_queue MQ
                     --note get_item prefix to prevent ambiguity
-                    WHERE fid = get_item.parameters->>'fid'
+                    WHERE (
+                                fid = get_item.parameters ->> 'fid' OR
+                                attributes @> jsonb_build_object('data', jsonb_build_object('_identifier', get_item.parameters ->>'_identifier')))
                     AND status = COALESCE(get_item.parameters->>'moderation_status', 'RECEIVED')
                     ORDER BY id ASC
                 ) S;
