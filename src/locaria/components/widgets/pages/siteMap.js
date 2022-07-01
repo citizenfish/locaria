@@ -5,39 +5,76 @@ import {useHistory} from "react-router-dom";
 
 import UrlCoder from "../../../libs/urlCoder"
 import {useMediaQuery} from "@mui/material";
+import TypographyHeader from "../typography/typographyHeader";
+import Carousel from "react-material-ui-carousel";
+import Paper from "@mui/material/Paper";
 
-const SiteMap = function ({mode}) {
+const SiteMap = function ({mode,images}) {
 
 	const url = new UrlCoder();
 
 	const sizeMatches = useMediaQuery('(min-width:600px)');
 
 
-	let sx = {
-		background: window.systemMain.themePanels,
-		flexGrow: 1,
-		textAlign: 'center'
-	}
-
-	if (mode === 'full') {
-		sx.backgroundImage = `url(${url.decode(window.systemMain.galleryImage, true)})`;
-		sx.height = 'calc(30vh)';
-		sx.backgroundSize = "cover";
-		sx.backgroundPositionY = "50%";
+	if(mode==='full') {
+		return (
+			<Box sx={{
+				background: window.systemMain.themePanels,
+				flexGrow: 1,
+				textAlign: 'center',
+				height:"500px",
+				backgroundSize:"cover",
+				backgroundPositionY:"50%"
+			}} key={"siteMap"}>
+					<Carousel sx={{
+						height: "500px"
+					}}>
+						{
+							images.map((item, i) => <Item key={i} item={item}/>)
+						}
+					</Carousel>
+				<Box sx={{
+					position:"relative",
+					top: "-480px",
+					zIndex: 100
+				}}>
+					<Grid container spacing={2} sx={{
+						flexGrow: 1,
+						display: "flex",
+						justifyContent: "center"
+					}}>
+						{sizeMatches ? <Panels></Panels> : <></>}
+					</Grid>
+				</Box>
+			</Box>
+		)
 	}
 
 	return (
-		<Box sx={sx} key={"siteMap"}>
+		<Box sx={{
+			background: window.systemMain.themePanels,
+			flexGrow: 1,
+			textAlign: 'center'
+		}} key={"siteMap"}>
 			<Box sx={{
-				paddingLeft: '10px'
 			}}>
 				<Grid container spacing={2} sx={{
-					flexGrow: 1
+					flexGrow: 1,
+					display: "flex",
+					justifyContent: "center"
 				}}>
 					{sizeMatches ? <Panels></Panels> : <></>}
 				</Grid>
 			</Box>
 		</Box>
+	)
+}
+
+function Item({item})
+{
+	const url = new UrlCoder();
+	return (
+		<Paper sx={{backgroundImage: `url(${url.decode(item.url,true)})`,height: "40vh",backgroundSize: "cover"}}/>
 	)
 }
 
@@ -98,7 +135,7 @@ const Panels = () => {
 						opacity: "0.5"
 					}
 				}}>
-					{window.siteMap[p].items[i].name}
+					<TypographyHeader sx={{color: window.siteMap[p].color,fontWeight:200,padding: "5px"}} element={"h4"}>{window.siteMap[p].items[i].name}</TypographyHeader>
 				</Box>
 			)
 		}
@@ -137,10 +174,10 @@ const Panels = () => {
 							 //collapseAll();
 						 }}
 					>
-						{window.siteMap[p].name}
+						<TypographyHeader sx={{color: window.siteMap[p].color}} element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
 					<Box sx={{
-						width: '100%',
+						width: '165px',
 						border: {
 							md: `2px solid ${window.siteMap[p].color}`,
 							xs: `1px solid ${window.siteMap[p].color}`
@@ -148,6 +185,7 @@ const Panels = () => {
 						marginTop: '5px',
 						backgroundColor: window.siteMap[p].backgroundColor,
 						display: collapseOpen[p] ? 'block' : 'none',
+						position: "absolute"
 					}}>
 						{panelItems}
 					</Box>

@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import UrlCoder from "../../../libs/urlCoder";
+import TypographyParagraph from "../typography/typographyParagraph";
 const url=new UrlCoder();
 
 
@@ -12,8 +13,12 @@ const LogoStrapLine = () => {
         <Box key={"logoStrapLine"} sx={{
             width: "calc(100% - 20px)",
         }}>
-            <Grid container>
-                <Grid item xs={2} sx={{
+            <Grid container sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+            }}>
+                <Grid item xs={3} sx={{
                     textAlign: 'center'
                 }}>
                     <img src={url.decode(window.systemMain.siteLogo,true)} sx={{
@@ -21,18 +26,19 @@ const LogoStrapLine = () => {
                     }}>
                     </img>
                 </Grid>
-                <Grid item xs={10} sx={{
+                <Grid item xs={9} sx={{
                     textAlign: 'left',
-                    paddingLeft: "10px"
+                    paddingLeft: "10px",
+                    paddingTop: "5px",
+                    paddingBottom: "5px"
                 }}>
                     <Typography variant="p" sx={{
                         flexGrow: 1,
-                        textAlign: "center",
                         fontSize: "0.8rem",
                         color: window.systemMain.fontP
 
                     }}>
-                        {window.systemLang.strapLine}
+                        <TypographyParagraph sx={{textAlign:"left",fontWeight:"700"}}>{window.systemLang.strapLine}</TypographyParagraph>
                     </Typography>
                 </Grid>
 

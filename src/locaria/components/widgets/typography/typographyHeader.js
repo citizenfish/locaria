@@ -5,19 +5,23 @@ export default function TypographyHeader({children,element,sx})  {
 
     const elements = {
         "h1":{
-            fontSize:"1.5rem",
+            fontSize:"1.2rem",
             fontFamily: window.systemMain['font'+element.toUpperCase()+'Font'],
-            color: window.systemMain['font'+element.toUpperCase()]
+            color: window.systemMain['font'+element.toUpperCase()],
+            fontWeight: window.systemMain['font'+element.toUpperCase()+'Weight']
         },
         "h2":{
             fontSize:"1rem",
             fontFamily: window.systemMain['font'+element.toUpperCase()+'Font'],
-            color: window.systemMain['font'+element.toUpperCase()]
+            color: window.systemMain['font'+element.toUpperCase()],
+            fontWeight: window.systemMain['font'+element.toUpperCase()+'Weight']
+
         },
         "h3":{
             fontSize:"0.9rem",
             fontFamily: window.systemMain['font'+element.toUpperCase()+'Font'],
-            color: window.systemMain['font'+element.toUpperCase()]
+            color: window.systemMain['font'+element.toUpperCase()],
+            fontWeight: window.systemMain['font'+element.toUpperCase()+'Weight']
         },
         "h4":{
             fontSize:"0.8rem",

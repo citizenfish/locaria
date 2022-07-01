@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import DataItemTitle from "./dataItems/dataItemTitle";
 import DataItemDescription from "./dataItems/dataItemDescription";
 import DataItemH2 from "./dataItems/dataItemH2";
+import dataItemMarkdown from "./dataItems/dataItemMarkdown";
 
 const FieldView = ({data}) => {
 
@@ -57,7 +58,8 @@ const FormatField = ({field, data}) => {
 	const dataItems={
 		'title':DataItemTitle,
 		'description':DataItemDescription,
-		'h2':DataItemH2
+		'h2':DataItemH2,
+		'md':dataItemMarkdown
 	}
 
 	if(dataItems[field.display]) {

@@ -73,6 +73,13 @@ export default function RenderMarkdown({markdown}) {
 			continue;
 		}
 
+		// Bold
+		match = splitMarkdown[line].match(/^\*\*(.*?)\*\*/);
+		if (match) {
+			renderedMarkdown.push(<TypographyParagraph sx={{display:"block",fontWeight:"bold"}} key={`md${mdid}${lineId}`}>{match[1]}</TypographyParagraph>);
+			continue;
+		}
+
 		match = splitMarkdown[line].match(/^\[(.*?)\]\((.*?)\)/);
 		if (match) {
 			renderedMarkdown.push(
@@ -90,7 +97,9 @@ export default function RenderMarkdown({markdown}) {
 			continue;
 		}
 
-		renderedMarkdown.push(<TypographyParagraph sx={{display:"inline-block",  paddingRight: "5px"}} key={`md${mdid}${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
+		sx={...sx,...{display:"inline-block",  paddingRight: "5px"}};
+
+		renderedMarkdown.push(<TypographyParagraph sx={sx} key={`md${mdid}${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
 	}
 
 	return (

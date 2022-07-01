@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import {useDispatch, useSelector} from "react-redux";
 import {newSearch, setSearch} from "../../redux/slices/searchDrawerSlice";
 
-export default function TextSearchWidget({id,sx, heading, placeholder}) {
+export default function TextSearchWidget({id, sx, heading, placeholder}) {
 	const dispatch = useDispatch()
 
 	const [searchString, setSearchString] = useState("");
@@ -16,29 +16,37 @@ export default function TextSearchWidget({id,sx, heading, placeholder}) {
 	useEffect(() => {
 		if (id !== searchId) {
 			setSearchId(id);
-			dispatch(setSearch({search: '',refresh:false}));
+			dispatch(setSearch({search: '', refresh: false}));
 		}
 	}, [id]);
 
-	return (
-		<Box sx={{
+	let elementSx = {
+		...{
 			padding: "10px",
 			backgroundColor: window.systemMain.headerBackground,
-			width: "40%"
-		}}>
+			width: "40%",
+			marginBottom: "20px"
+		}, ...sx || {}
+	};
+
+	return (
+		<Box sx={elementSx}>
 			<Grid container spacing={2} sx={{
 				color: "black"
 			}}>
 				<Grid item md={4}>
-					<TypographyHeader sx={{}} element={"h1"}>
+					<TypographyHeader sx={{color:"white"}} element={"h1"}>
 						{heading || 'Search'}
 					</TypographyHeader>
 				</Grid>
 				<Grid item md={8}>
 					<TextField id={"textSearchWidget"} value={search} sx={{
-						color: "black"
+						"& input": {
+							color: "black",
+							backgroundColor: "white"
+						}
 					}}
-							   onChange={e=>dispatch(setSearch({search:e.target.value}))}
+							   onChange={e => dispatch(setSearch({search: e.target.value}))}
 							   placeholder={placeholder || ''} variant="standard"/>
 				</Grid>
 			</Grid>
