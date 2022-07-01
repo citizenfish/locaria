@@ -62,7 +62,7 @@ const ContactFull = () => {
 			}}>
 				{!submitted &&
 					<>
-						<Typography variant="h2" sx={{
+{/*						<Typography variant="h2" sx={{
 							fontSize: "1.2rem",
 							fontWeight: "700",
 							paddingBottom: "5px",
@@ -76,8 +76,8 @@ const ContactFull = () => {
 							fontWeight: "600"
 						}}>
 							<RenderMarkdown markdown={window.systemLang.contactSubHeading}/>
-						</Typography>
-
+						</Typography>*/}
+						<RenderMarkdown markdown={window.systemLang.contactTitle}/>
 						<TextField
 							id={"contactName"}
 							sx={{
@@ -104,7 +104,7 @@ const ContactFull = () => {
 								}
 							}}
 							id={"contactEmail"}
-							label={"Your email"}
+							label={"email address"}
 							fullWidth={true}
 							value={email}
 							onChange={(e) => {

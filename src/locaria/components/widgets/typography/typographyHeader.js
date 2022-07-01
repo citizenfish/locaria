@@ -8,17 +8,20 @@ export default function TypographyHeader({children,element,sx})  {
             fontSize:"1.2rem",
             fontFamily: window.systemMain['font'+element.toUpperCase()+'Font'],
             color: window.systemMain['font'+element.toUpperCase()],
-            fontWeight: 800
+            fontWeight: window.systemMain['font'+element.toUpperCase()+'Weight']
         },
         "h2":{
             fontSize:"1rem",
             fontFamily: window.systemMain['font'+element.toUpperCase()+'Font'],
-            color: window.systemMain['font'+element.toUpperCase()]
+            color: window.systemMain['font'+element.toUpperCase()],
+            fontWeight: window.systemMain['font'+element.toUpperCase()+'Weight']
+
         },
         "h3":{
             fontSize:"0.9rem",
             fontFamily: window.systemMain['font'+element.toUpperCase()+'Font'],
-            color: window.systemMain['font'+element.toUpperCase()]
+            color: window.systemMain['font'+element.toUpperCase()],
+            fontWeight: window.systemMain['font'+element.toUpperCase()+'Weight']
         },
         "h4":{
             fontSize:"0.8rem",

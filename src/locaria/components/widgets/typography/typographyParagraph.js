@@ -5,7 +5,7 @@ export default function TypographyParagraph({children,sx}) {
 
     const localSx={
         fontSize: "0.8rem",
-        fontWeight: 400,
+        fontWeight: window.systemMain['fontPWeight'],
         paddingTop: "2px",
         paddingBottom: "2px",
         fontFamily: window.systemMain['fontPFont'],

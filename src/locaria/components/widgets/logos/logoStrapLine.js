@@ -38,7 +38,7 @@ const LogoStrapLine = () => {
                         color: window.systemMain.fontP
 
                     }}>
-                        <TypographyParagraph sx={{textAlign:"left"}}>{window.systemLang.strapLine}</TypographyParagraph>
+                        <TypographyParagraph sx={{textAlign:"left",fontWeight:"700"}}>{window.systemLang.strapLine}</TypographyParagraph>
                     </Typography>
                 </Grid>
 
