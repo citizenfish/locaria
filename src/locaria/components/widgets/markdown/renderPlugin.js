@@ -11,6 +11,7 @@ import TextSearchWidget from "../search/textSearchWidget";
 import SocialIcons from "../social/socialIcons";
 import SlideShow from "../images/slideShow";
 import ContactMailchimp from "../contact/contactMailchimp";
+import NavButton from "../navs/navButton";
 
 export default function RenderPlugin({plugin}) {
 
@@ -31,7 +32,8 @@ export default function RenderPlugin({plugin}) {
 		"ViewFullDetails": ViewFullDetails,
 		"TextSearchWidget": TextSearchWidget,
 		"SocialIcons": SocialIcons,
-		"SlideShow": SlideShow
+		"SlideShow": SlideShow,
+		"NavButton": NavButton
 	}
 
 
