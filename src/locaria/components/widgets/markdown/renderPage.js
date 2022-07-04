@@ -98,7 +98,7 @@ export default function RenderPage() {
 					margin: "0 auto"
 
 				}}>
-					<RenderMarkdown markdown={pageData.data}/>
+					<RenderMarkdown markdown={pageData.data} key={'mdTop'}/>
 				</Box>
 				<MenuDrawer></MenuDrawer>
 			</Box>
