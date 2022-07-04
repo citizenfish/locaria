@@ -10,6 +10,7 @@ import ViewFullDetails from "../viewLayouts/viewFullDetails";
 import TextSearchWidget from "../search/textSearchWidget";
 import SocialIcons from "../social/socialIcons";
 import SlideShow from "../images/slideShow";
+import ContactMailchimp from "../contact/contactMailchimp";
 
 export default function RenderPlugin({plugin}) {
 
@@ -22,6 +23,7 @@ export default function RenderPlugin({plugin}) {
 		"TopFeatures": TopFeatures,
 		"PageList": PageList,
 		"ContactFull": ContactFull,
+		"ContactMailchimp": ContactMailchimp,
 		"FooterTypeSimple": FooterTypeSimple,
 		"NavTypeSimple": NavTypeSimple,
 		"SiteMap": SiteMap,
@@ -38,13 +40,17 @@ export default function RenderPlugin({plugin}) {
 		let matchArgs = pluginArgStr.match(/(?:[^\s"]+|"[^"]*")+/g);
 		let pluginArgs = {};
 		for (let a in matchArgs) {
-			let cmdArray = matchArgs[a].split('=');
-			let evalCmd = cmdArray[1].replace(/\\"/, '"');
-			try {
-				pluginArgs[cmdArray[0]] = eval(JSON.parse(evalCmd));
-			} catch (e) {
-				pluginArgs[cmdArray[0]] = eval(evalCmd);
+			let cmdArray = matchArgs[a].split(/^([a-zA-Z]+)(=)/);
+			if(cmdArray[3]) {
+				let evalCmd = cmdArray[3].replace(/\\"/, '"');
+				try {
+					pluginArgs[cmdArray[1]] = eval(JSON.parse(evalCmd));
+				} catch (e) {
+					pluginArgs[cmdArray[1]] = eval(evalCmd);
 
+				}
+			} else {
+				pluginArgs[cmdArray[1]]={};
 			}
 		}
 		return (

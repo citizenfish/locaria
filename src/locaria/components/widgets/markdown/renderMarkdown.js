@@ -6,105 +6,131 @@ import Divider from "@mui/material/Divider";
 import UrlCoder from "../../../libs/urlCoder";
 import { v4 as uuidv4 } from 'uuid';
 import TypographyLink from "../typography/typographyLink";
+import TypographyBold from "../typography/typographyBold";
 
 const url = new UrlCoder();
 
 export default function RenderMarkdown({markdown}) {
 
-	const mdid=uuidv4();
 	let splitMarkdown = markdown.split('\n');
 	let renderedMarkdown = [];
-	let lineId = 0;
+
+
+
 	for (let line in splitMarkdown) {
-		lineId++;
-		// Clean any formatters
-
-		splitMarkdown[line] = splitMarkdown[line].replace(/\r/, '');
-
-		// extract any SX params first for the line
-
-		let sxMatch = splitMarkdown[line].match(/^\{(.*?)\}/);
-		let sx = {};
-		if (sxMatch !== null) {
-			sx = JSON.parse(sxMatch[0]);
-			splitMarkdown[line] = splitMarkdown[line].replace(sxMatch[0], '');
-		}
-
-		// let match the normal MD
-
-
-		if (splitMarkdown[line] === "") {
-			renderedMarkdown.push(
-/*
-				<p style={{}} key={`md${mdid}${lineId}`}></p>
-*/
-				<TypographyParagraph sx={{display:"block"}} key={`md${mdid}${lineId}`}></TypographyParagraph>
-		);
-			continue;
-		}
-		// Headers IE H1 H2 etc
-		let match = splitMarkdown[line].match(/^#+ /);
-		if (match) {
-			let headerType = match[0].length - 1;
-			let cleanedMatch = splitMarkdown[line].replace(match[0], '');
-
-			renderedMarkdown.push(
-				<TypographyHeader sx={sx} element={"h" + headerType}
-								  key={`md${mdid}${lineId}`}>{cleanedMatch}</TypographyHeader>
-			);
-			continue;
-		}
-
-		// Plugins our format %%
-		match = splitMarkdown[line].match(/^%(.*?)%/);
-		if (match) {
-			renderedMarkdown.push(
-				<RenderPlugin key={`plugin${match[1]}`} plugin={match[1]}></RenderPlugin>
-			);
-			continue;
-		}
-
-		// HR to <Dividor>
-		match = splitMarkdown[line].match(/^----------/);
-		if (match) {
-			renderedMarkdown.push(
-				<Divider sx={{marginTop:"10px",marginBottom:"10px"}} key={`md${mdid}${lineId}`}/>
-			);
-			continue;
-		}
-
-		// Bold
-		match = splitMarkdown[line].match(/^\*\*(.*?)\*\*/);
-		if (match) {
-			renderedMarkdown.push(<TypographyParagraph sx={{display:"block",fontWeight:"bold"}} key={`md${mdid}${lineId}`}>{match[1]}</TypographyParagraph>);
-			continue;
-		}
-
-		match = splitMarkdown[line].match(/^\[(.*?)\]\((.*?)\)/);
-		if (match) {
-			renderedMarkdown.push(
-				<TypographyLink sx={{display: "inline-block",paddingRight: "5px"}} link={match[2]}>{match[1]}</TypographyLink>
-			);
-			continue;
-		}
-
-
-		match = splitMarkdown[line].match(/^\!\[(.*?)\]\((.*?)\)/);
-		if (match) {
-			renderedMarkdown.push(
-				<img style={sx} key={`md${mdid}${lineId}`} src={url.decode(match[2],true)}/>
-			);
-			continue;
-		}
-
-		sx={...sx,...{display:"inline-block",  paddingRight: "5px"}};
-
-		renderedMarkdown.push(<TypographyParagraph sx={sx} key={`md${mdid}${lineId}`}>{splitMarkdown[line]}</TypographyParagraph>);
+		renderedMarkdown.push(ProcessLine(splitMarkdown[line]));
 	}
+
+
 
 	return (
 		<>
 			{renderedMarkdown}
 		</>
 	)
+}
+
+function RecursiveFormatters(line) {
+	let returns=[];
+	let matches;
+
+
+
+	// Bold
+	while(matches = line.match(/\*\*(.*?)\*\*/)) {
+		returns.push(<span>{line.slice(0,line.indexOf(matches[0]))}</span>);
+		line=line.slice(line.indexOf(matches[0]));
+		line=line.replace(matches[0],'');
+		returns.push(<TypographyBold sx={{display: "inline-block", }}
+									 key={`md${newUUID()}`}>{matches[1]}</TypographyBold>);
+	}
+
+	while(matches=line.match(/\[(.*?)\]\((.*?)\)/)) {
+		returns.push(<span>{line.slice(0,line.indexOf(matches[0]))}</span>);
+		line=line.slice(line.indexOf(matches[0]));
+		line=line.replace(matches[0],'');
+		returns.push(
+			<TypographyLink sx={{display: "inline-block"}} link={matches[2]}>{matches[1]}</TypographyLink>
+		);
+	}
+
+
+	if(line.length>0)
+		returns.push(<span>{line}</span>);
+
+	return returns;
+}
+
+function newUUID() {
+	return uuidv4();
+
+}
+
+function ProcessLine(line) {
+
+	// Clean any formatters
+
+	line = line.replace(/\r/, '');
+
+	// extract any SX params first for the line
+
+	let sxMatch = line.match(/^\{(.*?)\}/);
+	let sx = {};
+	if (sxMatch !== null) {
+		sx = JSON.parse(sxMatch[0]);
+		line = line.replace(sxMatch[0], '');
+	}
+
+	// let match the normal MD
+    // First single line formatters (IE ones that can have no further formatting
+
+	// Blank line
+	if (line === "") {
+		return(
+			<TypographyParagraph sx={{display:"block"}} key={`md${newUUID()}`}></TypographyParagraph>
+		);
+	}
+	// Headers IE H1 H2 etc
+	let match = line.match(/^#+ /);
+	if (match) {
+		let headerType = match[0].length - 1;
+		let cleanedMatch = line.replace(match[0], '');
+
+		return(
+			<TypographyHeader sx={sx} element={"h" + headerType}
+							  key={`md${newUUID()}`}>{cleanedMatch}</TypographyHeader>
+		);
+	}
+
+	// Plugins our format %%
+	match = line.match(/^%(.*?)%/);
+	if (match) {
+		return(
+			<RenderPlugin key={`plugin${match[1]}`} plugin={match[1]}></RenderPlugin>
+		);
+	}
+
+	// HR to <Dividor>
+	match = line.match(/^----------/);
+	if (match) {
+		return(
+			<Divider sx={{marginTop:"10px",marginBottom:"10px"}} key={`md${newUUID()}`}/>
+		);
+	}
+
+
+
+
+
+
+	match = line.match(/^\!\[(.*?)\]\((.*?)\)/);
+	if (match) {
+		return(
+			<img style={sx} key={`md${newUUID()}`} src={url.decode(match[2],true)}/>
+		);
+	}
+
+	sx={...sx,...{display:"inline-block",  paddingRight: "5px"}};
+
+	return(<TypographyParagraph sx={sx} key={`md${newUUID()}`}>{RecursiveFormatters(line)}</TypographyParagraph>);
 }
