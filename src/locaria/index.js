@@ -37,11 +37,11 @@ window.websocket.init({"url": resources.websocket, "uuid":cookieUUID}, connected
 
 window.websocket.registerQueue('bulkConfigs', (json) => {
 
-    window.systemMain = json.systemParams.packet.parameters.systemMain||{};
-    window.systemPages = json.systemPages.packet.parameters||{};
-    window.systemLang=json.systemParams.packet.parameters.langENG||{};
-    window.siteMap=json.systemParams.packet.parameters.siteMap||[];
-    window.systemCategories=new Channels(json.categories.packet.categories||{});
+    window.systemMain = json.systemParams.packet.parameters.systemMain || {};
+    window.systemPages = json.systemPages.packet.parameters || {};
+    window.systemLang=json.systemParams.packet.parameters.langENG || {};
+    window.siteMap=json.systemParams.packet.parameters.siteMap || [];
+    window.systemCategories=new Channels(json.categories.packet.categories || {});
     document.title = window.systemLang.siteTitle;
 
     ReactDOM.render(<Main/>, document.getElementById('root'));
