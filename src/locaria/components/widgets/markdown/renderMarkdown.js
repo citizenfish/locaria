@@ -7,6 +7,7 @@ import UrlCoder from "../../../libs/urlCoder";
 import { v4 as uuidv4 } from 'uuid';
 import TypographyLink from "../typography/typographyLink";
 import TypographyBold from "../typography/typographyBold";
+import TypographyItalics from "../typography/typographyItalics";
 
 const url = new UrlCoder();
 
@@ -30,13 +31,22 @@ function RecursiveFormatters(line) {
 	let returns=[];
 	let matches;
 
-	// Bold
+	// Bold **Foo**
 	while(matches = line.match(/\*\*(.*?)\*\*/)) {
 		returns.push(<span>{line.slice(0,line.indexOf(matches[0]))}</span>);
 		line=line.slice(line.indexOf(matches[0]));
 		line=line.replace(matches[0],'');
 		returns.push(<TypographyBold sx={{display: "inline-block", }}
 									 key={`md${newUUID()}`}>{matches[1]}</TypographyBold>);
+	}
+
+	//Italics _Foo_
+	while(matches = line.match(/_(.*?)_/)) {
+		returns.push(<span>{line.slice(0,line.indexOf(matches[0]))}</span>);
+		line=line.slice(line.indexOf(matches[0]));
+		line=line.replace(matches[0],'');
+		returns.push(<TypographyItalics sx={{display: "inline-block", }}
+									 key={`md${newUUID()}`}>{matches[1]}</TypographyItalics>);
 	}
 
 	while(matches=line.match(/\[(.*?)\]\((.*?)\)/)) {
@@ -113,7 +123,7 @@ function ProcessLine(line) {
 	}
 
 	// Bullet list //TODO ability to change bullet character and nested bullets
-	match = line.match(/\* (.*)/);
+	match = line.match(/^\* (.*)/);
 	if (match) {
 		return (
 			<TypographyParagraph sx={{display:"block"}} key={`md${newUUID()}`}>&#8226; {line.substring(1)}</TypographyParagraph>
@@ -127,7 +137,8 @@ function ProcessLine(line) {
 		);
 	}
 
-	sx={...sx,...{display:"inline-block",  paddingRight: "5px"}};
+	//TODO why hard coded 5px?
+	sx={...sx,...{paddingRight: "5px"}};
 
 	return(<TypographyParagraph sx={sx} key={`md${newUUID()}`}>{RecursiveFormatters(line)}</TypographyParagraph>);
 }
