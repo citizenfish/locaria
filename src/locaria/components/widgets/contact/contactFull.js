@@ -62,21 +62,6 @@ const ContactFull = () => {
 			}}>
 				{!submitted &&
 					<>
-{/*						<Typography variant="h2" sx={{
-							fontSize: "1.2rem",
-							fontWeight: "700",
-							paddingBottom: "5px",
-							color: window.systemMain.fontH2
-						}}>
-							{window.systemLang.contactTitle}
-						</Typography>
-						<Typography variant="h3" sx={{
-							fontSize: "1rem",
-							color: window.systemMain.fontH3,
-							fontWeight: "600"
-						}}>
-							<RenderMarkdown markdown={window.systemLang.contactSubHeading}/>
-						</Typography>*/}
 						<RenderMarkdown markdown={window.systemLang.contactTitle}/>
 						<TextField
 							id={"contactName"}

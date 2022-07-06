@@ -5,13 +5,16 @@ import Grid from "@mui/material/Grid";
 import SingleFeatureImageBox from "../images/singleFeatureImageBox";
 import Box from "@mui/material/Box";
 
-const ViewFullDetails = ({}) => {
+const ViewFullDetails = ({mode}) => {
     const report = useSelector((state) => state.viewDraw.report);
 
 
     if(report&&report.viewLoader) {
         return (
-                <Grid container spacing={2} sx={{
+            <>
+                <FieldView data={report.viewLoader.packet.features[0].properties}/>
+            </>
+/*                <Grid container spacing={2} sx={{
                     margin: "5px"
                 }}>
                     <Grid item xs={8}>
@@ -20,7 +23,7 @@ const ViewFullDetails = ({}) => {
                     <Grid item xs={4}>
                         <SingleFeatureImageBox category={report.viewLoader.packet.features[0].properties.category} image={report.viewLoader.packet.features[0].properties.data.images[0]}/>
                     </Grid>
-                </Grid>
+                </Grid>*/
         )
     } else {
         return (
