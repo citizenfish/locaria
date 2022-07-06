@@ -15,13 +15,9 @@ export default function RenderMarkdown({markdown}) {
 	let splitMarkdown = markdown.split('\n');
 	let renderedMarkdown = [];
 
-
-
 	for (let line in splitMarkdown) {
 		renderedMarkdown.push(ProcessLine(splitMarkdown[line]));
 	}
-
-
 
 	return (
 		<>
@@ -33,8 +29,6 @@ export default function RenderMarkdown({markdown}) {
 function RecursiveFormatters(line) {
 	let returns=[];
 	let matches;
-
-
 
 	// Bold
 	while(matches = line.match(/\*\*(.*?)\*\*/)) {
@@ -118,10 +112,13 @@ function ProcessLine(line) {
 		);
 	}
 
-
-
-
-
+	// Bullet list //TODO ability to change bullet character and nested bullets
+	match = line.match(/\* (.*)/);
+	if (match) {
+		return (
+			<TypographyParagraph sx={{display:"block"}} key={`md${newUUID()}`}>&#8226; {line.substring(1)}</TypographyParagraph>
+		);
+	}
 
 	match = line.match(/^\!\[(.*?)\]\((.*?)\)/);
 	if (match) {
