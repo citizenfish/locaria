@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import UrlCoder from "../../../libs/urlCoder";
 import TypographyParagraph from "../typography/typographyParagraph";
+import RenderMarkdown from "../markdown/renderMarkdown";
 const url=new UrlCoder();
 
 
@@ -18,7 +19,7 @@ const LogoStrapLine = () => {
                 alignItems: "center",
                 justifyContent: "center"
             }}>
-                <Grid item xs={3} sx={{
+                <Grid item xs={4} sx={{
                     textAlign: 'center'
                 }}>
                     <img src={url.decode(window.systemMain.siteLogo,true)} sx={{
@@ -26,7 +27,7 @@ const LogoStrapLine = () => {
                     }}>
                     </img>
                 </Grid>
-                <Grid item xs={9} sx={{
+                <Grid item xs={8} sx={{
                     textAlign: 'left',
                     paddingLeft: "10px",
                     paddingTop: "5px",
@@ -38,7 +39,7 @@ const LogoStrapLine = () => {
                         color: window.systemMain.fontP
 
                     }}>
-                        <TypographyParagraph sx={{textAlign:"left",fontWeight:"700"}}>{window.systemLang.strapLine}</TypographyParagraph>
+                        <RenderMarkdown markdown={window.systemLang.strapLine}></RenderMarkdown>
                     </Typography>
                 </Grid>
 

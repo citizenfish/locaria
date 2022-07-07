@@ -13,7 +13,9 @@ export default function SocialIcons() {
 				return (
 					<Grid item md={1} key={social.title} onClick={(e) => {
 						window.location = social.url;
-					}} sx={{marginRight: "10px"}}>
+					}} sx={{
+						marginRight: "10px", cursor: "pointer",
+					}}>
 						<BasicImage src={social.src} sx={{width: "50px", height: "50px"}}/>
 					</Grid>
 				)

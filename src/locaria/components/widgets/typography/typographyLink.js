@@ -14,7 +14,8 @@ export default function TypographyLink({children,sx,link}) {
 		paddingBottom: "2px",
 		fontFamily: window.systemMain['fontLinkFont'],
 		color: window.systemMain['fontLink'],
-		cursor: "grab"
+		cursor: "pointer",
+		textDecorationColor:window.systemMain['fontLink']
 	};
 
 	let elementSx={...localSx,...sx||{}};

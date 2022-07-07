@@ -76,13 +76,20 @@ function ProcessLine(line) {
 
 	line = line.replace(/\r/, '');
 
-	// extract any SX params first for the line
+	// extract any SX params first for the line  {"foo":"bar"}
 
 	let sxMatch = line.match(/^\{(.*?)\}/);
 	let sx = {};
 	if (sxMatch !== null) {
 		sx = JSON.parse(sxMatch[0]);
 		line = line.replace(sxMatch[0], '');
+	}
+
+	// Find any replace style tags  &STYLE&
+	let tagMatch = line.match(/^\&(.*?)\&/);
+	if (tagMatch !== null) {
+		sx = window.systemMain.styles[tagMatch[1]];
+		line = line.replace(tagMatch[0], '');
 	}
 
 	// let match the normal MD
