@@ -19,7 +19,8 @@ const BigCard = ({feature, sx}) => {
 	let  actualSx= {
 		...{
 			backgroundColor: channel.color,
-			width: "100%"
+			width: "100%",
+			cursor: "pointer"
 		}, ...sx? sx:{}
 	};
 	return (

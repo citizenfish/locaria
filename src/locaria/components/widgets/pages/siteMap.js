@@ -9,32 +9,37 @@ import TypographyHeader from "../typography/typographyHeader";
 import Carousel from "react-material-ui-carousel";
 import Paper from "@mui/material/Paper";
 
-const SiteMap = function ({mode,images}) {
+const SiteMap = function ({mode, images}) {
 
 	const url = new UrlCoder();
 
 	const sizeMatches = useMediaQuery('(min-width:600px)');
 
 
-	if(mode==='full') {
+	if (mode === 'full') {
 		return (
 			<Box sx={{
 				background: window.systemMain.themePanels,
 				flexGrow: 1,
 				textAlign: 'center',
-				height:"500px",
-				backgroundSize:"cover",
-				backgroundPositionY:"50%"
+				height: "500px",
+				backgroundSize: "cover",
+				backgroundPositionY: "50%"
 			}} key={"siteMap"}>
-					<Carousel sx={{
-						height: "500px"
-					}}>
-						{
-							images.map((item, i) => <Item key={i} item={item}/>)
-						}
-					</Carousel>
+				<Carousel navButtonsWrapperProps={{
+					style: {
+						"margin-top" :"20px"
+					}
+				}}
+						  sx={{
+							  height: "500px"
+						  }}>
+					{
+						images.map((item, i) => <Item key={i} item={item}/>)
+					}
+				</Carousel>
 				<Box sx={{
-					position:"relative",
+					position: "relative",
 					top: "-480px",
 					zIndex: 100
 				}}>
@@ -56,8 +61,7 @@ const SiteMap = function ({mode,images}) {
 			flexGrow: 1,
 			textAlign: 'center'
 		}} key={"siteMap"}>
-			<Box sx={{
-			}}>
+			<Box sx={{}}>
 				<Grid container spacing={2} sx={{
 					flexGrow: 1,
 					display: "flex",
@@ -70,11 +74,10 @@ const SiteMap = function ({mode,images}) {
 	)
 }
 
-function Item({item})
-{
+function Item({item}) {
 	const url = new UrlCoder();
 	return (
-		<Paper sx={{backgroundImage: `url(${url.decode(item.url,true)})`,height: "40vh",backgroundSize: "cover"}}/>
+		<Paper sx={{backgroundImage: `url(${url.decode(item.url, true)})`, height: "40vh", backgroundSize: "cover"}}/>
 	)
 }
 
@@ -133,9 +136,12 @@ const Panels = () => {
 					fontSize: "0.8rem",
 					'&:hover': {
 						opacity: "0.5"
-					}
+					},
+					cursor: "pointer"
+
 				}}>
-					<TypographyHeader sx={{color: window.siteMap[p].color,fontWeight:200,padding: "5px"}} element={"h4"}>{window.siteMap[p].items[i].name}</TypographyHeader>
+					<TypographyHeader sx={{color: window.siteMap[p].color, fontWeight: 200, padding: "5px"}}
+									  element={"h4"}>{window.siteMap[p].items[i].name}</TypographyHeader>
 				</Box>
 			)
 		}
@@ -155,7 +161,9 @@ const Panels = () => {
 						},
 						width: '100%',
 						padding: "5px",
-						opacity: collapseOpen[p] ? 0.5 : 1
+						opacity: collapseOpen[p] ? 0.5 : 1,
+						cursor: "pointer"
+
 
 					}} onClick={() => {
 						toggleCollapseOpen(p);
@@ -174,7 +182,8 @@ const Panels = () => {
 							 //collapseAll();
 						 }}
 					>
-						<TypographyHeader sx={{color: window.siteMap[p].color}} element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
+						<TypographyHeader sx={{color: window.siteMap[p].color}}
+										  element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
 					<Box sx={{
 						width: '165px',
