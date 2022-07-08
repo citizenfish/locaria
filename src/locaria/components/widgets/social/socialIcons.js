@@ -8,10 +8,14 @@ export default function SocialIcons() {
 	//let gridMax = parseInt(12 / window.systemMain.socialMedia.length);
 
 	return (
-		<Grid container spacing={6}>
+		<Grid container spacing={6} sx={{
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center"
+		}}>
 			{window.systemMain.socialMedia.map((social) => {
 				return (
-					<Grid item md={1} key={social.title} onClick={(e) => {
+					<Grid item xs={1} key={social.title} onClick={(e) => {
 						window.location = social.url;
 					}} sx={{
 						marginRight: "10px", cursor: "pointer",

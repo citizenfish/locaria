@@ -5,10 +5,12 @@ import Typography from "@mui/material/Typography";
 import {useHistory} from "react-router-dom";
 import UrlCoder from "../../../libs/urlCoder";
 import TypographyHeader from "../typography/typographyHeader";
+import {useMediaQuery} from "@mui/material";
 
 const PageList = function () {
 	const history = useHistory();
 	const url = new UrlCoder();
+	const sizeMatches = useMediaQuery('(min-width:600px)');
 
 	const Panels = () => {
 		let panelArray = [];
@@ -24,7 +26,7 @@ const PageList = function () {
 						}
 					}
 					}>
-						<TypographyHeader sx={{color: window.siteMap[p].backgroundColor}}
+						<TypographyHeader sx={{color: window.siteMap[p].backgroundColor,fontSize:sizeMatches? "0.9rem":"0.6rem"}}
 										  element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
 				</Grid>
@@ -38,7 +40,9 @@ const PageList = function () {
 	return (
 		<Box key={"pageList"} sx={{
 			flexGrow: 1,
-			textAlign: 'center'
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center"
 		}}>
 			<Grid container spacing={2} sx={{
 				flexGrow: 1
