@@ -106,7 +106,6 @@ const ContactMailchimp = ({url}) => {
 			}}>
 				<Box sx={{
 
-					width: "calc( 100% - 40px)",
 					padding: "20px"
 
 				}}>
