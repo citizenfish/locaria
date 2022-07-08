@@ -7,7 +7,7 @@ import UrlCoder from "../../../libs/urlCoder"
 export default function SlideShow({images}) {
 
 	return (
-		<Carousel sx={{
+		<Carousel height={550} sx={{
 			margin: "10px"
 		}}>
 			{
@@ -22,9 +22,9 @@ function Item(props)
 	const url = new UrlCoder();
 
 	return (
-		<Paper sx={{backgroundImage: `url(${url.decode(props.item.url,true)})`,height: "40vh",backgroundSize: "cover"}}>
-			<h2>{props.item.name}</h2>
-			<p>{props.item.description}</p>
+		<Paper sx={{backgroundImage: `url(${url.decode(props.item.url,true)})`,width: "100%",height:"550px",backgroundSize: "cover"}}>
+{/*			<h2>{props.item.name}</h2>
+			<p>{props.item.description}</p>*/}
 		</Paper>
 	)
 }

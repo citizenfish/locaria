@@ -28,7 +28,8 @@ const SiteMap = function ({mode, images}) {
 			}} key={"siteMap"}>
 				<Box sx={{
 					position: "absolute",
-					width: "90vw"
+					width: "100%",
+					maxWidth: "1100px"
 				}}>
 				<Box sx={{
 					position: "relative",

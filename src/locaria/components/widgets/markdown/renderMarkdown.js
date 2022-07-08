@@ -8,7 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 import TypographyLink from "../typography/typographyLink";
 import TypographyBold from "../typography/typographyBold";
 import TypographyItalics from "../typography/typographyItalics";
-
+import {ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import CircleIcon from '@mui/icons-material/Circle';
 const url = new UrlCoder();
 
 export default function RenderMarkdown({markdown}) {
@@ -133,8 +134,15 @@ function ProcessLine(line) {
 	match = line.match(/^\* (.*)/);
 	if (match) {
 		return (
-			<TypographyParagraph sx={{display:"block"}} key={`md${newUUID()}`}>&#8226; {line.substring(1)}</TypographyParagraph>
-		);
+			<ListItem disablePadding sx={{}}>
+				<ListItemButton sx={{height:"100%",padding:"0px"}}>
+					<ListItemIcon sx={{minWidth:"20px",fontSize:"0.5rem"}}>
+						<CircleIcon fontSize={"small"} sx={{minWidth:"20px",fontSize:"0.5rem"}}/>
+					</ListItemIcon>
+					<ListItemText><TypographyParagraph sx={{display:"block"}} key={`md${newUUID()}`}>{line.substring(1)}</TypographyParagraph></ListItemText>
+				</ListItemButton>
+			</ListItem>
+		)
 	}
 
 	match = line.match(/^\!\[(.*?)\]\((.*?)\)/);
