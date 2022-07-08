@@ -22,26 +22,20 @@ const SiteMap = function ({mode, images}) {
 				background: window.systemMain.themePanels,
 				flexGrow: 1,
 				textAlign: 'center',
-				height: "500px",
+				height: sizeMatches? "500px":"370px",
 				backgroundSize: "cover",
 				backgroundPositionY: "50%"
 			}} key={"siteMap"}>
-				<Carousel navButtonsWrapperProps={{
-					style: {
-						"margin-top" :"20px"
-					}
-				}}
-						  sx={{
-							  height: "500px"
-						  }}>
-					{
-						images.map((item, i) => <Item key={i} item={item}/>)
-					}
-				</Carousel>
+				<Box sx={{
+					position: "absolute",
+					width: "90vw"
+				}}>
 				<Box sx={{
 					position: "relative",
-					top: "-480px",
-					zIndex: 100
+					//top: "-480px",
+					zIndex: 100,
+					top: "10px",
+					left: "-15px"
 				}}>
 					<Grid container spacing={2} sx={{
 						flexGrow: 1,
@@ -51,6 +45,13 @@ const SiteMap = function ({mode, images}) {
 						{sizeMatches ? <Panels></Panels> : <></>}
 					</Grid>
 				</Box>
+				</Box>
+				<Carousel height={sizeMatches? "450px":"320px"}>
+					{
+						images.map((item, i) => <Item key={i} item={item}/>)
+					}
+				</Carousel>
+
 			</Box>
 		)
 	}
@@ -77,7 +78,7 @@ const SiteMap = function ({mode, images}) {
 function Item({item}) {
 	const url = new UrlCoder();
 	return (
-		<Paper sx={{backgroundImage: `url(${url.decode(item.url, true)})`, height: "40vh", backgroundSize: "cover"}}/>
+		<Paper sx={{backgroundImage: `url(${url.decode(item.url, true)})`, height: "100%", backgroundSize: "cover"}}/>
 	)
 }
 
