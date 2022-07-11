@@ -70,7 +70,7 @@ BEGIN
     --Materialize the live view for performance
     --CREATE  MATERIALIZED VIEW locaria_data.global_search_view AS SELECT * FROM locaria_data.global_search_view_live;
     CREATE  MATERIALIZED VIEW locaria_data.global_search_view AS
-    SELECT fid,
+    SELECT distinct on(fid) fid,
            wkb_geometry,
            jsonb_set(GS.attributes, '{data,images}', locaria_core.asset_url_maker(GS.attributes#>'{data,images}', A.attributes, mask)) AS attributes,
            start_date,
