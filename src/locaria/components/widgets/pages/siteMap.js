@@ -8,10 +8,19 @@ import {useMediaQuery} from "@mui/material";
 import TypographyHeader from "../typography/typographyHeader";
 import Carousel from "react-material-ui-carousel";
 import Paper from "@mui/material/Paper";
+import ClickAway from "../utils/clickAway";
+import {useSelector} from "react-redux";
 
-const SiteMap = function ({mode, images}) {
+const SiteMap = function ({mode, images,feature}) {
 
-	const url = new UrlCoder();
+	let useImages=images||[];
+	const report = useSelector((state) => state.viewDraw.report);
+
+	if(feature===true&&report&&report.viewLoader) {
+		useImages=[];
+		for(let i in report.viewLoader.packet.features[0].properties.data.images)
+			useImages.push({"url":report.viewLoader.packet.features[0].properties.data.images[i]})
+	}
 
 	const sizeMatches = useMediaQuery('(min-width:600px)');
 
@@ -22,7 +31,7 @@ const SiteMap = function ({mode, images}) {
 				background: window.systemMain.themePanels,
 				flexGrow: 1,
 				textAlign: 'center',
-				height: sizeMatches? "500px":"370px",
+				height: sizeMatches ? "500px" : "370px",
 				backgroundSize: "cover",
 				backgroundPositionY: "50%"
 			}} key={"siteMap"}>
@@ -31,25 +40,19 @@ const SiteMap = function ({mode, images}) {
 					width: "100%",
 					maxWidth: "1100px"
 				}}>
-				<Box sx={{
-					position: "relative",
-					//top: "-480px",
-					zIndex: 100,
-					top: "10px",
-					left: "-15px"
-				}}>
-					<Grid container spacing={2} sx={{
-						flexGrow: 1,
-						display: "flex",
-						justifyContent: "center"
+					<Box sx={{
+						position: "relative",
+						//top: "-480px",
+						zIndex: 100,
+						top: "10px",
+						left: "-15px"
 					}}>
 						{sizeMatches ? <Panels></Panels> : <></>}
-					</Grid>
+					</Box>
 				</Box>
-				</Box>
-				<Carousel height={sizeMatches? "450px":"320px"}>
+				<Carousel height={sizeMatches ? "450px" : "320px"}>
 					{
-						images.map((item, i) => <Item key={i} item={item}/>)
+						useImages.map((item, i) => <Item key={i} item={item}/>)
 					}
 				</Carousel>
 
@@ -64,14 +67,11 @@ const SiteMap = function ({mode, images}) {
 			textAlign: 'center'
 		}} key={"siteMap"}>
 			<Box sx={{}}>
-				<Grid container spacing={2} sx={{
-					flexGrow: 1,
-					display: "flex",
-					justifyContent: "center"
-				}}>
-					{sizeMatches ? <Panels></Panels> : <></>}
-				</Grid>
+
+				{sizeMatches ? <Panels></Panels> : <></>}
 			</Box>
+
+
 		</Box>
 	)
 }
@@ -206,7 +206,16 @@ const Panels = () => {
 		)
 	}
 
-	return panelArray;
+	return (
+		<ClickAway update={collapseAll}>
+			<Grid container spacing={2} sx={{
+				flexGrow: 1,
+				display: "flex",
+				justifyContent: "center"
+			}}>
+				{panelArray}
+			</Grid>
+		</ClickAway>);
 
 }
 
