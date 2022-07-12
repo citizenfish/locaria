@@ -1,11 +1,12 @@
 import React from 'react';
 import RenderMarkdown from "./renderMarkdown";
-import {LinearProgress} from "@mui/material";
+import {LinearProgress, useMediaQuery} from "@mui/material";
 import {useParams} from "react-router-dom";
 import {setReport} from "../../redux/slices/viewDrawerSlice";
 import {useDispatch} from "react-redux";
 import Box from "@mui/material/Box";
 import MenuDrawer from "../drawers/menuDrawer";
+import {setMobile} from "../../redux/slices/mediaSlice";
 
 export default function RenderPage() {
 
@@ -16,6 +17,12 @@ export default function RenderPage() {
 	let {feature} = useParams();
 	const [pageData, setPageData] = React.useState(undefined);
 
+
+	const handleResize = () => {
+		dispatch(setMobile(!useMediaQuery('(min-width:600px)')));
+	};
+
+	handleResize();
 
 	let channel;
 
@@ -81,6 +88,7 @@ export default function RenderPage() {
 		});
 
 		getAllData();
+		window.addEventListener('resize', handleResize);
 	}, [page]);
 
 	if (pageData) {

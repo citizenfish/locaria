@@ -58,7 +58,8 @@
 		"webpack-dev-server": "^3.11.2",
 		"yaml": "^2.0.0-10",
 		"yauzl": "^2.10.0",
-		"use-mailchimp-form": "^3.0.1"
+		"use-mailchimp-form": "^3.0.1",
+		"react-cookie-consent": "^7.5.0"
 	},
 	"devDependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
