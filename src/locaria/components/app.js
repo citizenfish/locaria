@@ -10,6 +10,7 @@ import { Provider } from 'react-redux'
 
 import RenderPage from "./widgets/markdown/renderPage";
 import * as PropTypes from "prop-types";
+import CookieConsent from "react-cookie-consent";
 
 
 
@@ -129,6 +130,7 @@ const App = () => {
 							<Route component={RenderPage}/>
 						</Switch>
 					</Router>
+				<CookieConsent>This website uses cookies to enhance the user experience only, we do not issue 3rd party cookies.</CookieConsent>
 			</Provider>
 		);
 	}

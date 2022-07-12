@@ -22,7 +22,7 @@ const SiteMap = function ({mode, images,feature}) {
 			useImages.push({"url":report.viewLoader.packet.features[0].properties.data.images[i]})
 	}
 
-	const sizeMatches = useMediaQuery('(min-width:600px)');
+	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
 
 	if (mode === 'full') {
@@ -31,7 +31,7 @@ const SiteMap = function ({mode, images,feature}) {
 				background: window.systemMain.themePanels,
 				flexGrow: 1,
 				textAlign: 'center',
-				height: sizeMatches ? "500px" : "370px",
+				height: !mobile? "500px" : "370px",
 				backgroundSize: "cover",
 				backgroundPositionY: "50%"
 			}} key={"siteMap"}>
@@ -47,10 +47,10 @@ const SiteMap = function ({mode, images,feature}) {
 						top: "10px",
 						left: "-15px"
 					}}>
-						{sizeMatches ? <Panels></Panels> : <></>}
+						{!mobile ? <Panels></Panels> : <></>}
 					</Box>
 				</Box>
-				<Carousel height={sizeMatches ? "450px" : "320px"}>
+				<Carousel height={!mobile ? "450px" : "320px"}>
 					{
 						useImages.map((item, i) => <Item key={i} item={item}/>)
 					}
@@ -68,7 +68,7 @@ const SiteMap = function ({mode, images,feature}) {
 		}} key={"siteMap"}>
 			<Box sx={{}}>
 
-				{sizeMatches ? <Panels></Panels> : <></>}
+				{!mobile ? <Panels></Panels> : <></>}
 			</Box>
 
 

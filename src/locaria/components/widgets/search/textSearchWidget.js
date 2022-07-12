@@ -13,6 +13,9 @@ export default function TextSearchWidget({id, sx, heading, placeholder}) {
 	const search = useSelector((state) => state.searchDraw.search);
 	const [searchId, setSearchId] = useState(undefined);
 
+	const mobile = useSelector((state) => state.mediaSlice.mobile);
+
+
 	useEffect(() => {
 		if (id !== searchId) {
 			setSearchId(id);
@@ -24,7 +27,7 @@ export default function TextSearchWidget({id, sx, heading, placeholder}) {
 		...{
 			padding: "10px",
 			backgroundColor: window.systemMain.headerBackground,
-			width: "40%",
+			width: mobile?"100%":"40%",
 			marginBottom: "20px"
 		}, ...sx || {}
 	};
