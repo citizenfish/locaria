@@ -27,5 +27,5 @@ export default function TypographyLink({children,sx,link}) {
 				history.push(actualUrl);
 		}}>{children}</Link>
 	)
-	return (<Link sx={elementSx} href={actualUrl}>{children}</Link>)
+	return (<Link sx={elementSx} href={actualUrl} target="_blank" rel="noopener">{children}</Link>)
 }

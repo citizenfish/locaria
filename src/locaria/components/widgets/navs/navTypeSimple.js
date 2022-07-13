@@ -3,9 +3,11 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import BurgerMenu from "./burgerMenu";
+import {useHistory} from "react-router-dom";
 
 const NavTypeSimple = function ({menu}) {
 
+    const history = useHistory();
 
 
     return (
@@ -31,7 +33,7 @@ const NavTypeSimple = function ({menu}) {
                     <BurgerMenu></BurgerMenu>
 
                 </Grid>
-                <Grid item md={5} sx={{
+                <Grid onClick={()=>{history.push('/')}} item md={5} sx={{
                     textAlign: "right",
                     verticalAlign: "middle",
 
@@ -47,7 +49,7 @@ const NavTypeSimple = function ({menu}) {
                         {window.systemLang.siteTitle ? window.systemLang.siteTitle : 'Locaria'}
                     </Typography>
                 </Grid>
-                <Grid item md={6} sx={{
+                <Grid onClick={()=>{history.push('/')}} item md={6} sx={{
                     display: {
                         md: "block",
                         xs: "none"
