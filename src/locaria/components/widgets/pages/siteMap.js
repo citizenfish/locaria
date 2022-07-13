@@ -142,8 +142,8 @@ const Panels = () => {
 					cursor: "pointer"
 
 				}}>
-					<TypographyHeader sx={{color: window.siteMap[p].color, fontWeight: 200, padding: "5px"}}
-									  element={"h4"}>{window.siteMap[p].items[i].name}</TypographyHeader>
+					<TypographyHeader sx={{color: window.siteMap[p].color, fontWeight: 400, padding: "5px",fontSize: "0.8rem"}}
+									  element={"h3"}>{window.siteMap[p].items[i].name}</TypographyHeader>
 				</Box>
 			)
 		}
@@ -187,19 +187,21 @@ const Panels = () => {
 						<TypographyHeader sx={{color: window.siteMap[p].color}}
 										  element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
-					<Box sx={{
-						width: '165px',
-						border: {
-							md: `2px solid ${window.siteMap[p].color}`,
-							xs: `1px solid ${window.siteMap[p].color}`
-						},
-						marginTop: '5px',
-						backgroundColor: window.siteMap[p].backgroundColor,
-						display: collapseOpen[p] ? 'block' : 'none',
-						position: "absolute"
-					}}>
-						{panelItems}
-					</Box>
+					{panelItems.length > 0 &&
+						<Box sx={{
+							width: '165px',
+							border: {
+								md: `2px solid ${window.siteMap[p].color}`,
+								xs: `1px solid ${window.siteMap[p].color}`
+							},
+							marginTop: '5px',
+							backgroundColor: window.siteMap[p].backgroundColor,
+							display: collapseOpen[p] ? 'block' : 'none',
+							position: "absolute"
+						}}>
+							{panelItems}
+						</Box>
+					}
 				</Box>
 
 			</Grid>
