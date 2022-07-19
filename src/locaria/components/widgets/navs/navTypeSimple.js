@@ -59,7 +59,8 @@ const NavTypeSimple = function ({menu}) {
                         flexGrow: 1,
                         fontSize: "1rem",
                         display: "inline-block",
-                        marginLeft: "10px"
+                        marginLeft: "10px",
+                        fontFamily:"Montserrat"
                     }}>
                         {window.systemLang.siteSubTitle}
                     </Typography>

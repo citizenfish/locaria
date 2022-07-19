@@ -140,10 +140,10 @@ function getSageOutputs(stage, theme) {
 	return JSON.parse(fs.readFileSync(outputsFileName, 'utf8'));
 }
 
-function sendSQLFiles(stage, theme, configFile, callBack) {
+function sendSQLFiles(stage, theme, environment,configFile, callBack) {
 
 	const outputs = getSageOutputs(stage);
-	let themeOutputs = getThemeOutputs(stage, theme);
+	let themeOutputs = getThemeOutputs(stage, theme,environment);
 
 	//const conn=`pg://${configs.custom[stage].auroraMasterUser}:'${encodeURI(configs.custom[stage].auroraMasterPass)}'@${outputs.postgresHost}:${outputs.postgresPort}/locaria${theme}`;
 
@@ -155,7 +155,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 
 	if (!fs.existsSync(configFile)) {
 		console.log(`specified config file ${configFile} does not exist!`);
-		callBack(stage, theme);
+		callBack(stage, theme,environment);
 		return;
 	}
 
@@ -169,7 +169,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 			deployConfig.subs = JSON.parse(fs.readFileSync(deployConfig.substitutions, 'utf8'));
 		} else {
 			console.log(`substitutions file: ${deployConfig.substitutions} not found`);
-			callBack(stage, theme);
+			callBack(stage, theme,environment);
 			return;
 		}
 	}
@@ -191,8 +191,9 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 	function deployEntry(id) {
 
 		if (deployConfig.databases[id]) {
-
-			let databaseName = deployConfig.databases[id].database ? deployConfig.databases[id].database : `locaria${theme}`;
+			// new revert
+			let databaseName = deployConfig.databases[id].database ? deployConfig.databases[id].database : `locaria${theme}${environment}`;
+			//let databaseName = deployConfig.databases[id].database ? deployConfig.databases[id].database : `locaria${theme}`;
 			const conn = {
 				user: configs.custom[stage].auroraMasterUser,
 				host: outputs.postgresHost,
@@ -231,7 +232,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 					index++;
 					skipped++;
 					if (index >= items) {
-						callBack(stage, theme);
+						callBack(stage, theme,environment);
 					} else {
 						sendFile(index);
 					}
@@ -287,7 +288,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 							failed++;
 							if (deployConfig.databases[id].stopOnError === true) {
 								console.log(`EARLY STOP! DONE ${fileList.length} Records SKIPPED ${skipped}`);
-								callBack(stage, theme);
+								callBack(stage, theme,environment);
 								return;
 							}
 						} else {
@@ -317,7 +318,7 @@ function sendSQLFiles(stage, theme, configFile, callBack) {
 			}
 		} else {
 			console.log('End of databases');
-			callBack(stage, theme);
+			callBack(stage, theme,environment);
 		}
 	}
 
@@ -335,17 +336,22 @@ function deploySystem() {
 			console.log(`[${keys[t]}]`);
 		}
 		let theme = keys[0];
+		let environment = "dev";
 		readline.question(`Theme to use [${theme}]?`, (cmd) => {
 			if (cmd)
 				theme = cmd;
-			deploySystemMain(stage, theme);
+			readline.question(`environment to use [${environment}]?`, (cmd) => {
+				if (cmd)
+					environment = cmd;
+				deploySystemMain(stage, theme,environment);
+			});
 		});
 	});
 }
 
-function deploySystemMain(stage, theme) {
+function deploySystemMain(stage, theme,environment) {
 	reloadConfig();
-	readline.question(`Deploy command for ${stage}:${theme} [h for help]?`, (cmd) => {
+	readline.question(`Deploy command for ${stage}:${theme};${environment} [h for help]?`, (cmd) => {
 		switch (cmd) {
 			case 'h':
 				console.log('stage - Deploy stage');
@@ -357,38 +363,38 @@ function deploySystemMain(stage, theme) {
 				console.log('docker - deploy a docker instance');
 				console.log('tests - Run Tests');
 				console.log('q - Exit deploy mode');
-				deploySystemMain(stage, theme);
+				deploySystemMain(stage, theme,environment);
 				break;
 			case 'stage':
-				deployStage(stage, theme);
+				deployStage(stage, theme,environment);
 				break;
 			case 'node':
-				deployStageNode(stage, theme);
+				deployStageNode(stage, theme,environment);
 				break;
 			case 'web':
-				deployWEB(stage, theme);
+				deployWEB(stage, theme,environment);
 				break;
 			case 'sql':
-				deploySQL(stage, theme);
+				deploySQL(stage, theme,environment);
 				break;
 			case 'usql':
-				upgradeSQL(stage, theme);
+				upgradeSQL(stage, theme,environment);
 				break;
 			case 'usqlnt':
-				upgradeSQL(stage, theme, false);
+				upgradeSQL(stage, theme,environment, false);
 				break;
 			case 'docker':
-				deployDocker(stage, theme);
+				deployDocker(stage, theme,environment);
 				break;
 			case 'tests':
-				runTests(stage, theme);
+				runTests(stage, theme,environment);
 				break;
 			case 'q':
 				commandLoop();
 				break;
 			default:
 				console.log(`Unknown command [${cmd}]`);
-				deploySystemMain(stage, theme)
+				deploySystemMain(stage, theme,environment)
 				break;
 		}
 	});
@@ -400,8 +406,8 @@ function runTests(stage, theme) {
 
 }
 
-function getThemeOutputs(stage, theme) {
-	let outputsSiteFileName = `serverless/outputs/${stage}-outputs-${theme}.json`;
+function getThemeOutputs(stage, theme,environment) {
+	let outputsSiteFileName = `serverless/outputs/${stage}-outputs-${theme}-${environment}.json`;
 	if (!fs.existsSync(outputsSiteFileName)) {
 		console.log(`${outputsSiteFileName} does not exist, have you deployed?`);
 		process.exit(0);
@@ -412,7 +418,7 @@ function getThemeOutputs(stage, theme) {
 }
 
 
-function deployDocker(stage, theme) {
+function deployDocker(stage, theme,environment) {
 	const dockers = JSON.parse(fs.readFileSync('docker/dockers.json', 'utf8'));
 	let docker = Object.keys(dockers)[0];
 	for (let d in dockers) {
@@ -424,7 +430,7 @@ function deployDocker(stage, theme) {
 		console.log('Build');
 		executeWithCatch(`node scripts/buildDocker.js  ${stage} ${theme} ${docker}`, "./", () => {
 			console.log('tag');
-			let outputs = getThemeOutputs(stage, theme);
+			let outputs = getThemeOutputs(stage, theme,environment);
 			executeWithCatch(`docker tag ${docker}:latest ${outputs.ecrRepositoryUri}`, "./", () => {
 				console.log('Login');
 				executeWithCatch(`aws ecr get-login-password --profile ${configs['custom'][stage].profile} --region ${configs['custom'][stage].region} | docker login --username AWS --password-stdin ${outputs.ecrRepositoryUri}`, "./", () => {
@@ -448,17 +454,17 @@ function deployDocker(stage, theme) {
 	})
 }
 
-function deployStageNode(stage, theme) {
+function deployStageNode(stage, theme,environment) {
 	let node = 'cloudfront';
 	readline.question(`node to deploy on stage ${stage}, theme ${theme}? [${node}]`, (cmd) => {
 		if (cmd)
 			node = cmd;
-		executeWithCatch(`node scripts/serverlessStageBuilder.js ../serverless/${configs['custom'][stage].serverlessType}.json ${stage} ${node} ${theme}`, "./", () => {
+		executeWithCatch(`node scripts/serverlessStageBuilder.js ../serverless/${configs['custom'][stage].serverlessType}.json ${stage} ${node} ${theme} ${environment}`, "./", () => {
 			console.log('Done')
-			deploySystemMain(stage, theme);
+			deploySystemMain(stage, theme,environment);
 
 		}, () => {
-			deploySystemMain(stage, theme);
+			deploySystemMain(stage, theme,environment);
 		});
 
 	});
@@ -531,48 +537,48 @@ function executeWithCatch(cmd, cwd, success, fail, options) {
 	});
 }
 
-function deployWEB(stage, theme) {
+function deployWEB(stage, theme,environment) {
 
 	/*const buf = fs.readFileSync('api/.env');
 	const config = dotenv.parse(buf)*/
 	const outputs = getSageOutputs(stage, theme);
 	let dist = outputs.cfDist;
 
-	executeWithCatch(`node scripts/builder.js ${stage} ${theme}`, "./", () => {
-		const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=locaria-${stage}-${theme} --region=${configs['custom'][stage].region} --theme=${theme}`;
+	executeWithCatch(`node scripts/builder.js ${stage} ${theme} ${environment}`, "./", () => {
+		const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=locaria-${stage}-${theme} --region=${configs['custom'][stage].region} --theme=${theme} --environment=${environment}`;
 		executeWithCatch(cmdLine, "./", () => {
-			deploySystemMain(stage, theme);
+			deploySystemMain(stage, theme,environment);
 		}, () => {
-			deploySystemMain(stage, theme);
+			deploySystemMain(stage, theme,environment);
 		})
 	}, () => {
-		deploySystemMain(stage, theme);
+		deploySystemMain(stage, theme,environment);
 	});
 
 
 }
 
-function deploySQL(stage, theme) {
+function deploySQL(stage, theme,environment) {
 	readline.question(`Are you sure you wish to wipe and re-install ${theme} [n]?`, (cmd) => {
 		if (cmd === 'y') {
-			sendSQLFiles(stage, theme, 'database/install.json', deploySystemMain);
+			sendSQLFiles(stage, theme,environment, 'database/install.json', deploySystemMain);
 		} else {
 			console.log('Aborted!');
-			deploySystemMain(stage, theme);
+			deploySystemMain(stage, theme,environment);
 		}
 	});
 }
 
 
-function upgradeSQL(stage, theme, theme_files = true) {
+function upgradeSQL(stage, theme, environment,theme_files = true) {
 
-	if (configs.custom[stage].themes[theme].live === true) {
-		readline.question(`Are you sure you wish to update ${theme} as LIVE mode is enabled [n]?`, (cmd) => {
+	if (configs.custom[stage].themes[theme][environment].live === true) {
+		readline.question(`Are you sure you wish to update ${theme}-${environment} as LIVE mode is enabled [n]?`, (cmd) => {
 			if (cmd === 'y') {
 				//See if we have an image upload config file
 				next();
 			} else {
-				deploySystemMain(stage, theme);
+				deploySystemMain(stage, theme,environment);
 			}
 		});
 	} else {
@@ -590,35 +596,35 @@ function upgradeSQL(stage, theme, theme_files = true) {
 			const bucket = `locaria-${stage}-${theme}`
 			const path = 'assets'
 			let files = JSON.parse(fs.readFileSync(image_upload_file))
-			uploadFilesToS3(stage, theme, configs.custom[stage].profile, files, bucket, path, image_upload_path, (files) => {
+			uploadFilesToS3(stage, theme, environment,configs.custom[stage].profile, files, bucket, path, image_upload_path, (files) => {
 				fs.writeFileSync(image_upload_file, JSON.stringify(files));
-				usqlSQL(stage, theme, theme_files);
+				usqlSQL(stage, theme, environment,theme_files);
 			});
 
 		} else {
 			console.log('No image config file found for theme')
-			usqlSQL(stage, theme, theme_files)
+			usqlSQL(stage, theme, environment,theme_files)
 		}
 	}
 
 }
 
-const usqlSQL = (stage, theme, theme_files) => {
+const usqlSQL = (stage, theme, environment,theme_files) => {
 	if (theme_files) {
-		sendSQLFiles(stage, theme, 'database/upgrade.json', upgradeThemeSQL);
+		sendSQLFiles(stage, theme, environment,'database/upgrade.json', upgradeThemeSQL);
 	} else {
-		sendSQLFiles(stage, theme, 'database/upgrade.json', deploySystemMain);
+		sendSQLFiles(stage, theme, environment,'database/upgrade.json', deploySystemMain);
 	}
 }
 
-const uploadFilesToS3 = async (stage, theme, profile, files, bucket, path, image_upload_path, success) => {
+const uploadFilesToS3 = async (stage, theme, environment,profile, files, bucket, path, image_upload_path, success) => {
 
 	const outputs = getSageOutputs(stage);
 
 	const conn = {
 		user: configs.custom[stage].auroraMasterUser,
 		host: outputs.postgresHost,
-		database: `locaria${theme}`,
+		database: `locaria${theme}${environment}`,
 		password: configs.custom[stage].auroraMasterPass,
 		port: outputs.postgresPort
 	};
@@ -642,12 +648,12 @@ const uploadFilesToS3 = async (stage, theme, profile, files, bucket, path, image
 
 			const upload = await s3.upload({
 				Bucket: bucket,
-				Key: `${theme}/${path}/${uuid}.${files[i]['ext']}`,
+				Key: `${theme}${environment}/${path}/${uuid}.${files[i]['ext']}`,
 				Body: body,
 				ContentType: files[i]['mime_type']
 			}).promise();
 			if (upload.Location !== undefined) {
-				files[i]['url'] = `https://${configs.custom[stage].themes[theme].domain}/${path}/${uuid}.${files[i]['ext']}`;
+				files[i]['url'] = `https://${configs.custom[stage].themes[theme][environment].domain}/${path}/${uuid}.${files[i]['ext']}`;
 				files[i]['uuid'] = uuid;
 				updates.push([uuid,{ext:files[i]['ext'],url:`${path}/${uuid}.${files[i]['ext']}`,name:i,usage:files[i]['usage'],s3_path:`${theme}/${path}/${uuid}.${files[i]['ext']}`,s3_bucket:bucket}])
 			} else {
@@ -682,11 +688,11 @@ const uploadFilesToS3 = async (stage, theme, profile, files, bucket, path, image
 	//return files
 }
 
-function upgradeThemeSQL(stage, theme) {
+function upgradeThemeSQL(stage, theme,environment) {
 	executeWithCatch(`node scripts/builder.js ${stage} ${theme}`, "./", () => {
-		sendSQLFiles(stage, theme, 'src/theme/builder/database/upgrade.json', deploySystemMain);
+		sendSQLFiles(stage, theme, environment,'src/theme/builder/database/upgrade.json', deploySystemMain);
 	}, () => {
-		deploySystemMain(stage, theme);
+		deploySystemMain(stage, theme,environment);
 	});
 }
 

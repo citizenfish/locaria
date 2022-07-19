@@ -170,7 +170,7 @@ const Panels = () => {
 					}} onClick={() => {
 						toggleCollapseOpen(p);
 
-						if (window.siteMap[p].items.length === 0) {
+						if (!window.siteMap[p].items||window.siteMap[p].items.length === 0) {
 							let route = url.route(window.siteMap[p].link);
 							if (route === true) {
 								history.push(window.siteMap[p].link);

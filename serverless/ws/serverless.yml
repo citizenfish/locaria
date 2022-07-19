@@ -1,4 +1,4 @@
-service: locaria-ws-${env:theme}
+service: locaria-ws-${env:theme}${env:environment}
 projectDir: ../../../
 provider:
   name: aws
@@ -10,7 +10,7 @@ provider:
   environment:
     postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
     postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
-    auroraDatabaseName: locaria${env:theme}
+    auroraDatabaseName: locaria${env:theme}${env:environment}
     auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
     pool: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}.json):cognitoPoolId}
