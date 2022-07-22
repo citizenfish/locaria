@@ -5,13 +5,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {useSelector} from "react-redux";
 
-export default function AdminAppBar(props) {
-    const title = useSelector((state) => state.adminSlice.title);
+export default function AdminAppBar({title}) {
 
     return (
         <AppBar sx={{
-            width: `calc(100% - ${props.dw}px)`,
-            ml: `${props.dw}px`,
+            width: `calc(100% - 240px)`,
+            ml: `240px`,
             zIndex: 100,
           }}
         >

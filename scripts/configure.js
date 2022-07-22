@@ -129,10 +129,10 @@ async function loadData() {
 
 }
 
-function getSageOutputs(stage, theme) {
+function getSageOutputs(stage, theme,environment) {
 	let outputsFileName = `serverless/outputs/${stage}-outputs.json`;
 	if (theme !== undefined)
-		outputsFileName = `serverless/outputs/${stage}-outputs-${theme}.json`;
+		outputsFileName = `serverless/outputs/${stage}-outputs-${theme}-${environment}.json`;
 	if (!fs.existsSync(outputsFileName)) {
 		console.log(`${outputsFileName} does not exist, have you deployed?`);
 		process.exit(0);
@@ -181,7 +181,7 @@ function sendSQLFiles(stage, theme, environment,configFile, callBack) {
 	try {
 		imageFiles = JSON.parse(fs.readFileSync(image_upload_file, 'utf8'));
 	} catch (err) {
-		console.log("No image upload file")
+		console.log(`No image upload file ${image_upload_file}`)
 	}
 
 
@@ -266,7 +266,12 @@ function sendSQLFiles(stage, theme, environment,configFile, callBack) {
 
 					vars = /\{\{assets\.(.*?)\}\}/g;
 					while (match = vars.exec(fileData)) {
-						fileData = fileData.replace(match[0], `~uuid:${imageFiles[match[1]].uuid}~url:${imageFiles[match[1]].url}`);
+						if(imageFiles[match[1]]) {
+							fileData = fileData.replace(match[0], `~uuid:${imageFiles[match[1]].uuid}~url:${imageFiles[match[1]].url}`);
+						} else {
+							fileData = fileData.replace(match[0], `~uuid:failed~url:failed`);
+							console.error(`ASSETS REFERENCE [${match[1]}] not valid`)
+						}
 					}
 
 					vars = /\{\{assetUUID\.(.*?)\}\}/g;
@@ -541,11 +546,11 @@ function deployWEB(stage, theme,environment) {
 
 	/*const buf = fs.readFileSync('api/.env');
 	const config = dotenv.parse(buf)*/
-	const outputs = getSageOutputs(stage, theme);
+	const outputs = getSageOutputs(stage, theme,environment);
 	let dist = outputs.cfDist;
 
 	executeWithCatch(`node scripts/builder.js ${stage} ${theme} ${environment}`, "./", () => {
-		const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=locaria-${stage}-${theme} --region=${configs['custom'][stage].region} --theme=${theme} --environment=${environment}`;
+		const cmdLine = `grunt deploySite --profile=${configs['custom'][stage].profile} --stage=${stage} --distribution=${dist} --bucket=locaria-${stage}-${theme}${environment} --region=${configs['custom'][stage].region} --theme=${theme} --environment=${environment}`;
 		executeWithCatch(cmdLine, "./", () => {
 			deploySystemMain(stage, theme,environment);
 		}, () => {
@@ -593,7 +598,7 @@ function upgradeSQL(stage, theme, environment,theme_files = true) {
 			// process.env.AWS_PROFILE = configs.custom[stage].profile
 
 
-			const bucket = `locaria-${stage}-${theme}`
+			const bucket = `locaria-${stage}-${theme}${environment}`
 			const path = 'assets'
 			let files = JSON.parse(fs.readFileSync(image_upload_file))
 			uploadFilesToS3(stage, theme, environment,configs.custom[stage].profile, files, bucket, path, image_upload_path, (files) => {
@@ -638,7 +643,7 @@ const uploadFilesToS3 = async (stage, theme, environment,profile, files, bucket,
 			let uuid = uuidv4();
 
 			let file = `${image_upload_path}/${i}`
-			console.log(`Uploading ${file} to ${bucket}:/${theme}/${path}/${uuid}`)
+			console.log(`Uploading ${file} to ${bucket}:/${theme}${environment}/${path}/${uuid}`)
 			const body = fs.readFileSync(file);
 
 			let credentials = new AWS.SharedIniFileCredentials({profile: profile});
@@ -655,7 +660,7 @@ const uploadFilesToS3 = async (stage, theme, environment,profile, files, bucket,
 			if (upload.Location !== undefined) {
 				files[i]['url'] = `https://${configs.custom[stage].themes[theme][environment].domain}/${path}/${uuid}.${files[i]['ext']}`;
 				files[i]['uuid'] = uuid;
-				updates.push([uuid,{ext:files[i]['ext'],url:`${path}/${uuid}.${files[i]['ext']}`,name:i,usage:files[i]['usage'],s3_path:`${theme}/${path}/${uuid}.${files[i]['ext']}`,s3_bucket:bucket}])
+				updates.push([uuid,{ext:files[i]['ext'],url:`${path}/${uuid}.${files[i]['ext']}`,name:i,usage:files[i]['usage'],s3_path:`${theme}${environment}/${path}/${uuid}.${files[i]['ext']}`,s3_bucket:bucket}])
 			} else {
 				console.log(`Upload failed!`);
 			}

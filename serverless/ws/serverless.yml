@@ -13,8 +13,8 @@ provider:
     auroraDatabaseName: locaria${env:theme}${env:environment}
     auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
-    pool: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}.json):cognitoPoolId}
-    importBucket: locaria-${self:custom.stage}-${env:theme}
+    pool: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):cognitoPoolId}
+    importBucket: locaria-${self:custom.stage}-${env:theme}${env:environment}
     region: ${file(../../../locaria.json):${self:custom.stage}.region}
     theme: ${env:theme}
   iam:

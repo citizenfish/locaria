@@ -11,6 +11,7 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray}) => {
 	const dispatch = useDispatch();
 	const search = useSelector((state) => state.searchDraw.search);
 	const categories = useSelector((state) => state.searchDraw.categories);
+	const actualTags = useSelector((state) => state.searchDraw.tags);
 	const refresh = useSelector((state) => state.searchDraw.refresh);
 
 	const [results, setResults] = useState(undefined);
@@ -22,7 +23,7 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray}) => {
 	useEffect(() => {
 		if (id !== searchId) {
 			setSearchId(id);
-			dispatch(newSearch({categories: category}));
+			dispatch(newSearch({categories: category,tags:tags}));
 		}
 	}, [id]);
 
@@ -47,12 +48,12 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray}) => {
 				"method": "search",
 				"category": categories,
 				"search_text": search,
-				"limit": limit
+				"limit": limit,
 
 			}
 		};
-		if (tags)
-			packetSearch.data.tags = tags;
+		if (actualTags.length>0)
+			packetSearch.data.tags = actualTags;
 		window.websocket.send(packetSearch);
 		dispatch(clearRefresh());
 	}

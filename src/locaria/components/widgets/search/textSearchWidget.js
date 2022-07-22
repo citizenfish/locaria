@@ -37,12 +37,12 @@ export default function TextSearchWidget({id, sx, heading, placeholder}) {
 			<Grid container spacing={2} sx={{
 				color: "black"
 			}}>
-				<Grid item md={4}>
+				<Grid item md={5}>
 					<TypographyHeader sx={{color:"white"}} element={"h1"}>
 						{heading || 'Search'}
 					</TypographyHeader>
 				</Grid>
-				<Grid item md={8}>
+				<Grid item md={7}>
 					<TextField id={"textSearchWidget"} value={search} sx={{
 						"& input": {
 							color: "black",
