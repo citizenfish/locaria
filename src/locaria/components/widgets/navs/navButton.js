@@ -11,7 +11,10 @@ export default function NavButton({sx,text,mode,url}) {
 			backgroundColor: window.systemMain.headerBackground,
 			borderRadius: "0px",
 			paddingLeft: "30px",
-			paddingRight: "30px"
+			paddingRight: "30px",
+				"&:hover": {
+					backgroundColor: window.systemMain.headerBackground
+				}
 		},...sx}}
 				onClick={(e) => {
 					switch (mode) {

@@ -3,9 +3,9 @@
 	"version": "1.0.0",
 	"scripts": {
 		"configure": "node scripts/configure.js",
-		"build:multi:main": "node scripts/builder.js multi main",
-		"build:multi:swindonbid": "node scripts/builder.js sb swindonbid",
-		"build:multi:nmrn": "node scripts/builder.js multi nmrn",
+		"build:multi:main:dev": "node scripts/builder.js multi main dev",
+		"build:sb:swindonbid": "node scripts/builder.js sb swindonbid",
+		"build:multi:nmrn:dev": "node scripts/builder.js multi nmrn dev",
 		"build:multi:sailortown": "node scripts/builder.js multi sailortown",
 		"runLocalSite": "webpack serve",
 		"runLocalSite(root)": "sudo webpack serve",

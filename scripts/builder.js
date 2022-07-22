@@ -22,6 +22,7 @@ let outputs;
 
 const stage = process.argv[2];
 const theme = process.argv[3]||'main';
+const environment = process.argv[4]||'dev';
 
 console.log(`Building stage ${stage} theme ${theme}`);
 //console.log(configs);
@@ -35,7 +36,7 @@ if (configs[stage].themes[theme]) {
 	}
 	outputs=fs.readFileSync(outputsFileName, 'utf8');
 
-	let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${theme}.json`;
+	let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${theme}-${environment}.json`;
 	if(!fs.existsSync(outputsSiteFileName)) {
 		console.log(`${outputsSiteFileName} does not exist, have you deployed?`);
 		process.exit(0);
@@ -69,8 +70,8 @@ function doCopy() {
 
 			const resource = {
 				websocket: outputsSite.ServiceEndpointWebsocket,
-				url: `https://${config.themes[theme].domain}`,
-				cognitoURL: `auth.${config.themes[theme].domain}`,
+				url: `https://${config.themes[theme][environment].domain}`,
+				cognitoURL: `auth.${config.themes[theme][environment].domain}`,
 				cognitoPoolId: outputsSite.cognitoPoolId,
 				poolClientId: outputsSite.poolClientId
 			}

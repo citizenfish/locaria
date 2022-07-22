@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 					params: {}
 				},
 				files: [
-					{expand: true, cwd: 'site/', src: ['**'], dest: '/' + grunt.option('theme')}
+					{expand: true, cwd: 'site/', src: ['**'], dest: '/' + grunt.option('theme')+grunt.option('environment')}
 				]
 			}
 		},

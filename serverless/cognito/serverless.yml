@@ -1,4 +1,4 @@
-service: locaria-cognito-${env:theme}
+service: locaria-cognito-${env:theme}${env:environment}
 projectDir: ../../../
 provider:
   name: aws
@@ -16,7 +16,7 @@ resources:
       Type: "AWS::Cognito::UserPool"
       Properties:
         MfaConfiguration: "OFF"
-        UserPoolName: locaria-pool-${env:theme}
+        UserPoolName: locaria-pool-${env:theme}${env:environment}
         UsernameAttributes:
           - email
         AutoVerifiedAttributes:
@@ -31,15 +31,15 @@ resources:
     CognitoUserPoolClient:
       Type: "AWS::Cognito::UserPoolClient"
       Properties:
-        ClientName: locaria-pool-client-${env:theme}
+        ClientName: locaria-pool-client-${env:theme}${env:environment}
         GenerateSecret: False
         UserPoolId:
           Ref: CognitoUserPool
         CallbackURLs:
           - http://localhost/
           - http://localhost/Admin/
-          - https://${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}/
-          - https://${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}/Admin/
+          - https://${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.${env:environment}.domain}/
+          - https://${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.${env:environment}.domain}/Admin/
         AllowedOAuthFlows:
           - code
           - implicit
@@ -56,8 +56,8 @@ resources:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
         CustomDomainConfig:
-          CertificateArn: ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.certARN}
-        Domain: auth.${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}
+          CertificateArn: ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.${env:environment}.certARN}
+        Domain: auth.${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.${env:environment}.domain}
         UserPoolId:
           Ref: CognitoUserPool
     CognitoUserGroupAdmin:
