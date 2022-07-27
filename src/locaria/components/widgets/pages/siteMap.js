@@ -33,7 +33,8 @@ const SiteMap = function ({mode, images, feature, format}) {
 				textAlign: 'center',
 				height: !mobile ? "500px" : "370px",
 				backgroundSize: "cover",
-				backgroundPositionY: "50%"
+				backgroundPositionY: "50%",
+				position: "relative"
 			}} key={"siteMap"}>
 				<Box sx={{
 					position: "absolute",
@@ -45,7 +46,8 @@ const SiteMap = function ({mode, images, feature, format}) {
 						//top: "-480px",
 						zIndex: 100,
 						top: "10px",
-						left: "-15px"
+						paddingLeft: "5px",
+						paddingRight: "5px"
 					}}>
 						{!mobile ? <Panels></Panels> : <></>}
 					</Box>
@@ -137,6 +139,7 @@ const Panels = () => {
 	}
 
 	let panelArray = [];
+	let md=12/(2 * Math.round(window.siteMap.length/2));
 	for (let p in window.siteMap) {
 		let panelItems = [];
 		for (let i in window.siteMap[p].items) {
@@ -163,7 +166,7 @@ const Panels = () => {
 			)
 		}
 		panelArray.push(
-			<Grid item md={2} key={window.siteMap[p].key}>
+			<Grid item md={md} key={window.siteMap[p].key}>
 				<Box sx={{
 					textAlign: 'center'
 				}}>

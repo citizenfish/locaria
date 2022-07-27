@@ -7,6 +7,7 @@ import {useDispatch} from "react-redux";
 import Box from "@mui/material/Box";
 import MenuDrawer from "../drawers/menuDrawer";
 import {setMobile} from "../../redux/slices/mediaSlice";
+import {useCookies} from "react-cookie";
 
 export default function RenderPage() {
 
@@ -16,6 +17,14 @@ export default function RenderPage() {
 	let {page} = useParams();
 	let {feature} = useParams();
 	const [pageData, setPageData] = React.useState(undefined);
+	const [cookies, setCookies] = useCookies(['id_token']);
+
+	let hash = window.location.hash;
+
+	let pageActual=page||'Home';
+	if (hash&&hash.match(/#preview/)) {
+		pageActual=`${page}-${cookies['id_token']}`;
+	}
 
 
 	const handleResize = () => {
@@ -38,7 +47,7 @@ export default function RenderPage() {
 				"api": "api",
 				"data": {
 					"method": "get_parameters",
-					"parameter_name": page || 'Home'
+					"parameter_name": pageActual
 				}
 			}
 		);
@@ -83,7 +92,7 @@ export default function RenderPage() {
 	React.useEffect(() => {
 
 		window.websocket.registerQueue('pageBulkLoader', (json) => {
-			setPageData(json.getPageData.packet.parameters[page || 'Home']);
+			setPageData(json.getPageData.packet.parameters[pageActual]);
 			dispatch(setReport(json));
 		});
 
@@ -103,7 +112,8 @@ export default function RenderPage() {
 				<Box sx={{
 					padding: "10px",
 					maxWidth: "1100px",
-					margin: "0 auto"
+					margin: "0 auto",
+					width: "100vw"
 
 				}}>
 					<RenderMarkdown markdown={pageData.data} key={'mdTop'}/>
