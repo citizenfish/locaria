@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useLocation} from "react-router-dom";
 import {useCookies} from "react-cookie";
 
@@ -14,16 +14,12 @@ export default function TokenCheck() {
 
 	const dispatch = useDispatch()
 
+	const [haveChecked, setHaveChecked] = useState(false);
+
 
 	React.useEffect(() => {
 
 		let hash = window.location.hash;
-		if (!hash.match(/#id_token/)) {
-			if (cookies['id_token'] === undefined ||
-				cookies['id_token'] === "null") {
-				window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${window.location.protocol}//${window.location.host}/Admin/`;
-			}
-		}
 
 		if (hash.match(/#id_token/)) {
 			hash = hash.replace(/#id_token=/, '');
@@ -33,6 +29,7 @@ export default function TokenCheck() {
 		}
 
 		window.websocket.registerQueue("tokenCheck", function (json) {
+			setHaveChecked(true);
 			if (json.packet.email) {
 				// if its has its new, if not just keep the old one
 				dispatch(setUser(true));
@@ -58,26 +55,37 @@ export default function TokenCheck() {
 			}
 		});
 
-		if (hash) {
-			window.websocket.send({
-				"queue": "tokenCheck",
-				"api": "token",
-				"data": {"id_token": hash}
-			});
-		} else {
-			if (cookies['id_token'] !== 'null') {
+		if (haveChecked === false) {
+			if (!hash.match(/#id_token/)) {
+				if (cookies['id_token'] === undefined ||
+					cookies['id_token'] === "null") {
+					window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${window.location.protocol}//${window.location.host}/Admin/`;
+				}
+			}
+
+
+
+
+			if (hash) {
 				window.websocket.send({
 					"queue": "tokenCheck",
 					"api": "token",
-					"data": {
-						"id_token": cookies['id_token']
-					}
+					"data": {"id_token": hash}
 				});
 			} else {
-				dispatch(setUser(false));
+				if (cookies['id_token'] !== 'null') {
+					window.websocket.send({
+						"queue": "tokenCheck",
+						"api": "token",
+						"data": {
+							"id_token": cookies['id_token']
+						}
+					});
+				} else {
+					dispatch(setUser(false));
+				}
 			}
 		}
-
 	});
 
 	return (<></>);
