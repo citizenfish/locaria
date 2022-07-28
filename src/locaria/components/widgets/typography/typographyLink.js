@@ -19,14 +19,13 @@ export default function TypographyLink({children,sx,link}) {
 	};
 
 	let elementSx={...localSx,...sx||{}};
-
-
+	const actualUrl=url.decode(link,true);
+	let match=actualUrl.match(/^\//);
+	if(match)
 	return (
 		<Link sx={elementSx}  onClick={()=>{
-			let route = url.route(link);
-			if (route === true) {
-				history.push(link);
-			}
+				history.push(actualUrl);
 		}}>{children}</Link>
 	)
+	return (<Link sx={elementSx} href={actualUrl} target="_blank" rel="noopener">{children}</Link>)
 }

@@ -8,12 +8,21 @@ import {useMediaQuery} from "@mui/material";
 import TypographyHeader from "../typography/typographyHeader";
 import Carousel from "react-material-ui-carousel";
 import Paper from "@mui/material/Paper";
+import ClickAway from "../utils/clickAway";
+import {useSelector} from "react-redux";
 
-const SiteMap = function ({mode, images}) {
+const SiteMap = function ({mode, images, feature, format}) {
 
-	const url = new UrlCoder();
+	let useImages = images || [];
+	const report = useSelector((state) => state.viewDraw.report);
 
-	const sizeMatches = useMediaQuery('(min-width:600px)');
+	if (feature === true && report && report.viewLoader) {
+		useImages = [];
+		for (let i in report.viewLoader.packet.features[0].properties.data.images)
+			useImages.push({"url": report.viewLoader.packet.features[0].properties.data.images[i]})
+	}
+
+	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
 
 	if (mode === 'full') {
@@ -22,7 +31,7 @@ const SiteMap = function ({mode, images}) {
 				background: window.systemMain.themePanels,
 				flexGrow: 1,
 				textAlign: 'center',
-				height: sizeMatches? "500px":"370px",
+				height: !mobile ? "500px" : "370px",
 				backgroundSize: "cover",
 				backgroundPositionY: "50%"
 			}} key={"siteMap"}>
@@ -31,25 +40,19 @@ const SiteMap = function ({mode, images}) {
 					width: "100%",
 					maxWidth: "1100px"
 				}}>
-				<Box sx={{
-					position: "relative",
-					//top: "-480px",
-					zIndex: 100,
-					top: "10px",
-					left: "-15px"
-				}}>
-					<Grid container spacing={2} sx={{
-						flexGrow: 1,
-						display: "flex",
-						justifyContent: "center"
+					<Box sx={{
+						position: "relative",
+						//top: "-480px",
+						zIndex: 100,
+						top: "10px",
+						left: "-15px"
 					}}>
-						{sizeMatches ? <Panels></Panels> : <></>}
-					</Grid>
+						{!mobile ? <Panels></Panels> : <></>}
+					</Box>
 				</Box>
-				</Box>
-				<Carousel height={sizeMatches? "450px":"320px"}>
+				<Carousel height={!mobile ? "450px" : "320px"}>
 					{
-						images.map((item, i) => <Item key={i} item={item}/>)
+						useImages.map((item, i) => <Item key={i} item={item} format={format}/>)
 					}
 				</Carousel>
 
@@ -64,22 +67,33 @@ const SiteMap = function ({mode, images}) {
 			textAlign: 'center'
 		}} key={"siteMap"}>
 			<Box sx={{}}>
-				<Grid container spacing={2} sx={{
-					flexGrow: 1,
-					display: "flex",
-					justifyContent: "center"
-				}}>
-					{sizeMatches ? <Panels></Panels> : <></>}
-				</Grid>
+
+				{!mobile ? <Panels></Panels> : <></>}
 			</Box>
+
+
 		</Box>
 	)
 }
 
-function Item({item}) {
+function Item({item, format}) {
 	const url = new UrlCoder();
+
+	let sx={
+		backgroundImage: `url(${url.decode(item.url, true)})`,
+		height: "100%",
+		backgroundSize: "cover"
+	}
+
+	if(format==='contain') {
+		sx.backgroundSize="contain";
+		sx.backgroundRepeat="no-repeat";
+		sx.backgroundPositionX="center";
+		sx.backgroundPositionY="center";
+	}
+
 	return (
-		<Paper sx={{backgroundImage: `url(${url.decode(item.url, true)})`, height: "100%", backgroundSize: "cover"}}/>
+		<Paper sx={sx}/>
 	)
 }
 
@@ -142,8 +156,9 @@ const Panels = () => {
 					cursor: "pointer"
 
 				}}>
-					<TypographyHeader sx={{color: window.siteMap[p].color, fontWeight: 200, padding: "5px"}}
-									  element={"h4"}>{window.siteMap[p].items[i].name}</TypographyHeader>
+					<TypographyHeader
+						sx={{color: window.siteMap[p].color, fontWeight: 400, padding: "5px", fontSize: "0.8rem"}}
+						element={"h3"}>{window.siteMap[p].items[i].name}</TypographyHeader>
 				</Box>
 			)
 		}
@@ -170,7 +185,7 @@ const Panels = () => {
 					}} onClick={() => {
 						toggleCollapseOpen(p);
 
-						if (window.siteMap[p].items.length === 0) {
+						if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
 							let route = url.route(window.siteMap[p].link);
 							if (route === true) {
 								history.push(window.siteMap[p].link);
@@ -187,26 +202,37 @@ const Panels = () => {
 						<TypographyHeader sx={{color: window.siteMap[p].color}}
 										  element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
-					<Box sx={{
-						width: '165px',
-						border: {
-							md: `2px solid ${window.siteMap[p].color}`,
-							xs: `1px solid ${window.siteMap[p].color}`
-						},
-						marginTop: '5px',
-						backgroundColor: window.siteMap[p].backgroundColor,
-						display: collapseOpen[p] ? 'block' : 'none',
-						position: "absolute"
-					}}>
-						{panelItems}
-					</Box>
+					{panelItems.length > 0 &&
+						<Box sx={{
+							width: '165px',
+							border: {
+								md: `2px solid ${window.siteMap[p].color}`,
+								xs: `1px solid ${window.siteMap[p].color}`
+							},
+							marginTop: '5px',
+							backgroundColor: window.siteMap[p].backgroundColor,
+							display: collapseOpen[p] ? 'block' : 'none',
+							position: "absolute"
+						}}>
+							{panelItems}
+						</Box>
+					}
 				</Box>
 
 			</Grid>
 		)
 	}
 
-	return panelArray;
+	return (
+		<ClickAway update={collapseAll}>
+			<Grid container spacing={2} sx={{
+				flexGrow: 1,
+				display: "flex",
+				justifyContent: "center"
+			}}>
+				{panelArray}
+			</Grid>
+		</ClickAway>);
 
 }
 

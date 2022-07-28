@@ -5,7 +5,8 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AdminApp from './components/adminApp';
-import {theme, resources} from "themeLocaria";
+import {resources} from "themeLocaria";
+import {theme} from "../theme/default/adminStyle";
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from "@mui/material/CssBaseline";
 

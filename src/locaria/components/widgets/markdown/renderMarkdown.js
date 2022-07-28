@@ -14,18 +14,21 @@ const url = new UrlCoder();
 
 export default function RenderMarkdown({markdown}) {
 
-	let splitMarkdown = markdown.split('\n');
-	let renderedMarkdown = [];
+	if(typeof markdown === "string") {
+		let splitMarkdown = markdown.split('\n');
+		let renderedMarkdown = [];
 
-	for (let line in splitMarkdown) {
-		renderedMarkdown.push(ProcessLine(splitMarkdown[line]));
+		for (let line in splitMarkdown) {
+			renderedMarkdown.push(ProcessLine(splitMarkdown[line]));
+		}
+
+		return (
+			<>
+				{renderedMarkdown}
+			</>
+		)
 	}
-
-	return (
-		<>
-			{renderedMarkdown}
-		</>
-	)
+	return (<></>)
 }
 
 function RecursiveFormatters(line) {
@@ -107,7 +110,8 @@ function ProcessLine(line) {
 	if (match) {
 		let headerType = match[0].length - 1;
 		let cleanedMatch = line.replace(match[0], '');
-
+		sx.marginTop="5px";
+		sx.marginBottom="5px";
 		return(
 			<TypographyHeader sx={sx} element={"h" + headerType}
 							  key={`md${newUUID()}`}>{cleanedMatch}</TypographyHeader>

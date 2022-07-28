@@ -8,6 +8,7 @@ export const adminSlice = createSlice({
 	initialState: {
 		title: 'Upload',
 		total: -1,
+		user: false
 
 	},
 	reducers: {
@@ -16,11 +17,14 @@ export const adminSlice = createSlice({
 		},
 		setTotal: (state,action) => {
 			state.total =action.payload;
+		},
+		setUser: (state,action) => {
+			state.user = action.payload;
 		}
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const { setTotal,setTitle } = adminSlice.actions
+export const { setTotal,setTitle,setUser } = adminSlice.actions
 
 export default adminSlice.reducer

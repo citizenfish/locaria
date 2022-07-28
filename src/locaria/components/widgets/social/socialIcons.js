@@ -10,8 +10,8 @@ export default function SocialIcons() {
 	return (
 		<Grid container spacing={6} sx={{
 			display: "flex",
-			alignItems: "center",
-			justifyContent: "center"
+		/*	alignItems: "center",
+			justifyContent: "center"*/
 		}}>
 			{window.systemMain.socialMedia.map((social) => {
 				return (

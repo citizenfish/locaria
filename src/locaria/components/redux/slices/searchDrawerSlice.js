@@ -64,6 +64,12 @@ export const searchDrawerSlice = createSlice({
 				state.tags = []; //If category changes then so must tags
 			}
 
+			if(action.payload && action.payload.tags) {
+				state.tags=action.payload.tags;
+			}
+
+
+
 			if(action.payload && action.payload.distance) {
 				state.distance=action.payload.distance;
 			}

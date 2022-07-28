@@ -81,7 +81,11 @@ const ContactMailchimp = ({url}) => {
 						backgroundColor: window.systemMain.headerBackground,
 						borderRadius: "0px",
 						paddingLeft: "30px",
-						paddingRight: "30px"
+						paddingRight: "30px",
+						"&:hover":{
+							backgroundColor: window.systemMain.headerBackground
+						}
+
 					}}
 							onClick={(e) => {
 								e.preventDefault();

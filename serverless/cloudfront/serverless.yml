@@ -1,4 +1,4 @@
-service: locaria-cloudfront-${env:theme}
+service: locaria-cloudfront-${env:theme}${env:environment}
 projectDir: ../../../
 provider:
   name: aws
@@ -17,7 +17,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         AccessControl: PublicRead
-        BucketName: locaria-${self:custom.stage}-${env:theme}
+        BucketName: locaria-${self:custom.stage}-${env:theme}${env:environment}
         CorsConfiguration:
           CorsRules:
             - AllowedHeaders:
@@ -72,14 +72,14 @@ resources:
           PriceClass: 'PriceClass_100'
           HttpVersion: 'http2'
           Aliases:
-            - ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.domain}
+            - ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.${env:environment}.domain}
           ViewerCertificate:
-            AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.certARN}
+            AcmCertificateArn: ${file(../../../locaria.json):${self:custom.stage}.themes.${env:theme}.${env:environment}.certARN}
             MinimumProtocolVersion: TLSv1
             SslSupportMethod: sni-only
           Origins:
             - Id: 'WebsiteBucketOrigin'
-              OriginPath: /${env:theme}
+              OriginPath: /${env:theme}${env:environment}
               DomainName: { "Fn::GetAtt": [ "StaticSite", "DomainName" ] }
               S3OriginConfig:
                 OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }

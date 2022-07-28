@@ -1,16 +1,15 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import {useHistory} from "react-router-dom";
 import UrlCoder from "../../../libs/urlCoder";
 import TypographyHeader from "../typography/typographyHeader";
-import {useMediaQuery} from "@mui/material";
+import {useSelector} from "react-redux";
 
 const PageList = function () {
 	const history = useHistory();
 	const url = new UrlCoder();
-	const sizeMatches = useMediaQuery('(min-width:600px)');
+	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
 	const Panels = () => {
 		let panelArray = [];
@@ -26,7 +25,7 @@ const PageList = function () {
 						}
 					}
 					}>
-						<TypographyHeader sx={{color: window.siteMap[p].backgroundColor,fontSize:sizeMatches? "0.9rem":"0.6rem"}}
+						<TypographyHeader sx={{color: window.siteMap[p].backgroundColor,fontSize:!mobile? "0.9rem":"0.6rem"}}
 										  element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
 				</Grid>

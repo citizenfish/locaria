@@ -7,6 +7,7 @@ const config = process.argv[2]||'../serverless/multi.json';
 const stage = process.argv[3]||'multi';
 const items = process.argv[4]||'all';
 const theme = process.argv[5]||'main'
+const environment = process.argv[6]||'dev'
 
 const {spawnSync} = require('child_process');
 
@@ -15,7 +16,7 @@ const configJson = require(config);
 const main = () => {
 	const buildDir=`${configJson.buildDir}/build`;
 	const buildOutput=`${configJson.buildDir}/outputs/${stage}-outputs.json`;
-	const buildOutputSite=`${configJson.buildDir}/outputs/${stage}-outputs-${theme}.json`;
+	const buildOutputSite=`${configJson.buildDir}/outputs/${stage}-outputs-${theme}-${environment}.json`;
 	makeBuildDir(buildDir);
 	resetOutputs([buildOutput,buildOutputSite]);
 	let itemsArray=items.split(",");
@@ -76,7 +77,8 @@ const deployNode = (dir) => {
 		stdio: 'pipe',
 		env:{
 			SLS_INTERACTIVE_SETUP_ENABLE:1,
-			theme:theme
+			theme:theme,
+			environment: environment
 		}
 	};
 	console.log(`#serverless deploy --stage ${stage}`);
