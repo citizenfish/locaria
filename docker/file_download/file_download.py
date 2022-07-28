@@ -48,7 +48,7 @@ for f in downloads_to_process['files']:
             attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.gpkg"
         else:
             attributes['format'] = 'xlsx'
-            attributes['s3_path'] = f"downloads/{f['id']}.xslx"
+            attributes['s3_path'] = f"downloads/{f['id']}.xlsx"
             attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.xlsx"
 
         try:

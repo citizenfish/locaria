@@ -3,8 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/integration_tests/add_test_data.sql",
-        "tests/unit_tests/search/get_item_test.sql"
+        "tests/unit_tests/geometry/geometry_to_mvt.sql"
       ],
       "substitutions": "../tests.json"
     }

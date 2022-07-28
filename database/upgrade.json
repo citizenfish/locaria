@@ -3,7 +3,8 @@
     {
       "stopOnError": true,
       "tables": [
-        "database/functions/search/get_item.sql"
+        "database/functions/geometry/xyz_tile_to_bbox.sql",
+        "database/functions/geometry/geometry_to_mvt.sql"
       ],
       "substitutions": "../tests.json"
     }
