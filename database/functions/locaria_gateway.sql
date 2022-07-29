@@ -5,7 +5,7 @@ DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
     log_var BOOLEAN DEFAULT TRUE;
     ret_var JSONB;
-    version_var TEXT DEFAULT '0.3';
+    version_var TEXT DEFAULT '0.5';
 BEGIN
 
     --This keeps us within our search schema when running code
@@ -57,6 +57,14 @@ BEGIN
         WHEN parameters->>'method' IN ('delete_asset') THEN
             ret_var = delete_asset(parameters || jsonb_build_object('internal', true));
 
+        WHEN parameters->>'method' IN ('get_vector_tile') THEN
+            ret_var = get_parameters(parameters || jsonb_build_object('parameter_name', parameters->>'tileset', 'usage', 'VECTOR_TILES'));
+            ret_var = jsonb_build_object('vt',
+                get_vector_tile(jsonb_extract_path_text(ret_var, 'parameters', parameters->>'tileset', 'table'),
+                                (parameters->>'x')::INTEGER,
+                                (parameters->>'y')::INTEGER,
+                                (parameters->>'z')::INTEGER,
+                                COALESCE(jsonb_extract_path_text(ret_var, 'parameters', parameters->>'tileset', 'cache'), 'true')::BOOLEAN));
 ELSE
             RETURN json_build_object('error', 'unsupported method');
     END CASE;
