@@ -10,7 +10,7 @@ export default function TokenCheck() {
 
 	const location = useLocation();
 
-	const [cookies, setCookies] = useCookies(['location']);
+	const [cookies, setCookies] = useCookies(['id_token']);
 
 	const dispatch = useDispatch()
 
@@ -21,7 +21,7 @@ export default function TokenCheck() {
 
 		let hash = window.location.hash;
 
-		if (hash.match(/#id_token/)) {
+		if (hash&&hash.match(/#id_token/)) {
 			hash = hash.replace(/#id_token=/, '');
 			hash = hash.replace(/&.*/, '');
 		} else {
@@ -56,7 +56,7 @@ export default function TokenCheck() {
 		});
 
 		if (haveChecked === false) {
-			if (!hash.match(/#id_token/)) {
+			if (hash===undefined) {
 				if (cookies['id_token'] === undefined ||
 					cookies['id_token'] === "null") {
 					window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${window.location.protocol}//${window.location.host}/Admin/`;
@@ -86,7 +86,7 @@ export default function TokenCheck() {
 				}
 			}
 		}
-	});
+	},[haveChecked]);
 
 	return (<></>);
 }

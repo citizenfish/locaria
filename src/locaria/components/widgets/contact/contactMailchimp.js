@@ -3,12 +3,24 @@ import Grid from "@mui/material/Grid";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 
-import UrlCoder from "../../../libs/urlCoder";
 import Box from "@mui/material/Box";
 import RenderMarkdown from "../markdown/renderMarkdown";
 import {useFormFields, useMailChimpForm} from "use-mailchimp-form";
 import Typography from "@mui/material/Typography";
+import {useFormik} from "formik";
+import * as yup from 'yup';
 
+
+const validationSchemaEmail = yup.object({
+	EMAIL: yup
+		.string('Enter valid email')
+		.email('Valid email')
+		.required('Email is required'),
+	FNAME: yup
+		.string('Enter you name')
+		.min(3, 'Name should be 3 of more characters')
+		.required('Name is required'),
+});
 
 const ContactMailchimp = ({url}) => {
 
@@ -24,6 +36,20 @@ const ContactMailchimp = ({url}) => {
 	const {fields, handleFieldChange} = useFormFields({
 		EMAIL: "",
 		FNAME: ""
+	});
+
+	const formik = useFormik({
+		initialValues:{
+			EMAIL:"",
+			FNAME:""
+		},
+		validationSchema: validationSchemaEmail,
+		onSubmit: (values) => {
+			fields.EMAIL=values.EMAIL;
+			fields.FNAME=values.FNAME;
+			handleSubmit(fields);
+
+		},
 	});
 
 	return (
@@ -45,8 +71,9 @@ const ContactMailchimp = ({url}) => {
 
 
 				<RenderMarkdown markdown={window.systemLang.contactTitle}/>
-				{!success && <>
-					<TextField
+				{!success && <form onSubmit={formik.handleSubmit}>
+
+				<TextField
 						id={"FNAME"}
 						sx={{
 							marginTop: "10px",
@@ -57,8 +84,10 @@ const ContactMailchimp = ({url}) => {
 						}}
 						label={"Your name"}
 						fullWidth={true}
-						value={fields.FNAME}
-						onChange={handleFieldChange}
+						value={formik.values.FNAME}
+						onChange={formik.handleChange}
+						error={formik.touched.FNAME && Boolean(formik.errors.FNAME)}
+						helperText={formik.touched.FNAME && formik.errors.FNAME}
 					/>
 
 					<TextField
@@ -72,11 +101,13 @@ const ContactMailchimp = ({url}) => {
 						id={"EMAIL"}
 						label={"email address"}
 						fullWidth={true}
-						value={fields.EMAIL}
-						onChange={handleFieldChange}
+						value={formik.values.EMAIL}
+						onChange={formik.handleChange}
+						error={formik.touched.EMAIL && Boolean(formik.errors.EMAIL)}
+						helperText={formik.touched.EMAIL && formik.errors.EMAIL}
 					/>
 
-					<Button variant={"contained"} sx={{
+					<Button type={"submit"} variant={"contained"} sx={{
 						marginTop: "10px",
 						backgroundColor: window.systemMain.headerBackground,
 						borderRadius: "0px",
@@ -86,14 +117,10 @@ const ContactMailchimp = ({url}) => {
 							backgroundColor: window.systemMain.headerBackground
 						}
 
-					}}
-							onClick={(e) => {
-								e.preventDefault();
-								handleSubmit(fields);
-							}}>
+					}}>
 						Submit
 					</Button>
-				</>}
+				</form>}
 				{success &&
 					<>
 						<Typography variant="h2" sx={{
