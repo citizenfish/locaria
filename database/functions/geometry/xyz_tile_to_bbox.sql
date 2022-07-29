@@ -33,8 +33,6 @@ BEGIN
     xmax = mercatorMin + mercatorTileSize * (x + 1);
     xmin = mercatorMin + mercatorTileSize * x;
 
-    RAISE NOTICE 'DEBUG xmin %, xmax %', xmin, xmax;
-
     ret_var =  ST_MakeEnvelope(xmin,
                                mercatorMax - mercatorTileSize * (y + 1),
                                xmax,

@@ -4,7 +4,13 @@
       "stopOnError": true,
       "tables": [
         "database/functions/geometry/xyz_tile_to_bbox.sql",
-        "database/functions/geometry/geometry_to_mvt.sql"
+        "database/functions/geometry/geometry_to_mvt.sql",
+        "database/functions/geometry/get_vector_tile.sql",
+        "database/functions/locaria_gateway.sql",
+        "database/functions/internal/admin/get_parameters.sql",
+        "database/schema_and_tables/create_tilecache_table.sql",
+        "database/functions/internal/admin/delete_parameters.sql",
+        "database/functions/locaria_internal_gateway.sql"
       ],
       "substitutions": "../tests.json"
     }

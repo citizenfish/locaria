@@ -6,8 +6,8 @@ import re
 
 HOST_NAME = "localhost"
 PORT = 8080
-sql = "SELECT locaria_core.geometry_to_mvt('locaria_tests.census_data_output_areas', locaria_core.xyz_tile_to_bbox(%s,%s,%s))"
-
+sql = "SELECT locaria_core.locaria_gateway(jsonb_build_object('method','get_vector_tile','tileset', 'census_area_vector_tiles','x',%s,'y',%s,'z',%s),jsonb_build_object('_groups', jsonb_build_array('Admins')))"
+#sql = "SELECT locaria_core.get_vector_tile('locaria_tests.census_data_output_areas', %s,%s,%s )"
 def get_local_config(path):
     try:
         f = open(path)
@@ -35,19 +35,21 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         print(f"zoom: {z} x: {x} y : {y}")
         query = DATABASE_CONNECTION.execute(sql, [x,y,z])
         ret = query.fetchone()[0]
+        DATABASE_CONNECTION.commit()
+        # Postgresql's BYTEA is a hex string preceded by \x so we bin off the \\ and convert
+        output = bytes.fromhex(ret['vt'][2:])
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-type", "application/vnd.mapbox-vector-tile")
         self.end_headers()
-        self.wfile.write(ret)
-
+        self.wfile.write(output)
 
 with http.server.HTTPServer((HOST_NAME,PORT), SimpleHTTPRequestHandler) as server:
     try:
         print("serving at port", PORT)
         server.serve_forever()
     except KeyboardInterrupt:
-        if self.DATABASE_CONNECTION:
-            self.DATABASE_CONNECTION.close()
+        if DATABASE_CONNECTION:
+            DATABASE_CONNECTION.close()
         print('^C received, shutting down server')
         server.socket.close()

@@ -79,6 +79,9 @@ BEGIN
         WHEN parameters->>'method' IN ('set_parameters') THEN
             ret_var = set_parameters(parameters);
 
+        WHEN parameters->>'method' IN ('delete_parameters') THEN
+            ret_var = delete_parameters(parameters);
+
         WHEN parameters->>'method' IN ('update_category') THEN
             ret_var = update_category(parameters);
 

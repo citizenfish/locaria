@@ -6,7 +6,8 @@ $$
     BEGIN
 
         CREATE OR REPLACE VIEW locaria_tests.census_data_output_areas AS
-            SELECT wkb_geometry,
+            SELECT
+                   wkb_geometry,
                    row_to_json(OA.*)::JSONB - 'wkb_geometry' AS attributes
         FROM locaria_data.census_data_output_areas OA;
 
