@@ -43,6 +43,11 @@ export default function AdminContentPages() {
 			dispatch(setPages(undefined));
 			history.push(`/Admin/Content/Pages/Edit`);
 		});
+
+		window.websocket.registerQueue('deletePageData', (json) => {
+			setOpenDelete(false);
+			dispatch(setPages(undefined));
+		});
 	});
 
 	const handleCloseAdd = () => {
@@ -69,6 +74,21 @@ export default function AdminContentPages() {
 					"data": "# New Page title",
 					"title": values.title
 				}
+			}
+		});
+
+	}
+
+	const handleDeletePage = (values) => {
+
+		window.websocket.send({
+			"queue": "deletePageData",
+			"api": "sapi",
+			"data": {
+				"method": "delete_parameters",
+				"parameter_name": page,
+				id_token: cookies['id_token'],
+				"usage": "Page"
 			}
 		});
 
@@ -121,7 +141,7 @@ export default function AdminContentPages() {
 					</DialogContent>
 					<DialogActions>
 						<Button color="success" onClick={handleCloseDelete}>Cancel</Button>
-						<Button color="error">Delete</Button>
+						<Button color="error" onClick={handleDeletePage}>Delete</Button>
 					</DialogActions>
 				</Dialog>
 
