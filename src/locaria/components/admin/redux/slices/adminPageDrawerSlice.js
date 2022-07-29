@@ -8,7 +8,7 @@ export const adminPageDrawerSlice = createSlice({
     initialState: {
         open: false,
         pages: undefined,
-        page: undefined
+        page: ""
     },
     reducers: {
         openAdminPageDrawer: (state) => {

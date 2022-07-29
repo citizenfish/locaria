@@ -4,25 +4,46 @@ import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
-import {useSelector} from "react-redux";
-import MDEditor from "@uiw/react-md-editor";
+import {useDispatch, useSelector} from "react-redux";
 import {useCookies} from "react-cookie";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import TabPanel from "../components/tabs/tabPanel";
 import TokenCheck from "../components/utils/tokenCheck";
+import {TextField} from "@mui/material";
+import {useFormik} from "formik";
+import * as yup from "yup";
+import { setPages} from "../redux/slices/adminPageDrawerSlice";
+import { Editor } from '@tinymce/tinymce-react';
+import EditMarkdown from "../../widgets/markdown/editMarkdown";
 
+
+const validationSchemaEdit = yup.object({
+	title: yup
+		.string('Enter page title')
+		.min(3, 'Title should 3 of more characters')
+		.required('Title is required'),
+});
 
 export default function AdminContentPagesEdit() {
 
 	const history = useHistory();
 	const page = useSelector((state) => state.adminPageDrawer.page);
 	const [pageData, setPageData] = useState({});
-	const [markdown, setMarkdown] = useState("");
+	const [markdownData, setMarkdownData] = useState(undefined);
 	const [currentTab, setCurrrentTab] = useState(0);
 	const [cookies, setCookies] = useCookies(['id_token']);
+	const dispatch = useDispatch()
 
-
+	const formik = useFormik({
+		initialValues: {
+			title: ""
+		},
+		validationSchema: validationSchemaEdit,
+		onSubmit: (values) => {
+			savePage(values);
+		},
+	});
 
 	const getPageData = () => {
 		window.websocket.send({
@@ -37,7 +58,7 @@ export default function AdminContentPagesEdit() {
 		});
 	}
 
-	const savePage = () => {
+	const savePage = (values) => {
 		window.websocket.send({
 			"queue": "setPageData",
 			"api": "sapi",
@@ -48,8 +69,8 @@ export default function AdminContentPagesEdit() {
 				id_token: cookies['id_token'],
 				"usage": "Page",
 				"parameters": {
-					"data": markdown,
-					"title": pageData.title
+					"data": markdownData,
+					"title": values.title
 				}
 			}
 		});
@@ -66,7 +87,7 @@ export default function AdminContentPagesEdit() {
 				id_token: cookies['id_token'],
 				"usage": "Temp",
 				"parameters": {
-					"data": markdown,
+					"data": markdownData,
 					"title": pageData.title
 				}
 			}
@@ -76,20 +97,23 @@ export default function AdminContentPagesEdit() {
 	useEffect(() => {
 
 		window.websocket.registerQueue('setPageData', (json) => {
+			dispatch(setPages(undefined));
 			history.push(`/Admin/Content/Pages`);
+
 		});
 
 		window.websocket.registerQueue('setPageTempData', (json) => {
 			// how to we stop the iframe?
-			document.getElementById('iframeSet').setAttribute("src",`/${page}/#preview=true`);
+			document.getElementById('iframeSet').setAttribute("src", `/${page}/#preview=true`);
 		});
 
 		window.websocket.registerQueue('getPageData', (json) => {
 			let data = {data: "# New file", type: "Markdown", title: "My page title"};
-			if (json.packet.parameters[page])
+			if (json&&json.packet&&json.packet.parameters&&json.packet.parameters[page])
 				data = json.packet.parameters[page];
 			setPageData(data);
-			setMarkdown(data.data);
+			setMarkdownData(data.data);
+			formik.setFieldValue("title",data.title);
 		});
 		if (page !== undefined) {
 			getPageData();
@@ -100,10 +124,12 @@ export default function AdminContentPagesEdit() {
 	const handleTabChange = (event, value) => {
 		setCurrrentTab(value);
 		//Preview
-		if(value===1) {
+		if (value === 1) {
 			saveTempPage();
 		}
 	}
+
+
 
 	return (
 		<Box sx={{display: 'flex'}}>
@@ -117,47 +143,68 @@ export default function AdminContentPagesEdit() {
 
 
 				<Box>
-					<Tabs value={currentTab} onChange={(e,v)=>{handleTabChange(e,v)}} aria-label="basic tabs example">
+					<Tabs value={currentTab} onChange={(e, v) => {
+						handleTabChange(e, v)
+					}} aria-label="basic tabs example">
 						<Tab label="Code view"/>
 						<Tab label="Preview"/>
 					</Tabs>
 				</Box>
-				<TabPanel value={currentTab} index={0}>
-					<h1>Page Editor</h1>
+				<form onSubmit={formik.handleSubmit}>
 
-					<MDEditor
-						id={"pageData"}
-						value={markdown}
-						onChange={setMarkdown}
-						height={500}
-						style={{
-							borderTopLeftRadius: 0,
-							borderTopRightRadius: 0,
-						}}
-					/>
-				</TabPanel>
-				<TabPanel value={currentTab} index={1}>
-					<h1>Page Preview</h1>
-					<iframe id="iframeSet" style={{"min-width":"800px","min-height":"600px","width": "100%","height":"70vh","border":"1px solid black"}}/>
+					<TabPanel value={currentTab} index={0}>
+						<h1>Page Editor</h1>
+						<TextField
+							margin="dense"
+							id="title"
+							label="Page title"
+							type="text"
+							fullWidth
+							variant="standard"
+							value={formik.values.title}
+							onChange={formik.handleChange}
+							error={formik.touched.title && Boolean(formik.errors.title)}
+							helperText={formik.touched.title && formik.errors.title}
+						/>
+						{markdownData !== undefined &&
+							<EditMarkdown document={markdownData} onChange={setMarkdownData}></EditMarkdown>
+						}
 
-				{/*	{markdown &&
-						<Box>
-							<RenderMarkdown markdown={markdown}/>
-						</Box>
-					}*/}
-				</TabPanel>
+{/*
+						<CodeMirror id={"pageData"} height={"500px"} onChange={setMarkdownData} value={markdownData} extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]} />
+*/}
+						{/*<MDEditor
+							id={"pageData"}
+							value={markdown}
+							onChange={setMarkdown}
+							height={500}
+							style={{
+								borderTopLeftRadius: 0,
+								borderTopRightRadius: 0,
+							}}
+						/>*/}
+					</TabPanel>
+					<TabPanel value={currentTab} index={1}>
+						<h1>Page Preview</h1>
+						<iframe id="iframeSet" style={{
+							minWidth: "800px",
+							minHeight: "600px",
+							width: "100%",
+							height: "70vh",
+							border: "1px solid black"
+						}}/>
+					</TabPanel>
 
 
-				<Box sx={{paddingTop: "10px"}}>
-					<Button variant={"contained"} color="success" onClick={() => {
-						history.push(`/Admin/Content/Pages`);
-						savePage();
-					}}>Save</Button>
-					<Button variant={"contained"} color="error" onClick={() => {
-						history.push(`/Admin/Content/Pages`);
-					}}>Cancel</Button>
-				</Box>
+					<Box sx={{paddingTop: "10px"}}>
+						<Button variant={"contained"} color="success" type="submit" onClick={() => {
 
+						}}>Save</Button>
+						<Button variant={"contained"} color="error" onClick={() => {
+							history.push(`/Admin/Content/Pages`);
+						}}>Cancel</Button>
+					</Box>
+				</form>
 
 
 			</Box>
