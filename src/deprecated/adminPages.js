@@ -3,26 +3,26 @@ import React, {useRef, useState} from "react"
 import {Drawer, InputLabel, Select, TextField} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
-import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
-import {setTitle} from "../../redux/slices/adminSlice";
-import {useStyles} from "../../../../../theme/default/adminStyle";
+import {closeUploadDrawer} from "./uploadDrawerSlice";
+import {closeEditFeatureDrawer} from "./editFeatureDrawerSlice";
+import {setTitle} from "./adminSlice";
+import {useStyles} from "../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
-import {addPage, setPages, setPage} from "../../redux/slices/adminPageDrawerSlice";
+import {addPage, setPages, setPage} from "../locaria/components/admin/redux/slices/adminPagesSlice";
 import {useCookies} from "react-cookie";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import MDEditor from '@uiw/react-md-editor';
 import Container from "@mui/material/Container";
-import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
-import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
-import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import {closeSystemConfigDrawer} from "./systemConfigDrawerSlice";
+import {closeDashboardDrawer} from "./adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "./adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "./adminLanguageDrawerSlice";
 import Divider from "@mui/material/Divider";
 
 
-export default function AdminPageDrawer(props) {
+export default function AdminPages(props) {
 
     const open = useSelector((state) => state.adminPageDrawer.open);
     const pages = useSelector((state) => state.adminPageDrawer.pages);

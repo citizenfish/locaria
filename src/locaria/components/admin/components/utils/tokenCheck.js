@@ -4,7 +4,7 @@ import {useCookies} from "react-cookie";
 
 import {resources} from "themeLocaria";
 import {useDispatch} from "react-redux";
-import {setUser} from "../../redux/slices/adminSlice";
+import {setUser} from "../../../../../deprecated/adminSlice";
 
 export default function TokenCheck() {
 

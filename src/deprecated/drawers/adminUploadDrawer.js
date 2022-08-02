@@ -2,30 +2,30 @@ import React, {useState,useEffect} from "react"
 import {DataGrid} from '@mui/x-data-grid'
 import {useCookies} from "react-cookie";
 import LinearProgress from '@mui/material/LinearProgress';
-import AdminFileUploader from '../adminFileUploader'
+import AdminFileUploader from '../../locaria/components/admin/components/adminFileUploader'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
-import AdminFileDetails from "../adminFileDetails";
-import AdminDataMapper from "../adminDataMapper";
-import AdminPlanningLoader from "../adminPlanningLoader";
-import AdminFloodMonitoringLoader from "../adminFloodMonitoringLoader";
-import AdminCrimeLoader from "../adminCrimeLoader.js";
-import AdminBoundaryLoader from "../adminBoundaryLoader";
-import AdminEventsLoader from "../adminEventsLoader";
-import AdminDataDownload from "../adminDataDownload";
+import AdminFileDetails from "../../locaria/components/admin/components/adminFileDetails";
+import AdminDataMapper from "../../locaria/components/admin/components/adminDataMapper";
+import AdminPlanningLoader from "../../locaria/components/admin/components/adminPlanningLoader";
+import AdminFloodMonitoringLoader from "../../locaria/components/admin/components/adminFloodMonitoringLoader";
+import AdminCrimeLoader from "../../locaria/components/admin/components/adminCrimeLoader.js";
+import AdminBoundaryLoader from "../../locaria/components/admin/components/adminBoundaryLoader";
+import AdminEventsLoader from "../../locaria/components/admin/components/adminEventsLoader";
+import AdminDataDownload from "../../locaria/components/admin/components/adminDataDownload";
 import {Drawer} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {useStyles} from "../../../../../theme/default/adminStyle";
+import {useStyles} from "../../theme/default/adminStyle";
 
-import {closeEditDrawer} from "../../redux/slices/editDrawerSlice";
+import {closeEditDrawer} from "../editDrawerSlice";
 import {useHistory} from "react-router-dom";
-import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
-import {setTitle} from "../../redux/slices/adminSlice";
-import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
-import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
-import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
-import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import {closeEditFeatureDrawer} from "../editFeatureDrawerSlice";
+import {setTitle} from "../adminSlice";
+import {closeSystemConfigDrawer} from "../systemConfigDrawerSlice";
+import {closeAdminPageDrawer} from "../../locaria/components/admin/redux/slices/adminPagesSlice";
+import {closeDashboardDrawer} from "../adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "../adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../adminLanguageDrawerSlice";
 //Details of file we are going to map
 let fileDetailsData = {}
 

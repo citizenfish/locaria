@@ -13,7 +13,7 @@ import TokenCheck from "../components/utils/tokenCheck";
 import {TextField} from "@mui/material";
 import {useFormik} from "formik";
 import * as yup from "yup";
-import { setPages} from "../redux/slices/adminPageDrawerSlice";
+import { setPages} from "../redux/slices/adminPagesSlice";
 import { Editor } from '@tinymce/tinymce-react';
 import EditMarkdown from "../../widgets/markdown/editMarkdown";
 
@@ -28,7 +28,7 @@ const validationSchemaEdit = yup.object({
 export default function AdminContentPagesEdit() {
 
 	const history = useHistory();
-	const page = useSelector((state) => state.adminPageDrawer.page);
+	const page = useSelector((state) => state.adminPages.page);
 	const [pageData, setPageData] = useState({});
 	const [markdownData, setMarkdownData] = useState(undefined);
 	const [currentTab, setCurrrentTab] = useState(0);
@@ -169,20 +169,6 @@ export default function AdminContentPagesEdit() {
 						{markdownData !== undefined &&
 							<EditMarkdown document={markdownData} onChange={setMarkdownData}></EditMarkdown>
 						}
-
-{/*
-						<CodeMirror id={"pageData"} height={"500px"} onChange={setMarkdownData} value={markdownData} extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]} />
-*/}
-						{/*<MDEditor
-							id={"pageData"}
-							value={markdown}
-							onChange={setMarkdown}
-							height={500}
-							style={{
-								borderTopLeftRadius: 0,
-								borderTopRightRadius: 0,
-							}}
-						/>*/}
 					</TabPanel>
 					<TabPanel value={currentTab} index={1}>
 						<h1>Page Preview</h1>

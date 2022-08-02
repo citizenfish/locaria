@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {InputLabel, Select} from "@mui/material";
 import {ColorPicker} from "mui-color";
-import {setSystemConfigValue} from "../../redux/slices/systemConfigDrawerSlice";
+import {setSystemConfigValue} from "../../../../../deprecated/systemConfigDrawerSlice";
 import React from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";

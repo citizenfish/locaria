@@ -13,13 +13,21 @@ import EditIcon from "@mui/icons-material/Edit";
 import {useHistory} from "react-router-dom";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 
-export default function LeftNav({isOpenContent}) {
+export default function LeftNav({isOpenContent,isOpenSettings}) {
 
 	const [openContent, setOpenContent] = React.useState(isOpenContent||false);
+	const [openSettings, setOpenSettings] = React.useState(isOpenSettings||false);
 
 	const handleClickContent = () => {
-		setOpenContent(!openContent);
+		setOpenSettings(false);
+		setOpenContent(true);
 		history.push(`/Admin/Content/Pages`);
+	};
+
+	const handleClickSettings = () => {
+		setOpenContent(false);
+		setOpenSettings(true);
+		history.push(`/Admin/Settings/Appearance`);
 	};
 
 	const history = useHistory();
@@ -60,6 +68,8 @@ export default function LeftNav({isOpenContent}) {
 					<ListItemText primary={`Admin home`}/>
 				</ListItemButton>
 
+				{/*Content*/}
+
 				<ListItemButton  onClick={() => {
 					handleClickContent();
 				}}>
@@ -86,6 +96,30 @@ export default function LeftNav({isOpenContent}) {
 								<StorageIcon/>
 							</ListItemIcon>
 							<ListItemText primary={"Data Manager"}/>
+						</ListItemButton>
+					</List>
+				</Collapse>
+
+				{/*Settings*/}
+
+				<ListItemButton  onClick={() => {
+					handleClickSettings();
+				}}>
+					<ListItemIcon>
+						<EditIcon/>
+					</ListItemIcon>
+					<ListItemText primary={"Settings"}/>
+					{openSettings ? <ExpandLess /> : <ExpandMore />}
+				</ListItemButton>
+				<Collapse in={openSettings} timeout="auto" unmountOnExit>
+					<List component="div">
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/Settings/Appearance`);
+						}}>
+							<ListItemIcon>
+								<ArticleIcon/>
+							</ListItemIcon>
+							<ListItemText primary={"Appearance"}/>
 						</ListItemButton>
 					</List>
 				</Collapse>

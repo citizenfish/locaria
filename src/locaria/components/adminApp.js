@@ -1,16 +1,15 @@
 import React from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
-import {useCookies} from "react-cookie";
-import {configs, resources} from "themeLocaria";
-import Openlayers from "libs/Openlayers";
-import store from './redux/store'
+import store from './admin/redux/store'
 import {Provider} from 'react-redux'
 
 import AdminHome from "./admin/pages/adminHome";
 import AdminContentPages from "./admin/pages/adminContentPages";
 import AdminContentData from "./admin/pages/adminContentData";
 import AdminContentPagesEdit from "./admin/pages/adminContentPagesEdit";
+import AdminSettingsAppearance from "./admin/pages/adminSettingsAppearance";
+import AdminSettingsAppearanceEdit from "./admin/pages/adminSettingsAppearanceEdit";
 
 
 const AdminApp = () => {
@@ -41,6 +40,8 @@ const AdminApp = () => {
 		<Provider store={store}>
 			<Router>
 				<Switch>
+					<Route exact path="/Admin/Settings/Appearance"  component={AdminSettingsAppearance}/>
+					<Route exact path="/Admin/Settings/Appearance/Edit"  component={AdminSettingsAppearanceEdit}/>
 					<Route exact path="/Admin/Content/Pages"  component={AdminContentPages}/>
 					<Route exact path="/Admin/Content/Pages/Edit"  component={AdminContentPagesEdit}/>
 					<Route exact path="/Admin/Content/Data"  component={AdminContentData}/>

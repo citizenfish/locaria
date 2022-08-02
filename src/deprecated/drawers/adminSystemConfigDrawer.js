@@ -17,26 +17,26 @@ import {
 } from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
-import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
-import {setTitle} from "../../redux/slices/adminSlice";
-import {useStyles} from "../../../../../theme/default/adminStyle";
+import {closeUploadDrawer} from "../uploadDrawerSlice";
+import {closeEditFeatureDrawer} from "../editFeatureDrawerSlice";
+import {setTitle} from "../adminSlice";
+import {useStyles} from "../../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
-import {setSystemConfig, setSystemConfigValue} from "../../redux/slices/systemConfigDrawerSlice";
+import {setSystemConfig, setSystemConfigValue} from "../systemConfigDrawerSlice";
 import {useCookies} from "react-cookie";
 import Slider from "@mui/material/Slider";
-import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
+import {closeAdminPageDrawer} from "../../locaria/components/admin/redux/slices/adminPagesSlice";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
-import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {closeAdminCategoryDrawer, setAdminCategoryValue} from "../../redux/slices/adminCategoryDrawerSlice";
-import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
-import UploadWidget from "../../../widgets/data/uploadWidget";
+import {closeDashboardDrawer} from "../adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer, setAdminCategoryValue} from "../adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../adminLanguageDrawerSlice";
+import UploadWidget from "../../locaria/components/widgets/data/uploadWidget";
 import Container from "@mui/material/Container";
 import {ColorPicker} from "mui-color";
 
-import FontSelector from "../forms/fontSelector";
+import FontSelector from "../../locaria/components/admin/components/forms/fontSelector";
 import Divider from "@mui/material/Divider";
 
 export default function AdminSystemConfigDrawer(props) {

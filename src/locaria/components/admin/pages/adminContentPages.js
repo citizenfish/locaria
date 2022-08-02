@@ -12,7 +12,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import {useFormik} from "formik";
 import * as yup from 'yup';
 import {useCookies} from "react-cookie";
-import {setPage, setPages} from "../redux/slices/adminPageDrawerSlice";
+import {setPage, setPages} from "../redux/slices/adminPagesSlice";
 import Typography from "@mui/material/Typography";
 
 
@@ -30,7 +30,7 @@ const validationSchemaAdd = yup.object({
 export default function AdminContentPages() {
 
 	const history = useHistory();
-	const page = useSelector((state) => state.adminPageDrawer.page);
+	const page = useSelector((state) => state.adminPages.page);
 	const [openAdd, setOpenAdd] = useState(false);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [cookies, setCookies] = useCookies(['id_token']);
@@ -47,6 +47,7 @@ export default function AdminContentPages() {
 		window.websocket.registerQueue('deletePageData', (json) => {
 			setOpenDelete(false);
 			dispatch(setPages(undefined));
+			dispatch(setPage(undefined));
 		});
 	});
 

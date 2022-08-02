@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import {setAdminLanguageValue} from "../../admin/redux/slices/adminLanguageDrawerSlice";
+import {setAdminLanguageValue} from "../../../../deprecated/adminLanguageDrawerSlice";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 

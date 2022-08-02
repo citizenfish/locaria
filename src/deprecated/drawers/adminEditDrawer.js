@@ -9,17 +9,17 @@ import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {Drawer} from "@mui/material";
-import {useStyles} from "../../../../../theme/default/adminStyle";
-import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
-import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
-import {openEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
-import {setEditData} from "../../redux/slices/editDrawerSlice";
-import {setTitle} from "../../redux/slices/adminSlice";
-import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
-import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
-import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
-import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import {useStyles} from "../../theme/default/adminStyle";
+import {closeUploadDrawer} from "../uploadDrawerSlice";
+import {closeEditFeatureDrawer} from "../editFeatureDrawerSlice";
+import {openEditFeatureDrawer} from "../editFeatureDrawerSlice";
+import {setEditData} from "../editDrawerSlice";
+import {setTitle} from "../adminSlice";
+import {closeSystemConfigDrawer} from "../systemConfigDrawerSlice";
+import {closeAdminPageDrawer} from "../../locaria/components/admin/redux/slices/adminPagesSlice";
+import {closeDashboardDrawer} from "../adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "../adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../adminLanguageDrawerSlice";
 
 
 export default function AdminEditDrawer(props) {

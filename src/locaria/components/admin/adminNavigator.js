@@ -10,8 +10,8 @@ import ListItemText from '@mui/material/ListItemText';
 import GroupIcon from '@mui/icons-material/Group';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import {useDispatch, useSelector} from "react-redux";
-import {openEditDrawer} from "./redux/slices/editDrawerSlice";
-import {openUploadDrawer} from "./redux/slices/uploadDrawerSlice";
+import {openEditDrawer} from "../../../deprecated/editDrawerSlice";
+import {openUploadDrawer} from "../../../deprecated/uploadDrawerSlice";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import EditIcon from '@mui/icons-material/Edit';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
@@ -23,13 +23,13 @@ import LanguageIcon from '@mui/icons-material/Language';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import {useCookies} from "react-cookie";
 import Badge from '@mui/material/Badge';
-import {setTotal} from "./redux/slices/adminSlice";
+import {setTotal} from "../../../deprecated/adminSlice";
 import {useHistory} from "react-router-dom";
-import {openSystemConfigDrawer} from "./redux/slices/systemConfigDrawerSlice";
-import {openAdminPageDrawer} from "./redux/slices/adminPageDrawerSlice";
-import {openDashboardDrawer} from "./redux/slices/adminDashboardDrawerSlice";
-import {openAdminCategoryDrawer} from "./redux/slices/adminCategoryDrawerSlice";
-import {openLanguageDrawer} from "./redux/slices/adminLanguageDrawerSlice";
+import {openSystemConfigDrawer} from "../../../deprecated/systemConfigDrawerSlice";
+import {openAdminPageDrawer} from "./redux/slices/adminPagesSlice";
+import {openDashboardDrawer} from "../../../deprecated/adminDashboardDrawerSlice";
+import {openAdminCategoryDrawer} from "../../../deprecated/adminCategoryDrawerSlice";
+import {openLanguageDrawer} from "../../../deprecated/adminLanguageDrawerSlice";
 
 const systemItems = [{
     "name" : "Users",
