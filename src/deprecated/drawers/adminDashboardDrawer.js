@@ -3,16 +3,16 @@ import { DataGrid } from '@mui/x-data-grid';
 import {Grid, Drawer, Card, CardContent, Typography, Select, TextField} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
-import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
-import {setTitle} from "../../redux/slices/adminSlice";
-import {useStyles} from "../../../../../theme/default/adminStyle";
+import {closeUploadDrawer} from "../uploadDrawerSlice";
+import {closeEditFeatureDrawer} from "../editFeatureDrawerSlice";
+import {setTitle} from "../adminSlice";
+import {useStyles} from "../../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import {useCookies} from "react-cookie";
-import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
-import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
-import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
-import '../../../../../../node_modules/react-vis/dist/style.css'
+import {closeAdminPageDrawer} from "../../locaria/components/admin/redux/slices/adminPagesSlice";
+import {closeAdminCategoryDrawer} from "../adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../adminLanguageDrawerSlice";
+import 'react-vis/dist/style.css'
 
 import {XYPlot,
     XAxis,

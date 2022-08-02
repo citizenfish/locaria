@@ -5,30 +5,30 @@ import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {Drawer} from "@mui/material";
-import {useStyles} from "../../../../../theme/default/adminStyle";
-import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
-import {closeEditDrawer, openEditDrawer} from "../../redux/slices/editDrawerSlice";
-import {setEditFeatureData} from "../../redux/slices/editFeatureDrawerSlice";
+import {useStyles} from "../../theme/default/adminStyle";
+import {closeUploadDrawer} from "../uploadDrawerSlice";
+import {closeEditDrawer, openEditDrawer} from "../editDrawerSlice";
+import {setEditFeatureData} from "../editFeatureDrawerSlice";
 import Paper from "@mui/material/Paper";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
-import SearchTags from "../../../search/SearchTags";
+import SearchTags from "../../locaria/components/search/SearchTags";
 import LinearProgress from "@mui/material/LinearProgress";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Input from "@mui/material/Input";
-import {FieldEdit} from "../../../widgets/fieldEdit";
-import Map from "../../../widgets/map";
-import {setTitle, setTotal} from "../../redux/slices/adminSlice";
-import Tags from "../../../widgets/tags"
+import {FieldEdit} from "../../locaria/components/widgets/fieldEdit";
+import Map from "../../locaria/components/widgets/map";
+import {setTitle, setTotal} from "../adminSlice";
+import Tags from "../../locaria/components/widgets/tags"
 import Container from "@mui/material/Container";
-import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
-import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
-import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
-import {closeLanguageDrawer} from "../../redux/slices/adminLanguageDrawerSlice";
+import {closeSystemConfigDrawer} from "../systemConfigDrawerSlice";
+import {closeAdminPageDrawer} from "../../locaria/components/admin/redux/slices/adminPagesSlice";
+import {closeDashboardDrawer} from "../adminDashboardDrawerSlice";
+import {closeAdminCategoryDrawer} from "../adminCategoryDrawerSlice";
+import {closeLanguageDrawer} from "../adminLanguageDrawerSlice";
 
 
 const  AdminEditFeatureDrawer = (props) => {

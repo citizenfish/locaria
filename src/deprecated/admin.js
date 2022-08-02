@@ -7,25 +7,25 @@ import AdminNavigator from '../locaria/components/admin/adminNavigator'
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
 const drawerWidth = 240
-import AdminUploadDrawer from '../locaria/components/admin/components/drawers/adminUploadDrawer'
-import AdminEditDrawer from '../locaria/components/admin/components/drawers/adminEditDrawer'
-import AdminEditFeatureDrawer from "../locaria/components/admin/components/drawers/adminEditFeatureDrawer";
+import AdminUploadDrawer from './drawers/adminUploadDrawer'
+import AdminEditDrawer from './drawers/adminEditDrawer'
+import AdminEditFeatureDrawer from "./drawers/adminEditFeatureDrawer";
 import {theme} from "../theme/default/adminStyle";
 import {ThemeProvider} from "@emotion/react";
-import {openEditDrawer} from "../locaria/components/admin/redux/slices/editDrawerSlice";
-import {openUploadDrawer} from "../locaria/components/admin/redux/slices/uploadDrawerSlice";
+import {openEditDrawer} from "./editDrawerSlice";
+import {openUploadDrawer} from "./uploadDrawerSlice";
 import {useLocation, useParams} from "react-router-dom";
-import {openEditFeatureDrawer} from "../locaria/components/admin/redux/slices/editFeatureDrawerSlice";
+import {openEditFeatureDrawer} from "./editFeatureDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
-import AdminSystemConfigDrawer from "../locaria/components/admin/components/drawers/adminSystemConfigDrawer";
-import {openSystemConfigDrawer} from "../locaria/components/admin/redux/slices/systemConfigDrawerSlice";
-import AdminPageDrawer from "../locaria/components/admin/components/drawers/adminPageDrawer";
-import {openAdminPageDrawer} from "../locaria/components/admin/redux/slices/adminPageDrawerSlice";
-import AdminDashboardDrawer from "../locaria/components/admin/components/drawers/adminDashboardDrawer";
-import AdminCategoryConfigDrawer from "../locaria/components/admin/components/drawers/adminCategoryConfigDrawer";
-import {openAdminCategoryDrawer} from "../locaria/components/admin/redux/slices/adminCategoryDrawerSlice";
-import AdminLanguageDrawer from "../locaria/components/admin/components/drawers/adminLanguageDrawer";
-import {openLanguageDrawer} from "../locaria/components/admin/redux/slices/adminLanguageDrawerSlice";
+import AdminSystemConfigDrawer from "./drawers/adminSystemConfigDrawer";
+import {openSystemConfigDrawer} from "./systemConfigDrawerSlice";
+import AdminPages from "./adminPages";
+import {openAdminPageDrawer} from "../locaria/components/admin/redux/slices/adminPagesSlice";
+import AdminDashboardDrawer from "./drawers/adminDashboardDrawer";
+import AdminCategoryConfigDrawer from "./drawers/adminCategoryConfigDrawer";
+import {openAdminCategoryDrawer} from "./adminCategoryDrawerSlice";
+import AdminLanguageDrawer from "./drawers/adminLanguageDrawer";
+import {openLanguageDrawer} from "./adminLanguageDrawerSlice";
 
 const Admin= () => {
 
@@ -108,7 +108,7 @@ const Admin= () => {
 				<AdminEditDrawer></AdminEditDrawer>
 				<AdminEditFeatureDrawer></AdminEditFeatureDrawer>
 				<AdminSystemConfigDrawer></AdminSystemConfigDrawer>
-				<AdminPageDrawer></AdminPageDrawer>
+				<AdminPages></AdminPages>
 				<AdminDashboardDrawer></AdminDashboardDrawer>
 				<AdminCategoryConfigDrawer/>
 				<AdminLanguageDrawer/>

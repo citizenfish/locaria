@@ -13,19 +13,19 @@ import {
 } from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {closeUploadDrawer} from "../../redux/slices/uploadDrawerSlice";
-import {closeEditFeatureDrawer} from "../../redux/slices/editFeatureDrawerSlice";
-import {setTitle} from "../../redux/slices/adminSlice";
-import {useStyles} from "../../../../../theme/default/adminStyle";
+import {closeUploadDrawer} from "../uploadDrawerSlice";
+import {closeEditFeatureDrawer} from "../editFeatureDrawerSlice";
+import {setTitle} from "../adminSlice";
+import {useStyles} from "../../theme/default/adminStyle";
 import {useHistory} from "react-router-dom";
 import Button from "@mui/material/Button";
 import {useCookies} from "react-cookie";
-import {closeAdminPageDrawer} from "../../redux/slices/adminPageDrawerSlice";
-import {closeDashboardDrawer} from "../../redux/slices/adminDashboardDrawerSlice";
-import {setAdminLanguage, setAdminLanguageValue} from "../../redux/slices/adminLanguageDrawerSlice";
+import {closeAdminPageDrawer} from "../../locaria/components/admin/redux/slices/adminPagesSlice";
+import {closeDashboardDrawer} from "../adminDashboardDrawerSlice";
+import {setAdminLanguage, setAdminLanguageValue} from "../adminLanguageDrawerSlice";
 import Box from "@mui/material/Box";
-import {closeSystemConfigDrawer} from "../../redux/slices/systemConfigDrawerSlice";
-import {closeAdminCategoryDrawer} from "../../redux/slices/adminCategoryDrawerSlice";
+import {closeSystemConfigDrawer} from "../systemConfigDrawerSlice";
+import {closeAdminCategoryDrawer} from "../adminCategoryDrawerSlice";
 
 export default function AdminLanguageDrawer(props) {
 

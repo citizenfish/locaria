@@ -8,7 +8,7 @@ import PhotoSizeSelectActualIcon from '@mui/icons-material/PhotoSizeSelectActual
 import CardHeader from "@mui/material/CardHeader";
 import {configs, resources} from "themeLocaria";
 import FormControl from "@mui/material/FormControl";
-import {setSystemConfigValue} from "../../admin/redux/slices/systemConfigDrawerSlice";
+import {setSystemConfigValue} from "../../../../deprecated/systemConfigDrawerSlice";
 import MenuItem from "@mui/material/MenuItem";
 import UrlCoder from "../../../libs/urlCoder";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
