@@ -145,176 +145,180 @@ module.exports.run = (event, context, callback) => {
         }
 
         let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
-        switch (packet.api) {
-            case 'session':
-                payload.packet.id = connectionId;
-                sendToClient(payload);
-                break;
-            // Public API
-            case 'api':
-                times.start("Query");
 
-                switch (packet.data.method) {
-                    case "add_asset":
-                        validateToken(packet, function (tokenPacket) {
-                                add_asset(packet);
-                            },
-                            function (tokenPacket) {
-                                payload.packet['response_code'] = 300;
-                                payload.packet = tokenPacket;
-                                sendToClient(payload);
-                            });
-                        break;
-                    case "delete_asset":
-                        validateToken(packet, function (tokenPacket) {
-                                delete_asset(packet);
-                            },
-                            function (tokenPacket) {
-                                payload.packet['response_code'] = 300;
-                                payload.packet = tokenPacket;
-                                sendToClient(payload);
-                            });
-                        break;
-                    default:
-                        client = database.getClient();
-                        let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
-                        let qarguments = [packet.data];
-                        //console.log(querysql);
-                        //console.log(qarguments);
-                        client.query(querysql, qarguments, function (err, result) {
-                            times.stop("Query");
+        validateToken(packet, function (tokenPacket) {
 
-                            if (err) {
-                                console.log(err);
-                                payload.packet['response_code'] = 310;
-                                sendToClient(payload);
+            switch (packet.api) {
+                case 'session':
+                    payload.packet.id = connectionId;
+                    sendToClient(payload);
+                    break;
+                // Public API
+                case 'api':
+                    times.start("Query");
 
-                            } else {
-                                if (result.rows[0]['locaria_gateway'] === null) {
-                                    payload.packet['response_code'] = 500;
+                    switch (packet.data.method) {
+                        case "add_asset":
+                            validateToken(packet, function (tokenPacket) {
+                                    add_asset(packet);
+                                },
+                                function (tokenPacket) {
+                                    payload.packet['response_code'] = 300;
+                                    payload.packet = tokenPacket;
                                     sendToClient(payload);
-                                } else {
-                                    payload.packet = result.rows[0]['locaria_gateway'];
-                                    payload.timing = times.display();
-                                    payload.method = packet.data.method;
+                                });
+                            break;
+                        case "delete_asset":
+                            validateToken(packet, function (tokenPacket) {
+                                    delete_asset(packet);
+                                },
+                                function (tokenPacket) {
+                                    payload.packet['response_code'] = 300;
+                                    payload.packet = tokenPacket;
                                     sendToClient(payload);
-                                }
-                            }
-                        });
-                        break;
-
-                }
-
-
-                break;
-            // Secure API
-            case 'sapi':
-                validateToken(packet, function (tokenPacket) {
-                        client = database.getClient();
-                        updateSession(tokenPacket['cognito:groups']);
-                        if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
-
-                            let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
-                            console.log(packet.data);
-                            let qarguments = [packet.data, {
-                                "_userID": tokenPacket['cognito:username'],
-                                "_email": tokenPacket['email'],
-                                "_groups": tokenPacket['cognito:groups'],
-                                "_newACL": packet.data.acl
-                            }];
-
-                            console.log(qarguments);
-                            console.log(querysql);
+                                });
+                            break;
+                        default:
+                            client = database.getClient();
+                            let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
+                            let qarguments = [packet.data];
+                            //console.log(querysql);
+                            //console.log(qarguments);
                             client.query(querysql, qarguments, function (err, result) {
+                                times.stop("Query");
+
                                 if (err) {
                                     console.log(err);
-                                    payload.packet['response_code'] = 311;
+                                    payload.packet['response_code'] = 310;
                                     sendToClient(payload);
 
                                 } else {
-                                    if (result.rows[0]['locaria_internal_gateway'] === null) {
+                                    if (result.rows[0]['locaria_gateway'] === null) {
                                         payload.packet['response_code'] = 500;
                                         sendToClient(payload);
                                     } else {
-                                        payload.packet = result.rows[0]['locaria_internal_gateway'];
+                                        payload.packet = result.rows[0]['locaria_gateway'];
+                                        payload.timing = times.display();
                                         payload.method = packet.data.method;
                                         sendToClient(payload);
                                     }
                                 }
                             });
-                        } else {
-                            payload.packet['response_code'] = 312;
-                            sendToClient(payload);
-                        }
-                    },
-                    function (tokenPacket) {
-                        payload.packet['response_code'] = 300;
-                        payload.packet = tokenPacket;
-                        sendToClient(payload);
-                    });
-                break;
+                            break;
 
-            /// New loader API
-            case 'lapi':
-                validateToken(packet, function (tokenPacket) {
-                        client = database.getClient();
-                        updateSession(tokenPacket['cognito:groups']);
-                        if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
-                            // Valid user with loader token
-                            let cb = (result) => {
-                                sendToClient(result)
+                    }
+
+
+                    break;
+                // Secure API
+                case 'sapi':
+                    validateToken(packet, function (tokenPacket) {
+                            client = database.getClient();
+                            updateSession(tokenPacket['cognito:groups']);
+                            if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
+
+                                let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
+                                console.log(packet.data);
+                                let qarguments = [packet.data, {
+                                    "_userID": tokenPacket['cognito:username'],
+                                    "_email": tokenPacket['email'],
+                                    "_groups": tokenPacket['cognito:groups'],
+                                    "_newACL": packet.data.acl
+                                }];
+
+                                console.log(qarguments);
+                                console.log(querysql);
+                                client.query(querysql, qarguments, function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                        payload.packet['response_code'] = 311;
+                                        sendToClient(payload);
+
+                                    } else {
+                                        if (result.rows[0]['locaria_internal_gateway'] === null) {
+                                            payload.packet['response_code'] = 500;
+                                            sendToClient(payload);
+                                        } else {
+                                            payload.packet = result.rows[0]['locaria_internal_gateway'];
+                                            payload.method = packet.data.method;
+                                            sendToClient(payload);
+                                        }
+                                    }
+                                });
+                            } else {
+                                payload.packet['response_code'] = 312;
+                                sendToClient(payload);
                             }
-                            switch (packet.data.method) {
-                                case 'get_files':
-                                    get_files(packet, client, cb);
-                                    break;
-                                case 'add_file':
-                                    add_file(packet);
-                                    break;
-                                case 'update_file':
-                                    update_file(packet, client, cb);
-                                    break;
-                                case 'delete_file':
-                                    delete_file(packet, client, cb);
-                                    break;
-                                default:
-                                    payload.packet['response_code'] = 401;
-                                    sendToClient(payload);
-                                    break;
-                            }
-                        } else {
-                            payload.packet['response_code'] = 313;
-                            console.log(`tokenPacket['cognito:groups'] does not contain Loader!`);
+                        },
+                        function (tokenPacket) {
+                            payload.packet['response_code'] = 300;
+                            payload.packet = tokenPacket;
                             sendToClient(payload);
-                        }
-                    },
-                    function (tokenPacket) {
-                        payload.packet['response_code'] = 300;
-                        payload.packet = tokenPacket;
-                        sendToClient(payload);
-                    });
-                break;
-            case 'token':
-                validateToken(packet, function (tokenPacket) {
-                        client = database.getClient();
-                        updateSession(tokenPacket['cognito:groups']);
-                        payload.packet = tokenPacket;
-                        sendToClient(payload);
-                    },
-                    function (tokenPacket) {
-                        payload.packet['response_code'] = 300;
-                        payload.packet = tokenPacket;
-                        sendToClient(payload);
+                        });
+                    break;
 
-                    });
-                break;
-            default:
-                payload.packet['response_code'] = 201;
-                sendToClient(payload);
-                break;
+                /// New loader API
+                case 'lapi':
+                    validateToken(packet, function (tokenPacket) {
+                            client = database.getClient();
+                            updateSession(tokenPacket['cognito:groups']);
+                            if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
+                                // Valid user with loader token
+                                let cb = (result) => {
+                                    sendToClient(result)
+                                }
+                                switch (packet.data.method) {
+                                    case 'get_files':
+                                        get_files(packet, client, cb);
+                                        break;
+                                    case 'add_file':
+                                        add_file(packet);
+                                        break;
+                                    case 'update_file':
+                                        update_file(packet, client, cb);
+                                        break;
+                                    case 'delete_file':
+                                        delete_file(packet, client, cb);
+                                        break;
+                                    default:
+                                        payload.packet['response_code'] = 401;
+                                        sendToClient(payload);
+                                        break;
+                                }
+                            } else {
+                                payload.packet['response_code'] = 313;
+                                console.log(`tokenPacket['cognito:groups'] does not contain Loader!`);
+                                sendToClient(payload);
+                            }
+                        },
+                        function (tokenPacket) {
+                            payload.packet['response_code'] = 300;
+                            payload.packet = tokenPacket;
+                            sendToClient(payload);
+                        });
+                    break;
+                case 'token':
+                    validateToken(packet, function (tokenPacket) {
+                            client = database.getClient();
+                            updateSession(tokenPacket['cognito:groups']);
+                            payload.packet = tokenPacket;
+                            sendToClient(payload);
+                        },
+                        function (tokenPacket) {
+                            payload.packet['response_code'] = 300;
+                            payload.packet = tokenPacket;
+                            sendToClient(payload);
+
+                        });
+                    break;
+                default:
+                    payload.packet['response_code'] = 201;
+                    sendToClient(payload);
+                    break;
 
 
-        }
+            }
+        });
     }
 
     function delete_asset(packet) {

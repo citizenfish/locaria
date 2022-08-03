@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
-import {Collapse, Drawer, ListItemButton} from "@mui/material";
+import {Badge, Collapse, Drawer, ListItemButton} from "@mui/material";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -12,11 +12,22 @@ import ListItemText from "@mui/material/ListItemText";
 import EditIcon from "@mui/icons-material/Edit";
 import {useHistory} from "react-router-dom";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import {useCookies} from "react-cookie";
+import {setEditFeatureData} from "../../../../../deprecated/editFeatureDrawerSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {setOverview} from "../../redux/slices/adminPagesSlice";
 
 export default function LeftNav({isOpenContent,isOpenSettings}) {
 
 	const [openContent, setOpenContent] = React.useState(isOpenContent||false);
 	const [openSettings, setOpenSettings] = React.useState(isOpenSettings||false);
+
+	const overview = useSelector((state) => state.adminPages.overview);
+
+	const dispatch = useDispatch()
+
+
+	const [cookies, setCookies] = useCookies(['location'])
 
 	const handleClickContent = () => {
 		setOpenSettings(false);
@@ -29,6 +40,25 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 		setOpenSettings(true);
 		history.push(`/Admin/Settings/Appearance`);
 	};
+
+	useEffect(() => {
+
+		window.websocket.registerQueue("getTotals", function (json) {
+			dispatch(setOverview(json.packet));
+		});
+
+		if(overview===undefined) {
+			window.websocket.send({
+				"queue": "getTotals",
+				"api": "sapi",
+				"data": {
+					"method": "view_report",
+					"id_token": cookies['id_token']
+				}
+			});
+		}
+	},[overview]);
+
 
 	const history = useHistory();
 	return (
@@ -93,7 +123,9 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 							history.push(`/Admin/Content/Data`);
 						}}>
 							<ListItemIcon>
-								<StorageIcon/>
+								<Badge badgeContent={overview? overview.update_item:0} color="primary" showZero>
+									<StorageIcon/>
+								</Badge>
 							</ListItemIcon>
 							<ListItemText primary={"Data Manager"}/>
 						</ListItemButton>

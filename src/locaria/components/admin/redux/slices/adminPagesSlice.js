@@ -9,9 +9,21 @@ export const adminPagesSlice = createSlice({
 		open: false,
 		pages: undefined,
 		page: "",
-		style: undefined
+		style: undefined,
+		overview: undefined,
+		feature: undefined,
+		awaitUI: false
 	},
 	reducers: {
+		clearUI:(state,actions) => {
+			state.awaitUI=false;
+		},
+		setFeature:(state, actions) => {
+			state.feature = actions.payload;
+		},
+		saveFeature:(state,actions) => {
+			debugger;
+		},
 		setPages: (state, actions) => {
 			state.pages = actions.payload;
 		},
@@ -23,6 +35,9 @@ export const adminPagesSlice = createSlice({
 		},
 		setStyle: (state, actions) => {
 			state.style = actions.payload;
+		},
+		setOverview: (state, actions) => {
+			state.overview = actions.payload;
 		},
 		updateStyle: (state,actions) => {
 			if(actions.payload.data)
@@ -42,6 +57,7 @@ export const adminPagesSlice = createSlice({
 
 			window.websocket.registerQueue('setConfig', (json) => {
 				console.log('config saved');
+				state.awaitUI=true;
 			});
 
 			window.websocket.send({
@@ -61,6 +77,6 @@ export const adminPagesSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {setPages, addPage, setPage, setStyle,updateStyle} = adminPagesSlice.actions
+export const {setPages, addPage, setPage, setStyle,updateStyle,setOverview,setFeature,clearUI} = adminPagesSlice.actions
 
 export default adminPagesSlice.reducer

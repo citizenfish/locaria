@@ -406,8 +406,8 @@ function deploySystemMain(stage, theme,environment) {
 }
 
 
-function runTests(stage, theme) {
-	sendSQLFiles(stage, theme, 'database/tests.json', deploySystemMain);
+function runTests(stage, theme,environment) {
+	sendSQLFiles(stage, theme,environment, 'database/tests.json', deploySystemMain);
 
 }
 
