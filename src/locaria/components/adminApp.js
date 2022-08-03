@@ -10,6 +10,7 @@ import AdminContentData from "./admin/pages/adminContentData";
 import AdminContentPagesEdit from "./admin/pages/adminContentPagesEdit";
 import AdminSettingsAppearance from "./admin/pages/adminSettingsAppearance";
 import AdminSettingsAppearanceEdit from "./admin/pages/adminSettingsAppearanceEdit";
+import AdminContentDataEdit from "./admin/pages/adminContentDataEdit";
 
 
 const AdminApp = () => {
@@ -45,6 +46,7 @@ const AdminApp = () => {
 					<Route exact path="/Admin/Content/Pages"  component={AdminContentPages}/>
 					<Route exact path="/Admin/Content/Pages/Edit"  component={AdminContentPagesEdit}/>
 					<Route exact path="/Admin/Content/Data"  component={AdminContentData}/>
+					<Route exact path="/Admin/Content/Data/Edit"  component={AdminContentDataEdit}/>
 					<Route exact path="/Admin/:id_token?" component={AdminHome}/>
 					<Route exact path="/Admin/"  component={AdminHome}/>
 					<Route exact path="/Admin/Home/"  component={AdminHome}/>
