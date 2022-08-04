@@ -117,4 +117,4 @@ const theme = createTheme({
 
 You can also edit what channels you wish to display and adjust various other features all in here. When you are happy
 with your new theme simply deploy 'web' using the described install process
-in [Getting Started](docs/getting_started.md)
+in [Getting Started](getting_started.md)
