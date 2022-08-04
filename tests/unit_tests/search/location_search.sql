@@ -10,5 +10,6 @@ DECLARE
     SELECT locaria_gateway(parameters) INTO ret_var;
     RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 1', ret_var#>'{features}'->0 , '{properties,postcode}', 'XX1 1XA');
 
+    RAISE NOTICE '%',ret_var;
 END;
 $$ LANGUAGE PLPGSQL;

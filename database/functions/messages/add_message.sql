@@ -7,7 +7,7 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core', 'public';
 
     INSERT INTO messages(author_id, message, attributes, parent_id)
-    SELECT COALESCE(parameters->>'user_id', 'anonymous'),
+    SELECT COALESCE(parameters#>>'{acl,user_id}', 'anonymous'),
            parameters->'message',
            jsonb_build_object('type', 'contact') || COALESCE(parameters->'attributes', jsonb_build_object()),
            (parameters->>'parent_id')::BIGINT

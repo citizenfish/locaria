@@ -40,6 +40,5 @@ $$
         SELECT locaria_core.locaria_gateway(search_params,acl) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor('search_test_with_acl TEST 3', ret_var , '{features}', '*');
 
-
     END;
 $$LANGUAGE PLPGSQL;

@@ -37,7 +37,8 @@ BEGIN
         default_offset =  (search_parameters->>'offset')::INTEGER;
     END IF;
 
-    IF COALESCE(search_parameters->>'location','') ~ '^SRID=[0-9]+;POINT\([0-9\- .]+\)' THEN
+    --Changed to support polygon/multipolygon
+    IF COALESCE(search_parameters->>'location','') ~ '^SRID=[0-9]+;.*\)' THEN
        location_geometry = ST_TRANSFORM(ST_GEOMFROMEWKT(search_parameters->>'location'),4326);
        IF search_parameters->>'location_distance' = 'CONTAINS' THEN
        	location_distance = -1;
@@ -79,7 +80,7 @@ BEGIN
         IF NOT search_parameters->>'start_date' ~ ':' THEN
             start_date_var = start_date_var::DATE::TIMESTAMP;
         END IF;
-
+        --TODO is 59 minutes precise enough?
         IF NOT COALESCE(search_parameters->>'end_date','') ~ ':' THEN
             end_date_var = end_date_var::DATE::TIMESTAMP + INTERVAL '23 hours 59 minutes';
         END IF;

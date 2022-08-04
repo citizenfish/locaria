@@ -37,5 +37,6 @@ $$
         RAISE NOTICE '%',ret_var;
         --RAISE NOTICE '%', locaria_tests.test_result_processor('get_parameters TEST 5', ret_var , '{test_1,test_1}', '10');
 
+        RAISE NOTICE '%',ret_var;
     END;
 $$

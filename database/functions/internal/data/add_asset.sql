@@ -8,7 +8,9 @@ BEGIN
 
     INSERT INTO assets(uuid, attributes, acl)
     SELECT parameters->>'uuid',
-           COALESCE(parameters->'attributes', jsonb_build_object()) || jsonb_build_object('internal', COALESCE(parameters->>'internal','false')),
+           COALESCE(parameters->'attributes', jsonb_build_object()),
+           --TODO confirm 
+           --|| jsonb_build_object('internal', COALESCE(parameters->>'internal','false')),
            parameters->'acl'
     ON CONFLICT (uuid) DO UPDATE SET attributes = EXCLUDED.attributes, acl = EXCLUDED.acl
     RETURNING jsonb_build_object('uuid', uuid)

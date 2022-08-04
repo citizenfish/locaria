@@ -9,8 +9,6 @@ DECLARE
 
 BEGIN
 
-
-
         IF COALESCE(search_parameters->>'limit','') ~ '^[0-9]+$' THEN
             default_limit = LEAST(default_limit, (search_parameters->>'limit')::INTEGER);
         END IF;
@@ -42,7 +40,7 @@ BEGIN
 		    SELECT attributes,
 		           wkb_geometry,
 		           ST_DISTANCE(wkb_geometry::GEOGRAPHY, point_geometry::GEOGRAPHY,false) as distance_rank
-            FROM   locaria_core.address_search_view
+            FROM   locaria_data.location_search_view
             ORDER BY wkb_geometry <-> point_geometry
             OFFSET default_offset
             LIMIT  default_limit

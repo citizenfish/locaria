@@ -5,7 +5,8 @@ DECLARE
 BEGIN
 
     DELETE FROM locaria_core.categories WHERE category = 'acl_test';
-    INSERT INTO locaria_core.categories(category) SELECT 'acl_test' RETURNING id INTO category_var;
+    INSERT INTO locaria_core.categories(category, attributes)
+    SELECT 'acl_test', jsonb_build_object('foo', 'baa') RETURNING id INTO category_var;
 
     DROP TABLE IF EXISTS locaria_data.test_acl;
 

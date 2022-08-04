@@ -6,16 +6,18 @@ DECLARE
 BEGIN
 
       IF NEW.attributes @> jsonb_build_object('send_email', true) THEN
-
+          --TODO the sender and recipient are wrong way round
+          --TODO where is message body? Should be in TemplateData
           SELECT jsonb_build_object('Destination',  jsonb_build_object('ToAddresses',jsonb_build_array(concat_ws(' ', NEW.message->>'name', '<'||(NEW.message->>'email')||'>'))),
-                                    'Source',   jsonb_extract_path_text(parameter, COALESCE(NEW.attributes->>'email_type', 'contact_us'), 'Source'),
-                                    'Template', jsonb_extract_path_text(parameter, COALESCE(NEW.attributes->>'email_type', 'contact_us'), 'Template'),
+                                    'Source',       jsonb_extract_path_text(parameter, COALESCE(NEW.attributes->>'email_type', 'contact_us'), 'Source'),
+                                    'Template',     jsonb_extract_path_text(parameter, COALESCE(NEW.attributes->>'email_type', 'contact_us'), 'Template'),
                                     'TemplateData', jsonb_build_object('subject', COALESCE(NEW.message->>'subject', params->>'subject', 'Contact from website'))::TEXT)
           INTO params
           FROM locaria_core.parameters
           WHERE parameter_name = 'email_config';
 
           SELECT locaria_core.aws_lambda_interface(jsonb_build_object('parameters',params) ||
+                                                   --TODO potential security risk, could call other lambdas
                                                    jsonb_build_object('function', COALESCE(NEW.attributes->>'email_type', 'contact_us'),
                                                                       'config', 'email_config')) INTO ret_var;
 
