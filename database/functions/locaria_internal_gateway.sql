@@ -95,7 +95,9 @@ BEGIN
             ret_var = delete_asset(parameters);
             ELSE
 
-            RETURN json_build_object('error', 'unsupported internal method', 'method', parameters ->> 'method');
+            RETURN jsonb_build_object('error', 'Unsupported internal method',
+                                     'route', 'internal_api',
+                                     'response_code', 401) || locaria_core.log(parameters,'Unsupported internal method');
 
         END CASE;
 

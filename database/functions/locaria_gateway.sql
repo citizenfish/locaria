@@ -5,7 +5,7 @@ DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
     log_var BOOLEAN DEFAULT TRUE;
     ret_var JSONB;
-    version_var TEXT DEFAULT '0.5';
+    version_var TEXT DEFAULT '0.7';
 BEGIN
 
     --This keeps us within our search schema when running code
@@ -66,7 +66,9 @@ BEGIN
                                 (parameters->>'z')::INTEGER,
                                 COALESCE(jsonb_extract_path_text(ret_var, 'parameters', parameters->>'tileset', 'cache'), 'true')::BOOLEAN));
 ELSE
-            RETURN json_build_object('error', 'unsupported method');
+            RETURN jsonb_build_object('error', 'Unsupported public method',
+                                     'route', 'public_api',
+                                     'response_code', 401) || locaria_core.log(parameters,'Unsupported public method');
     END CASE;
 
     --If debug_var is set then the API will return the calling parameters in a debug object. NOTE WELL this will break GeoJSON returned
@@ -99,8 +101,8 @@ EXCEPTION WHEN OTHERS THEN
     RAISE NOTICE 'ERROR %',SQLERRM;
 
     RETURN jsonb_build_object('route',           'public_api',
-                             'error',           'request could not be completed',
-                             'response_code',   600) ||locaria_core.log(parameters,SQLERRM);
+                              'error',           'request could not be completed',
+                              'response_code',   600) ||locaria_core.log(parameters,SQLERRM);
 
 END;
 $$ LANGUAGE PLPGSQL;

@@ -19,6 +19,8 @@ BEGIN
 
     RAISE NOTICE '%', locaria_tests.test_result_processor('add_asset TEST 2', ret_var , '{uuid}', uuid_var);
 
+    RAISE NOTICE '%',ret_var;
+
 END;
 $$
 LANGUAGE PLPGSQL;

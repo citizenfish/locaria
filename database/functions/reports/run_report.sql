@@ -17,10 +17,11 @@ BEGIN
     INTO query_var
     FROM reports
     WHERE report_name = search_parameters->>'report_name'
-    AND admin_privilege::BOOLEAN = admin_privilege_parameter::BOOLEAN;
+    AND admin_privilege::BOOLEAN = admin_privilege_parameter::BOOLEAN
+    AND ((report_parameters->'acl') IS NULL OR (acl_check(search_parameters->'acl', report_parameters->'acl')->>'view')::BOOLEAN);
 
     IF query_var IS NULL THEN
-        RAISE EXCEPTION 'Invalid or empty report name';
+        RETURN jsonb_build_object('error','Invalid or empty report name');
     END IF;
 
     --Belt and braces we flip to a limited priv user prior to executing query then flip back

@@ -10,7 +10,12 @@
         "database/functions/internal/admin/get_parameters.sql",
         "database/schema_and_tables/create_tilecache_table.sql",
         "database/functions/internal/admin/delete_parameters.sql",
-        "database/functions/locaria_internal_gateway.sql"
+        "database/functions/locaria_internal_gateway.sql",
+        "database/functions/search/search_get_records.sql",
+        "database/functions/utility/reverse_geocoder.sql",
+        "database/functions/reports/run_report.sql",
+        "database/functions/internal/data/get_asset.sql",
+        "database/functions/internal/data/add_asset.sql"
       ],
       "substitutions": "../tests.json"
     }
