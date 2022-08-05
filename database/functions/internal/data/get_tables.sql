@@ -6,6 +6,7 @@ BEGIN
     --Can only edit items that are stored in tables that inherit from base_table as we know the structure
     SET SEARCH_PATH = 'locaria_core', 'locaria_data','public';
 
+    --TODO this method may be deprecated now so investigate if it is used
     SELECT jsonb_build_object('tables',json_agg(relname))
     INTO ret_var
     FROM (
