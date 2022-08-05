@@ -72,16 +72,16 @@ BEGIN
     CREATE  MATERIALIZED VIEW locaria_data.global_search_view AS
     SELECT distinct on(fid) fid,
            wkb_geometry,
-           jsonb_set(GS.attributes, '{data,images}', locaria_core.asset_url_maker(GS.attributes#>'{data,images}', A.attributes, mask)) AS attributes,
+           jsonb_set(GS.attributes, '{data,images}', locaria_core.asset_url_maker(GS.attributes#>'{data,images}', mask)) AS attributes,
            start_date,
            end_date,
            range_min,
            range_max,
            edit,
            moderated_update
-    FROM locaria_data.global_search_view_live GS
-    LEFT JOIN locaria_core.assets A
-    ON GS.attributes#>'{data,images}' ? uuid,
+    FROM locaria_data.global_search_view_live GS,
+    --LEFT JOIN locaria_core.assets A
+    --ON GS.attributes#>'{data,images}' ? uuid,
     (SELECT parameter->>'url' AS mask FROM locaria_core.parameters WHERE parameter_name = 'assets_url') m;
 
     --This unique index is important so that we can refresh the view concurrently which in turn prevents downtime
