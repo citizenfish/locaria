@@ -11,6 +11,7 @@ import {openEditFeatureDrawer, setEditFeatureData} from "../../../../deprecated/
 import {setFeature} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {setTotal} from "../../../../deprecated/adminSlice";
+import {FieldView} from "../../widgets/data/fieldView";
 
 
 
@@ -19,6 +20,7 @@ export default function AdminContentDataEdit() {
 
 	const [cookies, setCookies] = useCookies(['location']);
 	const feature = useSelector((state) => state.adminPages.feature);
+	const [featureData,setFeatureData]= useState(undefined)
 
 	const dispatch = useDispatch()
 
@@ -28,8 +30,9 @@ export default function AdminContentDataEdit() {
 		window.websocket.registerQueue("viewLoader", function (json) {
 			if (json.packet.response_code !== 200) {
 				dispatch(setEditFeatureData({}));
+				setFeatureData({});
 			} else {
-				dispatch(setEditFeatureData(json.packet));
+				setFeatureData(json.packet.features[0].properties);
 			/*	mapRef.current.addGeojson(json.packet)
 				mapRef.current.zoomToLayersExtent(["data"], 50000)*/
 			}
@@ -39,7 +42,7 @@ export default function AdminContentDataEdit() {
 			window.websocket.send({
 				"queue": "viewLoader",
 				"api": "api",
-				"data": {"method": "get_item", "fid": feature, "live": true}
+				"data": {"method": "get_item", "fid": feature, "live": true,"id_token": cookies['id_token']}
 			});
 		}
 
@@ -67,7 +70,7 @@ export default function AdminContentDataEdit() {
 				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '40px'}}
 			>
 				<h1>Edit feature</h1>
-
+				<FieldView data={featureData} mode={"write"}/>
 
 
 			</Box>
