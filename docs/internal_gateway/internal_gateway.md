@@ -40,3 +40,17 @@ The parameters object must contain the name of the **method** that is to be call
 - add_asset
 - get_asset
 - delete_asset
+
+## Internal Gateway Methods
+
+### version
+
+This method returns the version number of the internal gateway currently in use.
+
+### get_tables
+
+The [get_tables](get_tables.md) method retrieves a list of system tables used to store data for a given category.
+
+### add_item
+
+

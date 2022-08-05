@@ -6,7 +6,7 @@ DECLARE
     debug_var   BOOLEAN DEFAULT FALSE;
     log_var     BOOLEAN DEFAULT FALSE;
     ret_var     JSONB;
-    version_var TEXT DEFAULT '0.3';
+    version_var TEXT DEFAULT '0.5';
 BEGIN
 
     --This keeps us within our search schema when running code

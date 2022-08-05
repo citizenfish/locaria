@@ -15,7 +15,10 @@
         "database/functions/utility/reverse_geocoder.sql",
         "database/functions/reports/run_report.sql",
         "database/functions/internal/data/get_asset.sql",
-        "database/functions/internal/data/add_asset.sql"
+        "database/functions/internal/data/add_asset.sql",
+        "database/functions/view_creation/create_materialised_view.sql",
+        "database/functions/utility/asset_url_maker.sql"
+
       ],
       "substitutions": "../tests.json"
     }

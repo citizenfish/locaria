@@ -3,7 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/unit_tests/geometry/get_vector_tile.sql"
+        "tests/unit_tests/internal/data/get_tables.sql"
       ],
       "substitutions": "../tests.json"
     }
