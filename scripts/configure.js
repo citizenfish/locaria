@@ -175,7 +175,8 @@ function sendSQLFiles(stage, theme, environment,configFile, callBack) {
 	}
 	deployConfig.config = configs.custom[stage];
 
-	const image_upload_file = `${configs.custom[stage].themeDir}/${theme}/images/image_upload.json`
+	const image_upload_file = `serverless/outputs/${stage}-outputs-${theme}-${environment}-images.json`;
+	//`${configs.custom[stage].themeDir}/${theme}/images/image_upload.json`
 
 	let imageFiles = {}
 	try {
@@ -283,6 +284,12 @@ function sendSQLFiles(stage, theme, environment,configFile, callBack) {
 					while (match = vars.exec(fileData)) {
 						fileData = fileData.replace(`\{\{theme\}\}`, theme);
 					}
+
+					vars = /\{\{environment\}\}/g;
+					while (match = vars.exec(fileData)) {
+						fileData = fileData.replace(`\{\{environment\}\}`, environment);
+					}
+
 
 					//console.log(fileData);
 					client.query(fileData, function (err, result) {
@@ -566,7 +573,7 @@ function deployWEB(stage, theme,environment) {
 function deploySQL(stage, theme,environment) {
 	readline.question(`Are you sure you wish to wipe and re-install ${theme} [n]?`, (cmd) => {
 		if (cmd === 'y') {
-			sendSQLFiles(stage, theme,environment, 'database/install.json', deploySystemMain);
+			sendSQLFiles(stage, theme,environment, 'database/install.json', installThemeSQL);
 		} else {
 			console.log('Aborted!');
 			deploySystemMain(stage, theme,environment);
@@ -591,18 +598,31 @@ function upgradeSQL(stage, theme, environment,theme_files = true) {
 	}
 
 	function next() {
-		const image_upload_path = `${configs.custom[stage].themeDir}${theme}/images`
+		const image_upload_path = `${configs.custom[stage].themeDir}${theme}/images`;
+
+		const image_output_path = `serverless/outputs/${stage}-outputs-${theme}-${environment}-images.json`;
 		const image_upload_file = `${image_upload_path}/image_upload.json`
 		if (fs.existsSync(image_upload_file)) {
 			console.log(`Found image_upload.json reading image config file Using profile ${configs.custom[stage].profile}`)
 			// process.env.AWS_PROFILE = configs.custom[stage].profile
 
 
-			const bucket = `locaria-${stage}-${theme}${environment}`
-			const path = 'assets'
-			let files = JSON.parse(fs.readFileSync(image_upload_file))
+			const bucket = `locaria-${stage}-${theme}${environment}`;
+			const path = 'assets';
+			let files = JSON.parse(fs.readFileSync(image_upload_file));
+
+			if (!fs.existsSync(image_output_path)) {
+				fs.copyFileSync(image_upload_file,image_output_path);
+			}
+
+			let outputFiles = JSON.parse(fs.readFileSync(image_output_path));
+
+			files={...files,...outputFiles};
+
+			//console.log(files);
+
 			uploadFilesToS3(stage, theme, environment,configs.custom[stage].profile, files, bucket, path, image_upload_path, (files) => {
-				fs.writeFileSync(image_upload_file, JSON.stringify(files));
+				fs.writeFileSync(image_output_path, JSON.stringify(files));
 				usqlSQL(stage, theme, environment,theme_files);
 			});
 
@@ -658,7 +678,8 @@ const uploadFilesToS3 = async (stage, theme, environment,profile, files, bucket,
 				ContentType: files[i]['mime_type']
 			}).promise();
 			if (upload.Location !== undefined) {
-				files[i]['url'] = `https://${configs.custom[stage].themes[theme][environment].domain}/${path}/${uuid}.${files[i]['ext']}`;
+				//files[i]['url'] = `https://${configs.custom[stage].themes[theme][environment].domain}/${path}/${uuid}.${files[i]['ext']}`;
+				files[i]['url'] = `/${path}/${uuid}.${files[i]['ext']}`;
 				files[i]['uuid'] = uuid;
 				updates.push([uuid,{ext:files[i]['ext'],url:`${path}/${uuid}.${files[i]['ext']}`,name:i,usage:files[i]['usage'],s3_path:`${theme}${environment}/${path}/${uuid}.${files[i]['ext']}`,s3_bucket:bucket}])
 			} else {
@@ -693,8 +714,17 @@ const uploadFilesToS3 = async (stage, theme, environment,profile, files, bucket,
 	//return files
 }
 
+function installThemeSQL(stage, theme,environment) {
+	executeWithCatch(`node scripts/builder.js ${stage} ${theme} ${environment}`, "./", () => {
+		sendSQLFiles(stage, theme, environment,'src/theme/builder/database/install.json', deploySystemMain);
+	}, () => {
+		deploySystemMain(stage, theme,environment);
+	});
+}
+
+
 function upgradeThemeSQL(stage, theme,environment) {
-	executeWithCatch(`node scripts/builder.js ${stage} ${theme}`, "./", () => {
+	executeWithCatch(`node scripts/builder.js ${stage} ${theme} ${environment}`, "./", () => {
 		sendSQLFiles(stage, theme, environment,'src/theme/builder/database/upgrade.json', deploySystemMain);
 	}, () => {
 		deploySystemMain(stage, theme,environment);
