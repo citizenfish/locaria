@@ -20,12 +20,13 @@ export default function TypographyLink({children,sx,link}) {
 
 	let elementSx={...localSx,...sx||{}};
 	const actualUrl=url.decode(link,true);
-	let match=actualUrl.match(/^\//);
+	// Commented because this was cusing issues with relative links...history should match local oaths some how
+	/*let match=actualUrl.match(/^\//);
 	if(match)
 	return (
 		<Link sx={elementSx}  onClick={()=>{
 				history.push(actualUrl);
 		}}>{children}</Link>
-	)
+	)*/
 	return (<Link sx={elementSx} href={actualUrl} target="_blank" rel="noopener">{children}</Link>)
 }
