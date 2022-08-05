@@ -2,28 +2,40 @@ import React from 'react';
 import {useStyles} from 'theme/styles';
 import Grid from "@mui/material/Grid";
 
-import DataItemTitle from "./dataItems/dataItemTitle";
-import DataItemDescription from "./dataItems/dataItemDescription";
-import DataItemH2 from "./dataItems/dataItemH2";
-import dataItemMarkdown from "./dataItems/dataItemMarkdown";
+import DataItemTitle from "./dataItemsRead/dataItemTitle";
+import DataItemDescription from "./dataItemsRead/dataItemDescription";
+import DataItemH2 from "./dataItemsRead/dataItemH2";
+import dataItemMarkdown from "./dataItemsRead/dataItemMarkdown";
+import DataItemTextInput from "./dataItemsWrite/dataItemTextInput";
 
-const FieldView = ({data}) => {
+const FieldView = ({data,mode}) => {
 
-	let channel = window.systemCategories.getChannelProperties(data.category);
+	if(data&&data.category) {
 
-	let fields = channel.fields;
+		let channel = window.systemCategories.getChannelProperties(data.category);
 
-	if (fields) {
-		return (
-			<>
-				{fields.main ? <FormatFields fields={fields.main} data={data}></FormatFields> : null}
-			</>
-		)
+		let fields = channel.fields;
+
+		if (fields) {
+			return (
+				<>
+					{fields.main ? <FormatFields fields={fields.main} data={data} mode={mode||'read'}></FormatFields> : null}
+				</>
+			)
+		} else {
+			return (
+				<Grid container spacing={2}>
+					<Grid item md={12}>
+						<h1>You have not configured data for category {data.category}</h1>
+					</Grid>
+				</Grid>
+			)
+		}
 	} else {
 		return (
 			<Grid container spacing={2}>
 				<Grid item md={12}>
-					<h1>You have not configured data for category {data.category}</h1>
+					<h1>Data has no category</h1>
 				</Grid>
 			</Grid>
 		)
@@ -31,13 +43,13 @@ const FieldView = ({data}) => {
 
 }
 
-const FormatFields = ({fields, data}) => {
+const FormatFields = ({fields, data,mode}) => {
 
 	if (fields && fields.length > 0) {
 		return (
 			<>
 			{fields.map(value => (
-				<FormatField field={value} data={data} key={value.key}></FormatField>
+				<FormatField field={value} data={data} key={value.key} mode={mode}></FormatField>
 			))}
 			</>
 		);
@@ -46,7 +58,7 @@ const FormatFields = ({fields, data}) => {
 
 }
 
-const FormatField = ({field, data}) => {
+const FormatField = ({field, data,mode}) => {
 
 	let dataActual = getData(data, field.key, field.dataFunction);
 
@@ -56,15 +68,14 @@ const FormatField = ({field, data}) => {
 	}
 
 	const dataItems={
-		'title':DataItemTitle,
-		'description':DataItemDescription,
-		'h2':DataItemH2,
-		'md':dataItemMarkdown
+		'title':{read:DataItemTitle,write:DataItemTextInput},
+		'description':{read:DataItemDescription},
+		'h2':{read:DataItemH2},
+		'md':{read:dataItemMarkdown}
 	}
 
-	if(dataItems[field.display]) {
-		let Element = dataItems[field.display];
-
+	if(dataItems[field.display]&&dataItems[field.display][mode]) {
+		let Element = dataItems[field.display][mode];
 		return (
 			<Element name={field.name} data={dataActual} sx={field.sx}/>
 		)
