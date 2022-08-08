@@ -76,7 +76,7 @@ BEGIN
                                SELECT *
                                FROM SEARCH_RESULTS
                            ) UN
-             ORDER BY _attributes#>>'{data, _order}' ASC
+             ORDER BY COALESCE(_attributes#>>'{data, _order}', '999999999')::INTEGER ASC
          ) ALL_RESULTS;
 
     RETURN results_var;
