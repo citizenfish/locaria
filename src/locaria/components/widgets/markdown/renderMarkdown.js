@@ -21,12 +21,9 @@ export default function RenderMarkdown({markdown}) {
 		for (let line in splitMarkdown) {
 			renderedMarkdown.push(ProcessLine(splitMarkdown[line]));
 		}
+		//debugger;
 
-		return (
-			<>
-				{renderedMarkdown}
-			</>
-		)
+		return renderedMarkdown;
 	}
 	return (<></>)
 }
@@ -37,7 +34,7 @@ function RecursiveFormatters(line) {
 
 	// Bold **Foo**
 	while(matches = line.match(/\*\*(.*?)\*\*/)) {
-		returns.push(<span>{line.slice(0,line.indexOf(matches[0]))}</span>);
+		returns.push(<span key={`md${newUUID()}`}>{line.slice(0,line.indexOf(matches[0]))}</span>);
 		line=line.slice(line.indexOf(matches[0]));
 		line=line.replace(matches[0],'');
 		returns.push(<TypographyBold sx={{display: "inline-block", }}
@@ -46,7 +43,7 @@ function RecursiveFormatters(line) {
 
 	//Italics _Foo_
 	while(matches = line.match(/_(.*?)_/)) {
-		returns.push(<span>{line.slice(0,line.indexOf(matches[0]))}</span>);
+		returns.push(<span key={`md${newUUID()}`}>{line.slice(0,line.indexOf(matches[0]))}</span>);
 		line=line.slice(line.indexOf(matches[0]));
 		line=line.replace(matches[0],'');
 		returns.push(<TypographyItalics sx={{display: "inline-block", }}
@@ -54,17 +51,17 @@ function RecursiveFormatters(line) {
 	}
 
 	while(matches=line.match(/\[(.*?)\]\((.*?)\)/)) {
-		returns.push(<span>{line.slice(0,line.indexOf(matches[0]))}</span>);
+		returns.push(<span key={`md${newUUID()}`}>{line.slice(0,line.indexOf(matches[0]))}</span>);
 		line=line.slice(line.indexOf(matches[0]));
 		line=line.replace(matches[0],'');
 		returns.push(
-			<TypographyLink sx={{display: "inline-block"}} link={matches[2]}>{matches[1]}</TypographyLink>
+			<TypographyLink key={`md${newUUID()}`} sx={{display: "inline-block"}} link={matches[2]}>{matches[1]}</TypographyLink>
 		);
 	}
 
 
 	if(line.length>0)
-		returns.push(<span>{line}</span>);
+		returns.push(<span key={`md${newUUID()}`}>{line}</span>);
 
 	return returns;
 }
@@ -122,7 +119,9 @@ function ProcessLine(line) {
 	match = line.match(/^%(.*?)%/);
 	if (match) {
 		return(
-			<RenderPlugin key={`plugin${match[1]}`} plugin={match[1]}></RenderPlugin>
+			<div key={`md${newUUID()}`}>
+				<RenderPlugin plugin={match[1]}></RenderPlugin>
+			</div>
 		);
 	}
 
@@ -138,7 +137,7 @@ function ProcessLine(line) {
 	match = line.match(/^\* (.*)/);
 	if (match) {
 		return (
-			<ListItem disablePadding sx={{}}>
+			<ListItem key={`md${newUUID()}`} disablePadding sx={{}}>
 				<ListItemButton sx={{height:"100%",padding:"0px"}}>
 					<ListItemIcon sx={{minWidth:"20px",fontSize:"0.5rem"}}>
 						<CircleIcon fontSize={"small"} sx={{minWidth:"20px",fontSize:"0.5rem"}}/>
