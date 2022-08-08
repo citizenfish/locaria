@@ -183,10 +183,10 @@ Filter the search down to a set of tags
 
 ### ranking_attributes
 
-Default: {description,title}
-Type: Text array describing an attribute path
+Default: 'description,title'
+Type: Text (representing a path to an attribute value)
 
-Used to rank results higher using this specific attribute. So search results with search_text in this attribute are ordered higher up the list. In the example above we are looking at the title object within the description object.
+Used to rank results higher using this specific attribute. So search results with search_text in this attribute are ordered higher up the list. In the example above we are looking at the title object within the description object. 
 
 ## Returns
 

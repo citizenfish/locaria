@@ -8,6 +8,7 @@ $$
     }
 
     return array_param.map((item) => {
+        //TODO this is suboptimal doing a query for every image
         let query = plv8.execute("SELECT attributes->>'ext' AS ext FROM locaria_core.assets WHERE uuid = $1", [item])
         let ext = query[0]['ext'];
         return mask.replace(/_UUID_/g, item).replace('_EXT_', ext)

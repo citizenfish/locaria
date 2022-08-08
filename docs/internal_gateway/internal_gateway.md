@@ -53,4 +53,6 @@ The [get_tables](get_tables.md) method retrieves a list of system tables used to
 
 ### add_item
 
+The [add_item](add_item.md) method adds an item to the database
+
 
