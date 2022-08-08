@@ -4,6 +4,8 @@ DECLARE
 
     results_var JSONB;
     precision_var FLOAT DEFAULT 0.00001;
+    limit_var INTEGER DEFAULT 10000;
+    display_limit_var INTEGER;
 BEGIN
 
 
@@ -12,6 +14,7 @@ BEGIN
     END IF;
 
     precision_var = COALESCE((search_parameters->>'precision')::FLOAT, precision_var);
+    display_limit_var = COALESCE((search_parameters->>'display_limit')::INTEGER, limit_var);
 
     WITH CLUSTER_RESULTS AS (
 
@@ -23,7 +26,7 @@ BEGIN
 
             --Only run if we are not clustering
             SELECT *
-            FROM locaria_core.search_get_records(search_parameters)
+            FROM locaria_core.search_get_records(search_parameters, limit_var)
             WHERE COALESCE(search_parameters->>'cluster', '') != 'true'
 
 
@@ -77,6 +80,7 @@ BEGIN
                                FROM SEARCH_RESULTS
                            ) UN
              ORDER BY COALESCE(_attributes#>>'{data, _order}', '999999999')::INTEGER ASC
+             LIMIT display_limit_var
          ) ALL_RESULTS;
 
     RETURN results_var;
