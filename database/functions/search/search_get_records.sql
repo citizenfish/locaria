@@ -20,7 +20,7 @@ DECLARE
     metadata_var BOOLEAN DEFAULT TRUE;
     min_range_var FLOAT;
     max_range_var FLOAT;
-    ranking_attribute_var TEXT [] DEFAULT '{description,title}';
+    ranking_attribute_var TEXT [] DEFAULT ARRAY ['description','title'];
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -109,9 +109,9 @@ BEGIN
 
     metadata_var = COALESCE(search_parameters->>'metadata', metadata_var::TEXT)::BOOLEAN;
 
-    --We rank results by default on description, title but this can be overridden by search parameters: Format = '{description,foo,baa}'
-    IF search_parameters->>'ranking_attributes' ~ '^\{[a-zA-Z0-9,_]+\}$' THEN
-        ranking_attribute_var = search_parameters->>'ranking_attributes'::TEXT [];
+    --We rank results by default on description, title but this can be overridden by search parameters: Format = 'description,foo,baa'
+    IF search_parameters->>'ranking_attributes' ~ '^[a-zA-Z0-9,_]+$' THEN
+        ranking_attribute_var = string_to_array(search_parameters->>'ranking_attributes',',');
     END IF;
 
     --This is the core search query
@@ -162,8 +162,6 @@ BEGIN
                 AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
 
             ) INNER_SUB
-             --restrict to only allowed groups
-            --WHERE attributes#>'{acl,view}' IS NULL OR attributes#>'{acl,view}' ?| json2text(search_parameters->'_groups')
             WHERE (acl_check(search_parameters->'acl', attributes->'acl')->>'view')::BOOLEAN
             ORDER by distance ASC, attribute_rank ASC, search_rank DESC
             OFFSET default_offset

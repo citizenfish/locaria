@@ -14,12 +14,18 @@ BEGIN
     --Test two search on category
     parameters = parameters || jsonb_build_object('search_text', '*', 'category', 'LOCARIA_TEST');
     SELECT locaria_gateway(parameters) INTO ret_var;
-    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 1', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me one');
+    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 2', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me one');
 
     --Test three change category
     parameters = parameters || jsonb_build_object('search_text', '*', 'category', 'LOCARIA_TEST_MOD');
     SELECT locaria_gateway(parameters) INTO ret_var;
-    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 1', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me two');
+    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 3', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me two');
+
+    --Test Four change ranking_attributes
+    parameters = jsonb_build_object('search_text', 'aaaaa', 'method', 'search', 'ranking_attribute', 'description,order') ;
+    SELECT locaria_gateway(parameters) INTO ret_var;
+    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 4', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me order');
+
 
 
 END;

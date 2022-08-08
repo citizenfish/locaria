@@ -31,10 +31,13 @@ $$
         INSERT INTO locaria_data.locaria_test_data(category_id, wkb_geometry, attributes)
         VALUES (category_id,
                 ST_GEOMFROMEWKT('SRID=4326;Point (-3.51714069502677917 50.3977689822299908)'),
-                jsonb_build_object('data', jsonb_build_object('_identifier', 'foo1'), 'description', jsonb_build_object('title', 'find me one', 'type','test', 'text','general description 1', 'mod', 'no'))),
+                jsonb_build_object('data', jsonb_build_object('_identifier', 'foo1'), 'description', jsonb_build_object('title', 'find me one', 'type','test', 'text','general description 1', 'mod', 'no', 'order', 'fudge', 'text', 'aaaa'))),
+               (category_id,
+                ST_GEOMFROMEWKT('SRID=4326;Point (-3.51714069502677917 50.3977689822299908)'),
+                jsonb_build_object('data', jsonb_build_object('_identifier', 'foo1'), 'description', jsonb_build_object('title', 'find me order', 'type','test', 'text','general description 1', 'mod', 'no', 'order', 'aaaaa'))),
                (category_mod_id,
                 ST_GEOMFROMEWKT('SRID=4326;Point (-3.51714069502677917 50.3977689822299908)'),
-                jsonb_build_object('description', jsonb_build_object('title', 'find me two', 'type','test', 'text','general description 2', 'mod', 'yes')));
+                jsonb_build_object('description', jsonb_build_object('title', 'find me two', 'type','test', 'text','general description 2', 'mod', 'yes', 'order', 'bbbbb')));
 
         DROP VIEW IF EXISTS locaria_data.locaria_test_view CASCADE;
         CREATE  VIEW locaria_data.locaria_test_view AS
