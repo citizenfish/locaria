@@ -602,7 +602,7 @@ function upgradeSQL(stage, theme, environment,theme_files = true) {
 
 		const image_output_path = `serverless/outputs/${stage}-outputs-${theme}-${environment}-images.json`;
 		const image_upload_file = `${image_upload_path}/image_upload.json`
-		if (fs.existsSync(image_upload_file)) {
+		if (fs.existsSync(image_upload_file)&&theme_files===true) {
 			console.log(`Found image_upload.json reading image config file Using profile ${configs.custom[stage].profile}`)
 			// process.env.AWS_PROFILE = configs.custom[stage].profile
 
@@ -627,7 +627,7 @@ function upgradeSQL(stage, theme, environment,theme_files = true) {
 			});
 
 		} else {
-			console.log('No image config file found for theme')
+			console.log('No image config file found for theme or no theme mode')
 			usqlSQL(stage, theme, environment,theme_files)
 		}
 	}

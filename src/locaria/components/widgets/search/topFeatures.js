@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {clearRefresh, newSearch, setSearch} from "../../redux/slices/searchDrawerSlice";
 
 
-const TopFeatures = ({id, category, limit, tags, sx, sxArray}) => {
+const TopFeatures = ({id, category, limit, tags, sx, sxArray,rankingAttributes}) => {
 
 	const dispatch = useDispatch();
 	const search = useSelector((state) => state.searchDraw.search);
@@ -52,6 +52,8 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray}) => {
 
 			}
 		};
+		if(rankingAttributes)
+			packetSearch.data['ranking_attributes']=rankingAttributes;
 		if (actualTags.length>0)
 			packetSearch.data.tags = actualTags;
 		window.websocket.send(packetSearch);

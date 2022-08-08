@@ -1,3 +1,4 @@
+const resources = require('../../theme/builder/resources.json');
 
 
 export default class UrlCoder {
@@ -18,8 +19,14 @@ export default class UrlCoder {
             return undefined;
         const match=str.match(/~uuid:(.*)~url:(.*)/);
         if(match) {
-            if(urlOnly===true) return match[2];
-            return [match[1],match[2]];
+
+            let url=match[2];
+            // Localhost hacking for images
+            if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+                url=`${resources.url}${match[2]}`;
+
+            if(urlOnly===true) return url;
+            return [match[1],url];
         }
         // its not encoded
         return str;

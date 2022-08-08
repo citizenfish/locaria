@@ -81,6 +81,13 @@ const SiteMap = function ({mode, images, feature, format}) {
 function Item({item, format}) {
 	const url = new UrlCoder();
 
+	if(item.type==="video") {
+		return (
+			<video width="100%" height="100%" autoplay="autoplay" muted loop>
+					<source src={url.decode(item.url, true)} type="video/mp4"/>
+			</video>
+		)
+	}
 	let sx={
 		backgroundImage: `url(${url.decode(item.url, true)})`,
 		height: "100%",
