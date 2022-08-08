@@ -26,6 +26,7 @@ BEGIN
             FROM locaria_core.search_get_records(search_parameters)
             WHERE COALESCE(search_parameters->>'cluster', '') != 'true'
 
+
     )
     --Datagrid format for admin, Geojson for API
     SELECT CASE WHEN COALESCE(search_parameters->>'format','') = 'datagrid' THEN
@@ -68,9 +69,14 @@ BEGIN
     INTO results_var
 
     FROM (
-            SELECT * FROM CLUSTER_RESULTS
-            UNION ALL
-            SELECT * FROM SEARCH_RESULTS
+             SELECT * FROM (
+                               SELECT *
+                               FROM CLUSTER_RESULTS
+                               UNION ALL
+                               SELECT *
+                               FROM SEARCH_RESULTS
+                           ) UN
+             ORDER BY _attributes#>>'{data, _order}' ASC
          ) ALL_RESULTS;
 
     RETURN results_var;

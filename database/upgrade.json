@@ -17,7 +17,8 @@
         "database/functions/internal/data/get_asset.sql",
         "database/functions/internal/data/add_asset.sql",
         "database/functions/view_creation/create_materialised_view.sql",
-        "database/functions/utility/asset_url_maker.sql"
+        "database/functions/utility/asset_url_maker.sql",
+        "database/functions/search/search.sql"
 
       ],
       "substitutions": "../tests.json"
