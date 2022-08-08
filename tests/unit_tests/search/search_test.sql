@@ -31,6 +31,9 @@ BEGIN
     SELECT locaria_gateway(parameters) INTO ret_var;
     RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 5', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me order');
 
-
+    --Test Six display_limit _order override
+    parameters = jsonb_build_object('search_text', '', 'method', 'search', 'display_limit', 1) ;
+    SELECT locaria_gateway(parameters) INTO ret_var;
+    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 6', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me order');
 END;
 $$ LANGUAGE PLPGSQL;
