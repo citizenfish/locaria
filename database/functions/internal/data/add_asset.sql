@@ -16,6 +16,6 @@ BEGIN
     RETURNING jsonb_build_object('uuid', uuid)
     INTO ret_var;
 
-    RETURN ret_var;
+    RETURN ret_var || jsonb_build_object('history', add_history(parameters));
 END;
 $$ LANGUAGE PLPGSQL;

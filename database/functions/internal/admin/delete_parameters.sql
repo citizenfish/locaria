@@ -8,6 +8,10 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
+    IF COALESCE(parameters_var->>'parameter_name',parameters_var->>'usage') IS NULL THEN
+        RETURN jsonb_build_object('error', 'One of parameter_name, usage must be supplied');
+    END IF;
+
     DELETE
     FROM parameters
     WHERE (acl_check(parameters_var->'acl', acl)->>'delete')::BOOLEAN

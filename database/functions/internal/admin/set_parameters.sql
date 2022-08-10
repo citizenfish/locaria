@@ -21,7 +21,7 @@ BEGIN
     RETURNING id
     INTO id_var;
 
-    RETURN jsonb_build_object('id', id_var);
+    RETURN jsonb_build_object('id', id_var,'history', add_history(parameters_var));
 
 END;
 $$

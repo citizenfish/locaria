@@ -15,15 +15,21 @@ $$
         SELECT locaria_internal_gateway(parameters) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor('add_file TEST 1', ret_var , '{id}', '*');
 
+
+
         parameters = jsonb_build_object('method', 'add_file', 'file_attributes', jsonb_build_object('type', 'csv', 'name', 'File BAA'));
 
         SELECT locaria_internal_gateway(parameters) INTO ret_var2;
         RAISE NOTICE '%', locaria_tests.test_result_processor('get_files TEST 2', ret_var2 , '{id}', '*');
 
+
+
         --All files come back
         parameters = jsonb_build_object('method', 'get_files');
         SELECT locaria_internal_gateway(parameters) INTO get_files_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor_array('get_files TEST 3', get_files_var->'files' , '{id}', '*', 2);
+
+        RAISE NOTICE '%',get_files_var;
 
         --Only id comes back
         parameters = jsonb_build_object('method', 'get_files', 'id', ret_var->>'id');

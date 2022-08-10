@@ -29,10 +29,10 @@ $$
         limit_var INTEGER DEFAULT 10;
         offset_var INTEGER DEFAULT 0;
         table_var TEXT DEFAULT '';
-        title_field_var TEXT DEFAULT 'THISWILLLFAIL';
-        text_field_var  TEXT DEFAULT 'THISWILLLFAIL';
-        url_field_var TEXT DEFAULT 'THISWILLLFAIL';
-        tag_field_var TEXT DEFAULT 'THISWILLFAIL';
+        title_field_var TEXT DEFAULT 'title';
+        text_field_var  TEXT DEFAULT 'text';
+        url_field_var TEXT DEFAULT 'url';
+        tag_field_var TEXT DEFAULT 'tags';
 
 BEGIN
     SET SEARCH_PATH = 'locaria_uploads','locaria_core','public';
@@ -85,6 +85,7 @@ BEGIN
 
     limit_var = COALESCE(parameters->>'limit', limit_var::TEXT)::INTEGER;
     offset_var = COALESCE(parameters->>'offset', offset_var::TEXT)::INTEGER;
+
 
     RETURN QUERY EXECUTE format(
         header||query, table_var,title_field_var,text_field_var,url_field_var,tag_field_var

@@ -13,5 +13,6 @@ BEGIN
 
     RAISE NOTICE '%', locaria_tests.test_result_processor('add_file TEST 1', ret_var , '{id}', '*');
 
+    RAISE NOTICE '%',ret_var;
 END;
 $$

@@ -30,6 +30,7 @@ BEGIN
 
     item_id = ret_var->>'id';
     RAISE NOTICE 'Created %', item_id;
+    RAISE NOTICE '%',ret_var;
 
     --Refresh the view
     SELECT locaria_core.locaria_internal_gateway(jsonb_build_object('method','refresh_search_view')) INTO ret_var;
