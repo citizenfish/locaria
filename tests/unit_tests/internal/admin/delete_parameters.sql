@@ -22,8 +22,12 @@ $$
         SELECT locaria_internal_gateway(jsonb_build_object('method', 'delete_parameters', 'parameter_name', 'test_1')) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor('delete_parameters TEST 1', ret_var , '{error}', 'delete failure: test_1');
 
+
+
         SELECT locaria_internal_gateway(jsonb_build_object('method', 'delete_parameters', 'parameter_name', 'test_1'), acl_var) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor('delete_parameters TEST 1', ret_var , '{message}', 'delete success: test_1');
+
+        RAISE NOTICE '%',ret_var;
 
     END;
 $$

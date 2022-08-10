@@ -17,9 +17,14 @@ $$
         SELECT locaria_internal_gateway(parameters) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor('delete_file TEST 2', ret_var , '{message}', 'file marked as deleted');
 
+        RAISE NOTICE '%',ret_var;
+
         --Check no files returned
         parameters = jsonb_build_object('method', 'get_files');
         SELECT locaria_internal_gateway(parameters) INTO ret_var;
         RAISE NOTICE '%', locaria_tests.test_result_processor_array('delete_file TEST 3', ret_var->'files' , '{id}', '*', 0);
+
+        RAISE NOTICE '%',ret_var;
+
     END;
 $$

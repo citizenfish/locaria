@@ -16,9 +16,9 @@ BEGIN
     GET DIAGNOSTICS delete_count = ROW_COUNT;
 
     IF delete_count = 1 THEN
-        RETURN jsonb_build_object('uuid', parameters->>'uuid', 'delete', 'success', 'details', asset_details);
+        RETURN jsonb_build_object('uuid', parameters->>'uuid', 'delete', 'success', 'details', asset_details) || jsonb_build_object('history', add_history(parameters));
     ELSE
-        RETURN jsonb_build_object('uuid', parameters->>'uuid', 'delete', 'failure', 'delete_count', delete_count);
+        RETURN jsonb_build_object('uuid', parameters->>'uuid', 'delete', 'failure', 'delete_count', delete_count) || jsonb_build_object('history', add_history(parameters));
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;

@@ -6,6 +6,11 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
+    --Check we are a moderator
+    IF
+
+    --TODO should be a fixed set of statuses
+    --TODO should be an acl check but none is done?
     UPDATE locaria_core.moderation_queue
     SET status = UPPER(parameters->>'status')
     WHERE id = (parameters->>'id')::BIGINT

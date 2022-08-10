@@ -60,8 +60,8 @@ BEGIN
                 COALESCE(B.attributes->>'table', B.attributes->>'table', 'locaria_data.search_views_union') AS table_location,
                 B.attributes,
                 search_date,
-                false AS edit,
-                false AS moderated_update
+                FALSE AS edit,
+                FALSE AS moderated_update
         FROM locaria_data.search_views_union B
         INNER JOIN locaria_core.categories C ON (category_id = C.id)
 
@@ -80,8 +80,6 @@ BEGIN
            edit,
            moderated_update
     FROM locaria_data.global_search_view_live GS,
-    --LEFT JOIN locaria_core.assets A
-    --ON GS.attributes#>'{data,images}' ? uuid,
     (SELECT parameter->>'url' AS mask FROM locaria_core.parameters WHERE parameter_name = 'assets_url') m;
 
     --This unique index is important so that we can refresh the view concurrently which in turn prevents downtime

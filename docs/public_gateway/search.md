@@ -50,14 +50,31 @@ If set to datagrid will return results in a format suited for display using the 
 Default: ''
 Type: String
 
-Free text used to carry out a search. This can be any string or numeric along with the wildcard "*" to return everything. The text is used to create a plainto_tsquery structure in Postgres and use it to search the global_search_view.
+Free text used to carry out a search. This can be any string or numeric along with the wildcard "*" to return everything. The text is used to create a plainto_tsquery structure in Postgres and use it to search the global_search_view in the description attribute.
 
-## limit
+### limit
 
 Default: 10000
 Type: Integer
 
 Set a limit for the number of records returned. Cannot be increased beyond the value of 10,000 when called via the public gateway. Additional records must be retrieved by using a follow up call with an offset value.
+
+### display_limit
+
+Default: 10000
+Type: Integer
+
+A limit applied post search after all other filters for display purposes. For example if you only want to show 4 articles on a frint page.
+
+Used in conjuction with the _order attribute stored in the data structure which can also be used for ordering:-
+
+```json
+{
+  "data": {
+    "_order" : 1
+  }
+}
+```
 
 ### offset
 

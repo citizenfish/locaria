@@ -65,6 +65,44 @@ $$
            RAISE EXCEPTION '[add_test_date] %', (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);
         END IF;
 
+        --Add some upload data
+
+        DROP TABLE IF EXISTS locaria_uploads.test_upload;
+        CREATE TABLE locaria_uploads.test_upload(
+            ogc_fid SERIAL,
+            wkb_geometry GEOMETRY,
+            title TEXT,
+            text TEXT,
+            tags TEXT [],
+            url TEXT,
+            lon FLOAT,
+            lat FLOAT
+        );
+
+        INSERT INTO locaria_uploads.test_upload(wkb_geometry, title,text,tags,url,lon,lat)
+        VALUES(
+               ST_GEOMFROMEWKT('SRID=4326;POINT(-1.2 54.2)'),
+               'TEST TITLE 1',
+               'TEST TEXT 1',
+               ARRAY['foo', 'baa'],
+               'https://foo.com/baaa',
+               -1.4,
+               53.2
+              ),
+            (
+            NULL,
+            'TEST TITLE 2',
+            'TEST TEXT 2',
+            ARRAY['foo2', 'baa2'],
+            'https://foo2.com/baaa2',
+            -1.4,
+            53.2
+        );
+
+        DELETE FROM locaria_core.files;
+        INSERT INTO locaria_core.files(id,attributes)
+        SELECT 1, jsonb_build_object();
+
         RAISE NOTICE 'TEST DATA LOADED AND VIEW REFRESHED %', ret_var;
 
         END;

@@ -16,10 +16,16 @@
         "database/functions/reports/run_report.sql",
         "database/functions/internal/data/get_asset.sql",
         "database/functions/internal/data/add_asset.sql",
+        "database/functions/internal/data/delete_asset.sql",
         "database/functions/view_creation/create_materialised_view.sql",
         "database/functions/utility/asset_url_maker.sql",
-        "database/functions/search/search.sql"
-
+        "database/functions/search/search.sql",
+        "database/functions/internal/data/add_item.sql",
+        "database/functions/internal/data/delete_item.sql",
+        "database/functions/internal/data/update_item.sql",
+        "database/functions/internal/file_upload/get_preview_file_data.sql",
+        "database/functions/internal/admin/set_parameters.sql",
+        "database/functions/internal/admin/update_category.sql"
       ],
       "substitutions": "../tests.json"
     }

@@ -10,7 +10,6 @@ DECLARE
     default_offset INTEGER DEFAULT 0;
 	json_filter JSONB DEFAULT json_build_object();
 	filter_var BOOLEAN DEFAULT FALSE;
-    results_var JSONB;
     search_ts_query tsquery;
     bbox_var GEOMETRY DEFAULT NULL;
     location_geometry GEOMETRY DEFAULT NULL;
