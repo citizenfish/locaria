@@ -41,6 +41,7 @@ export default function RenderPlugin({plugin}) {
 		let PluginComponent = plugins[pluginId];
 		let matchArgs = pluginArgStr.match(/(?:[^\s"]+|"[^"]*")+/g);
 		let pluginArgs = {};
+		pluginArgs.key="foo";
 		for (let a in matchArgs) {
 			let cmdArray = matchArgs[a].split(/^([a-zA-Z]+)(=)/);
 			if(cmdArray[3]) {
@@ -56,7 +57,8 @@ export default function RenderPlugin({plugin}) {
 			}
 		}
 		return (
-			<PluginComponent key={"plugin"} {...pluginArgs}/>
+				<PluginComponent {...pluginArgs}/>
+
 		)
 	} else {
 		return (<h1 key={"renderError"}>NO SUCH Component {pluginId}</h1>)

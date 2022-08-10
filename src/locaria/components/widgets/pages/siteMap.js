@@ -11,7 +11,7 @@ import Paper from "@mui/material/Paper";
 import ClickAway from "../utils/clickAway";
 import {useSelector} from "react-redux";
 
-const SiteMap = function ({mode, images, feature, format}) {
+const SiteMap = function ({mode, images, feature, format,duration = 1000,interval=8000}) {
 
 	let useImages = images || [];
 	const report = useSelector((state) => state.viewDraw.report);
@@ -52,7 +52,7 @@ const SiteMap = function ({mode, images, feature, format}) {
 						{!mobile ? <Panels></Panels> : <></>}
 					</Box>
 				</Box>
-				<Carousel height={!mobile ? "450px" : "320px"}>
+				<Carousel interval={interval} duration={duration} height={!mobile ? "450px" : "320px"}>
 					{
 						useImages.map((item, i) => <Item key={i} item={item} format={format}/>)
 					}
@@ -83,7 +83,7 @@ function Item({item, format}) {
 
 	if(item.type==="video") {
 		return (
-			<video width="100%" height="100%" autoplay="autoplay" muted loop>
+			<video width="100%" height="100%" autoPlay="autoplay" muted loop>
 					<source src={url.decode(item.url, true)} type="video/mp4"/>
 			</video>
 		)

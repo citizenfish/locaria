@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {clearRefresh, newSearch, setSearch} from "../../redux/slices/searchDrawerSlice";
 
 
-const TopFeatures = ({id, category, limit, tags, sx, sxArray,rankingAttributes}) => {
+const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rankingAttributes}) => {
 
 	const dispatch = useDispatch();
 	const search = useSelector((state) => state.searchDraw.search);
@@ -19,11 +19,10 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray,rankingAttributes})
 	let sxId = 0;
 
 
-
 	useEffect(() => {
-		if (id !== searchId) {
+		if (id&&id !== searchId) {
 			setSearchId(id);
-			dispatch(newSearch({categories: category,tags:tags}));
+			dispatch(newSearch({categories: category, tags: tags}));
 		}
 	}, [id]);
 
@@ -38,6 +37,10 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray,rankingAttributes})
 			doSearch();
 		}
 
+		return () => {
+			window.websocket.removeQueue("topFeatures");
+		}
+
 	}, [refresh]);
 
 	function doSearch() {
@@ -47,14 +50,18 @@ const TopFeatures = ({id, category, limit, tags, sx, sxArray,rankingAttributes})
 			"data": {
 				"method": "search",
 				"category": categories,
-				"search_text": search,
-				"limit": limit,
+				"search_text": search
 
 			}
 		};
-		if(rankingAttributes)
-			packetSearch.data['ranking_attributes']=rankingAttributes;
-		if (actualTags.length>0)
+		if (displayLimit)
+			packetSearch.data['display_limit'] = displayLimit;
+		if (limit)
+			packetSearch.data['limit'] = limit;
+
+		if (rankingAttributes)
+			packetSearch.data['ranking_attributes'] = rankingAttributes;
+		if (actualTags.length > 0)
 			packetSearch.data.tags = actualTags;
 		window.websocket.send(packetSearch);
 		dispatch(clearRefresh());
