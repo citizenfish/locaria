@@ -1,7 +1,7 @@
 import React from 'react';
 import RenderMarkdown from "./renderMarkdown";
 import {LinearProgress, useMediaQuery} from "@mui/material";
-import {useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {setReport} from "../../redux/slices/viewDrawerSlice";
 import {useDispatch} from "react-redux";
 import Box from "@mui/material/Box";
@@ -12,6 +12,7 @@ import {useCookies} from "react-cookie";
 export default function RenderPage() {
 
 	const dispatch = useDispatch()
+	const history = useHistory();
 
 	let {category} = useParams();
 	let {page} = useParams();
@@ -92,8 +93,12 @@ export default function RenderPage() {
 	React.useEffect(() => {
 
 		window.websocket.registerQueue('pageBulkLoader', (json) => {
-			setPageData(json.getPageData.packet.parameters[pageActual]);
-			dispatch(setReport(json));
+			if(json.getPageData.packet.error) {
+				history.push("/");
+			} else {
+				setPageData(json.getPageData.packet.parameters[pageActual]);
+				dispatch(setReport(json));
+			}
 		});
 
 		getAllData();

@@ -22,7 +22,8 @@ let outputs;
 
 const stage = process.argv[2];
 const theme = process.argv[3]||'main';
-const docker= process.argv[4]||'file_loader';
+const environment = process.argv[4]||'dev';
+const docker= process.argv[5]||'file_loader';
 
 console.log(`Building docker ${docker} for stage ${stage} theme ${theme}`);
 //console.log(configs);
@@ -36,7 +37,7 @@ if (configs[stage].themes[theme]) {
     }
     outputs=fs.readFileSync(outputsFileName, 'utf8');
 
-    let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${theme}.json`;
+    let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${theme}-${environment}.json`;
     if(!fs.existsSync(outputsSiteFileName)) {
         console.log(`${outputsSiteFileName} does not exist, have you deployed?`);
         process.exit(0);
@@ -52,7 +53,7 @@ if (configs[stage].themes[theme]) {
         doCopy();
     }
 } else {
-    console.log(`No such config ${stage} ${theme}`);
+    console.log(`No such config ${stage} ${theme} ${environment}`);
 }
 
 function doCopy() {
@@ -69,7 +70,10 @@ function doCopy() {
             const resource = {
                 db_var: "LOCARIADB",
                 theme: theme,
-                s3_var: "S3DLBUCKET"
+                stage: stage,
+                environment: environment,
+                s3_var: "S3DLBUCKET",
+                logBucket: `locarialogs-${stage}-${theme}${environment}`
             }
             fs.writeFileSync(`${buildDir}/config.json`, JSON.stringify(resource));
 
