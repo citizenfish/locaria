@@ -9,8 +9,7 @@ import time
 config = get_local_config('config.json')
 
 # Make database connection, retrieve any parameters and then a list of downloads to process
-db = database_connect(f"{config['db_var']}_{config['theme']}")
-print("Database connection established")
+db = database_connect(config)
 parameters = get_parameters(db,"file_download")
 
 #if parameters.get('error', '') != '':

@@ -14,8 +14,7 @@ upload_schema = config.get('upload_schema','locaria_uploads')
 table_name_mask = config.get('table_name_mask', 'upload_file_')
 
 # Make database connection, retrieve any parameters and then a list of files to
-db = database_connect(f"{config['db_var']}_{config['theme']}")
-print("Database connection established")
+db = database_connect(config)
 parameters = get_parameters(db,"file_upload")
 files_to_process = get_files_to_process(db,schema)
 

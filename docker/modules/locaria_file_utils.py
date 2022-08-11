@@ -10,17 +10,19 @@ def get_local_config(path):
         config = json.load(f)
         f.close()
     except FileNotFoundError:
-        print("Using defaults for theme")
-        return {'db_var': 'LOCARIADB', 'theme':'main', 's3_var': 'S3DLBUCKET'}
+        print("No local config found please check config.js")
+        exit(0)
 
     return config
 
-def database_connect(env_var):
+def database_connect(config):
+    env_var = f"{config['db_var']}_{config['theme']}{config['environment']}"
     try:
-        print("Establishing database connection")
+        print(f"Establishing database connection using {env_var}")
 
         #This will be used later by ogr2ogr so set a standard named environment variable
         os.environ['LOCARIADB'] = os.environ[env_var]
+        print("Database connection established")
         return psycopg.connect(os.environ[env_var])
 
     except Exception as error:
@@ -229,4 +231,14 @@ def upload_to_s3(profile, path, bucket, s3_path):
 
     return {"url" :url}
 
+def get_bucket_file_list(profile,bucket):
+    files = []
+    try:
+        #boto3.setup_default_session(profile_name=profile)
+        s3_client = boto3.client('s3')
+        for key in s3_client.list_objects(Bucket = bucket)['Contents']:
+            files.append(key['Key'])
+        return files
+    except Exception as e:
+            return {"error" : str(e)}
 

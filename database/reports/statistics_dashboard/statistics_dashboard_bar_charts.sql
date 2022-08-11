@@ -1,4 +1,3 @@
-DELETE FROM locaria_core.reports WHERE report_name ='statistics_dashboard_last_24_hours';
 DELETE FROM locaria_core.reports WHERE report_name ='statistics_dashboard_bar_charts';
 INSERT INTO locaria_core.reports(report_name, report_parameters, admin_privilege)
 SELECT 'statistics_dashboard_bar_charts',
