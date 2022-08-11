@@ -436,11 +436,11 @@ function deployDocker(stage, theme,environment) {
 	for (let d in dockers) {
 		console.log(`[${d}] - ${dockers[d].description}`);
 	}
-	readline.question(`deploy docker image stage ${stage}, theme ${theme}? [${docker}]`, (cmd) => {
+	readline.question(`deploy docker image stage ${stage}, theme ${theme}, environment ${environment}? [${docker}]`, (cmd) => {
 		if (cmd)
 			docker = cmd;
 		console.log('Build');
-		executeWithCatch(`node scripts/buildDocker.js  ${stage} ${theme} ${docker}`, "./", () => {
+		executeWithCatch(`node scripts/buildDocker.js  ${stage} ${theme} ${docker} ${environment}`, "./", () => {
 			console.log('tag');
 			let outputs = getThemeOutputs(stage, theme,environment);
 			executeWithCatch(`docker tag ${docker}:latest ${outputs.ecrRepositoryUri}`, "./", () => {
@@ -450,18 +450,18 @@ function deployDocker(stage, theme,environment) {
 					executeWithCatch(`docker push ${outputs.ecrRepositoryUri}`, "./", (stdout) => {
 						console.log('sql updates');
 						//reload output as they have changed
-						sendSQLFiles(stage, theme, 'database/dockers.json', deploySystemMain);
+						sendSQLFiles(stage, theme, environment,'database/dockers.json', deploySystemMain);
 					}, () => {
-						deploySystemMain(stage, theme);
+						deploySystemMain(stage, theme,environment);
 					});
 				}, () => {
-					deploySystemMain(stage, theme);
+					deploySystemMain(stage, theme,environment);
 				});
 			}, () => {
-				deploySystemMain(stage, theme);
+				deploySystemMain(stage, theme,environment);
 			});
 		}, () => {
-			deploySystemMain(stage, theme);
+			deploySystemMain(stage, theme,environment);
 		});
 	})
 }

@@ -12,6 +12,12 @@ custom:
 
 resources:
   Resources:
+    # Logging
+    LogSite:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: Private
+        BucketName: locarialogs-${self:custom.stage}-${env:theme}${env:environment}
     # Website
     StaticSite:
       Type: AWS::S3::Bucket
@@ -40,15 +46,31 @@ resources:
               Resource: { "Fn::Join": [ "", [ "arn:aws:s3:::", { Ref: StaticSite }, "/*" ] ] }
               Principal:
                 AWS: { "Fn::Join": [ " ", [ "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity", { Ref: WebsiteOriginAccessIdentity } ] ] }
+
     WebsiteOriginAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: "CloudFrontOriginAccessIdentity for ${self:service}-${self:provider.stage}"
+          Comment: "CloudFrontOriginAccessIdentity"
     WebsiteDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
+          Logging:
+            IncludeCookies: true
+            Bucket: { "Fn::GetAtt": [ "LogSite", "DomainName" ] }
+          CacheBehaviors:
+          - PathPattern: /
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            TargetOriginId: RendererAPIOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            ForwardedValues:
+              Headers:
+                - Accept
+                - Referer
+                - Athorization
+                - Content-Type
+              QueryString: true
           DefaultCacheBehavior:
             AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
             CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
@@ -62,6 +84,10 @@ resources:
               QueryString: true
               Cookies:
                 Forward: 'all'
+#            LambdaFunctionAssociations:
+#            - EventType: origin-request
+#              LambdaFunctionARN: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):LocarialambdaAtEdgeLambdaFunctionQualifiedArn}
+#              IncludeBody: true
           CustomErrorResponses:
             - ErrorCode: '404'
               ResponsePagePath: "/index.html"
@@ -83,6 +109,10 @@ resources:
               DomainName: { "Fn::GetAtt": [ "StaticSite", "DomainName" ] }
               S3OriginConfig:
                 OriginAccessIdentity: { "Fn::Join": [ "", [ "origin-access-identity/cloudfront/", { Ref: WebsiteOriginAccessIdentity } ] ] }
-
+            - Id: 'RendererAPIOrigin'
+              OriginPath: /${self:custom.stage}
+              DomainName: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):rendererAPI}.execute-api.${file(../../../locaria.json):${self:custom.stage}.region}.amazonaws.com
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
 plugins:
   - serverless-stack-output
