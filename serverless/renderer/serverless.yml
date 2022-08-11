@@ -49,6 +49,12 @@ functions:
       - http:
           path: /
           method: GET
+      - http:
+          path: /index.html
+          method: GET
+      - http:
+          path: /Admin/index.html
+          method: GET
 
 
 plugins:
