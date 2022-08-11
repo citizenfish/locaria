@@ -59,9 +59,8 @@ resources:
           Logging:
             IncludeCookies: true
             Bucket: { "Fn::GetAtt": [ "LogSite", "DomainName" ] }
-          CacheBehaviors:
-          - PathPattern: /
-            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+          DefaultCacheBehavior:
+            AllowedMethods: [ "GET", "HEAD", "OPTIONS" ]
             TargetOriginId: RendererAPIOrigin
             ViewerProtocolPolicy: redirect-to-https
             ForwardedValues:
@@ -70,8 +69,9 @@ resources:
                 - Referer
                 - Athorization
                 - Content-Type
-              QueryString: true
-          DefaultCacheBehavior:
+              QueryString: false
+          CacheBehaviors:
+          - PathPattern: "*.jpg"
             AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
             CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
             TargetOriginId: WebsiteBucketOrigin
@@ -84,10 +84,19 @@ resources:
               QueryString: true
               Cookies:
                 Forward: 'all'
-#            LambdaFunctionAssociations:
-#            - EventType: origin-request
-#              LambdaFunctionARN: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):LocarialambdaAtEdgeLambdaFunctionQualifiedArn}
-#              IncludeBody: true
+          - PathPattern: "*.js"
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: WebsiteBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
           CustomErrorResponses:
             - ErrorCode: '404'
               ResponsePagePath: "/index.html"
@@ -114,5 +123,7 @@ resources:
               DomainName: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):rendererAPI}.execute-api.${file(../../../locaria.json):${self:custom.stage}.region}.amazonaws.com
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
+                OriginSSLProtocols:
+                - TLSv1.2
 plugins:
   - serverless-stack-output

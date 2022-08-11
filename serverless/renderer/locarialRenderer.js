@@ -1,4 +1,13 @@
 module.exports.run = (event, context, callback) => {
+
+	const conn = {
+		user: process.env.auroraMasterUser,
+		host: process.env.postgresHost,
+		database: process.env.auroraDatabaseName,
+		password: process.env.auroraMasterPass,
+		port: process.env.postgresPort,
+	}
+
 	const html = '<!DOCTYPE html>\
 		<html lang="en">\
 		<head>\
@@ -15,7 +24,6 @@ module.exports.run = (event, context, callback) => {
 		</div>\
 		</body>\
 		</html>';
-
 	const response = {
 		statusCode: 200,
 		headers: {
