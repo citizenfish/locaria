@@ -5,8 +5,8 @@
 ### Overview
 
 Updating only the theme sql would normally be done if the site content has been constructed in SQL or an export has done
-and placed in the themes export directory. When updaing from SQL you will overwrite any updates that have been done
-outside of the SQL for example in admin so care should be taken.
+and placed in the themes export directory. When updating from SQL you will overwrite any updates that have been done
+outside the SQL for example in admin so care should be taken.
 
 #### Process
 
@@ -35,7 +35,7 @@ Stage to deploy [sb]?
 Next select the theme you are installing. Again on non-multi tenant systems this will be pre-populated for you. The theme
 relates directly to the sql you are installing and where it installs it and is defined in your locario.json when you setup the system.
 
-It is likely and indeed recomend as part of install that this be in another repo outside of this one that can be backed up seperatly we use:
+It is  recommended as part of install that this be in another repo outside of this one that can be backed up seperatly we use:
 
 ```javascript
 "themeDir": "../locaria_private/themes/"

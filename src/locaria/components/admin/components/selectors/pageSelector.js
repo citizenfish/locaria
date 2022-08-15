@@ -45,11 +45,11 @@ export default function PageSelector() {
 	}
 
 	return (
-		<FormControl fullWidth>
-			<InputLabel id="demo-simple-select-label">Edit Page</InputLabel>
+		<FormControl style={{minWidth: 400, marginTop: 20}}>
+			<InputLabel id="locaria-page-select-label">Edit Page</InputLabel>
 			<Select
-				labelId="demo-simple-select-label"
-				id="demo-simple-select"
+				labelId="locaria-page-select-label"
+				id="locaria-page-select"
 				value={page}
 				label="Page"
 				onChange={(e) => {

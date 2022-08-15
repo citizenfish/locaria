@@ -67,14 +67,14 @@ export default function AdminSettingsAppearance() {
 	return (
 		<Box sx={{display: 'flex'}}>
 			<TokenCheck></TokenCheck>
-			<AdminAppBar title={`Settings - Appearance`}/>
+			<AdminAppBar title={`Site Manager`}/>
 			<LeftNav isOpenSettings={true}/>
 			<Box
 				component="main"
-				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '40px'}}
+				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
 
-				<h1>Appearance</h1>
+				<Typography variant="h4" mb={1}>Site Manager</Typography>
 				<StyleSelector></StyleSelector>
 				<Box sx={{paddingTop: "10px"}}>
 					<Button sx={{marginRight: "5px"}} disabled={style ? false : true} variant={"outlined"}

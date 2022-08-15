@@ -113,11 +113,11 @@ export default function AdminContentPages() {
 			<LeftNav isOpenContent={true}/>
 			<Box
 				component="main"
-				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '40px'}}
+				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
 
-				<h1>Page manager</h1>
-				<p>Select a page to edit or delete</p>
+				<Typography variant="h4" mb={1}>Page Manager</Typography>
+				<Typography>Select a page to edit or delete</Typography>
 				<PageSelector></PageSelector>
 				<Box sx={{paddingTop: "10px"}}>
 					<Button sx={{marginRight:"5px"}} disabled={page ? false : true} variant={"outlined"} color="success" onClick={() => {
