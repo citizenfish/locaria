@@ -15,11 +15,11 @@ export default function StyleSelector () {
 	}
 
 	return (
-		<FormControl fullWidth>
-			<InputLabel id="demo-simple-select-label">Select style</InputLabel>
+		<FormControl style={{minWidth: 400, marginTop: 20}}>
+			<InputLabel id="locaria-settings-select-label">Select style</InputLabel>
 			<Select
-				labelId="demo-simple-select-label"
-				id="demo-simple-select"
+				labelId="locaria-settings-select-label"
+				id="locaria-settings-select"
 				value={style}
 				label="Style"
 				onChange={(e) => {

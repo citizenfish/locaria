@@ -9,11 +9,13 @@ import {setEditData} from "../../../../deprecated/editDrawerSlice";
 import {DataGrid} from "@mui/x-data-grid";
 import {openEditFeatureDrawer} from "../../../../deprecated/editFeatureDrawerSlice";
 import {setFeature} from "../redux/slices/adminPagesSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import Typography from "@mui/material/Typography";
+import CategorySelector from "../components/selectors/categorySelector";
 
 const columns = [
 	{field: 'id', headerName: 'FID', width: 75},
-	{field: 'title', headerName: 'Title', width: 150},
+	{field: 'title', headerName: 'Title', width: 300},
 	{field: 'text', headerName: 'Description', width: 300},
 	{field: 'category', headerName: 'Category', width: 150},
 /*
@@ -24,11 +26,14 @@ const columns = [
 
 export default function AdminContentData() {
 
-	const [offset, setOffset] = useState(0);
-	const [limit, setLimit] = useState(1000);
-	const [features, setFeatures] = useState(undefined);
-	const [searchText, setSearchText] = useState('');
-	const [cookies, setCookies] = useCookies(['location']);
+	const [offset, setOffset] = useState(0)
+	const [limit, setLimit] = useState(1000)
+	const [features, setFeatures] = useState(undefined)
+	const [searchText, setSearchText] = useState('')
+	const category = useSelector((state) => state.categorySelect.currentSelected);
+
+	const [cookies, setCookies] = useCookies(['location'])
+
 
 	const dispatch = useDispatch()
 	const history = useHistory();
@@ -43,6 +48,9 @@ export default function AdminContentData() {
 		refresh();
 	}, [searchText, offset, limit])
 
+	useEffect(() =>{
+		refresh()
+	},[category])
 
 	const refresh = () => {
 		window.websocket.send({
@@ -54,7 +62,8 @@ export default function AdminContentData() {
 				id_token: cookies['id_token'],
 				format: "datagrid",
 				offset: offset,
-				limit: limit
+				limit: limit,
+				category: category
 			}
 		})
 	}
@@ -66,16 +75,19 @@ export default function AdminContentData() {
 	}
 
 	return (
+
 		<Box sx={{display: 'flex'}}>
 			<TokenCheck></TokenCheck>
-			<AdminAppBar title={`Content - Data`}/>
+			<AdminAppBar title={`Data Manager`}/>
 			<LeftNav isOpenContent={true}/>
+
 			<Box
 				component="main"
-				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '40px'}}
+				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
-				<h1>Data manager</h1>
-
+				<Typography variant = "h4" mb={1}>Data Manager</Typography>
+				<Typography mb={1}>Select an article or data item to edit or delete</Typography>
+				<CategorySelector/>
 				<DataGrid columns={columns}
 						  rows={features}
 						  autoHeight

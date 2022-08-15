@@ -16,7 +16,7 @@ export default function AdminAppBar({title}) {
         >
             <Toolbar>
                 <Typography variant="h6" noWrap component="div" >
-                    Administration: {title}
+                    Administration Portal: {title}
                 </Typography>
             </Toolbar>
         </AppBar>
