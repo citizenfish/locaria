@@ -122,7 +122,7 @@ export default function AdminContentPages() {
 				<Box sx={{paddingTop: "10px"}}>
 					<Button sx={{marginRight:"5px"}} disabled={page ? false : true} variant={"outlined"} color="success" onClick={() => {
 						if (page !== undefined) {
-							history.push(`/Admin/Content/Pages/Edit`);
+							history.push(`/Admin/Content/Pages/Edit/${page}`);
 						}
 					}}>Edit</Button>
 					<Button sx={{marginRight:"5px"}} variant={"outlined"} color="warning" onClick={() => {
