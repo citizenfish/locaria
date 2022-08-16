@@ -11,7 +11,9 @@ import AdminContentPagesEdit from "./admin/pages/adminContentPagesEdit";
 import AdminSettingsAppearance from "./admin/pages/adminSettingsAppearance";
 import AdminSettingsAppearanceEdit from "./admin/pages/adminSettingsAppearanceEdit";
 import AdminContentDataEdit from "./admin/pages/adminContentDataEdit";
-
+import AdminAPISettings from "./admin/pages/adminAPISettings";
+import AdminImportUpload from "./admin/pages/adminImportUpload";
+import AdminImportDownload from "./admin/pages/adminImportDownload";
 
 const AdminApp = () => {
 
@@ -41,6 +43,9 @@ const AdminApp = () => {
 		<Provider store={store}>
 			<Router>
 				<Switch>
+					<Route exact path="/Admin/Import/Download"  component={AdminImportDownload}/>
+					<Route exact path="/Admin/Import/Upload"  component={AdminImportUpload}/>
+					<Route exact path="/Admin/API/Settings"  component={AdminAPISettings}/>
 					<Route exact path="/Admin/Settings/Appearance"  component={AdminSettingsAppearance}/>
 					<Route exact path="/Admin/Settings/Appearance/Edit"  component={AdminSettingsAppearanceEdit}/>
 					<Route exact path="/Admin/Content/Pages"  component={AdminContentPages}/>
