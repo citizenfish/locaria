@@ -41,6 +41,7 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 		history.push(`/Admin/Settings/Appearance`);
 	};
 
+
 	useEffect(() => {
 
 		window.websocket.registerQueue("getTotals", function (json) {
@@ -133,6 +134,44 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 				</Collapse>
 
 				{/*Settings*/}
+
+				<ListItemButton  onClick={() => {
+					handleClickSettings();
+				}}>
+					<ListItemIcon>
+						<EditIcon/>
+					</ListItemIcon>
+					<ListItemText primary={"Import/Export"}/>
+					{openSettings ? <ExpandLess /> : <ExpandMore />}
+				</ListItemButton>
+				<Collapse in={openSettings} timeout="auto" unmountOnExit>
+					<List component="div">
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/API/Settings`);
+						}}>
+							<ListItemIcon>
+								<ArticleIcon/>
+							</ListItemIcon>
+							<ListItemText primary={"API Settings"}/>
+						</ListItemButton>
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/Import/Upload`);
+						}}>
+							<ListItemIcon>
+								<ArticleIcon/>
+							</ListItemIcon>
+							<ListItemText primary={"Upload"}/>
+						</ListItemButton>
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/Import/Download`);
+						}}>
+							<ListItemIcon>
+								<ArticleIcon/>
+							</ListItemIcon>
+							<ListItemText primary={"Download"}/>
+						</ListItemButton>
+					</List>
+				</Collapse>
 
 				<ListItemButton  onClick={() => {
 					handleClickSettings();
