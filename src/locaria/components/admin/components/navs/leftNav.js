@@ -113,7 +113,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 						<EditIcon/>
 					</ListItemIcon>
 					<ListItemText primary={"Content"}/>
-					{openContent ? <ExpandLess /> : <ExpandMore />}
+					{openContent && <ExpandMore />}
 				</ListItemButton>
 				<Collapse in={openContent} timeout="auto" unmountOnExit>
 					<List component="div">
@@ -147,7 +147,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 						<EditIcon/>
 					</ListItemIcon>
 					<ListItemText primary={"Import/Export"}/>
-					{openImport ? <ExpandLess /> : <ExpandMore />}
+					{openImport && <ExpandMore/>}
 				</ListItemButton>
 				<Collapse in={openImport} timeout="auto" unmountOnExit>
 					<List component="div">
@@ -186,7 +186,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 						<EditIcon/>
 					</ListItemIcon>
 					<ListItemText primary={"Settings"}/>
-					{openSettings ? <ExpandLess /> : <ExpandMore />}
+					{openSettings && <ExpandMore/>}
 				</ListItemButton>
 				<Collapse in={openSettings} timeout="auto" unmountOnExit>
 					<List component="div">

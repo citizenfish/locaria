@@ -116,8 +116,7 @@ export default function AdminContentPages() {
 				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
 
-				<Typography variant="h4" mb={1}>Page Manager</Typography>
-				<Typography>Select a page to edit or delete</Typography>
+				<Typography>The page manager allows you to edit the static pages of your Locaria site. You can add, edit or delete pages from the site using this control. The "Home" page represents the first page of the site and all other pages are linked from this.  </Typography>
 				<PageSelector></PageSelector>
 				<Box sx={{paddingTop: "10px"}}>
 					<Button sx={{marginRight:"5px"}} disabled={page ? false : true} variant={"outlined"} color="success" onClick={() => {

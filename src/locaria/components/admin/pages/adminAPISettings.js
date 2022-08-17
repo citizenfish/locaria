@@ -19,7 +19,7 @@ export default function AdminAPISettings() {
         <Box sx={{display: 'flex'}}>
             <TokenCheck></TokenCheck>
             <AdminAppBar title={`API Settings`}/>
-            <LeftNav isOpenContent={true}/>
+            <LeftNav isOpenImport={true}/>
 
             <Box
                 component="main"
