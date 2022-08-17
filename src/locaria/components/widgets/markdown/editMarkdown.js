@@ -1,21 +1,23 @@
 import React, {useState} from 'react';
 import Box from "@mui/material/Box";
 import RenderPlugin from "./renderPlugin";
+import MdSerialize from "../../../libs/mdSerialize"
 
+export default function EditMarkdown({document, onChange,mode}) {
 
-export default function EditMarkdown({document, onChange}) {
+	const MD=new MdSerialize();
+	let documentActual=document;
+	if(typeof document === "string")
+		documentActual=MD.parse(document)
 
-	const [editor,setEditor]=useState(document);
+	console.log(documentActual);
+
+	const [editor,setEditor]=useState(documentActual);
 
 	const InputEvent = (e) => {
 		let current=e.currentTarget.innerText;
-		onChange(current);
-	}
-
-	const renderElements=(text) => {
-
-		text.replace(/^%(.*?)%/g,<div>PLUGIN</div>);
-		return text;
+		console.log(MD.parse(current));
+		onChange(MD.parse(current));
 	}
 
 	return (
@@ -28,6 +30,6 @@ export default function EditMarkdown({document, onChange}) {
 			whiteSpace: "pre",
 			padding: "5px"
 		}} contentEditable={true}
-		>{renderElements(editor)}</Box>
+		>{MD.stringify(editor)}</Box>
 	);
 }

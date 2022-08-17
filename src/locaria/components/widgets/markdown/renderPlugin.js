@@ -13,13 +13,9 @@ import SlideShow from "../images/slideShow";
 import ContactMailchimp from "../contact/contactMailchimp";
 import NavButton from "../navs/navButton";
 
-export default function RenderPlugin({plugin}) {
+export default function RenderPlugin({plugin,args}) {
 
-	const pluginMatch = plugin.match(/^([a-zA-Z]*)\s{0,1}/);
-
-	let pluginId = pluginMatch[1];
-	let pluginArgStr = plugin.replace(pluginMatch[0], '');
-
+	// TODO lets add some constant for the WYSIWYG and put it in a sperate file
 	const plugins = {
 		"TopFeatures": TopFeatures,
 		"PageList": PageList,
@@ -37,31 +33,14 @@ export default function RenderPlugin({plugin}) {
 	}
 
 
-	if (plugins[pluginId]) {
-		let PluginComponent = plugins[pluginId];
-		let matchArgs = pluginArgStr.match(/(?:[^\s"]+|"[^"]*")+/g);
-		let pluginArgs = {};
-		pluginArgs.key="foo";
-		for (let a in matchArgs) {
-			let cmdArray = matchArgs[a].split(/^([a-zA-Z]+)(=)/);
-			if(cmdArray[3]) {
-				let evalCmd = cmdArray[3].replace(/\\"/, '"');
-				try {
-					pluginArgs[cmdArray[1]] = eval(JSON.parse(evalCmd));
-				} catch (e) {
-					pluginArgs[cmdArray[1]] = eval(evalCmd);
-
-				}
-			} else {
-				pluginArgs[cmdArray[1]]={};
-			}
-		}
+	if (plugins[plugin]) {
+		let PluginComponent = plugins[plugin];
 		return (
-				<PluginComponent {...pluginArgs}/>
+				<PluginComponent {...args}/>
 
 		)
 	} else {
-		return (<h1 key={"renderError"}>NO SUCH Component {pluginId}</h1>)
+		return (<h1 key={"renderError"}>NO SUCH Component {plugin}</h1>)
 	}
 
 }

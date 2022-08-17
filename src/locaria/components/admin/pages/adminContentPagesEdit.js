@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Button from "@mui/material/Button";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useCookies} from "react-cookie";
 import Tabs from "@mui/material/Tabs";
@@ -13,7 +13,7 @@ import TokenCheck from "../components/utils/tokenCheck";
 import {TextField} from "@mui/material";
 import {useFormik} from "formik";
 import * as yup from "yup";
-import { setPages} from "../redux/slices/adminPagesSlice";
+import {setPage, setPages} from "../redux/slices/adminPagesSlice";
 import { Editor } from '@tinymce/tinymce-react';
 import EditMarkdown from "../../widgets/markdown/editMarkdown";
 
@@ -28,6 +28,7 @@ const validationSchemaEdit = yup.object({
 export default function AdminContentPagesEdit() {
 
 	const history = useHistory();
+	let {selectedPage}=useParams();
 	const page = useSelector((state) => state.adminPages.page);
 	const [pageData, setPageData] = useState({});
 	const [markdownData, setMarkdownData] = useState(undefined);
@@ -95,7 +96,6 @@ export default function AdminContentPagesEdit() {
 	}
 
 	useEffect(() => {
-
 		window.websocket.registerQueue('setPageData', (json) => {
 			dispatch(setPages(undefined));
 			history.push(`/Admin/Content/Pages`);
@@ -115,8 +115,10 @@ export default function AdminContentPagesEdit() {
 			setMarkdownData(data.data);
 			formik.setFieldValue("title",data.title);
 		});
-		if (page !== undefined) {
+		if (page !== "" && page !== undefined) {
 			getPageData();
+		} else {
+			dispatch(setPage(selectedPage));
 		}
 
 	}, [page]);
@@ -124,7 +126,7 @@ export default function AdminContentPagesEdit() {
 	const handleTabChange = (event, value) => {
 		setCurrrentTab(value);
 		//Preview
-		if (value === 1) {
+		if (value === 2) {
 			saveTempPage();
 		}
 	}
@@ -146,6 +148,7 @@ export default function AdminContentPagesEdit() {
 					<Tabs value={currentTab} onChange={(e, v) => {
 						handleTabChange(e, v)
 					}} aria-label="basic tabs example">
+						<Tab label="WYSIWYG editor"/>
 						<Tab label="Code view"/>
 						<Tab label="Preview"/>
 					</Tabs>
@@ -167,10 +170,28 @@ export default function AdminContentPagesEdit() {
 							helperText={formik.touched.title && formik.errors.title}
 						/>
 						{markdownData !== undefined &&
-							<EditMarkdown document={markdownData} onChange={setMarkdownData}></EditMarkdown>
+							<EditMarkdown mode={"wysiwyg"} document={markdownData} onChange={setMarkdownData}></EditMarkdown>
 						}
 					</TabPanel>
 					<TabPanel value={currentTab} index={1}>
+						<h1>Code Editor</h1>
+						<TextField
+							margin="dense"
+							id="title"
+							label="Page title"
+							type="text"
+							fullWidth
+							variant="standard"
+							value={formik.values.title}
+							onChange={formik.handleChange}
+							error={formik.touched.title && Boolean(formik.errors.title)}
+							helperText={formik.touched.title && formik.errors.title}
+						/>
+						{markdownData !== undefined &&
+							<EditMarkdown mode={"code"} document={markdownData} onChange={setMarkdownData}></EditMarkdown>
+						}
+					</TabPanel>
+					<TabPanel value={currentTab} index={2}>
 						<h1>Page Preview</h1>
 						<iframe id="iframeSet" style={{
 							minWidth: "800px",
