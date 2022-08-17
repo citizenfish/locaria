@@ -49,7 +49,7 @@ const AdminApp = () => {
 					<Route exact path="/Admin/Settings/Appearance"  component={AdminSettingsAppearance}/>
 					<Route exact path="/Admin/Settings/Appearance/Edit"  component={AdminSettingsAppearanceEdit}/>
 					<Route exact path="/Admin/Content/Pages"  component={AdminContentPages}/>
-					<Route exact path="/Admin/Content/Pages/Edit"  component={AdminContentPagesEdit}/>
+					<Route exact path="/Admin/Content/Pages/Edit/:selectedPage?"  component={AdminContentPagesEdit}/>
 					<Route exact path="/Admin/Content/Data"  component={AdminContentData}/>
 					<Route exact path="/Admin/Content/Data/Edit"  component={AdminContentDataEdit}/>
 					<Route exact path="/Admin/:id_token?" component={AdminHome}/>

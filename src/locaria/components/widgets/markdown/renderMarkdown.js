@@ -11,12 +11,15 @@ import TypographyItalics from "../typography/typographyItalics";
 import {ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import CircleIcon from '@mui/icons-material/Circle';
 const url = new UrlCoder();
+import ArgsSerialize from "../../../libs/argsSerialize";
+
 
 export default function RenderMarkdown({markdown}) {
+	let renderedMarkdown = [];
 
+	// OLD string formatter
 	if(typeof markdown === "string") {
 		let splitMarkdown = markdown.split('\n');
-		let renderedMarkdown = [];
 
 		for (let line in splitMarkdown) {
 			renderedMarkdown.push(ProcessLine(splitMarkdown[line]));
@@ -24,6 +27,50 @@ export default function RenderMarkdown({markdown}) {
 		//debugger;
 
 		return renderedMarkdown;
+	} else {
+		// NEW Object formatter
+		for (let obj in markdown) {
+			renderedMarkdown.push(ProcessMDObject(markdown[obj]));
+		}
+		return renderedMarkdown;
+	}
+}
+
+function ProcessMDObject(MDObject) {
+	// defaults;
+	let sx = {};
+
+	if(MDObject.sx!==undefined)
+		sx=MDObject.sx;
+
+	if(MDObject.style!==undefined) {
+		if(window.systemMain.styles[MDObject.style]) {
+			sx = window.systemMain.styles[MDObject.style];
+		} else {
+			console.info(`${MDObject.style} style is not defined!`);
+		}
+	}
+
+	switch (MDObject.type) {
+		case 'h1':
+		case 'h2':
+		case 'h3':
+		case 'h4':
+			sx.marginTop="5px";
+			sx.marginBottom="5px";
+			return(
+				<TypographyHeader sx={sx} element={MDObject.type}
+								  key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
+			);
+		case 'p':
+			break;
+		case 'plugin':
+			return(
+				<div key={`md${newUUID()}`}>
+					<RenderPlugin plugin={MDObject.plugin} args={MDObject.params}></RenderPlugin>
+				</div>
+			);
+
 	}
 	return (<></>)
 }
@@ -71,7 +118,10 @@ function newUUID() {
 
 }
 
+
+// Depreciated
 function ProcessLine(line) {
+	const ARGS=new ArgsSerialize();
 
 	// Clean any formatters
 
@@ -118,9 +168,12 @@ function ProcessLine(line) {
 	// Plugins our format %%
 	match = line.match(/^%(.*?)%/);
 	if (match) {
+		const pluginMatch = match[1].match(/^([a-zA-Z]*)\s{0,1}/);
+		let pluginArgStr = match[1].replace(pluginMatch[0], '');
+		let pluginArgs=ARGS.parse(pluginArgStr);
 		return(
 			<div key={`md${newUUID()}`}>
-				<RenderPlugin plugin={match[1]}></RenderPlugin>
+				<RenderPlugin plugin={pluginMatch[1]} args={pluginArgs}></RenderPlugin>
 			</div>
 		);
 	}
