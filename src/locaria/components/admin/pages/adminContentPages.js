@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import {useCookies} from "react-cookie";
 import {setPage, setPages} from "../redux/slices/adminPagesSlice";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid"
 
 
 const validationSchemaAdd = yup.object({
@@ -110,24 +111,32 @@ export default function AdminContentPages() {
 		<Box sx={{display: 'flex'}}>
 			<TokenCheck></TokenCheck>
 			<AdminAppBar title={`Content - Pages`}/>
+
 			<LeftNav isOpenContent={true}/>
 			<Box
 				component="main"
 				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
 
-				<Typography variant="h4" mb={1}>Page Manager</Typography>
-				<Typography>Select a page to edit or delete</Typography>
-				<PageSelector></PageSelector>
+				<Grid container spacing={2}>
+					<Grid item md={4}>
+						<Button sx={{marginRight:"5px"}} variant="outlined" color="success" onClick={() => {
+							setOpenAdd(true)
+						}}>Add New Page</Button>
+					</Grid>
+					<Grid item md={6}>
+						<Typography>The page manager allows you to edit the static pages of your Locaria site. You can add, edit or delete pages from the site using this control. The "Home" page represents the first page of the site and all other pages are linked from this.  </Typography>
+					</Grid>
+				</Grid>
+
+				<PageSelector setOpenDelete = {setOpenDelete}></PageSelector>
 				<Box sx={{paddingTop: "10px"}}>
 					<Button sx={{marginRight:"5px"}} disabled={page ? false : true} variant={"outlined"} color="success" onClick={() => {
 						if (page !== undefined) {
 							history.push(`/Admin/Content/Pages/Edit/${page}`);
 						}
 					}}>Edit</Button>
-					<Button sx={{marginRight:"5px"}} variant={"outlined"} color="warning" onClick={() => {
-						setOpenAdd(true)
-					}}>Add</Button>
+
 					<Button disabled={page ? false : true} variant={"outlined"} color="error" onClick={() => {
 						setOpenDelete(true);
 					}}>Delete</Button>
