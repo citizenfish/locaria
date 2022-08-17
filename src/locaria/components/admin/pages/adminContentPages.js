@@ -130,17 +130,6 @@ export default function AdminContentPages() {
 				</Grid>
 
 				<PageSelector setOpenDelete = {setOpenDelete}></PageSelector>
-				<Box sx={{paddingTop: "10px"}}>
-					<Button sx={{marginRight:"5px"}} disabled={page ? false : true} variant={"outlined"} color="success" onClick={() => {
-						if (page !== undefined) {
-							history.push(`/Admin/Content/Pages/Edit/${page}`);
-						}
-					}}>Edit</Button>
-
-					<Button disabled={page ? false : true} variant={"outlined"} color="error" onClick={() => {
-						setOpenDelete(true);
-					}}>Delete</Button>
-				</Box>
 
 				<Dialog open={openDelete} onClose={handleCloseDelete}>
 					<DialogTitle>Delete page</DialogTitle>

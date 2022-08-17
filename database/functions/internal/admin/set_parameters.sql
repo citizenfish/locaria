@@ -17,7 +17,10 @@ BEGIN
            COALESCE(parameters_var->>'usage', 'SYSTEM'),
            now()
     ON CONFLICT(parameter_name,usage)
-    DO UPDATE set parameter = EXCLUDED.parameter, acl = EXCLUDED.acl, usage=EXCLUDED.usage
+    DO UPDATE set parameter = EXCLUDED.parameter,
+                  acl = EXCLUDED.acl,
+                  usage = EXCLUDED.usage,
+                  last_updated = EXCLUDED.last_updated
     WHERE (acl_check(parameters_var->'acl', parameters.acl)->>'update')::BOOLEAN
     RETURNING id
     INTO id_var;
