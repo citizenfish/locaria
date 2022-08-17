@@ -5,18 +5,23 @@ import {makeStyles} from "@mui/styles";
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: '#dcbd1d'
+			main: '#074fa1'
 		},
 		secondary: {
 			main: '#328FFD',
 			lighter: '#d7f6d7'
+		},
+
+		tertiary :{
+			main: "rgb(189,123,41)",
+			lighter: "rgba(189,123,41,0.9)"
 		},
 		text: {
 			primary: '#000'
 		},
 		selection: {
 			main: "rgb(189,123,41)",
-			lighter: "rgba(189,123,41,0.9)",
+			lighter: "rgba(189,123,41,0.9)"
 		}
 	}
 });

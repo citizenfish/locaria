@@ -3,7 +3,6 @@ import React, {useEffect} from "react";
 import {setCategory,setCategories,clearCategory} from "../../redux/slices/categorySelectSlice";
 import MenuItem from "@mui/material/MenuItem";
 import {InputLabel, Select} from "@mui/material";
-import {setPage} from "../../redux/slices/adminPagesSlice";
 import FormControl from "@mui/material/FormControl";
 
 export default function CategorySelector() {

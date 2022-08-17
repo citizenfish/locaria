@@ -5,11 +5,12 @@ import Box from "@mui/material/Box";
 import TokenCheck from "../components/utils/tokenCheck";
 import {Typography, Grid, CardContent, Card,CardActionArea} from "@mui/material";
 import {useHistory} from "react-router-dom";
+import {useTheme} from "@mui/styles";
 
 export default function AdminHome() {
 
 	const history = useHistory();
-
+	const theme = useTheme()
 	return (
 		<Box sx={{display: 'flex'}}>
 			<TokenCheck></TokenCheck>
@@ -19,7 +20,6 @@ export default function AdminHome() {
 				component="main"
 				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
-			<Typography variant="h3">Locaria Administration Portal</Typography>
 				<Grid container spacing={2}>
 					<Grid item md={12}>
 						<Typography mt={2}>
@@ -28,7 +28,7 @@ export default function AdminHome() {
 					</Grid>
 					<Grid item md={4}>
 						<Card
-							style={{backgroundColor: "rgb(0,166,90)", margin: "20px"}}
+							style={{backgroundColor: theme.palette.primary.main, margin: "20px"}}
 							sx={{
 								'.MuiCardContent-root': {
 									':last-child': {
@@ -62,7 +62,7 @@ export default function AdminHome() {
 					</Grid>
 					<Grid item md={4}>
 						<Card
-							style={{backgroundColor: "rgb(0,192,239)", margin: "20px"}}
+							style={{backgroundColor:theme.palette.secondary.main, margin: "20px"}}
 							sx={{
 								'.MuiCardContent-root': {
 									':last-child': {
@@ -96,7 +96,7 @@ export default function AdminHome() {
 					</Grid>
 					<Grid item md={4}>
 						<Card
-							style={{backgroundColor: "rgb(243,156,18)", margin: "20px"}}
+							style={{backgroundColor:theme.palette.tertiary.main, margin: "20px"}}
 							sx={{
 								'.MuiCardContent-root': {
 									':last-child': {

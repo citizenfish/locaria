@@ -42,7 +42,7 @@ export default function AdminContentDataEdit() {
 			window.websocket.send({
 				"queue": "viewLoader",
 				"api": "api",
-				"data": {"method": "get_item", "fid": feature, "live": true,"id_token": cookies['id_token']}
+				"data": {"method": "get_item", "fid": feature, "live": true, "id_token": cookies['id_token']}
 			});
 		}
 
