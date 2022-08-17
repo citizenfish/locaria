@@ -59,20 +59,54 @@ function ProcessMDObject(MDObject) {
 			sx.marginTop="5px";
 			sx.marginBottom="5px";
 			return(
-				<TypographyHeader sx={sx} element={MDObject.type}
-								  key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
+				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
+			);
+		case 'br':
+			sx.display="block";
+			return(
+				<TypographyParagraph sx={sx} key={`md${newUUID()}`}/>
+			);
+		case 'divider':
+			sx.marginTop="10px";
+			sx.marginBottom="10px";
+			return(
+				<Divider sx={sx} key={`md${newUUID()}`}/>
 			);
 		case 'p':
-			break;
+			return(
+				<TypographyParagraph sx={sx} key={`md${newUUID()}`}>
+					{MDObject.children.map(n => ProcessMDObjectChild(n))}
+				</TypographyParagraph>);
 		case 'plugin':
 			return(
 				<div key={`md${newUUID()}`}>
-					<RenderPlugin plugin={MDObject.plugin} args={MDObject.params}></RenderPlugin>
+					<RenderPlugin plugin={MDObject.plugin} args={MDObject.params}/>
 				</div>
 			);
 
 	}
 	return (<></>)
+}
+
+function ProcessMDObjectChild(child) {
+	switch(child.type) {
+		case 'italic':
+			return (
+				<TypographyItalics sx={{display: "inline-block", }}
+								   key={`md${newUUID()}`}>{child.text}</TypographyItalics>
+			)
+		case 'bold':
+			return (
+				<TypographyBold sx={{display: "inline-block", }}
+								key={`md${newUUID()}`}>{child.text}</TypographyBold>
+			)
+		case 'link':
+			return (
+				<TypographyLink key={`md${newUUID()}`} sx={{display: "inline-block"}} link={child.ref}>{child.text}</TypographyLink>
+			)
+		default:
+			return <span>{child.text}</span>
+	}
 }
 
 function RecursiveFormatters(line) {

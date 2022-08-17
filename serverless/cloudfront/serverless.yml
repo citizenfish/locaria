@@ -71,7 +71,7 @@ resources:
                 - Content-Type
               QueryString: false
           CacheBehaviors:
-          - PathPattern: "*.jpg"
+          - PathPattern: "*.ico"
             AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
             CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
             TargetOriginId: WebsiteBucketOrigin
@@ -84,7 +84,7 @@ resources:
               QueryString: true
               Cookies:
                 Forward: 'all'
-          - PathPattern: "*.js"
+          - PathPattern: "/assets/*"
             AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
             CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
             TargetOriginId: WebsiteBucketOrigin
@@ -97,6 +97,20 @@ resources:
               QueryString: true
               Cookies:
                 Forward: 'all'
+          - PathPattern: "/dist/*"
+            AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: WebsiteBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: 'all'
+
           CustomErrorResponses:
             - ErrorCode: '404'
               ResponsePagePath: "/index.html"

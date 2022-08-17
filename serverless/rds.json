@@ -76,6 +76,17 @@
       ]
     },
     {
+      "dir": "renderer",
+      "outputsSitePrefix": true,
+      "outputs": {
+        "rendererAPI": "!Ref ApiGatewayRestApi"
+      },
+      "functions": [
+        "locarialRenderer.js",
+        "database.js"
+      ]
+    },
+    {
       "dir": "auroraEvents",
       "outputsSitePrefix": true,
       "outputs": {

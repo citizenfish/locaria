@@ -2,6 +2,9 @@
 	"name": "locaria-vpc",
 	"version": "1.0.0",
 	"description": "Locaria vpc",
+	"dependencies": {
+		"pg": "^8.7.1"
+	},
 	"devDependencies": {
 		"serverless-stack-output": "^0.2.3",
 		"serverless": "^2.66.1"

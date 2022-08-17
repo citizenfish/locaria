@@ -12,7 +12,9 @@ A paragraph
 
 ----------
 
-A paragraph with a [link](http://foo.com) and some other text **bolded**
+A paragraph with a [link](http://foo.com)
+and some other text **bolded**
+and some _Italics_
 
 %NavTypeSimple param1="foo" param2={"bar"}%
 

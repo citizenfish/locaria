@@ -1,4 +1,8 @@
 import ArgsSerialize from "./argsSerialize";
+import TypographyBold from "../components/widgets/typography/typographyBold";
+import React from "react";
+import TypographyItalics from "../components/widgets/typography/typographyItalics";
+import TypographyLink from "../components/widgets/typography/typographyLink";
 
 class MdSerialize {
 
@@ -92,16 +96,45 @@ class MdSerialize {
 				continue;
 			}
 
+
 			mdArray.push({
 				"type":"p",
 				sx:sx,
 				style:style,
-				"children":[
-					{ "text":textArray[line]}
-				]
+				"children":this._parseChildren(textArray[line])
 			})
 		}
 		return mdArray;
+	}
+
+	_parseChildren(line) {
+		let children=[];
+		let matches;
+
+		while(matches = line.match(/\*\*(.*?)\*\*/)) {
+			children.push({"text":line.slice(0,line.indexOf(matches[0]))});
+			line=line.slice(line.indexOf(matches[0]));
+			line=line.replace(matches[0],'');
+			children.push({"text":matches[1],"type":"bold"});
+		}
+
+		while(matches = line.match(/_(.*?)_/)) {
+			children.push({"text":line.slice(0,line.indexOf(matches[0]))});
+			line=line.slice(line.indexOf(matches[0]));
+			line=line.replace(matches[0],'');
+			children.push({"text":matches[1],"type":"italic"});
+		}
+
+		while(matches=line.match(/\[(.*?)\]\((.*?)\)/)) {
+			children.push({"text":line.slice(0,line.indexOf(matches[0]))});
+			line=line.slice(line.indexOf(matches[0]));
+			line=line.replace(matches[0],'');
+			children.push({"text":matches[1],"type":"link","ref":matches[2]});
+		}
+
+		if(line.length>0)
+			children.push({"text":line});
+		return children;
 	}
 
 	stringify(json) {
@@ -132,7 +165,7 @@ class MdSerialize {
 					break;
 				case 'p':
 					////// need multi kids
-					string+=`${json[i].children[0].text}`;
+					string+=this._stringifyChildren(json[i].children);
 					string+='\n';
 					break;
 				case 'divider':
@@ -150,6 +183,27 @@ class MdSerialize {
 
 		}
 		return string;
+	}
+
+	_stringifyChildren(children) {
+		let string='';
+		for(let child in children) {
+			string+=this._stringifyChild(children[child]);
+		}
+		return string;
+	}
+
+	_stringifyChild(child) {
+		switch(child.type) {
+			case 'italic':
+				return `_${child.text}_`;
+			case 'link':
+				return `[${child.text}](${child.ref})`;
+			case 'bold':
+				return `**${child.text}**`;
+			default:
+				return child.text;
+		}
 	}
 
 }
