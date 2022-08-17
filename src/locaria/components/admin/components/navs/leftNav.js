@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect,useState} from 'react';
 
 import {Badge, Collapse, Drawer, ListItemButton} from "@mui/material";
 import Divider from "@mui/material/Divider";
@@ -13,34 +13,39 @@ import EditIcon from "@mui/icons-material/Edit";
 import {useHistory} from "react-router-dom";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import {useCookies} from "react-cookie";
-import {setEditFeatureData} from "../../../../../deprecated/editFeatureDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {setOverview} from "../../redux/slices/adminPagesSlice";
 
-export default function LeftNav({isOpenContent,isOpenSettings}) {
+export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 
-	const [openContent, setOpenContent] = React.useState(isOpenContent||false);
-	const [openSettings, setOpenSettings] = React.useState(isOpenSettings||false);
+	const [openContent, setOpenContent] = useState(isOpenContent || false)
+	const [openSettings, setOpenSettings] = useState(isOpenSettings || false)
+	const [openImport, setOpenImport] = useState(isOpenImport || false)
 
-	const overview = useSelector((state) => state.adminPages.overview);
-
+	const overview = useSelector((state) => state.adminPages.overview)
 	const dispatch = useDispatch()
-
-
 	const [cookies, setCookies] = useCookies(['location'])
 
 	const handleClickContent = () => {
-		setOpenSettings(false);
-		setOpenContent(true);
+		setOpenSettings(false)
+		setOpenImport( false)
+		setOpenContent(true)
 		history.push(`/Admin/Content/Pages`);
 	};
 
 	const handleClickSettings = () => {
-		setOpenContent(false);
-		setOpenSettings(true);
+		setOpenContent(false)
+		setOpenImport(false)
+		setOpenSettings(true)
 		history.push(`/Admin/Settings/Appearance`);
 	};
 
+	const handleClickImport = () => {
+		setOpenContent(false)
+		setOpenSettings(false)
+		setOpenImport(true)
+		history.push(`/Admin/Import/Upload`);
+	}
 
 	useEffect(() => {
 
@@ -59,7 +64,6 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 			});
 		}
 	},[overview]);
-
 
 	const history = useHistory();
 	return (
@@ -103,7 +107,8 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 
 				<ListItemButton  onClick={() => {
 					handleClickContent();
-				}}>
+				}}
+				>
 					<ListItemIcon>
 						<EditIcon/>
 					</ListItemIcon>
@@ -124,7 +129,7 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 							history.push(`/Admin/Content/Data`);
 						}}>
 							<ListItemIcon>
-								<Badge badgeContent={overview? overview.update_item:0} color="primary" showZero>
+								<Badge badgeContent={overview ? overview.update_item : 0} color="primary" showZero>
 									<StorageIcon/>
 								</Badge>
 							</ListItemIcon>
@@ -133,18 +138,18 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 					</List>
 				</Collapse>
 
-				{/*Settings*/}
+				{/*Import/Export*/}
 
 				<ListItemButton  onClick={() => {
-					handleClickSettings();
+					handleClickImport();
 				}}>
 					<ListItemIcon>
 						<EditIcon/>
 					</ListItemIcon>
 					<ListItemText primary={"Import/Export"}/>
-					{openSettings ? <ExpandLess /> : <ExpandMore />}
+					{openImport ? <ExpandLess /> : <ExpandMore />}
 				</ListItemButton>
-				<Collapse in={openSettings} timeout="auto" unmountOnExit>
+				<Collapse in={openImport} timeout="auto" unmountOnExit>
 					<List component="div">
 						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
 							history.push(`/Admin/API/Settings`);
@@ -173,6 +178,7 @@ export default function LeftNav({isOpenContent,isOpenSettings}) {
 					</List>
 				</Collapse>
 
+				{/* Settings */}
 				<ListItemButton  onClick={() => {
 					handleClickSettings();
 				}}>
