@@ -82,7 +82,8 @@
         "rendererAPI": "!Ref ApiGatewayRestApi"
       },
       "functions": [
-        "locarialRenderer.js"
+        "locarialRenderer.js",
+        "database.js"
       ]
     },
     {

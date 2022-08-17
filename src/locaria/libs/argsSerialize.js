@@ -26,8 +26,9 @@ class ArgsSerialize {
 	stringify(json) {
 		let string='';
 		for(let i in json) {
-			string+=`${i}=${JSON.stringify(json[i])}`;
+			string+=`${i}=${JSON.stringify(json[i])} `;
 		}
+		string=string.replace(/\s$/,'');
 		return string;
 	}
 }

@@ -47,14 +47,13 @@ functions:
         - ${file(../outputs/${self:custom.stage}-outputs.json):vpcPrivateSubnetB}
     events:
       - http:
-          path: /
+          path: /Admin/{proxy+}
           method: GET
       - http:
-          path: /index.html
+          path: /{proxy+}
           method: GET
-      - http:
-          path: /Admin/index.html
-          method: GET
+
+
 
 
 plugins:

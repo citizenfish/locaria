@@ -21,8 +21,12 @@ import EditMarkdown from "../../widgets/markdown/editMarkdown";
 const validationSchemaEdit = yup.object({
 	title: yup
 		.string('Enter page title')
-		.min(3, 'Title should 3 of more characters')
+		.min(3, 'Title should 3 or more characters')
 		.required('Title is required'),
+	description: yup
+		.string('Enter page description')
+		.min(10, 'Description should 10 or more characters')
+		.required('Description is required'),
 });
 
 export default function AdminContentPagesEdit() {
@@ -38,7 +42,8 @@ export default function AdminContentPagesEdit() {
 
 	const formik = useFormik({
 		initialValues: {
-			title: ""
+			title: "",
+			description:"",
 		},
 		validationSchema: validationSchemaEdit,
 		onSubmit: (values) => {
@@ -71,7 +76,8 @@ export default function AdminContentPagesEdit() {
 				"usage": "Page",
 				"parameters": {
 					"data": markdownData,
-					"title": values.title
+					"title": values.title,
+					"description": values.description
 				}
 			}
 		});
@@ -89,7 +95,9 @@ export default function AdminContentPagesEdit() {
 				"usage": "Temp",
 				"parameters": {
 					"data": markdownData,
-					"title": pageData.title
+					"title": pageData.title,
+					"description": pageData.description,
+
 				}
 			}
 		});
@@ -114,6 +122,7 @@ export default function AdminContentPagesEdit() {
 			setPageData(data);
 			setMarkdownData(data.data);
 			formik.setFieldValue("title",data.title);
+			formik.setFieldValue("description",data.description);
 		});
 		if (page !== "" && page !== undefined) {
 			getPageData();
@@ -168,6 +177,18 @@ export default function AdminContentPagesEdit() {
 							onChange={formik.handleChange}
 							error={formik.touched.title && Boolean(formik.errors.title)}
 							helperText={formik.touched.title && formik.errors.title}
+						/>
+						<TextField
+							margin="dense"
+							id="description"
+							label="Page description (SEO)"
+							type="text"
+							fullWidth
+							variant="standard"
+							value={formik.values.description}
+							onChange={formik.handleChange}
+							error={formik.touched.description && Boolean(formik.errors.description)}
+							helperText={formik.touched.description && formik.errors.description}
 						/>
 						{markdownData !== undefined &&
 							<EditMarkdown mode={"wysiwyg"} document={markdownData} onChange={setMarkdownData}></EditMarkdown>
