@@ -57,8 +57,6 @@ const  AdminEditFeatureDrawer = (props) => {
 			dispatch(closeDashboardDrawer());
 			dispatch(closeAdminCategoryDrawer());
 			dispatch(closeLanguageDrawer());
-
-
 			dispatch(setTitle('Feature Edit'));
 
 		}

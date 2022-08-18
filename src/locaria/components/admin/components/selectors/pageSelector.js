@@ -2,7 +2,9 @@ import {useDispatch, useSelector} from "react-redux"
 import {useCookies} from "react-cookie"
 import React, {useEffect} from "react"
 import {setPage, setPages} from "../../redux/slices/adminPagesSlice"
-import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid"
+//import { DataGrid, GridToolbarQuickFilter, gridClasses } from "@mui/x-data-grid"
+//import { alpha, styled } from '@mui/material/styles';
+import StripedDataGrid from "../../../widgets/data/stripeDataGrid";
 import Box from "@mui/material/Box"
 import Link from '@mui/material/Link'
 import Button from "@mui/material/Button"
@@ -116,31 +118,12 @@ export default function PageSelector(props) {
 	return (
 		<Box sx={{ height: '800px', width: 1, mt: '40px'}}>
 			{pages &&
-			<DataGrid columns={columns}
+			<StripedDataGrid
+					  columns={columns}
 					  rows={pages}
-					  disableColumnSelector
-					  disableDensitySelector
-					  components={{Toolbar: GridToolbarQuickFilter}}
 				/>
 			}
 		</Box>
 
 	)
 }
-
-/*
-		<FormControl style={{minWidth: 400, marginTop: 20}}>
-			<InputLabel id="locaria-page-select-label">Edit Page</InputLabel>
-			<Select
-				labelId="locaria-page-select-label"
-				id="locaria-page-select"
-				value={page}
-				label="Page"
-				onChange={(e) => {
-					dispatch(setPage(e.target.value));
-				}}
-			>
-				{pageList}
-			</Select>
-		</FormControl>
- */
