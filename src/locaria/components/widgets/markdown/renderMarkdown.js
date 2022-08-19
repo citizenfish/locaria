@@ -38,6 +38,8 @@ export default function RenderMarkdown({markdown,mode="display"}) {
 }
 
 function ProcessMDObject(MDObject,mode) {
+	const ARGS=new ArgsSerialize();
+
 	// defaults;
 	let sx = {};
 
@@ -54,46 +56,55 @@ function ProcessMDObject(MDObject,mode) {
 
 	switch (MDObject.type) {
 		case 'h1':
-			sx.marginTop="5px";
-			sx.marginBottom="5px";
-			return(
-				//<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{mode==='editor'? '# ':''}{MDObject.children[0].text}</TypographyHeader>
-				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
-			);
 		case 'h2':
-			sx.marginTop="5px";
-			sx.marginBottom="5px";
-			return(
-				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
-			);
 		case 'h3':
-			sx.marginTop="5px";
-			sx.marginBottom="5px";
-			return(
-				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
-			);
 		case 'h4':
 			sx.marginTop="5px";
 			sx.marginBottom="5px";
-			return(
-				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
-			);
+			if(mode==='display') {
+				return (
+					<TypographyHeader sx={sx} element={MDObject.type}
+									  key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
+				);
+			} else {
+				return (
+					<h1 data-style={MDObject.style} style={{"color":sx.color}}>{MDObject.children[0].text}</h1>
+				)
+			}
 		case 'br':
 			sx.display="block";
-			return(
-				<TypographyParagraph sx={sx} key={`md${newUUID()}`}/>
-			);
+			if(mode==='display') {
+				return (
+					<TypographyParagraph sx={sx} key={`md${newUUID()}`}/>
+				);
+			} else {
+				return (
+					<br data-style={MDObject.style}/>
+				)
+			}
 		case 'divider':
 			sx.marginTop="10px";
 			sx.marginBottom="10px";
-			return(
-				<Divider sx={sx} key={`md${newUUID()}`}/>
-			);
+			if(mode==='display') {
+				return (
+					<Divider sx={sx} key={`md${newUUID()}`}/>
+				)
+			} else {
+				return (
+					<hr data-style={MDObject.style}/>
+				)
+			}
 		case 'p':
-			return(
-				<TypographyParagraph sx={sx} key={`md${newUUID()}`}>
-					{MDObject.children.map(n => ProcessMDObjectChild(n))}
-				</TypographyParagraph>);
+			if(mode==='display') {
+				return (
+					<TypographyParagraph sx={sx} key={`md${newUUID()}`}>
+						{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}
+					</TypographyParagraph>);
+			} else {
+				return (
+					<div data-style={MDObject.style}>{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}</div>
+				)
+			}
 		case 'plugin':
 			if(mode==='display') {
 				return (
@@ -103,10 +114,7 @@ function ProcessMDObject(MDObject,mode) {
 				);
 			} else {
 				return (
-					<Stack direction="row" spacing={1} contentEditable={false}>
-						<Chip label={MDObject.plugin} onDelete={handleDelete} />
-						<RenderPluginParams params={MDObject.params}/>
-					</Stack>
+					<div style={{border:"1px solid black","padding":"5px"}} data-plugin={MDObject.plugin} data-params={ARGS.stringify(MDObject.params)}>{MDObject.plugin}</div>
 				)
 			}
 
@@ -127,24 +135,44 @@ function handleDelete(e) {
 }
 
 
-function ProcessMDObjectChild(child) {
+function ProcessMDObjectChild(child,mode) {
 	switch(child.type) {
+		case 'br':
+			if(mode==='display') {
+				return (
+					<br/>
+				);
+			} else {
+				return (
+					<br/>
+				)
+			}
 		case 'italic':
-			return (
-				<TypographyItalics sx={{display: "inline-block", }}
-								   key={`md${newUUID()}`}>{child.text}</TypographyItalics>
-			)
+			if(mode==='display') {
+				return (
+					<TypographyItalics sx={{display: "inline-block",}}
+									   key={`md${newUUID()}`}>{child.text}</TypographyItalics>
+				)
+			} else {
+				return (<i>{child.text}</i>);
+			}
 		case 'bold':
-			return (
-				<TypographyBold sx={{display: "inline-block", }}
-								key={`md${newUUID()}`}>{child.text}</TypographyBold>
-			)
+			if(mode==='display') {
+				return (
+					<TypographyBold sx={{display: "inline-block",}}
+									key={`md${newUUID()}`}>{child.text}</TypographyBold>
+				)
+			}else {
+				return (
+					<b>{child.text}</b>
+				)
+			}
 		case 'link':
 			return (
 				<TypographyLink key={`md${newUUID()}`} sx={{display: "inline-block"}} link={child.ref}>{child.text}</TypographyLink>
 			)
 		default:
-			return <span>{child.text}</span>
+			return child.text
 	}
 }
 

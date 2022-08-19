@@ -13,9 +13,10 @@ import TokenCheck from "../components/utils/tokenCheck";
 import {TextField} from "@mui/material";
 import {useFormik} from "formik";
 import * as yup from "yup";
-import {setPage, setPages} from "../redux/slices/adminPagesSlice";
+import {setEditor, setPage, setPages} from "../redux/slices/adminPagesSlice";
 import { Editor } from '@tinymce/tinymce-react';
 import EditMarkdown from "../../widgets/markdown/editMarkdown";
+import MdSerialize from "../../../libs/mdSerialize";
 
 
 const validationSchemaEdit = yup.object({
@@ -30,6 +31,8 @@ const validationSchemaEdit = yup.object({
 });
 
 export default function AdminContentPagesEdit() {
+
+	const MD = new MdSerialize();
 
 	const history = useHistory();
 	let {selectedPage}=useParams();
@@ -65,6 +68,13 @@ export default function AdminContentPagesEdit() {
 	}
 
 	const savePage = (values) => {
+
+		let element=document.getElementById("EditorHTML");
+		let obj=MD.parseHTML(element);
+		dispatch(setEditor(undefined));
+
+		debugger;
+
 		window.websocket.send({
 			"queue": "setPageData",
 			"api": "sapi",
@@ -75,7 +85,7 @@ export default function AdminContentPagesEdit() {
 				id_token: cookies['id_token'],
 				"usage": "Page",
 				"parameters": {
-					"data": markdownData,
+					"data": obj,
 					"title": values.title,
 					"description": values.description
 				}
@@ -191,7 +201,7 @@ export default function AdminContentPagesEdit() {
 							helperText={formik.touched.description && formik.errors.description}
 						/>
 						{markdownData !== undefined &&
-							<EditMarkdown mode={"wysiwyg"} document={markdownData} onChange={setMarkdownData}></EditMarkdown>
+							<EditMarkdown id={"EditorHTML"} mode={"wysiwyg"} document={markdownData}></EditMarkdown>
 						}
 					</TabPanel>
 					<TabPanel value={currentTab} index={1}>
@@ -209,7 +219,7 @@ export default function AdminContentPagesEdit() {
 							helperText={formik.touched.title && formik.errors.title}
 						/>
 						{markdownData !== undefined &&
-							<EditMarkdown mode={"code"} document={markdownData} onChange={setMarkdownData}></EditMarkdown>
+							<EditMarkdown id={"EditorMD"} mode={"code"} document={markdownData}></EditMarkdown>
 						}
 					</TabPanel>
 					<TabPanel value={currentTab} index={2}>
@@ -226,8 +236,11 @@ export default function AdminContentPagesEdit() {
 
 					<Box sx={{paddingTop: "10px"}}>
 						<Button variant={"contained"} color="success" type="submit" onClick={() => {
-
 						}}>Save</Button>
+						<Button variant={"contained"} color="warning" onClick={() => {
+							let element=document.getElementById("EditorHTML");
+							element.innerHTML='';
+						}}>Clear</Button>
 						<Button variant={"contained"} color="error" onClick={() => {
 							history.push(`/Admin/Content/Pages`);
 						}}>Cancel</Button>

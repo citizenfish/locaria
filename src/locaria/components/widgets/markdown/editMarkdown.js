@@ -10,11 +10,11 @@ import TypographyHeader from "../typography/typographyHeader";
 import RenderMarkdown from "./renderMarkdown";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
+import Button from "@mui/material/Button";
 
-export default function EditMarkdown({document, onChange, mode}) {
+export default function EditMarkdown({document, mode, id}) {
 
 	const dispatch = useDispatch();
-	const [position,setPosition]=useState(undefined);
 
 	const MD = new MdSerialize();
 	let documentActual = document;
@@ -22,18 +22,21 @@ export default function EditMarkdown({document, onChange, mode}) {
 		documentActual = MD.parse(document)
 
 	//console.log(documentActual);
-	const editor = useSelector((state) => state.adminPages.editor);
+	//const editor = useSelector((state) => state.adminPages.editor);
 
-	//const [editor,setEditor]=useState(documentActual);
+	const [editor, setEditor] = useState(documentActual);
 	useEffect(() => {
 		if (editor === undefined)
-			dispatch(setEditor(documentActual));
-		if(position&&position.line)
-			setCaretPosition('setCaretPosition',position)
+			setEditor(documentActual)
+		//dispatch(setEditor(documentActual));
+		/*	if(position&&position.line)
+				setCaretPosition('setCaretPosition',position)*/
 
 	}, [editor]);
 
+
 	const InputEvent = (e) => {
+		return;
 		//console.log(e.currentTarget.innerText)
 		let pos = getCaretIndex(e.currentTarget);
 		let line = getCaretLine(e.currentTarget.innerText, pos);
@@ -43,7 +46,7 @@ export default function EditMarkdown({document, onChange, mode}) {
 		// Added a char
 		let current = JSON.parse(JSON.stringify(editor));
 
-		if(e.key.length===1) {
+		if (e.key.length === 1) {
 			if (current[line.line].children[0]) {
 				let currentText = current[line.line].children[0].text;
 				current[line.line].children[0].text = currentText.slice(0, line.pos + 1) + e.key + currentText.slice(line.pos + 1);
@@ -54,9 +57,9 @@ export default function EditMarkdown({document, onChange, mode}) {
 			dispatch(setEditor(current));
 
 		}
-		if(e.keyCode===13) {
-			current.splice(line.line+1, 0, {
-				"type":"br"
+		if (e.keyCode === 13) {
+			current.splice(line.line + 1, 0, {
+				"type": "br"
 			});
 			e.preventDefault();
 			dispatch(setEditor(current));
@@ -69,34 +72,87 @@ export default function EditMarkdown({document, onChange, mode}) {
 
 
 	return (
-		<Grid container spacing={2} sx={{marginTop: "20px"}}>
-			<Grid item md={2}>
-				<List>
-					<MakeLineButtons json={editor}/>
-				</List>
-			</Grid>
-			<Grid item md={8}>
-				<Box id="MDEditor" onKeyDown={(e) => {
-					InputEvent(e);
-				}} sx={{
-					border: "1px solid black",
-					width: "100%",
-					height: "500px",
-					whiteSpace: "pre",
-					padding: "5px",
-					overflow: "scroll",
-				}} contentEditable={true}
-				>{mode === 'wysiwyg' ? <RenderMarkdown markdown={editor} mode={"editor"}/> : MD.stringify(editor)}</Box>
-			</Grid>
-		</Grid>
-	);
+		<Box sx={{
+			width:"1200px"
+		}}>
+			<Box>
+				<Button variant={"outlined"} onClick={()=>{pressHeader('h1')}}>h1</Button>
+				<Button variant={"outlined"} onClick={()=>{pressHeader('h2')}}>h2</Button>
+				<Button variant={"outlined"} onClick={()=>{pressHeader('h3')}}>h3</Button>
+				<Button variant={"outlined"} onClick={()=>{pressHeader('h4')}}>h4</Button>
+				<Button variant={"outlined"} onClick={()=>{pressBold()}}>BOLD</Button>
+				<Button variant={"outlined"} onClick={()=>{pressItalic()}}>Italic</Button>
+				<Button variant={"outlined"} onClick={()=>{pressHR()}}>HR</Button>
+				<Button variant={"outlined"} onClick={()=>{pressPlugin("NavTypeSimple")}}>Plugin: NavTypeSimple</Button>
+				<RenderStyles/>
+			</Box>
+			<Box id={id} onKeyDown={(e) => {
+				InputEvent(e);
+			}} sx={{
+				border: "1px solid black",
+				width: "100%",
+				height: "500px",
+				whiteSpace: "pre",
+				padding: "5px",
+				overflow: "scroll",
+			}} contentEditable={true}
+			>{mode === 'wysiwyg' ? <RenderMarkdown markdown={editor} mode={"editor"}/> : MD.stringify(editor)}</Box>
+		</Box>
 
+	);
 
 }
 
+function RenderStyles() {
+	let styleArray=[];
+	for(let style in window.systemMain.styles) {
+		styleArray.push(
+			<Button variant={"contained"} onClick={()=>{pressStyle(style)}}>{style}</Button>
+		)
+
+	}
+	return styleArray;
+}
+
+function pressPlugin(plugin) {
+	document.execCommand( "insertHTML", false, `<div>${plugin}</div>` );
+	let selectedElement = window.getSelection().focusNode.parentNode;
+	selectedElement.style.border="1px solid black";
+	selectedElement.style.passinf="5px";
+	selectedElement.setAttribute('data-params',"foo=\"bar\"");
+	selectedElement.setAttribute('data-plugin',plugin);
+}
+
+
+function pressHR() {
+	document.execCommand( "insertHTML", false, "<hr>" );
+}
+
+function pressBold() {
+	document.execCommand('bold', false);
+}
+
+function pressItalic() {
+	document.execCommand('italic', false);
+}
+
+function pressHeader(command) {
+	document.execCommand('formatBlock', false, command);
+}
+function pressStyle(style) {
+	document.execCommand( "copy", false, "" );
+	let selectedElement = window.getSelection().focusNode.parentNode;
+	if(window.systemMain.styles[style]&&window.systemMain.styles[style].color)
+		selectedElement.style.color=window.systemMain.styles[style].color;
+	else
+		selectedElement.style.color='';
+	selectedElement.setAttribute('data-style',style);
+}
+/* REWRITE OLD CODE
+
 function MakeLineButtons({json}) {
-	let lineButtons=[];
-	for(let obj in json) {
+	let lineButtons = [];
+	for (let obj in json) {
 		lineButtons.push(<ListItem>
 			<ListItemText
 				primary={json[obj].type}
@@ -106,7 +162,7 @@ function MakeLineButtons({json}) {
 	return lineButtons;
 }
 
-function setCaretPosition(id,pos) {
+function setCaretPosition(id, pos) {
 	//debugger;
 	let element = document.getElementById("MDEditor");
 	let range = document.createRange();
@@ -134,7 +190,7 @@ function getCaretLine(text, position) {
 			//console.log(`${text[pos]}[${pos}]`);
 		}
 	}
-	return {line: line-1, pos: linePos - 2,actual:position};
+	return {line: line - 1, pos: linePos - 2, actual: position};
 }
 
 function getCaretIndex(element) {
@@ -152,4 +208,5 @@ function getCaretIndex(element) {
 	}
 	return position;
 }
+*/
 

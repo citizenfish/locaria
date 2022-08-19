@@ -9,6 +9,73 @@ class MdSerialize {
 	constructor() {
 	}
 
+	parseHTML(html) {
+		const ARGS=new ArgsSerialize();
+		let mdArray=[];
+
+		for(let child in html.children) {
+			switch(html.children[child].localName) {
+				case 'h1':
+				case 'h2':
+				case 'h3':
+				case 'h4':
+					mdArray.push({
+						"type":html.children[child].localName,
+						"style":html.children[child].dataset.style,
+						"children":[
+							{ "text":html.children[child].innerText}
+						]
+					});
+					break;
+				case 'div':
+					if(html.children[child].dataset.plugin) {
+						let pluginArgs=ARGS.parse(html.children[child].dataset.params);
+						mdArray.push({
+							"type":"plugin",
+							"plugin":html.children[child].dataset.plugin,
+							"params":pluginArgs
+						})
+					} else {
+						mdArray.push({
+							"type": "p",
+							"style": html.children[child].dataset.style,
+							"children": this._parseHTMLChildren(html.children[child])
+						});
+					}
+					break;
+				case 'hr':
+					mdArray.push({
+						"type":"divider",
+						"style":html.children[child].dataset.style,
+					});
+			}
+
+		}
+		return mdArray;
+	}
+
+	_convertNodeType(value) {
+		switch(value) {
+			case '#text': return "text";
+			case 'B': return "bold";
+			case 'I': return "italic";
+			case 'BR': return "br";
+			default:
+				debugger;
+		}
+	}
+
+	_parseHTMLChildren(node) {
+		let nodes=[];
+		if(node.childNodes.length===0) {
+			return [{ "text":node.innerText}]
+		}
+		for(let child=0;child<node.childNodes.length;child++) {
+			nodes.push({"text":node.childNodes[child].nodeType===3? node.childNodes[child].textContent:node.childNodes[child].innerText,"type":this._convertNodeType(node.childNodes[child].nodeName)})
+		}
+		return nodes;
+	}
+
 	/**
 	 * Take text and convert to object
 	 * @param text
@@ -137,14 +204,14 @@ class MdSerialize {
 		return children;
 	}
 
-	stringify(json) {
+	stringify(json,codes=false) {
 		const ARGS=new ArgsSerialize();
 
 		let string='';
 		for(let i in json) {
-			if(json[i].style!==undefined)
+			if(json[i].style!==undefined&&codes===false)
 				string+=`&${json[i].style}&`;
-			if(json[i].sx!==undefined)
+			if(json[i].sx!==undefined&&codes===false)
 				string+=`${JSON.stringify(json[i].sx)}`;
 			switch(json[i].type) {
 				case 'h1':
