@@ -8,13 +8,14 @@ import { v4 as uuidv4 } from 'uuid';
 import TypographyLink from "../typography/typographyLink";
 import TypographyBold from "../typography/typographyBold";
 import TypographyItalics from "../typography/typographyItalics";
-import {ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {ListItem, ListItemButton, ListItemIcon, ListItemText, Stack} from "@mui/material";
 import CircleIcon from '@mui/icons-material/Circle';
 const url = new UrlCoder();
 import ArgsSerialize from "../../../libs/argsSerialize";
+import Chip from "@mui/material/Chip";
 
 
-export default function RenderMarkdown({markdown}) {
+export default function RenderMarkdown({markdown,mode="display"}) {
 	let renderedMarkdown = [];
 
 	// OLD string formatter
@@ -30,13 +31,13 @@ export default function RenderMarkdown({markdown}) {
 	} else {
 		// NEW Object formatter
 		for (let obj in markdown) {
-			renderedMarkdown.push(ProcessMDObject(markdown[obj]));
+			renderedMarkdown.push(ProcessMDObject(markdown[obj],mode));
 		}
 		return renderedMarkdown;
 	}
 }
 
-function ProcessMDObject(MDObject) {
+function ProcessMDObject(MDObject,mode) {
 	// defaults;
 	let sx = {};
 
@@ -53,8 +54,24 @@ function ProcessMDObject(MDObject) {
 
 	switch (MDObject.type) {
 		case 'h1':
+			sx.marginTop="5px";
+			sx.marginBottom="5px";
+			return(
+				//<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{mode==='editor'? '# ':''}{MDObject.children[0].text}</TypographyHeader>
+				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
+			);
 		case 'h2':
+			sx.marginTop="5px";
+			sx.marginBottom="5px";
+			return(
+				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
+			);
 		case 'h3':
+			sx.marginTop="5px";
+			sx.marginBottom="5px";
+			return(
+				<TypographyHeader sx={sx} element={MDObject.type} key={`md${newUUID()}`}>{MDObject.children[0].text}</TypographyHeader>
+			);
 		case 'h4':
 			sx.marginTop="5px";
 			sx.marginBottom="5px";
@@ -78,15 +95,37 @@ function ProcessMDObject(MDObject) {
 					{MDObject.children.map(n => ProcessMDObjectChild(n))}
 				</TypographyParagraph>);
 		case 'plugin':
-			return(
-				<div key={`md${newUUID()}`}>
-					<RenderPlugin plugin={MDObject.plugin} args={MDObject.params}/>
-				</div>
-			);
+			if(mode==='display') {
+				return (
+					<div key={`md${newUUID()}`}>
+						<RenderPlugin plugin={MDObject.plugin} args={MDObject.params}/>
+					</div>
+				);
+			} else {
+				return (
+					<Stack direction="row" spacing={1} contentEditable={false}>
+						<Chip label={MDObject.plugin} onDelete={handleDelete} />
+						<RenderPluginParams params={MDObject.params}/>
+					</Stack>
+				)
+			}
 
 	}
 	return (<></>)
 }
+
+function RenderPluginParams({params}) {
+	let paramsArray=[];
+	for(let p in params) {
+		paramsArray.push(<Chip label={`${p}=${params[p]}`} color="success"/>);
+	}
+	return paramsArray;
+}
+
+function handleDelete(e) {
+	console.log(e);
+}
+
 
 function ProcessMDObjectChild(child) {
 	switch(child.type) {
