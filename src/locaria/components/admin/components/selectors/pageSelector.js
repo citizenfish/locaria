@@ -4,7 +4,7 @@ import React, {useEffect} from "react"
 import {setPage, setPages} from "../../redux/slices/adminPagesSlice"
 //import { DataGrid, GridToolbarQuickFilter, gridClasses } from "@mui/x-data-grid"
 //import { alpha, styled } from '@mui/material/styles';
-import StripedDataGrid from "../../../widgets/data/stripeDataGrid";
+import StripedDataGrid from "../../../widgets/data/stripedDataGrid";
 import Box from "@mui/material/Box"
 import Link from '@mui/material/Link'
 import Button from "@mui/material/Button"
@@ -61,8 +61,6 @@ export default function PageSelector(props) {
 					</Button>
 				</Grid>
 			</Grid>
-
-
 		)
 	}
 	const columns = [

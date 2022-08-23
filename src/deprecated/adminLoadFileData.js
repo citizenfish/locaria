@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import LinearProgressWithLabel from './LinearProgress';
+import LinearProgressWithLabel from '../locaria/components/admin/components/utils/LinearProgress';
 import Box from "@mui/material/Box";
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";

@@ -165,7 +165,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 							<ListItemIcon>
 								<ArticleIcon/>
 							</ListItemIcon>
-							<ListItemText primary={"Upload"}/>
+							<ListItemText primary={"File Manager"}/>
 						</ListItemButton>
 						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
 							history.push(`/Admin/Import/Download`);
@@ -185,7 +185,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 					<ListItemIcon>
 						<EditIcon/>
 					</ListItemIcon>
-					<ListItemText primary={"Settings"}/>
+					<ListItemText primary={"Site Manager"}/>
 					{openSettings && <ExpandMore/>}
 				</ListItemButton>
 				<Collapse in={openSettings} timeout="auto" unmountOnExit>
@@ -196,7 +196,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 							<ListItemIcon>
 								<ArticleIcon/>
 							</ListItemIcon>
-							<ListItemText primary={"Appearance"}/>
+							<ListItemText primary={"Styles"}/>
 						</ListItemButton>
 					</List>
 				</Collapse>

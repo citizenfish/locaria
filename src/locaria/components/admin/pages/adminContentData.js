@@ -5,30 +5,21 @@ import LeftNav from "../components/navs/leftNav";
 import {useHistory, useParams} from "react-router-dom";
 import TokenCheck from "../components/utils/tokenCheck";
 import {useCookies} from "react-cookie";
-import {setEditData} from "../../../../deprecated/editDrawerSlice";
-import {DataGrid} from "@mui/x-data-grid";
-import {openEditFeatureDrawer} from "../../../../deprecated/editFeatureDrawerSlice";
 import {setFeature} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Typography from "@mui/material/Typography";
 import CategorySelector from "../components/selectors/categorySelector";
+import StripedDataGrid from "../../widgets/data/stripedDataGrid";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 
-const columns = [
-	{field: 'id', headerName: 'FID', width: 75},
-	{field: 'title', headerName: 'Title', width: 300},
-	{field: 'text', headerName: 'Description', width: 300},
-	{field: 'category', headerName: 'Category', width: 150},
-/*
-	{field: 'geometry', headerName: 'Geometry', renderCell: viewGeometry, width: 200},
-*/
-	{field: 'tags', headerName: 'Tags', width: 100}
-]
+
 
 export default function AdminContentData() {
 
 	const [offset, setOffset] = useState(0)
 	const [limit, setLimit] = useState(1000)
-	const [features, setFeatures] = useState(undefined)
+	const [features, setFeatures] = useState([])
 	const [searchText, setSearchText] = useState('')
 	const category = useSelector((state) => state.categorySelect.currentSelected);
 
@@ -38,7 +29,46 @@ export default function AdminContentData() {
 	const dispatch = useDispatch()
 	const history = useHistory();
 
+	const selectRow = (row) => {
+		dispatch(setFeature(row.id));
+		history.push(`/Admin/Content/Data/Edit`);
+	}
+	const dataActions = (params) => {
+		let id = params.row.id
 
+		return (
+			<Grid container>
+				<Grid item md={4}>
+					<Button variant="outlined"
+							color="success"
+							size="small"
+							onClick={() => {
+								selectRow(id)
+							}}>
+						Edit
+					</Button>
+				</Grid>
+				<Grid item md={4}>
+					<Button variant="outlined"
+							color="error"
+							size="small"
+							onClick={() => {
+
+							}}>
+						Delete
+					</Button>
+				</Grid>
+			</Grid>
+		)
+	}
+
+	const columns = [
+		{field: 'id', headerName: 'FID', width: 75},
+		{field: 'title', headerName: 'Title', width: 300},
+		{field: 'text', headerName: 'Description', width: 300},
+		{field: 'category', headerName: 'Category', width: 150},
+		{field: 'actions', headerName: 'Actions', width: 250, renderCell: dataActions}
+	]
 
 	useEffect(() => {
 		window.websocket.registerQueue('getFeatures', (json) => {
@@ -68,11 +98,7 @@ export default function AdminContentData() {
 		})
 	}
 
-	const selectRow = (row) => {
-		console.log(row);
-		dispatch(setFeature(row.id));
-		history.push(`/Admin/Content/Data/Edit`);
-	}
+
 
 	return (
 
@@ -85,10 +111,17 @@ export default function AdminContentData() {
 				component="main"
 				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
-				<Typography variant = "h4" mb={1}>Data Manager</Typography>
-				<Typography mb={1}>Select an article or data item to edit or delete</Typography>
-				<CategorySelector/>
-				<DataGrid columns={columns}
+
+				<Grid container spacing={2}>
+					<Grid item md={6}>
+						<CategorySelector/>
+					</Grid>
+					<Grid item md={4}>
+						<Typography>The data manager allows you to edit data and articles in the system.</Typography>
+					</Grid>
+				</Grid>
+
+				<StripedDataGrid columns={columns}
 						  rows={features}
 						  autoHeight
 						  onRowClick={selectRow}
