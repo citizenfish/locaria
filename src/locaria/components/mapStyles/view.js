@@ -1,9 +1,6 @@
 import {Circle, Text, RegularShape, Fill, Stroke, Style, Icon} from 'ol/style.js';
-import markerHome from 'themeDefault/images/marker-home.svg';
-import marker from 'themeDefault/images/marker.svg';
-
-import {configs} from "themeLocaria";
-
+import markerHome from '../../../theme/default/images/marker-home.svg';
+import marker from "../../../theme/default/images/marker.svg"
 import UrlCoder from "../../libs/urlCoder";
 const url=new UrlCoder();
 
@@ -82,16 +79,19 @@ const defaultFeatureStyle = (feature,resolution,ol) => {
 	let tags = feature.get('tags');
 	let description = feature.get('description');
 	let icon = window.systemCategories.getChannelMapIcon(category, tags);
-	if (icon === undefined)
-		icon = window.systemMain.defaultMapIcon;
+	if (icon === undefined) {
+		icon =  marker
+	}
 	icon=url.decode(icon,true);
 	const geometry = feature.getGeometry();
 	if (geometry.getType() === 'Point') {
 		let label = category;
-		if (tags && tags[0])
+		if (tags && tags[0]) {
 			label = tags[0];
-		if(description&&description.title)
-			label=description.title;
+		}
+		if(description&&description.title) {
+			label = description.title;
+		}
 		if(ol.isHighlighted("default",feature.get('fid'))) {
 			return [
 				new Style({

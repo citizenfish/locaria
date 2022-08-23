@@ -10,7 +10,11 @@ BEGIN
      SELECT jsonb_build_object('files', COALESCE(json_agg(FILES.*), json_build_array())::JSONB)
      INTO ret_var
      FROM (
-            SELECT *
+            SELECT id,
+                   status,
+                   attributes,
+                   to_char(created, 'DD/MM/YYYY HH24:MI') AS created,
+                   to_char(created, 'DD/MM/YYYY HH24:MI') AS last_updated
             FROM files
             WHERE (COALESCE(parameters->>'id', '*') = '*' OR id = (parameters->>'id')::BIGINT)
             AND   ((status != 'DELETED' AND COALESCE(parameters->>'status', '*') = '*') OR status = (parameters->>'status'))

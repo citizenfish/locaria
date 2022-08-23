@@ -14,6 +14,7 @@ import {setPage, setStyle, updateStyle} from "../redux/slices/adminPagesSlice";
 import {useCookies} from "react-cookie";
 import * as yup from "yup";
 import {useFormik} from "formik";
+import Grid from "@mui/material/Grid";
 
 const validationSchemaAdd = yup.object({
 	name: yup
@@ -74,27 +75,28 @@ export default function AdminSettingsAppearance() {
 				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
 
-				<Typography variant="h4" mb={1}>Site Manager</Typography>
-				<StyleSelector></StyleSelector>
-				<Box sx={{paddingTop: "10px"}}>
-					<Button sx={{marginRight: "5px"}} disabled={style ? false : true} variant={"outlined"}
-							color="success" onClick={() => {
-						if (style !== undefined) {
-							history.push(`/Admin/Settings/Appearance/Edit`);
-						}
-					}}>Edit</Button>
-					<Button sx={{marginRight: "5px"}} variant={"outlined"} color="warning" onClick={() => {
-						setOpenAdd(true)
-					}}>Add</Button>
-					<Button disabled={style ? false : true} variant={"outlined"} color="error" onClick={() => {
-						setOpenDelete(true);
-					}}>Delete</Button>
-				</Box>
+				<Grid container spacing={2}>
+					<Grid item md={4}>
+						<Button sx={{marginRight:"5px"}}
+								variant="outlined"
+								color="success"
+								onClick={() => {
+									setOpenAdd(true)
+								}}>
+							Add Style
+						</Button>
+					</Grid>
+					<Grid item md={6}>
+						<Typography>The site  manager allows you to edit site style.</Typography>
+					</Grid>
+				</Grid>
+
+				<StyleSelector setOpenDelete={setOpenDelete}/>
 
 			</Box>
 
 			<Dialog open={openDelete} onClose={handleCloseDelete}>
-				<DialogTitle>Delete page</DialogTitle>
+				<DialogTitle>Delete Style</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						Are you sure you want to delete the style <Typography
@@ -141,3 +143,20 @@ export default function AdminSettingsAppearance() {
 		</Box>
 	)
 }
+
+/*
+<Box sx={{paddingTop: "10px"}}>
+					<Button sx={{marginRight: "5px"}} disabled={style ? false : true} variant={"outlined"}
+							color="success" onClick={() => {
+						if (style !== undefined) {
+							history.push(`/Admin/Settings/Appearance/Edit`);
+						}
+					}}>Edit</Button>
+					<Button sx={{marginRight: "5px"}} variant={"outlined"} color="warning" onClick={() => {
+						setOpenAdd(true)
+					}}>Add</Button>
+					<Button disabled={style ? false : true} variant={"outlined"} color="error" onClick={() => {
+						setOpenDelete(true);
+					}}>Delete</Button>
+				</Box>
+ */

@@ -250,7 +250,7 @@ def writeFileJson(path,data):
 
 def os_opendata_loader(db,file):
 
-    parameters = get_parameters(db,"opennames_loader").get('opennames_loader',{})
+    parameters = get_parameters(db,"os_opendata_loader").get('os_opendata_loader',{})
 
     url = parameters.get('os_opendata_api_url','https://api.os.uk/downloads/v1/products')
     os_products = requests.get(url).json()

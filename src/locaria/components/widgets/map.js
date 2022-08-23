@@ -3,14 +3,10 @@ import React, {forwardRef, useRef, useImperativeHandle} from 'react';
 import {channels, configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
-import Button from "@mui/material/Button";
 import {viewStyle, locationStyle,reportStyle} from "mapStyle";
 import Openlayers from "libs/Openlayers";
-import {SpeedDial, SpeedDialAction} from "@mui/material";
-import MapIcon from '@mui/icons-material/Map';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
+
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import InfoIcon from '@mui/icons-material/Info';
 import Chip from "@mui/material/Chip";
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 

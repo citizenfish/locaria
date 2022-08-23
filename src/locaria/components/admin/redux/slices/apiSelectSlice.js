@@ -5,7 +5,8 @@ export const apiSelectSlice = createSlice({
     name: 'apiSelect',
     initialState: {
         currentSelected: '',
-        apis: []
+        apis: [],
+        filesConfigured: {}
     },
     reducers: {
         clearApis:(state,actions) => {
@@ -16,10 +17,14 @@ export const apiSelectSlice = createSlice({
         },
         setApis:(state, actions) => {
             state.apis = actions.payload
+        },
+        //These are files that have custom_loaders and cron settings hence are live APIS
+        setFilesConfigured:(state, actions) => {
+            state.filesConfigured = actions.payload
         }
     },
 })
 
-export const {clearApis,setApi,setApis} = apiSelectSlice.actions
+export const {clearApis, setApi, setApis, setFilesConfigured} = apiSelectSlice.actions
 
 export default apiSelectSlice.reducer

@@ -5,14 +5,14 @@ import LinearProgress from '@mui/material/LinearProgress';
 import AdminFileUploader from '../../locaria/components/admin/components/adminFileUploader'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
-import AdminFileDetails from "../../locaria/components/admin/components/adminFileDetails";
-import AdminDataMapper from "../../locaria/components/admin/components/adminDataMapper";
-import AdminPlanningLoader from "../../locaria/components/admin/components/adminPlanningLoader";
-import AdminFloodMonitoringLoader from "../../locaria/components/admin/components/adminFloodMonitoringLoader";
-import AdminCrimeLoader from "../../locaria/components/admin/components/adminCrimeLoader.js";
-import AdminBoundaryLoader from "../../locaria/components/admin/components/adminBoundaryLoader";
-import AdminEventsLoader from "../../locaria/components/admin/components/adminEventsLoader";
-import AdminDataDownload from "../../locaria/components/admin/components/adminDataDownload";
+import AdminFileDetails from "../adminFileDetails";
+import AdminDataMapper from "../adminDataMapper";
+import AdminPlanningLoader from "../adminPlanningLoader";
+import AdminFloodMonitoringLoader from "../adminFloodMonitoringLoader";
+import AdminCrimeLoader from "../adminCrimeLoader.js";
+import AdminBoundaryLoader from "../adminBoundaryLoader";
+import AdminEventsLoader from "../adminEventsLoader";
+import AdminDataDownload from "../adminDataDownload";
 import {Drawer} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useStyles} from "../../theme/default/adminStyle";

@@ -10,9 +10,9 @@ import Grid from "@mui/material/Grid";
 import Select from "@mui/material/Select";
 import DialogActions from "@mui/material/DialogActions";
 import MenuItem from "@mui/material/MenuItem";
-import TagSelect from '../../widgets/selectors/tagSelect'
+import TagSelect from '../locaria/components/widgets/selectors/tagSelect'
 import {useDispatch,useSelector} from "react-redux";
-import {setCategoryList} from "../../redux/slices/searchDrawerSlice";
+import {setCategoryList} from "../locaria/components/redux/slices/searchDrawerSlice";
 
 export default function AdminDataDownload(props) {
 
