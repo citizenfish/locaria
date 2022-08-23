@@ -7,7 +7,7 @@ import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
-import StripedDataGrid from "../../../widgets/data/stripeDataGrid";
+import StripedDataGrid from "../../../widgets/data/stripedDataGrid";
 import ThelistEventsApiEditor from "../forms/thelistEventsApiEditor";
 
 export default function ApiSelector() {

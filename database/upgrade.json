@@ -26,7 +26,8 @@
         "database/functions/internal/file_upload/get_preview_file_data.sql",
         "database/functions/internal/admin/set_parameters.sql",
         "database/functions/internal/admin/update_category.sql",
-        "database/schema_and_tables/create_webstats_view.sql"
+        "database/schema_and_tables/create_webstats_view.sql",
+        "database/functions/internal/file_upload/get_files.sql"
       ],
       "substitutions": "../tests.json"
     }

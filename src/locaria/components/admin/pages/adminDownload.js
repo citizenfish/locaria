@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import CategorySelector from "../components/selectors/categorySelector";
 import {DataGrid} from "@mui/x-data-grid";
 
-export default function AdminImportUpload() {
+export default function AdminDownload() {
 
     const dispatch = useDispatch()
     const history = useHistory();
@@ -25,10 +25,8 @@ export default function AdminImportUpload() {
                 component="main"
                 sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
             >
-                <Typography variant = "h4" mb={1}>Import</Typography>
-                <Typography mb={1}>Sort out file Import here</Typography>
-
-
+                <Typography variant = "h4" mb={1}>Download</Typography>
+                <Typography mb={1}>Sort out Download here</Typography>
             </Box>
         </Box>
     )

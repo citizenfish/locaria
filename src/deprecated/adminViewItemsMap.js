@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from "react"
-import Map from '../../widgets/map'
+import Map from '../locaria/components/widgets/map'
 import Box from '@mui/material/Box';
 
 import Button from '@mui/material/Button';

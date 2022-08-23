@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import {DataGrid} from '@mui/x-data-grid'
 import Button from "@mui/material/Button";
 import Divider from '@mui/material/Divider';
-import AdminDialogConfirm from "../dialogues/adminDialogueConfirm";
+import AdminDialogConfirm from "../locaria/components/admin/dialogues/adminDialogueConfirm";
 import {useCookies} from "react-cookie";
 
 
