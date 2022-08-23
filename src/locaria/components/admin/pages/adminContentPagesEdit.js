@@ -201,7 +201,7 @@ export default function AdminContentPagesEdit() {
 							helperText={formik.touched.description && formik.errors.description}
 						/>
 						{markdownData !== undefined &&
-							<EditMarkdown id={"EditorHTML"} mode={"wysiwyg"} document={markdownData}></EditMarkdown>
+							<EditMarkdown id={"EditorHTML"} mode={"wysiwyg"} documentObj={markdownData}></EditMarkdown>
 						}
 					</TabPanel>
 					<TabPanel value={currentTab} index={1}>
@@ -219,7 +219,7 @@ export default function AdminContentPagesEdit() {
 							helperText={formik.touched.title && formik.errors.title}
 						/>
 						{markdownData !== undefined &&
-							<EditMarkdown id={"EditorMD"} mode={"code"} document={markdownData}></EditMarkdown>
+							<EditMarkdown id={"EditorMD"} mode={"code"} documentObj={markdownData}></EditMarkdown>
 						}
 					</TabPanel>
 					<TabPanel value={currentTab} index={2}>
@@ -239,7 +239,7 @@ export default function AdminContentPagesEdit() {
 						}}>Save</Button>
 						<Button variant={"contained"} color="warning" onClick={() => {
 							let element=document.getElementById("EditorHTML");
-							element.innerHTML='';
+							element.innerText="\n";
 						}}>Clear</Button>
 						<Button variant={"contained"} color="error" onClick={() => {
 							history.push(`/Admin/Content/Pages`);

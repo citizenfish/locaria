@@ -13,9 +13,10 @@ import CircleIcon from '@mui/icons-material/Circle';
 const url = new UrlCoder();
 import ArgsSerialize from "../../../libs/argsSerialize";
 import Chip from "@mui/material/Chip";
+import TypographyPlugin from "../typography/typographyPlugin";
 
 
-export default function RenderMarkdown({markdown,mode="display"}) {
+export default function RenderMarkdown({markdown,mode="display",clickFunction}) {
 	let renderedMarkdown = [];
 
 	// OLD string formatter
@@ -31,13 +32,13 @@ export default function RenderMarkdown({markdown,mode="display"}) {
 	} else {
 		// NEW Object formatter
 		for (let obj in markdown) {
-			renderedMarkdown.push(ProcessMDObject(markdown[obj],mode));
+			renderedMarkdown.push(ProcessMDObject(obj,markdown[obj],mode,clickFunction));
 		}
 		return renderedMarkdown;
 	}
 }
 
-function ProcessMDObject(MDObject,mode) {
+function ProcessMDObject(index,MDObject,mode,clickFunction) {
 	const ARGS=new ArgsSerialize();
 
 	// defaults;
@@ -102,7 +103,7 @@ function ProcessMDObject(MDObject,mode) {
 					</TypographyParagraph>);
 			} else {
 				return (
-					<div data-style={MDObject.style}>{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}</div>
+					<div data-style={MDObject.style} style={{"color":sx.color}}>{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}</div>
 				)
 			}
 		case 'plugin':
@@ -114,7 +115,7 @@ function ProcessMDObject(MDObject,mode) {
 				);
 			} else {
 				return (
-					<div style={{border:"1px solid black","padding":"5px"}} data-plugin={MDObject.plugin} data-params={ARGS.stringify(MDObject.params)}>{MDObject.plugin}</div>
+					<TypographyPlugin plugin={MDObject.plugin} clickFunction={clickFunction} params={MDObject.params} index={index}/>
 				)
 			}
 

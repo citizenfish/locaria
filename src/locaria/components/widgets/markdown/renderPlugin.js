@@ -12,10 +12,11 @@ import SocialIcons from "../social/socialIcons";
 import SlideShow from "../images/slideShow";
 import ContactMailchimp from "../contact/contactMailchimp";
 import NavButton from "../navs/navButton";
-
+import pluginsDefs from "./pluginsDef"
 export default function RenderPlugin({plugin,args}) {
 
 	// TODO lets add some constant for the WYSIWYG and put it in a sperate file
+/*
 	const plugins = {
 		"TopFeatures": TopFeatures,
 		"PageList": PageList,
@@ -31,10 +32,11 @@ export default function RenderPlugin({plugin,args}) {
 		"SlideShow": SlideShow,
 		"NavButton": NavButton
 	}
+*/
 
 
-	if (plugins[plugin]) {
-		let PluginComponent = plugins[plugin];
+	if (pluginsDefs[plugin].obj) {
+		let PluginComponent = pluginsDefs[plugin].obj;
 		return (
 				<PluginComponent {...args}/>
 
