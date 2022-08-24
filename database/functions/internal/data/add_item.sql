@@ -13,8 +13,8 @@ BEGIN
      END IF;
 
      --Set a default
-     IF (parameters->'_newacl') IS NOT NULL THEN
-         acl_var = jsonb_build_object('acl', parameters->'_newacl');
+     IF (parameters#>'{acl,_newacl}') IS NOT NULL THEN
+         acl_var = jsonb_build_object('acl', parameters->'{acl,_newacl}');
      END IF;
 
      --RAISE NOTICE 'DEBUG %', parameters;

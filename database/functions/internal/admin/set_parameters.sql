@@ -10,10 +10,10 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    INSERT INTO parameters(parameter_name, parameter,acl, usage, last_updated)
+    INSERT INTO parameters(parameter_name, parameter, acl, usage, last_updated)
     SELECT parameters_var->>'parameter_name',
            parameters_var->'parameters',
-           COALESCE(parameters_var->'_newACL', acl_var),
+           COALESCE(parameters_var#>'{acl,_newACL}', acl_var),
            COALESCE(parameters_var->>'usage', 'SYSTEM'),
            now()
     ON CONFLICT(parameter_name,usage)
