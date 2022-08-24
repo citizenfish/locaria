@@ -158,7 +158,7 @@ module.exports.run = (event, context, callback) => {
 				aclPayload = {
 					"_userID": tokenPacket['cognito:username'],
 					"_email": tokenPacket['email'],
-					"_groups": tokenPacket['cognito:groups'],
+					"_groups": [...tokenPacket['cognito:groups'],...["PUBLIC"]],
 					"_newACL": packet.data.acl
 				};
 			}
