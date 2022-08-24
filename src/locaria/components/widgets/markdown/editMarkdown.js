@@ -54,7 +54,11 @@ export default function EditMarkdown({documentObj, mode, id}) {
 	}
 
 	const handleSavePlugin = (e) => {
+		debugger;
+
 		setOpenPlugin(false);
+		plugin.target.setAttribute('data-params', document.getElementById('params').value);
+
 	}
 
 	const handleDeletePlugin = (e) => {
@@ -67,7 +71,7 @@ export default function EditMarkdown({documentObj, mode, id}) {
 
 	function pluginClick(e) {
 		console.log(e);
-		setPlugin({name: e.target.dataset.plugin, params: e.target.dataset.params, oid: e.target.dataset.oid});
+		setPlugin({name: e.target.dataset.plugin, params: e.target.dataset.params, oid: e.target.dataset.oid,target:e.target});
 		setOpenPlugin(true);
 
 		//debugger;
@@ -79,6 +83,7 @@ export default function EditMarkdown({documentObj, mode, id}) {
 			let obj=MD.parseHTML(element);
 			setEditor(obj);
 		*/
+
 		document.execCommand("insertHTML", false, `<div>${plugin}</div>`);
 		let selectedElement = window.getSelection().focusNode.parentNode;
 		selectedElement.style.border = "1px solid black";
@@ -90,6 +95,16 @@ export default function EditMarkdown({documentObj, mode, id}) {
 		selectedElement.setAttribute('data-plugin', plugin);
 		selectedElement.setAttribute('data-oid', -1);
 		selectedElement.addEventListener('click', pluginClick);
+
+		// Plugins should not be embeded in anything else, so if they are we kill it
+		let outer=selectedElement.parentNode;
+		let hasOuter = outer.id;
+		if(hasOuter==="") {
+			outer.parentNode.insertBefore(outer.firstChild,
+				outer);
+			outer.remove();
+		}
+
 		document.execCommand("insertHTML", false, `<div><br/></div>`);
 
 	}
@@ -224,6 +239,8 @@ function pressClearFormatting() {
 	document.execCommand("removeFormat", false, "");
 	let selectedElement = window.getSelection().focusNode.parentNode;
 	selectedElement.setAttribute('data-style', "");
+	selectedElement.style.color = '';
+
 
 }
 

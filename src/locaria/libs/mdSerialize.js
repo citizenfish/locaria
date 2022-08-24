@@ -28,6 +28,7 @@ class MdSerialize {
 					});
 					break;
 				case 'div':
+
 					if(html.children[child].dataset.plugin) {
 						let pluginArgs=ARGS.parse(html.children[child].dataset.params);
 						mdArray.push({

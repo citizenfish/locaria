@@ -48,7 +48,8 @@ export default function RenderPage() {
 				"api": "api",
 				"data": {
 					"method": "get_parameters",
-					"parameter_name": pageActual
+					"parameter_name": pageActual,
+					"id_token": cookies['id_token']
 				}
 			}
 		);

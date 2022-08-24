@@ -68,7 +68,7 @@ export default function AdminContentPages() {
 			"api": "sapi",
 			"data": {
 				"method": "set_parameters",
-				"acl": "external",
+				"acl": {"view": ["PUBLIC"], "delete": ["Admins"], "update": ["Admins"]},
 				"parameter_name": values.url,
 				id_token: cookies['id_token'],
 				"usage": "Page",

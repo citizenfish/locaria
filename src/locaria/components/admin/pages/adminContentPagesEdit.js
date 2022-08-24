@@ -10,13 +10,14 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import TabPanel from "../components/tabs/tabPanel";
 import TokenCheck from "../components/utils/tokenCheck";
-import {TextField} from "@mui/material";
+import {Select, TextField} from "@mui/material";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {setEditor, setPage, setPages} from "../redux/slices/adminPagesSlice";
 import { Editor } from '@tinymce/tinymce-react';
 import EditMarkdown from "../../widgets/markdown/editMarkdown";
 import MdSerialize from "../../../libs/mdSerialize";
+import MenuItem from "@mui/material/MenuItem";
 
 
 const validationSchemaEdit = yup.object({
@@ -33,6 +34,15 @@ const validationSchemaEdit = yup.object({
 export default function AdminContentPagesEdit() {
 
 	const MD = new MdSerialize();
+
+	const [groupNames, setGroupNames] = React.useState(["PUBLIC"]);
+
+	const handleGroupChange = (e) => {
+		setGroupNames(
+			// On autofill we get a stringified value.
+			typeof value === 'string' ? e.target.value.split(',') : e.target.value,
+		);
+	};
 
 	const history = useHistory();
 	let {selectedPage}=useParams();
@@ -62,6 +72,7 @@ export default function AdminContentPagesEdit() {
 				"method": "get_parameters",
 				"parameter_name": page,
 				id_token: cookies['id_token'],
+				"send_acl" : "true"
 
 			}
 		});
@@ -80,7 +91,7 @@ export default function AdminContentPagesEdit() {
 			"api": "sapi",
 			"data": {
 				"method": "set_parameters",
-				"acl": "external",
+				"acl": {"view": groupNames, "delete": ["Admins"], "update": ["Admins"]},
 				"parameter_name": page,
 				id_token: cookies['id_token'],
 				"usage": "Page",
@@ -94,6 +105,9 @@ export default function AdminContentPagesEdit() {
 	}
 
 	const saveTempPage = () => {
+		let element=document.getElementById("EditorHTML");
+		let obj=MD.parseHTML(element);
+		setMarkdownData(obj);
 		window.websocket.send({
 			"queue": "setPageTempData",
 			"api": "sapi",
@@ -104,7 +118,7 @@ export default function AdminContentPagesEdit() {
 				id_token: cookies['id_token'],
 				"usage": "Temp",
 				"parameters": {
-					"data": markdownData,
+					"data": obj,
 					"title": pageData.title,
 					"description": pageData.description,
 
@@ -130,6 +144,7 @@ export default function AdminContentPagesEdit() {
 			if (json&&json.packet&&json.packet.parameters&&json.packet.parameters[page])
 				data = json.packet.parameters[page];
 			setPageData(data);
+			setGroupNames(data['_acl'].view?data['_acl'].view:["PUBLIC"]);
 			setMarkdownData(data.data);
 			formik.setFieldValue("title",data.title);
 			formik.setFieldValue("description",data.description);
@@ -145,7 +160,7 @@ export default function AdminContentPagesEdit() {
 	const handleTabChange = (event, value) => {
 		setCurrrentTab(value);
 		//Preview
-		if (value === 2) {
+		if (value === 1) {
 			saveTempPage();
 		}
 	}
@@ -168,7 +183,6 @@ export default function AdminContentPagesEdit() {
 						handleTabChange(e, v)
 					}} aria-label="basic tabs example">
 						<Tab label="WYSIWYG editor"/>
-						<Tab label="Code view"/>
 						<Tab label="Preview"/>
 					</Tabs>
 				</Box>
@@ -200,29 +214,18 @@ export default function AdminContentPagesEdit() {
 							error={formik.touched.description && Boolean(formik.errors.description)}
 							helperText={formik.touched.description && formik.errors.description}
 						/>
+
+						<Select multiple value={groupNames} onChange={handleGroupChange}>
+							<MenuItem key={"permAdmin"} value={"Admins"}>Admins</MenuItem>
+							<MenuItem key={"permUser"} value={"Users"}>Users</MenuItem>
+							<MenuItem key={"permPublic"} value={"PUBLIC"}>PUBLIC</MenuItem>
+						</Select>
+
 						{markdownData !== undefined &&
 							<EditMarkdown id={"EditorHTML"} mode={"wysiwyg"} documentObj={markdownData}></EditMarkdown>
 						}
 					</TabPanel>
 					<TabPanel value={currentTab} index={1}>
-						<h1>Code Editor</h1>
-						<TextField
-							margin="dense"
-							id="title"
-							label="Page title"
-							type="text"
-							fullWidth
-							variant="standard"
-							value={formik.values.title}
-							onChange={formik.handleChange}
-							error={formik.touched.title && Boolean(formik.errors.title)}
-							helperText={formik.touched.title && formik.errors.title}
-						/>
-						{markdownData !== undefined &&
-							<EditMarkdown id={"EditorMD"} mode={"code"} documentObj={markdownData}></EditMarkdown>
-						}
-					</TabPanel>
-					<TabPanel value={currentTab} index={2}>
 						<h1>Page Preview</h1>
 						<iframe id="iframeSet" style={{
 							minWidth: "800px",
