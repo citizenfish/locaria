@@ -5,12 +5,8 @@ import LeftNav from "../components/navs/leftNav";
 import {useHistory, useParams} from "react-router-dom";
 import TokenCheck from "../components/utils/tokenCheck";
 import {useCookies} from "react-cookie";
-import {openEditDrawer, setEditData} from "../../../../deprecated/editDrawerSlice";
-import {DataGrid} from "@mui/x-data-grid";
-import {openEditFeatureDrawer, setEditFeatureData} from "../../../../deprecated/editFeatureDrawerSlice";
 import {setFeature} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {setTotal} from "../../../../deprecated/adminSlice";
 import {FieldView} from "../../widgets/data/fieldView";
 import Button from "@mui/material/Button";
 import MdSerialize from "../../../libs/mdSerialize";
@@ -37,7 +33,6 @@ export default function AdminContentDataEdit() {
 
 		window.websocket.registerQueue("viewLoader", function (json) {
 			if (json.packet.response_code !== 200) {
-				dispatch(setEditFeatureData({}));
 				setFeatureData({});
 			} else {
 				setFeatureData(json.packet.features[0].properties);
