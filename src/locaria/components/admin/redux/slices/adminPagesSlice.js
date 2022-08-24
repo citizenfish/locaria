@@ -13,7 +13,8 @@ export const adminPagesSlice = createSlice({
 		overview: undefined,
 		feature: undefined,
 		editor: undefined,
-		awaitUI: false
+		awaitUI: false,
+		user:false
 	},
 	reducers: {
 		clearUI:(state,actions) => {
@@ -77,12 +78,15 @@ export const adminPagesSlice = createSlice({
 		},
 		setEditor: (state,actions) => {
 			state.editor = actions.payload;
+		},
+		setUser: (state,action) => {
+			state.user = action.payload;
 		}
 
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const {setPages, addPage, setPage, setStyle,updateStyle,setOverview,setFeature,clearUI,setEditor} = adminPagesSlice.actions
+export const {setPages, addPage, setPage, setStyle,updateStyle,setOverview,setFeature,clearUI,setEditor,setUser} = adminPagesSlice.actions
 
 export default adminPagesSlice.reducer

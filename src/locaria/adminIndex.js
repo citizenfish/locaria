@@ -18,7 +18,7 @@ import '@fontsource/roboto/700.css';
 import { v4 as uuidv4 } from 'uuid';
 
 import cssOL from './components/css/ol.css';
-import {setSystemConfig} from "../deprecated/systemConfigDrawerSlice";
+
 
 import Channels from "libs/Channels";
 let tries = 0;
