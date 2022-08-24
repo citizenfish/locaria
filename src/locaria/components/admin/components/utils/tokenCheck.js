@@ -51,6 +51,7 @@ export default function TokenCheck() {
 				setCookies('groups', [], {path: '/', sameSite: true});
 				// This is bad token so lets go home
 				dispatch(setUser(false));
+				window.location = `/Admin/`;
 
 			}
 		});

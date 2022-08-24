@@ -5,7 +5,7 @@ import LeftNav from "../components/navs/leftNav";
 import {useHistory, useParams} from "react-router-dom";
 import TokenCheck from "../components/utils/tokenCheck";
 import {useCookies} from "react-cookie";
-import {setFeature} from "../redux/slices/adminPagesSlice";
+import {setFeature, setOverview} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Typography from "@mui/material/Typography";
 import CategorySelector from "../components/selectors/categorySelector";
@@ -24,6 +24,7 @@ export default function AdminContentData() {
 	const category = useSelector((state) => state.categorySelect.currentSelected);
 
 	const [cookies, setCookies] = useCookies(['location'])
+	const overview = useSelector((state) => state.adminPages.overview)
 
 
 	const dispatch = useDispatch()
@@ -31,7 +32,7 @@ export default function AdminContentData() {
 
 	const selectRow = (row) => {
 		dispatch(setFeature(row.id));
-		history.push(`/Admin/Content/Data/Edit`);
+		history.push(`/Admin/Content/Data/Edit/${row.id}`);
 	}
 	const dataActions = (params) => {
 		let id = params.row.id
@@ -75,12 +76,20 @@ export default function AdminContentData() {
 			setFeatures(json.packet.features);
 		});
 
+
+
 		refresh();
 	}, [searchText, offset, limit])
 
 	useEffect(() =>{
 		refresh()
 	},[category])
+
+	useEffect(() =>{
+		window.websocket.registerQueue('refreshView', (json) => {
+			dispatch(setOverview(undefined));
+		});
+	})
 
 	const refresh = () => {
 		window.websocket.send({
@@ -96,6 +105,17 @@ export default function AdminContentData() {
 				category: category
 			}
 		})
+	}
+
+	function refreshView() {
+		window.websocket.send({
+			"queue": "refreshView",
+			"api": "sapi",
+			"data": {
+				"method": "refresh_search_view",
+				"id_token": cookies['id_token']
+			}
+		});
 	}
 
 
@@ -118,6 +138,11 @@ export default function AdminContentData() {
 					</Grid>
 					<Grid item md={4}>
 						<Typography>The data manager allows you to edit data and articles in the system.</Typography>
+
+						{overview&&overview.total_updates>0&&
+							<Button onClick={refreshView} variant={"outlined"}>Refresh {overview.total_updates} items</Button>
+						}
+
 					</Grid>
 				</Grid>
 

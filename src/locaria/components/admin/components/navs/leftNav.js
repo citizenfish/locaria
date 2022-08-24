@@ -129,7 +129,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 							history.push(`/Admin/Content/Data`);
 						}}>
 							<ListItemIcon>
-								<Badge badgeContent={overview ? overview.update_item : 0} color="primary" showZero>
+								<Badge badgeContent={overview ? overview.total_updates : 0} color="primary" showZero>
 									<StorageIcon/>
 								</Badge>
 							</ListItemIcon>

@@ -4,6 +4,7 @@ const Database = require("./database");
 module.exports.run = (event, context, callback) => {
 
 	let path=event.path.replace(/^\//,'');
+	path=path.replace(/\/.*$/,'');
 	path=path.replace('index.html');
 	if(path==='')
 		path='Home';
