@@ -38,6 +38,7 @@ export const adminPagesSlice = createSlice({
 			state.style = actions.payload;
 		},
 		setOverview: (state, actions) => {
+			actions.payload.total_updates=actions.payload['add_item']+actions.payload['delete_item']+actions.payload['update_item'];
 			state.overview = actions.payload;
 		},
 		updateStyle: (state,actions) => {

@@ -7,10 +7,11 @@ import DataItemDescription from "./dataItemsRead/dataItemDescription";
 import DataItemH2 from "./dataItemsRead/dataItemH2";
 import dataItemMarkdown from "./dataItemsRead/dataItemMarkdown";
 import DataItemTextInput from "./dataItemsWrite/dataItemTextInput";
+import dataItemEditMarkdown from "./dataItemsWrite/dataItemEditMarkdown";
 
-const FieldView = ({data,mode}) => {
+const FieldView = ({data, mode}) => {
 
-	if(data&&data.category) {
+	if (data && data.category) {
 
 		let channel = window.systemCategories.getChannelProperties(data.category);
 
@@ -19,7 +20,8 @@ const FieldView = ({data,mode}) => {
 		if (fields) {
 			return (
 				<>
-					{fields.main ? <FormatFields fields={fields.main} data={data} mode={mode||'read'}></FormatFields> : null}
+					{fields.main ?
+						<FormatFields fields={fields.main} data={data} mode={mode || 'read'}></FormatFields> : null}
 				</>
 			)
 		} else {
@@ -43,14 +45,13 @@ const FieldView = ({data,mode}) => {
 
 }
 
-const FormatFields = ({fields, data,mode}) => {
-
+const FormatFields = ({fields, data, mode}) => {
 	if (fields && fields.length > 0) {
 		return (
 			<>
-			{fields.map(value => (
-				<FormatField field={value} data={data} key={value.key} mode={mode}></FormatField>
-			))}
+				{fields.map(value => (
+					<FormatField field={value} data={data} key={value.key} mode={mode}></FormatField>
+				))}
 			</>
 		);
 	}
@@ -58,26 +59,25 @@ const FormatFields = ({fields, data,mode}) => {
 
 }
 
-const FormatField = ({field, data,mode}) => {
+const FormatField = ({field, data, mode}) => {
 
 	let dataActual = getData(data, field.key, field.dataFunction);
 
-
-	if (dataActual === undefined || dataActual === "" || dataActual === null) {
+	if (mode === 'read' && (dataActual === undefined || dataActual === "" || dataActual === null)) {
 		return (<></>);
 	}
 
-	const dataItems={
-		'title':{read:DataItemTitle,write:DataItemTextInput},
-		'description':{read:DataItemDescription},
-		'h2':{read:DataItemH2},
-		'md':{read:dataItemMarkdown}
+	const dataItems = {
+		'title': {read: DataItemTitle, write: DataItemTextInput},
+		'description': {read: DataItemDescription, write: DataItemTextInput},
+		'h2': {read: DataItemH2, write: DataItemTextInput},
+		'md': {read: dataItemMarkdown, write: dataItemEditMarkdown}
 	}
 
-	if(dataItems[field.display]&&dataItems[field.display][mode]) {
+	if (dataItems[field.display] && dataItems[field.display][mode]) {
 		let Element = dataItems[field.display][mode];
 		return (
-			<Element name={field.name} data={dataActual} sx={field.sx}/>
+			<Element id={field.key} name={field.name} data={dataActual} sx={field.sx}/>
 		)
 	} else {
 		return (
@@ -87,9 +87,9 @@ const FormatField = ({field, data,mode}) => {
 
 }
 
-const safeEval = (str,data) => {
-	let jData=JSON.stringify(data);
-	let call=`'use strict'; const data=${jData}; return (${str})`;
+const safeEval = (str, data) => {
+	let jData = JSON.stringify(data);
+	let call = `'use strict'; const data=${jData}; return (${str})`;
 	return window.Function(call)();
 }
 
@@ -101,7 +101,7 @@ const getData = (data, path, func) => {
 		return func(data, classes);
 
 	try {
-		result = safeEval(path,data);
+		result = safeEval(path, data);
 	} catch (e) {
 		console.log(e);
 		return "";
