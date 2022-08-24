@@ -143,20 +143,3 @@ export default function AdminSettingsAppearance() {
 		</Box>
 	)
 }
-
-/*
-<Box sx={{paddingTop: "10px"}}>
-					<Button sx={{marginRight: "5px"}} disabled={style ? false : true} variant={"outlined"}
-							color="success" onClick={() => {
-						if (style !== undefined) {
-							history.push(`/Admin/Settings/Appearance/Edit`);
-						}
-					}}>Edit</Button>
-					<Button sx={{marginRight: "5px"}} variant={"outlined"} color="warning" onClick={() => {
-						setOpenAdd(true)
-					}}>Add</Button>
-					<Button disabled={style ? false : true} variant={"outlined"} color="error" onClick={() => {
-						setOpenDelete(true);
-					}}>Delete</Button>
-				</Box>
- */

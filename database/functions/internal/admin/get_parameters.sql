@@ -9,7 +9,13 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    SELECT jsonb_object_agg(parameter_name, parameter  - COALESCE(parameters_var->>'delete_key', '') || jsonb_build_object('last_updated',to_char(last_updated, 'DD/MM/YYYY HH24:MI')))
+    SELECT jsonb_object_agg(parameter_name,
+                            parameter  -  COALESCE(parameters_var->>'delete_key', '')
+                                       || jsonb_build_object('last_updated', to_char(last_updated, 'DD/MM/YYYY HH24:MI'))
+                                       || CASE WHEN COALESCE(parameters_var->>'send_acl', 'false')::BOOLEAN
+                                               THEN jsonb_build_object('_acl', acl)
+                                               ELSE jsonb_build_object() END
+        )
     INTO ret_var
     FROM parameters
     WHERE (acl_check(parameters_var->'acl', acl)->>'view')::BOOLEAN

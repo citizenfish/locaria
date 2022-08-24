@@ -25,6 +25,13 @@ Type: Text
 
 An object key to delete from returned results. Used to minimise data transfer when only requiring summary details of a parameter.
 
+### send_acl
+
+Default: false
+Type: Boolean
+
+Return the parameter's acl in the _acl structure
+
 ## Returns
 
 A JSON structure with the object key parameters holind a set of parameter objects 
@@ -33,7 +40,12 @@ A JSON structure with the object key parameters holind a set of parameter object
  {
   "parameters": {
     "test_1": {
-      "test_1": "10"
+      "test_1": "10",
+      "_acl" : {
+        "view" : ["PUBLIC"],
+        "update" : ["Admins"],
+        "delete" : ["Admins"]
+      }
     }
   },
   "response_code": 200
