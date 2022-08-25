@@ -18,6 +18,8 @@ import { Editor } from '@tinymce/tinymce-react';
 import EditMarkdown from "../../widgets/markdown/editMarkdown";
 import MdSerialize from "../../../libs/mdSerialize";
 import MenuItem from "@mui/material/MenuItem";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 
 const validationSchemaEdit = yup.object({
@@ -31,6 +33,12 @@ const validationSchemaEdit = yup.object({
 		.required('Description is required'),
 });
 
+const formGrid = {display:'flex',flexDirection:'row', alignItems:'center'}
+const tfStyle = {
+	style: {
+		padding: 5
+	}
+}
 export default function AdminContentPagesEdit() {
 
 	const MD = new MdSerialize();
@@ -105,7 +113,7 @@ export default function AdminContentPagesEdit() {
 	}
 
 	const saveTempPage = () => {
-		let element=document.getElementById("EditorHTML");
+		let element = document.getElementById("EditorHTML");
 		let obj=MD.parseHTML(element);
 		setMarkdownData(obj);
 		window.websocket.send({
@@ -157,14 +165,13 @@ export default function AdminContentPagesEdit() {
 
 	}, [page]);
 
-	const handleTabChange = (event, value) => {
+	const handleTabChange = (value) => {
 		setCurrrentTab(value);
 		//Preview
 		if (value === 1) {
 			saveTempPage();
 		}
 	}
-
 
 
 	return (
@@ -174,59 +181,136 @@ export default function AdminContentPagesEdit() {
 			<LeftNav isOpenContent={true}/>
 			<Box
 				component="main"
-				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '40px'}}
-			>
+				sx={{flexGrow: 1, marginTop: '60px'}}>
+				<form onSubmit={formik.handleSubmit} >
 
-
-				<Box>
-					<Tabs value={currentTab} onChange={(e, v) => {
-						handleTabChange(e, v)
-					}} aria-label="basic tabs example">
-						<Tab label="WYSIWYG editor"/>
-						<Tab label="Preview"/>
-					</Tabs>
-				</Box>
-				<form onSubmit={formik.handleSubmit}>
-
-					<TabPanel value={currentTab} index={0}>
-						<h1>Page Editor</h1>
-						<TextField
-							margin="dense"
-							id="title"
-							label="Page title"
-							type="text"
-							fullWidth
-							variant="standard"
-							value={formik.values.title}
-							onChange={formik.handleChange}
-							error={formik.touched.title && Boolean(formik.errors.title)}
-							helperText={formik.touched.title && formik.errors.title}
-						/>
-						<TextField
-							margin="dense"
-							id="description"
-							label="Page description (SEO)"
-							type="text"
-							fullWidth
-							variant="standard"
-							value={formik.values.description}
-							onChange={formik.handleChange}
-							error={formik.touched.description && Boolean(formik.errors.description)}
-							helperText={formik.touched.description && formik.errors.description}
-						/>
-
-						<Select multiple value={groupNames} onChange={handleGroupChange}>
-							<MenuItem key={"permAdmin"} value={"Admins"}>Admins</MenuItem>
-							<MenuItem key={"permUser"} value={"Users"}>Users</MenuItem>
-							<MenuItem key={"permPublic"} value={"PUBLIC"}>PUBLIC</MenuItem>
-						</Select>
-
-						{markdownData !== undefined &&
-							<EditMarkdown id={"EditorHTML"} mode={"wysiwyg"} documentObj={markdownData}></EditMarkdown>
+					<Grid container spacing={2} sx={{mt:1, p:3}}>
+						{currentTab === 0 &&
+						<>
+							<Grid item md={1}>
+								<Button sx={{marginRight:"5px"}}
+										variant="outlined"
+										color="warning"
+										onClick={() => {
+											//TODO are you sure dialogue
+											history.push(`/Admin/Content/Pages`);
+										}}>
+									Cancel
+								</Button>
+							</Grid>
+							<Grid item md={1}>
+								<Button variant="outlined"
+										color="success"
+										type="submit"
+										onClick={() => {
+											//TODO are you sure dialogue
+										}}>
+									Save
+								</Button>
+							</Grid>
+							<Grid item md={1}>
+								<Button sx={{marginRight:"5px"}}
+										variant="outlined"
+										color="error"
+										onClick={() => {
+											//TODO are you sure dialogue
+											let element=document.getElementById("EditorHTML");
+											element.innerText="\n";
+										}}>
+									Clear
+								</Button>
+							</Grid>
+						</>
 						}
+						<Grid item md={1}>
+							<Button sx={{marginRight:"5px"}}
+									variant="outlined"
+									color="error"
+									onClick={() => {
+										handleTabChange(currentTab === 0 ? 1 : 0)
+									}}>
+								{ currentTab === 0 ? 'Preview' : 'Editor' }
+							</Button>
+						</Grid>
+						<Grid item md={8}>
+							<Typography>The page editor allows you to create pages for viewing from the locaria website. Pages are comprised of formatted text and embedded components. Components are configured using parameters passed to them. A page can be previewed in the preview window.</Typography>
+						</Grid>
+					</Grid >
+					<TabPanel value={currentTab} index={0}>
+							<Box sx={{border: 1, borderRadius: 1, p: 2}}>
+							<Grid container spacing={2}>
+								<Grid item md={6} sx={formGrid}>
+									<span style={{marginRight: 20}}>
+										Title:
+									</span>
+
+									<TextField
+										sx={{flexGrow:1}}
+										inputProps={tfStyle}
+										margin="dense"
+										id="title"
+										//label="Page title"
+										type="text"
+										fullWidth
+										variant="outlined"
+										value={formik.values.title}
+										onChange={formik.handleChange}
+										error={formik.touched.title && Boolean(formik.errors.title)}
+										helperText={formik.touched.title && formik.errors.title}
+									/>
+								</Grid>
+
+								<Grid item md={6} sx={formGrid}>
+									<span style={{marginRight: 20}}>
+									ACL:
+									</span>
+									<Select multiple value={groupNames}
+											onChange={handleGroupChange}
+											SelectDisplayProps={{style:{
+												padding: 5,
+												paddingRight: 50
+												}}}
+									>
+										<MenuItem key={"permAdmin"} value={"Admins"}>Admins</MenuItem>
+										<MenuItem key={"permUser"} value={"Users"}>Users</MenuItem>
+										<MenuItem key={"permPublic"} value={"PUBLIC"}>PUBLIC</MenuItem>
+									</Select>
+								</Grid>
+
+								<Grid item md={6} sx={formGrid}>
+									<span style={{marginRight: 20}}>
+									Description:
+									</span>
+									<TextField
+										margin="dense"
+										id="description"
+										inputProps={tfStyle}
+										type="text"
+										fullWidth
+										variant="outlined"
+										value={formik.values.description}
+										onChange={formik.handleChange}
+										error={formik.touched.description && Boolean(formik.errors.description)}
+										helperText={formik.touched.description && formik.errors.description}
+									/>
+								</Grid>
+							</Grid>
+							</Box>
+							<Box
+								component="main"
+								sx={{flexGrow: 1, mt: 2}}
+							>
+								{
+									markdownData !== undefined &&
+									<EditMarkdown id={"EditorHTML"}
+												  mode={"wysiwyg"}
+												  documentObj={markdownData} />
+								}
+							</Box>
+
+
 					</TabPanel>
 					<TabPanel value={currentTab} index={1}>
-						<h1>Page Preview</h1>
 						<iframe id="iframeSet" style={{
 							minWidth: "800px",
 							minHeight: "600px",
@@ -235,23 +319,8 @@ export default function AdminContentPagesEdit() {
 							border: "1px solid black"
 						}}/>
 					</TabPanel>
-
-
-					<Box sx={{paddingTop: "10px"}}>
-						<Button variant={"contained"} color="success" type="submit" onClick={() => {
-						}}>Save</Button>
-						<Button variant={"contained"} color="warning" onClick={() => {
-							let element=document.getElementById("EditorHTML");
-							element.innerText="\n";
-						}}>Clear</Button>
-						<Button variant={"contained"} color="error" onClick={() => {
-							history.push(`/Admin/Content/Pages`);
-						}}>Cancel</Button>
-					</Box>
 				</form>
-
-
 			</Box>
-		</Box>
+			</Box>
 	)
 }
