@@ -3,27 +3,15 @@ import {useSelector} from "react-redux";
 import {FieldView} from "../data/fieldView";
 
 
-const ViewFullDetails = ({mode}) => {
-
+export default function ViewFullDetails() {
     const report = useSelector((state) => state.viewDraw.report);
 
 
-    if(report && report.viewLoader) {
+    if(report&&report.viewLoader) {
         return (
             <>
                 <FieldView data={report.viewLoader.packet.features[0].properties}/>
             </>
-/*                <Grid container spacing={2} sx={{
-                    margin: "5px"
-                }}>
-                    <Grid item xs={8}>
-                            <FieldView data={report.viewLoader.packet.features[0].properties}/>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <SingleFeatureImageBox category={report.viewLoader.packet.features[0].properties.category} image={report.viewLoader.packet.features[0].properties.data.images[0]}/>
-                    </Grid>
-                </Grid>
-                */
         )
     } else {
         return (
@@ -32,4 +20,3 @@ const ViewFullDetails = ({mode}) => {
     }
 }
 
-export default ViewFullDetails;
