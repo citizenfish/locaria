@@ -1,15 +1,14 @@
 import React from 'react';
 import {useSelector} from "react-redux";
 import {FieldView} from "../data/fieldView";
-import Grid from "@mui/material/Grid";
-import SingleFeatureImageBox from "../images/singleFeatureImageBox";
-import Box from "@mui/material/Box";
+
 
 const ViewFullDetails = ({mode}) => {
+
     const report = useSelector((state) => state.viewDraw.report);
 
 
-    if(report&&report.viewLoader) {
+    if(report && report.viewLoader) {
         return (
             <>
                 <FieldView data={report.viewLoader.packet.features[0].properties}/>
@@ -23,7 +22,8 @@ const ViewFullDetails = ({mode}) => {
                     <Grid item xs={4}>
                         <SingleFeatureImageBox category={report.viewLoader.packet.features[0].properties.category} image={report.viewLoader.packet.features[0].properties.data.images[0]}/>
                     </Grid>
-                </Grid>*/
+                </Grid>
+                */
         )
     } else {
         return (
