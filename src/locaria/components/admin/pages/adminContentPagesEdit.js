@@ -262,7 +262,7 @@ export default function AdminContentPagesEdit() {
 
 								<Grid item md={6} sx={formGrid}>
 									<span style={{marginRight: 20}}>
-									ACL:
+									Access Control:
 									</span>
 									<Select multiple value={groupNames}
 											onChange={handleGroupChange}
@@ -271,9 +271,12 @@ export default function AdminContentPagesEdit() {
 												paddingRight: 50
 												}}}
 									>
-										<MenuItem key={"permAdmin"} value={"Admins"}>Admins</MenuItem>
-										<MenuItem key={"permUser"} value={"Users"}>Users</MenuItem>
-										<MenuItem key={"permPublic"} value={"PUBLIC"}>PUBLIC</MenuItem>
+										<MenuItem key={"permAdmin"}
+												  value={"Admins"}>Admins</MenuItem>
+										<MenuItem key={"permUser"}
+												  value={"Users"}>Users</MenuItem>
+										<MenuItem key={"permPublic"}
+												  value={"PUBLIC"}>PUBLIC</MenuItem>
 									</Select>
 								</Grid>
 
@@ -310,7 +313,8 @@ export default function AdminContentPagesEdit() {
 
 
 					</TabPanel>
-					<TabPanel value={currentTab} index={1}>
+					<TabPanel value={currentTab}
+							  index={1}>
 						<iframe id="iframeSet" style={{
 							minWidth: "800px",
 							minHeight: "600px",

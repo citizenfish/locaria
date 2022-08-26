@@ -50,6 +50,7 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 	if(MDObject.style!==undefined) {
 		if(window.systemMain.styles[MDObject.style]) {
 			sx = window.systemMain.styles[MDObject.style];
+
 		} else {
 			console.info(`${MDObject.style} style is not defined!`);
 		}
@@ -60,8 +61,8 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 		case 'h2':
 		case 'h3':
 		case 'h4':
-			sx.marginTop="5px";
-			sx.marginBottom="5px";
+			sx.marginTop = "5px";
+			sx.marginBottom = "5px";
 			if(mode==='display') {
 				return (
 					<TypographyHeader sx={sx} element={MDObject.type}
@@ -73,8 +74,8 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 				)
 			}
 		case 'br':
-			sx.display="block";
-			if(mode==='display') {
+			sx.display = "block";
+			if(mode === 'display') {
 				return (
 					<TypographyParagraph sx={sx} key={`md${newUUID()}`}/>
 				);
@@ -84,9 +85,9 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 				)
 			}
 		case 'divider':
-			sx.marginTop="10px";
-			sx.marginBottom="10px";
-			if(mode==='display') {
+			sx.marginTop = "10px";
+			sx.marginBottom = "10px";
+			if(mode === 'display') {
 				return (
 					<Divider sx={sx} key={`md${newUUID()}`}/>
 				)
@@ -96,14 +97,17 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 				)
 			}
 		case 'p':
-			if(mode==='display') {
+			if(mode === 'display') {
 				return (
 					<TypographyParagraph sx={sx} key={`md${newUUID()}`}>
 						{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}
 					</TypographyParagraph>);
 			} else {
 				return (
-					<div data-style={MDObject.style} style={{"color":sx.color}}>{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}</div>
+					<p data-style={MDObject.style}
+						 style={{"color":sx.color, wordWrap: 'break-word', whiteSpace: 'normal'}}>
+						{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}
+					</p>
 				)
 			}
 		case 'plugin':
@@ -139,10 +143,11 @@ function handleDelete(e) {
 function ProcessMDObjectChild(child,mode) {
 	switch(child.type) {
 		case 'br':
+			//TODO pointless if as return the same???
 			if(mode==='display') {
 				return (
 					<br/>
-				);
+				)
 			} else {
 				return (
 					<br/>
@@ -208,9 +213,9 @@ function RecursiveFormatters(line) {
 		);
 	}
 
-
-	if(line.length>0)
+	if(line.length > 0){
 		returns.push(<span key={`md${newUUID()}`}>{line}</span>);
+	}
 
 	return returns;
 }
@@ -280,7 +285,7 @@ function ProcessLine(line) {
 		);
 	}
 
-	// HR to <Dividor>
+	// HR to <Divider>
 	match = line.match(/^----------/);
 	if (match) {
 		return(
@@ -313,5 +318,8 @@ function ProcessLine(line) {
 	//TODO why hard coded 5px?
 	sx={...sx,...{paddingRight: "5px"}};
 
-	return(<TypographyParagraph sx={sx} key={`md${newUUID()}`}>{RecursiveFormatters(line)}</TypographyParagraph>);
+	return(
+		<TypographyParagraph sx={sx} key={`md${newUUID()}`}>
+			{RecursiveFormatters(line)}
+		</TypographyParagraph>);
 }

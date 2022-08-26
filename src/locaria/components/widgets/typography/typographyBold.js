@@ -14,7 +14,6 @@ export default function TypographyBold({children,sx}) {
 
     let elementSx={...localSx,...sx||{}};
 
-
     return (
         <Typography component={"span"} variant={"body2"} sx={elementSx}>
             {children}

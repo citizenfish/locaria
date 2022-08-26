@@ -10,6 +10,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {FieldView} from "../../widgets/data/fieldView";
 import Button from "@mui/material/Button";
 import MdSerialize from "../../../libs/mdSerialize";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 
 
@@ -51,9 +53,14 @@ export default function AdminContentDataEdit() {
 
 		if(feature) {
 			window.websocket.send({
-				"queue": "viewLoader",
-				"api": "api",
-				"data": {"method": "get_item", "fid": feature, "live": true, "id_token": cookies['id_token']}
+				queue: "viewLoader",
+				api: "api",
+				data: {
+					method: "get_item",
+					fid: feature,
+					live: true,
+					id_token: cookies['id_token']
+				}
 			});
 		} else {
 			dispatch(setFeature(fid));
@@ -63,11 +70,12 @@ export default function AdminContentDataEdit() {
 
 	function deleteFeature() {
 		window.websocket.send({
-			"queue": "deleteFeature",
-			"api": "sapi",
-			"data": {
-				"method": "delete_item", "fid": feature,
-				"id_token": cookies['id_token']
+			queue: "deleteFeature",
+			api: "sapi",
+			data: {
+				method: "delete_item",
+				fid: feature,
+				id_token: cookies['id_token']
 			}
 		});
 
@@ -81,15 +89,17 @@ export default function AdminContentDataEdit() {
 		let element=document.getElementById("data.description.text");
 		let obj=MD.parseHTML(element);
 		let packet={
-			"queue": "saveFeature",
-			"api": "sapi",
-			"data": {
-				"method": "update_item", "fid": feature, "attributes": {
-					"description":{
-						"text":obj
+			queue: "saveFeature",
+			api: "sapi",
+			data: {
+				method: "update_item",
+				fid: feature,
+				attributes: {
+					description:{
+						text:obj
 					},
 				},
-				"id_token": cookies['id_token']
+				id_token: cookies['id_token']
 			}
 		};
 /*
@@ -107,15 +117,33 @@ export default function AdminContentDataEdit() {
 			<LeftNav isOpenContent={true}/>
 			<Box
 				component="main"
-				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '40px'}}
+				sx={{flexGrow: 1, marginTop: '60px'}}
 			>
-				<h1>Edit feature</h1>
-				<FieldView data={featureData} mode={"write"}/>
-				<Button color="success" onClick={saveFeature} variant="contained">Save</Button>
-				<Button color="warning" onClick={cancelFeature} variant="contained">Cancel</Button>
-				<Button color="error" onClick={deleteFeature} variant="contained">Delete</Button>
-
+				<Grid container spacing={2} sx={{mt:1, p:3}}>
+					<Grid item md={1}>
+						<Button color="warning" onClick={cancelFeature} variant="outlined">Cancel</Button>
+					</Grid>
+					<Grid item md={1}>
+						<Button color="success" onClick={saveFeature} variant="outlined">Save</Button>
+					</Grid>
+					<Grid item md={1}>
+						<Button color="error" onClick={deleteFeature} variant="outlined">Delete</Button>
+					</Grid>
+					<Grid item md={9}>
+						<Typography>The data editor allows you to edit data.</Typography>
+					</Grid>
+				</Grid>
+				<Box sx={{p:3, maxWidth: 'calc(100vw - 240px)'}}>
+					<FieldView data={featureData}
+							   mode={"write"}/>
+				</Box>
 			</Box>
 		</Box>
 	)
 }
+
+/*
+<Button color="success" onClick={saveFeature} variant="contained">Save</Button>
+				<Button color="warning" onClick={cancelFeature} variant="contained">Cancel</Button>
+				<Button color="error" onClick={deleteFeature} variant="contained">Delete</Button>
+ */

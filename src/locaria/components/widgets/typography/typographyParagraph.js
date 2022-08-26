@@ -14,7 +14,6 @@ export default function TypographyParagraph({children,sx}) {
 
     let elementSx={...localSx,...sx||{}};
 
-
     return (
         <Typography variant={"body1"} sx={elementSx}>
             {children}
