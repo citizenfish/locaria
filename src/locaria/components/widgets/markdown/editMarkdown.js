@@ -3,13 +3,11 @@ import Box from "@mui/material/Box";
 import RenderPlugin from "./renderPlugin";
 import MdSerialize from "../../../libs/mdSerialize"
 import {
+	ButtonGroup,
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	ListItem,
-	ListItemText,
-	Stack,
 	TextField
 } from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
@@ -22,13 +20,15 @@ import DialogContentText from "@mui/material/DialogContentText";
 import pluginsDefs from "./pluginsDef";
 import Grid from "@mui/material/Grid";
 
+
 export default function EditMarkdown({documentObj, mode, id}) {
 
 	const dispatch = useDispatch();
 
 	const [openPlugin, setOpenPlugin] = useState(false);
 	const [plugin, setPlugin] = useState(undefined);
-
+	const [showPlugins, setShowPlugins] = useState(false)
+	const [showStyles, setShowStyles] = useState(false)
 
 	const MD = new MdSerialize();
 	let documentActual = documentObj;
@@ -113,9 +113,14 @@ export default function EditMarkdown({documentObj, mode, id}) {
 		let styleArray = [];
 		for (let style in window.systemMain.styles) {
 			styleArray.push(
-				<Button variant={"contained"} onClick={() => {
-					pressStyle(style)
-				}}>{style}</Button>
+				<Grid item md={2}>
+				<Button variant={"outlined"}
+						color={"warning"}
+						sx={{width:'100%'}}
+						onClick={() => {pressStyle(style)}}>
+					{style}
+				</Button>
+				</Grid>
 			)
 
 		}
@@ -126,9 +131,15 @@ export default function EditMarkdown({documentObj, mode, id}) {
 		let buttonsArray = [];
 		for (let p in pluginsDefs) {
 			buttonsArray.push(
-				<Button variant={"outlined"} onClick={() => {
-					pressPlugin(p)
-				}}>{p} {pluginsDefs[p].description}</Button>
+				<Grid item md={2}>
+					<Button variant={"outlined"}
+							color={"success"}
+							sx={{width:'100%'}}
+
+							onClick={() => {pressPlugin(p)}}>
+						{p}
+					</Button>
+				</Grid>
 			)
 		}
 		return buttonsArray;
@@ -138,56 +149,106 @@ export default function EditMarkdown({documentObj, mode, id}) {
 
 	return (
 		<Box sx={{
-			width: "1200px"
+			width: "100%"
 		}}>
 			<Box>
-				<Grid container>
+				<Grid container
+					  sx={{ mt:2, mb:2}}
+				>
 					<Grid item>
-						<Button variant={"outlined"} onClick={() => {
-							pressHeader('h1')
-						}}>h1</Button>
-						<Button variant={"outlined"} onClick={() => {
-							pressHeader('h2')
-						}}>h2</Button>
-						<Button variant={"outlined"} onClick={() => {
-							pressHeader('h3')
-						}}>h3</Button>
-						<Button variant={"outlined"} onClick={() => {
-							pressHeader('h4')
-						}}>h4</Button>
-						<Button variant={"outlined"} onClick={() => {
-							pressBold()
-						}}>BOLD</Button>
-						<Button variant={"outlined"} onClick={() => {
-							pressItalic()
-						}}>Italic</Button>
-						<Button variant={"outlined"} onClick={() => {
-							pressHR()
-						}}>HR</Button>
-						<Button variant={"outlined"} onClick={() => {
-							pressClearFormatting()
-						}}>Clear format</Button>
+						<ButtonGroup variant="text" >
+							<Button  onClick={() => {
+								pressHeader('h1')
+							}}>h1</Button>
+							<Button onClick={() => {
+								pressHeader('h2')
+							}}>h2</Button>
+							<Button  onClick={() => {
+								pressHeader('h3')
+							}}>h3</Button>
+							<Button  onClick={() => {
+								pressHeader('h4')
+							}}>h4</Button>
+						</ButtonGroup>
+						<ButtonGroup variant="text"
+									 sx={{ml:2}}
+						>
+							<Button onClick={() => {pressBold()}}>
+								Bold
+							</Button>
+							<Button  onClick={() => {pressItalic()}}>
+								Italic
+							</Button>
+							<Button  onClick={() => {pressHR()}}>
+								HR
+							</Button>
+						</ButtonGroup>
+						<ButtonGroup>
+
+
+							<Button sx={{ml:2}}
+									variant={"text"}
+									color={"success"}
+									onClick={()=>{setShowPlugins(!showPlugins)}}
+							>
+								{showPlugins === false ? 'Plugins' : 'Hide Plugins'}
+
+							</Button>
+							<Button sx={{ml:2}}
+									variant={"text"}
+									color={"warning"}
+									onClick={()=>{setShowStyles(!showStyles)}}
+							>
+								{showStyles === false ? 'Styles' : 'Hide Styles'}
+
+							</Button>
+						</ButtonGroup>
+						<Button variant={"text"}
+								color="error"
+								onClick={() => {pressClearFormatting()}}
+								sx={{ml:2}}>
+							Clear formatting
+						</Button>
 					</Grid>
-					<Grid item>
-						<RenderPluginButtons/>
-					</Grid>
-					<Grid item>
-						<RenderStyles/>
-					</Grid>
+					{showPlugins &&
+						<Box sx={{borderRadius:1, backgroundColor:'#F7F7F7', p:1, mt:2}}>
+							<Grid container
+								  spacing={2}
+							>
+								 <RenderPluginButtons/>
+							</Grid>
+						</Box>
+					}
+					{showStyles &&
+						<Box sx={{borderRadius:1, backgroundColor:'#F5E5E5', p:1, mt:2}}>
+							<Grid container
+								  spacing={2}>
+								 <RenderStyles/>
+							</Grid>
+						</Box>
+					}
 				</Grid>
 
 			</Box>
-			<Box id={id} onKeyDown={(e) => {
-			}} sx={{
-				border: "1px solid black",
-				width: "100%",
-				height: "500px",
-				whiteSpace: "pre",
-				padding: "5px",
-				overflow: "scroll",
-			}} contentEditable={true}
+			<Box id={id}
+				 onKeyDown={(e) => {}}
+				 sx={{
+						border: "1px solid black",
+						width: "100%",
+						height: "500px",
+						whiteSpace: "pre",
+						padding: "5px",
+						overflow: "scroll",
+					 	//backgroundColor: 'rgba(235, 232, 232, 0.34)',
+					 	boxShadow: 2,
+					 	borderRadius: 1
+					}}
+				 contentEditable={true}
+				 suppressContentEditableWarning={true}
 			><br/>{mode === 'wysiwyg' ?
-				<RenderMarkdown markdown={editor} mode={"editor"} clickFunction={pluginClick}/> : MD.stringify(editor)}
+				<RenderMarkdown markdown={editor}
+								mode={"editor"}
+								clickFunction={pluginClick}/> : MD.stringify(editor)}
 			</Box>
 
 			<Dialog open={openPlugin} onClose={handleClosePlugin}>
@@ -231,8 +292,6 @@ function RenderPluginForm({plugin}) {
 		/>
 	</>)
 }
-
-
 
 
 function pressClearFormatting() {

@@ -8,6 +8,7 @@ import DataItemH2 from "./dataItemsRead/dataItemH2";
 import dataItemMarkdown from "./dataItemsRead/dataItemMarkdown";
 import DataItemTextInput from "./dataItemsWrite/dataItemTextInput";
 import dataItemEditMarkdown from "./dataItemsWrite/dataItemEditMarkdown";
+import Box from "@mui/material/Box";
 
 const FieldView = ({data, mode}) => {
 
@@ -19,10 +20,12 @@ const FieldView = ({data, mode}) => {
 
 		if (fields) {
 			return (
-				<>
+				<Box sx={{border: 1, borderRadius: 1, p: 2}}>
 					{fields.main ?
-						<FormatFields fields={fields.main} data={data} mode={mode || 'read'}></FormatFields> : null}
-				</>
+						<FormatFields fields={fields.main}
+									  data={data}
+									  mode={mode || 'read'}/> : null}
+				</Box>
 			)
 		} else {
 			return (
@@ -48,11 +51,17 @@ const FieldView = ({data, mode}) => {
 const FormatFields = ({fields, data, mode}) => {
 	if (fields && fields.length > 0) {
 		return (
-			<>
+			<Grid container>
 				{fields.map(value => (
-					<FormatField field={value} data={data} key={value.key} mode={mode}></FormatField>
+					<Grid item md={12}>
+
+						<FormatField field={value}
+									 data={data}
+									 key={value.key}
+									 mode={mode}/>
+					</Grid>
 				))}
-			</>
+			</Grid>
 		);
 	}
 	return null;
@@ -77,7 +86,11 @@ const FormatField = ({field, data, mode}) => {
 	if (dataItems[field.display] && dataItems[field.display][mode]) {
 		let Element = dataItems[field.display][mode];
 		return (
-			<Element id={field.key} name={field.name} data={dataActual} sx={field.sx}/>
+			<Element id={field.key}
+					 name={field.name}
+					 data={dataActual}
+					 sx={field.sx}
+			/>
 		)
 	} else {
 		return (
@@ -97,8 +110,10 @@ const getData = (data, path, func) => {
 	let result;
 	const classes = useStyles();
 
-	if (func)
+	if (func){
 		return func(data, classes);
+	}
+
 
 	try {
 		result = safeEval(path, data);

@@ -31,6 +31,6 @@ export const viewDrawerSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {openViewDraw, closeViewDraw,setPosition,setReport} = viewDrawerSlice.actions
+export const {openViewDraw, closeViewDraw, setPosition, setReport} = viewDrawerSlice.actions
 
 export default viewDrawerSlice.reducer
