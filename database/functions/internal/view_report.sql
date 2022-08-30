@@ -16,7 +16,9 @@ BEGIN
         SELECT
             COALESCE(attributes->>'fid', attributes->>'id') AS fid,
             attributes->>'method' AS method
-        FROM history WHERE NOT in_view
+        FROM history
+        WHERE NOT in_view
+        AND attributes->>'method' IN ('add_item', 'update_item', 'delete_item')
     ), COUNTS AS (
         SELECT distinct on (method) method,
                                     jsonb_build_object(method||'_fids', jsonb_strip_nulls(jsonb_agg(fid)),
