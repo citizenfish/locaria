@@ -17,7 +17,6 @@ BEGIN
          acl_var = jsonb_build_object('acl', parameters->'{acl,_newacl}');
      END IF;
 
-     --RAISE NOTICE 'DEBUG %', parameters;
 
      EXECUTE format($SQL$
                 INSERT INTO %1$s (wkb_geometry, attributes, category_id, search_date)
@@ -31,6 +30,6 @@ BEGIN
            COALESCE (parameters->>'search_date', NOW()::TEXT)::TIMESTAMP;
 
      --Add a history item and return
-     RETURN ret_var || jsonb_build_object('history', add_history(parameters));
+     RETURN ret_var || jsonb_build_object('history', add_history(parameters || ret_var));
 END;
 $$ LANGUAGE PLPGSQL;

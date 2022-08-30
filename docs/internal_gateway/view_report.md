@@ -21,6 +21,8 @@ A json structure containing the statistics.
   "add_item": 0,
   "delete_item": 0,
   "update_item": 0,
+  "update_fids": ["12345"],
+  "delete_fids": ["44545554"],
   "response_code": 200
 }
 ```

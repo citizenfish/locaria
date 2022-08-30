@@ -1,3 +1,9 @@
+CREATE OR REPLACE AGGREGATE  jsonb_object_agg(jsonb) (
+  SFUNC = 'jsonb_concat',
+  STYPE = jsonb,
+  INITCOND = '{}'
+);
+
 CREATE OR REPLACE FUNCTION locaria_core.view_report(parameters JSONB) RETURNS JSONB AS
 $$
 DECLARE
@@ -7,18 +13,23 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
 
     WITH PENDING_RECORDS AS (
-        SELECT attributes FROM history WHERE NOT in_view
+        SELECT
+            COALESCE(attributes->>'fid', attributes->>'id') AS fid,
+            attributes->>'method' AS method
+        FROM history WHERE NOT in_view
     ), COUNTS AS (
-            SELECT
-                attributes->>'method' as method,
-                count(*) as count
-            FROM PENDING_RECORDS
-            WHERE (attributes->>'method') IN ('add_item', 'update_item', 'delete_item')
-            GROUP BY attributes->>'method'
-    ) SELECT jsonb_build_object('total', (SELECT count(*) FROM global_search_view),'update_item', 0, 'add_item',0,'delete_item',0) ||
-             COALESCE(jsonb_object_agg(method,count), jsonb_build_object())
-      INTO ret_var
-      FROM counts;
+        SELECT distinct on (method) method,
+                                    jsonb_build_object(method||'_fids', jsonb_strip_nulls(jsonb_agg(fid)),
+                                                       method, count(*)) AS obj
+        FROM PENDING_RECORDS
+        GROUP BY method
+
+    )  SELECT  jsonb_build_object('total', (SELECT count(*) FROM global_search_view),
+                                  'update_item', 0,
+                                  'add_item',0,
+                                  'delete_item',0) || jsonb_object_agg(obj)
+        INTO ret_var
+        FROM counts;
 
      RETURN ret_var;
 EXCEPTION WHEN OTHERS THEN
