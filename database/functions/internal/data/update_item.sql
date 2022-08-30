@@ -53,7 +53,7 @@ BEGIN
      WHERE (parameters->>'moderation_id') IS NOT NULL
      AND id = (parameters->>'moderation_id')::BIGINT;
 
-    RETURN ret_var || jsonb_build_object('history', add_history(parameters));
+    RETURN ret_var || jsonb_build_object('history', add_history(parameters || ret_var));
 
 END;
 $$ LANGUAGE PLPGSQL;

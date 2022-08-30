@@ -239,7 +239,6 @@ export default function EditMarkdown({documentObj, mode, id}) {
 						whiteSpace: "pre",
 						padding: "5px",
 						overflow: "scroll",
-					 	//backgroundColor: 'rgba(235, 232, 232, 0.34)',
 					 	boxShadow: 2,
 					 	borderRadius: 1
 					}}
