@@ -3,7 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "tests/unit_tests/internal/view_report.sql"
+        "tests/unit_tests/internal/admin/get_asset.sql"
       ],
       "substitutions": "../tests.json"
     }
