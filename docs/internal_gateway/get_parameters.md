@@ -34,13 +34,16 @@ Return the parameter's acl in the _acl structure
 
 ## Returns
 
-A JSON structure with the object key parameters holind a set of parameter objects 
+A JSON structure with the object key parameters holding a set of parameter objects 
 
 ```json
  {
   "parameters": {
     "test_1": {
-      "test_1": "10",
+      "data" : {
+        "test_1": "10",
+      },
+      "last_updated" : "",
       "_acl" : {
         "view" : ["PUBLIC"],
         "update" : ["Admins"],
