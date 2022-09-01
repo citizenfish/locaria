@@ -55,7 +55,7 @@ def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
 
         parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ["Admins"]})])
         ret = parameters.fetchone()[0]
-        return ret.get('parameters', {'error': 'parameter not found'})
+        return ret.get('parameters', {'error': 'parameter not found'}).get(parameter_name).get('data')
 
     except Exception as error:
         print("Cannot get parameter", error)
