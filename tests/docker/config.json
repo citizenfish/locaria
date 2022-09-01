@@ -1,0 +1,7 @@
+{
+  "db_var": "LOCARIADB",
+  "theme": "multi",
+  "environment": "unittest",
+  "s3_var": "S3DLBUCKET",
+  "logBucket" : "locarialogs-multi-unittest"
+}
