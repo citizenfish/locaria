@@ -5,7 +5,10 @@ DECLARE
     debug_var BOOLEAN DEFAULT FALSE;
     log_var BOOLEAN DEFAULT TRUE;
     ret_var JSONB;
-    version_var TEXT DEFAULT '0.7';
+    version_var TEXT DEFAULT '0.8';
+    --added to shared methods with internal gateway to flag this has come via public path
+    internal JSONB DEFAULT jsonb_build_object('internal', false);
+
 BEGIN
 
     --This keeps us within our search schema when running code
@@ -20,6 +23,10 @@ BEGIN
 
          WHEN parameters->>'method' IN ('get_item') THEN
             ret_var = get_item(parameters);
+
+         WHEN parameters->>'method' IN ('add_item') THEN
+            --acl is scrubbed above so _newACL cannot be injected
+            ret_var = add_item(parameters || internal);
 
          WHEN parameters->>'method' IN ('list_categories') THEN
             ret_var = list_categories(parameters);
@@ -49,13 +56,13 @@ BEGIN
             ret_var = get_parameters(parameters);
 
         WHEN parameters->>'method' IN ('add_asset') THEN
-            ret_var = add_asset(parameters || jsonb_build_object('internal', true));
+            ret_var = add_asset(parameters || internal);
 
         WHEN parameters->>'method' IN ('get_asset') THEN
-            ret_var = get_asset(parameters || jsonb_build_object('internal', true));
+            ret_var = get_asset(parameters || internal);
 
         WHEN parameters->>'method' IN ('delete_asset') THEN
-            ret_var = delete_asset(parameters || jsonb_build_object('internal', true));
+            ret_var = delete_asset(parameters || internal);
 
         WHEN parameters->>'method' IN ('get_vector_tile') THEN
             ret_var = get_parameters(parameters || jsonb_build_object('parameter_name', parameters->>'tileset', 'usage', 'VECTOR_TILES'));

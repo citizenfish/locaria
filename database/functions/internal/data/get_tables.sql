@@ -16,7 +16,7 @@ BEGIN
         FROM pg_inherits
             INNER JOIN pg_class AS c ON (inhrelid=c.oid)
             INNER JOIN pg_class as p ON (inhparent=p.oid)
-            INNER JOIN global_search_view ON attributes @> jsonb_build_object('table', locaria_core.table_name(C.oid))
+            LEFT JOIN global_search_view ON attributes @> jsonb_build_object('table', locaria_core.table_name(C.oid))
             WHERE p.relname = 'base_table') C
     WHERE NULLIF(parameters->>'category','') IS NULL OR category = parameters->>'category';
 

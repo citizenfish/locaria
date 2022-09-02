@@ -3,7 +3,10 @@
     {
       "stopOnError": true,
       "tables": [
-"         database/functions/internal/admin/get_parameters.sql"
+          "database/functions/locaria_gateway.sql",
+          "database/functions/internal/data/add_item.sql",
+          "database/functions/internal/data/get_tables.sql",
+          "database/functions/search/search.sql"
       ],
       "substitutions": "../tests.json"
     }
