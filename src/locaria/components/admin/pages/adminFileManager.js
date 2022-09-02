@@ -3,7 +3,7 @@ import TokenCheck from "../components/utils/tokenCheck";
 import Box from "@mui/material/Box"
 import AdminAppBar from "../adminAppBar"
 import LeftNav from "../components/navs/leftNav"
-import AdminFileUploader from "../components/adminFileUploader";
+import FileUploader from "../../widgets/files/fileUploader";
 import AdminFileSelector from "../components/selectors/adminFileSelector";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -43,7 +43,7 @@ export default function AdminFileManager() {
                 </Grid>
 
                 {!showUpload && <AdminFileSelector/>}
-                {showUpload && <AdminFileUploader/>}
+                {showUpload && <FileUploader/>}
             </Box>
         </Box>
     )

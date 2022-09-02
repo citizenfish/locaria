@@ -104,10 +104,7 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 					</TypographyParagraph>);
 			} else {
 				return (
-					<p data-style={MDObject.style}
-						 style={{"color":sx.color, wordWrap: 'break-word', whiteSpace: 'normal'}}>
-						{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}
-					</p>
+					<div data-style={MDObject.style} style={{"color":sx.color}}>{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}</div>
 				)
 			}
 		case 'plugin':

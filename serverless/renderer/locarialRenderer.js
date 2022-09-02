@@ -48,8 +48,8 @@ module.exports.run = (event, context, callback) => {
 				<link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">\
 				<script type="module" src="/dist/full.bundle.js"></script>\
 				<meta charset="UTF-8">\
-				<meta name="description" content="${result.rows[0]['locaria_gateway']['parameters'][path]['description']}"/>
-				<title>${result.rows[0]['locaria_gateway']['parameters'][path]['title']}</title>\
+				<meta name="description" content="${result.rows[0]['locaria_gateway']['parameters'][path]['data']['description']}"/>
+				<title>${result.rows[0]['locaria_gateway']['parameters'][path]['data']['title']}</title>\
 				</head>\
 				<body class="on-home">\
 				<div id="root" class="contain">\

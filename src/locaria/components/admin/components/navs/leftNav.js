@@ -22,7 +22,8 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 	const [openSettings, setOpenSettings] = useState(isOpenSettings || false)
 	const [openImport, setOpenImport] = useState(isOpenImport || false)
 
-	const overview = useSelector((state) => state.adminPages.overview)
+	const overview = useSelector((state) => state.adminPages.overview);
+	const token = useSelector((state) => state.adminPages.token);
 	const dispatch = useDispatch()
 	const [cookies, setCookies] = useCookies(['location'])
 
@@ -53,17 +54,17 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 			dispatch(setOverview(json.packet));
 		});
 
-		if(overview===undefined) {
+		if(overview===undefined&&token!==undefined) {
 			window.websocket.send({
 				"queue": "getTotals",
 				"api": "sapi",
 				"data": {
 					"method": "view_report",
-					"id_token": cookies['id_token']
+					"id_token": token
 				}
 			});
 		}
-	},[overview]);
+	},[overview,token]);
 
 	const history = useHistory();
 	return (

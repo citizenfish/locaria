@@ -5,11 +5,11 @@ import {useCookies} from "react-cookie";
 import axios from 'axios'
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import LinearProgressWithLabel from './utils/LinearProgress';
+import LinearProgressWithLabel from '../../admin/components/utils/LinearProgress';
 
 let file
 
-export default function AdminFileUploader(props) {
+export default function FileUploader(props) {
 
     const fileInput = useRef(null)
     const [cookies, setCookies] = useCookies(['location']);

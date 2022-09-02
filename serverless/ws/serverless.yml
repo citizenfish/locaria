@@ -17,6 +17,7 @@ provider:
     importBucket: locaria-${self:custom.stage}-${env:theme}${env:environment}
     region: ${file(../../../locaria.json):${self:custom.stage}.region}
     theme: ${env:theme}
+    environment: ${env:environment}
   iam:
     role:
       statements:

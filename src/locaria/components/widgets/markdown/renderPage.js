@@ -97,7 +97,7 @@ export default function RenderPage() {
 			if(json.getPageData.packet.error) {
 				history.push("/");
 			} else {
-				setPageData(json.getPageData.packet.parameters[pageActual]);
+				setPageData(json.getPageData.packet.parameters[pageActual].data);
 				dispatch(setReport(json));
 			}
 		});

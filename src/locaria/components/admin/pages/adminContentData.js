@@ -12,6 +12,8 @@ import CategorySelector from "../components/selectors/categorySelector";
 import StripedDataGrid from "../../widgets/data/stripedDataGrid";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import {Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
+import DialogContentText from "@mui/material/DialogContentText";
 
 
 
@@ -26,6 +28,7 @@ export default function AdminContentData() {
 	const [cookies, setCookies] = useCookies(['location'])
 	const overview = useSelector((state) => state.adminPages.overview)
 
+	const [openAdd, setOpenAdd] = useState(false);
 
 	const dispatch = useDispatch()
 	const history = useHistory();
@@ -33,6 +36,15 @@ export default function AdminContentData() {
 	const selectRow = (row) => {
 		dispatch(setFeature(row.id));
 		history.push(`/Admin/Content/Data/Edit/${row.id}`);
+	}
+
+	const addRow = () => {
+		dispatch(setFeature(-1));
+		history.push(`/Admin/Content/Data/Edit/`);
+	}
+
+	const handleCloseAdd = () => {
+		setOpenAdd(false);
 	}
 	const dataActions = (params) => {
 		let id = params.row.id
@@ -49,7 +61,7 @@ export default function AdminContentData() {
 						Edit
 					</Button>
 				</Grid>
-				<Grid item md={4}>
+				{/*<Grid item md={4}>
 					<Button variant="outlined"
 							color="error"
 							size="small"
@@ -58,7 +70,7 @@ export default function AdminContentData() {
 							}}>
 						Delete
 					</Button>
-				</Grid>
+				</Grid>*/}
 			</Grid>
 		)
 	}
@@ -135,6 +147,8 @@ export default function AdminContentData() {
 				<Grid container spacing={2}>
 					<Grid item md={6}>
 						<CategorySelector/>
+						<Button onClick={()=>{setOpenAdd(true)}} variant={"outlined"} disabled={category==='*'? true:false}>Add</Button>
+
 					</Grid>
 					<Grid item md={4}>
 						<Typography>The data manager allows you to edit data and articles in the system.</Typography>
@@ -142,6 +156,7 @@ export default function AdminContentData() {
 						{overview&&overview.total_updates>0&&
 							<Button onClick={refreshView} variant={"outlined"}>Refresh {overview.total_updates} items</Button>
 						}
+
 
 					</Grid>
 				</Grid>
@@ -161,6 +176,19 @@ export default function AdminContentData() {
 							  },
 						  }}
 				/>
+
+				<Dialog open={openAdd} onClose={handleCloseAdd}>
+					<DialogTitle>Add item</DialogTitle>
+					<DialogContent>
+						<DialogContentText>
+							Add a new item to the {category} category
+						</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button color="success" onClick={handleCloseAdd}>Cancel</Button>
+						<Button color="error" onClick={addRow}>Add</Button>
+					</DialogActions>
+				</Dialog>
 
 			</Box>
 		</Box>

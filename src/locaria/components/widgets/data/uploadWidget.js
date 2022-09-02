@@ -2,16 +2,13 @@ import React, {useEffect, useRef, useState} from "react"
 import Button from "@mui/material/Button";
 import axios from "axios";
 import {useCookies} from "react-cookie";
-import {Badge, Card, CardActions, CardContent, ImageList, ImageListItem, InputLabel, Select} from "@mui/material";
-import CardMedia from "@mui/material/CardMedia";
-import PhotoSizeSelectActualIcon from '@mui/icons-material/PhotoSizeSelectActual';
+import {Card, CardActions, CardContent, ImageList, ImageListItem, InputLabel, Select} from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
-import {configs, resources} from "themeLocaria";
 import FormControl from "@mui/material/FormControl";
-import {setSystemConfigValue} from "../../../../deprecated/systemConfigDrawerSlice";
 import MenuItem from "@mui/material/MenuItem";
 import UrlCoder from "../../../libs/urlCoder";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import {arrayToggleElement} from "../../../libs/arrayTools";
 
 const url = new UrlCoder();
 let files={};
@@ -20,7 +17,7 @@ let files={};
 let uniqueId = 0;
 const getUniqueId = () => uniqueId++;
 
-export default function UploadWidget(props) {
+export default function UploadWidget({uuids,images,usageFilterInitial="Gallery",sx,title,setFunction,mode="single"}) {
 
 
     const idRef = useRef(null);
@@ -32,16 +29,16 @@ export default function UploadWidget(props) {
     const fileInput = useRef(null)
     const [cookies, setCookies] = useCookies(['location']);
     const [list, setList] = useState([]);
-    const [usageFilter, setUsageFilter] = useState(props.usageFilter);
+    const [usageFilter, setUsageFilter] = useState(usageFilterInitial);
     let uuidActual;
-    //console.log(props.uuid);
-    if (props.uuid) {
-        const decode = url.decode(props.uuid);
+    //console.log(uuid);
+  /*  if (uuids) {
+        const decode = url.decode(uuids);
         if (Array.isArray(decode))
             uuidActual = decode[0];
-    }
+    }*/
     //console.log(uuidActual);
-    const [selected, setSelected] = useState(uuidActual);
+    const [selected, setSelected] = useState(uuids?uuids:[]);
 
 
     useEffect(() => {
@@ -69,7 +66,8 @@ export default function UploadWidget(props) {
             axios.put(url, files[idRef.current], config)
                 .then(function (res) {
                     setFileProgress(0);
-                    updateList();
+                    debugger;
+                    updateList(json.packet.uuid);
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -84,15 +82,30 @@ export default function UploadWidget(props) {
     }, [usageFilter]);
 
 
-    const updateList = () => {
-        window.websocket.send({
-            "queue": `${idRef.current}listAssets`,
-            "api": "api",
-            "data": {
-                "method": "get_asset",
-                "filter": {"usage": usageFilter}
-            }
-        })
+    const updateList = (add) => {
+        if(images) {
+            let imagesActual=images;
+            if(add)
+                imagesActual=arrayToggleElement(imagesActual,add);
+
+            window.websocket.send({
+                "queue": `${idRef.current}listAssets`,
+                "api": "api",
+                "data": {
+                    "method": "get_asset",
+                    "uuid":imagesActual
+                }
+            })
+        } else {
+            window.websocket.send({
+                "queue": `${idRef.current}listAssets`,
+                "api": "api",
+                "data": {
+                    "method": "get_asset",
+                    "filter": {"usage": usageFilter}
+                }
+            })
+        }
     }
 
     const deleteAsset = (uuid) => {
@@ -133,16 +146,16 @@ export default function UploadWidget(props) {
     }
 
     return (
-        <Card sx={props.sx}>
+        <Card sx={sx}>
             <CardContent>
-                <CardHeader title={props.title}
+                <CardHeader title={title}
                             subheader="Select or upload an image">
                 </CardHeader>
                 <ImageList sx={{width: "100%", height: '100%', paddingBottom: 2}} cols={10}>
                     {list.map((item) => (
                         <ImageListItem
                             sx={{
-                                "border": `${selected === item.uuid ? 2 : 0}px solid red`,
+                                "border": `${selected.indexOf(item.uuid) !== -1 ? 2 : 0}px solid red`,
                                 boxShadow: '0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%)',
                                 height: '100%',
                                 cursor: 'pointer',
@@ -156,13 +169,18 @@ export default function UploadWidget(props) {
                             rows={1}
                             onClick={(e) => {
                                 const uuid = e.target.getAttribute('data-uuid');
-                                props.setFunction(url.encode(`${resources.url}${item.url}`, uuid));
-                                setSelected(uuid);
+                                let newList=arrayToggleElement(selected,uuid)
+                                setSelected(newList);
+                                //setFunction(url.encode(`${item.url}`, uuid));
+                                setFunction(newList);
+                                e.target.parentElement.style.border=`${newList.indexOf(uuid) !== -1 ? 2 : 0}px solid red`;
+
+                                //setSelected(uuid);
                             }}
                         >
 
                             <img
-                                src={`${resources.url}${item.url}`}
+                                src={url.decode(`~uuid:${item.uuid}~url:/${item.url}`,true)}
                                 alt={item.name}
                                 loading="lazy"
                                 data-uuid={item.uuid}
@@ -203,12 +221,12 @@ export default function UploadWidget(props) {
                             setUsageFilter(e.target.value);
                         }}
                     >
-                        <MenuItem value={"logo"}>Logos</MenuItem>
-                        <MenuItem value={"icon"}>Icons</MenuItem>
-                        <MenuItem value={"iconMap"}>Map Icons</MenuItem>
-                        <MenuItem value={"iconSocial"}>Social Icons</MenuItem>
-                        <MenuItem value={"panel"}>Panels</MenuItem>
-                        <MenuItem value={"gallery"}>Gallery</MenuItem>
+                        <MenuItem value={"Logo"}>Logos</MenuItem>
+                        <MenuItem value={"Icon"}>Icons</MenuItem>
+                        <MenuItem value={"IconMap"}>Map Icons</MenuItem>
+                        <MenuItem value={"IconSocial"}>Social Icons</MenuItem>
+                        <MenuItem value={"Gallery"}>Gallery</MenuItem>
+                        <MenuItem value={"Feature"}>Feature</MenuItem>
                     </Select>
                 </FormControl>
 

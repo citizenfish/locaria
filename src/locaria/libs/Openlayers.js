@@ -978,7 +978,8 @@ export default class Openlayers {
 
 			const locations={
 				coordinate: e.constructor,
-				coordinate4326: coordinate4326
+				coordinate4326: coordinate4326,
+				ewkt: `SRID=4326;POINT(${coordinate4326[0]} ${coordinate4326[1]})`
 			}
 			options.clickFunction(locations);
 		}

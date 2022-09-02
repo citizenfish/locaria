@@ -9,6 +9,7 @@ import dataItemMarkdown from "./dataItemsRead/dataItemMarkdown";
 import DataItemTextInput from "./dataItemsWrite/dataItemTextInput";
 import dataItemEditMarkdown from "./dataItemsWrite/dataItemEditMarkdown";
 import Box from "@mui/material/Box";
+import DataItemP from "./dataItemsRead/dataItemP";
 
 const FieldView = ({data, mode}) => {
 
@@ -52,15 +53,18 @@ const FormatFields = ({fields, data, mode}) => {
 	if (fields && fields.length > 0) {
 		return (
 			<Grid container>
-				{fields.map(value => (
+				{fields.map(value => {
+					if(value.visible!==false||mode==="write")
+					return (
 					<Grid item md={12}>
 
 						<FormatField field={value}
 									 data={data}
 									 key={value.key}
 									 mode={mode}/>
-					</Grid>
-				))}
+					</Grid>)
+				}
+				)}
 			</Grid>
 		);
 	}
@@ -79,6 +83,7 @@ const FormatField = ({field, data, mode}) => {
 	const dataItems = {
 		'title': {read: DataItemTitle, write: DataItemTextInput},
 		'description': {read: DataItemDescription, write: DataItemTextInput},
+		'p': {read: DataItemP, write: DataItemTextInput},
 		'h2': {read: DataItemH2, write: DataItemTextInput},
 		'md': {read: dataItemMarkdown, write: dataItemEditMarkdown}
 	}
@@ -116,7 +121,7 @@ const getData = (data, path, func) => {
 
 
 	try {
-		result = safeEval(path, data);
+		result = safeEval(`data.${path}`, data);
 	} catch (e) {
 		console.log(e);
 		return "";
