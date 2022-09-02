@@ -80,6 +80,10 @@ The filtersearch method is a placeholder for the  [search method](./search.md) m
 
 The [get_item](get_item.md) method retrieves additional data for an item from the global_search_view. 
 
+### add_item
+
+The [add_item](../internal_gateway/add_item.md) method allows a user to add an item to the system
+
 ### list_categories
 
 The [list_categories](list_categories.md) method returns a list of all categories configureed within the categories table
