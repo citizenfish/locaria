@@ -52,6 +52,13 @@ Type: String
 
 Free text used to carry out a search. This can be any string or numeric along with the wildcard "*" to return everything. The text is used to create a plainto_tsquery structure in Postgres and use it to search the global_search_view in the description attribute.
 
+### my_items
+
+Default: ''
+Type: String
+
+If 'true' then the filter is set to return only items owned by the user. Note well this overwrites any filter sent into the search
+
 ### limit
 
 Default: 10000

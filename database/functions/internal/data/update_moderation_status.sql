@@ -7,7 +7,7 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core', 'public';
 
     --Check we are a moderator
-    IF
+    --IF
 
     --TODO should be a fixed set of statuses
     --TODO should be an acl check but none is done?

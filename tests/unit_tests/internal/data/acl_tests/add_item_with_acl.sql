@@ -9,11 +9,10 @@ DECLARE
                                               'search_date', now()::TEXT
 
                                                );
-    acl_var JSONB DEFAULT jsonb_build_object('owner', 'foo', 'update', jsonb_build_array('fooGroup','baaGroup'), 'delete', jsonb_build_array('baaGroup'));
-
+    new_acl_var JSONB DEFAULT jsonb_build_object('_newACL', jsonb_build_object('owner', 'foo'));
+    acl_var JSONB DEFAULT jsonb_build_object('_userID', 'foo');
     item_id TEXT;
-    group_id TEXT DEFAULT 'FOO GROUP';
-    user_id TEXT DEFAULT 'foo';
+
 BEGIN
 
     --This should fail
@@ -24,7 +23,7 @@ BEGIN
     END IF;
 
     --Add an item
-    SELECT locaria_core.locaria_internal_gateway(jsonb_build_object('method','add_item', 'table', 'test_acl') || item_var, acl_var) INTO ret_var;
+    SELECT locaria_core.locaria_internal_gateway(jsonb_build_object('method','add_item', 'table', 'test_acl') || item_var, new_acl_var) INTO ret_var;
 
     RAISE NOTICE '%', locaria_tests.test_result_processor('add_item TEST 2', ret_var , '{id}', '*');
 
@@ -35,18 +34,19 @@ BEGIN
     --Refresh the view
     SELECT locaria_core.locaria_internal_gateway(jsonb_build_object('method','refresh_search_view')) INTO ret_var;
 
-    IF (ret_var->>'message') != 'view refreshed' THEN
-        RAISE EXCEPTION 'Test step 3 fail %', ret_var;
-    END IF;
+    RAISE NOTICE '%', locaria_tests.test_result_processor('add_item TEST 3', ret_var , '{message}', 'view refreshed');
 
-    --Check for item in view
+    --Check for item in view should not see it by default
     SELECT locaria_core.locaria_gateway(jsonb_build_object('method', 'search', 'search_text', item_var#>>'{attributes,description,text}')) INTO ret_var;
 
-    IF ret_var#>'{geojson,features}'->0 IS NULL THEN
-        RAISE EXCEPTION 'Test step 4 fail %', ret_var;
+    IF ret_var#>'{geojson,features}'->0 IS NOT NULL THEN
+        RAISE NOTICE 'Test step 4 fail %', ret_var;
     END IF;
 
-    RAISE NOTICE 'TEST PASS %',ret_var;
+    SELECT locaria_core.locaria_gateway(jsonb_build_object('method', 'search', 'search_text', item_var#>>'{attributes,description,text}'),acl_var) INTO ret_var;
+
+    RAISE NOTICE '%', locaria_tests.test_result_processor('add_item TEST 5', ret_var->'geojson'->'features'->0->'properties' , '{fid}', '*');
+
 EXCEPTION WHEN OTHERS THEN
 
     RAISE NOTICE 'TEST FAILED %', SQLERRM;

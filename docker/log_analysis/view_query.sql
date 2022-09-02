@@ -1,5 +1,3 @@
-
-
 WITH LOGS AS (
     SELECT JSONB_ARRAY_ELEMENTS(log_message) AS log,id
     FROM locaria_core.logs
