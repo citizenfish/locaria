@@ -84,6 +84,13 @@ resources:
         Precedence: 2
         UserPoolId:
           Ref: CognitoUserPool
-
+    CognitoUserGroupRegistered:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        Description: Registered
+        GroupName: Registered
+        Precedence: 3
+        UserPoolId:
+          Ref: CognitoUserPool
 plugins:
   - serverless-stack-output

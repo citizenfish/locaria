@@ -14,7 +14,7 @@ import Openlayers from "libs/Openlayers";
 
 
 import AdminLayout from './adminLayout';
-import Map from '../widgets/map';
+import Map from '../widgets/maps/map';
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import Input from "@mui/material/Input";

@@ -1,13 +1,14 @@
 import React from 'react';
 import Typography from "@mui/material/Typography";
 
-const DataItemTitle = ({name,data}) => {
-    return (
-        <Typography gutterBottom variant="h1"  sx={{
+const DataItemTitle = ({name,data,sx}) => {
+    let sxActual={...{
             color: window.systemMain.fontSecondary,
             fontWeight: 400,
             fontSize: "1.5rem"
-        }}>{data} </Typography>
+        },...sx}
+    return (
+        <Typography gutterBottom variant="h1" sx={sxActual}>{data} </Typography>
     )
 }
 

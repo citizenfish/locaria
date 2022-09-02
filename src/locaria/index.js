@@ -36,10 +36,10 @@ window.websocket.init({"url": resources.websocket, "uuid":cookieUUID}, connected
 
 window.websocket.registerQueue('bulkConfigs', (json) => {
 
-    window.systemMain = json.systemParams.packet.parameters.systemMain || {};
+    window.systemMain = json.systemParams.packet.parameters.systemMain.data || {};
     window.systemPages = json.systemPages.packet.parameters || {};
-    window.systemLang=json.systemParams.packet.parameters.langENG || {};
-    window.siteMap=json.systemParams.packet.parameters.siteMap || [];
+    window.systemLang=json.systemParams.packet.parameters.langENG.data || {};
+    window.siteMap=json.systemParams.packet.parameters.siteMap.data || [];
     window.systemCategories=new Channels(json.categories.packet.categories || {});
     document.title = window.systemLang.siteTitle;
 

@@ -4,7 +4,7 @@ import {useCookies} from "react-cookie";
 
 import {resources} from "themeLocaria";
 import {useDispatch} from "react-redux";
-import {setUser} from "../../redux/slices/adminPagesSlice";
+import {setToken, setUser} from "../../redux/slices/adminPagesSlice";
 
 export default function TokenCheck() {
 
@@ -44,6 +44,9 @@ export default function TokenCheck() {
 					setTimeout(function () {
 						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 					}, diff);
+					dispatch(setToken(hash));
+				} else {
+					dispatch(setToken(cookies['id_token']));
 				}
 
 			} else {

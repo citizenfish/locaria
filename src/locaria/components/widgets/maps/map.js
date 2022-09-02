@@ -9,8 +9,9 @@ import Openlayers from "libs/Openlayers";
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import Chip from "@mui/material/Chip";
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import Box from "@mui/material/Box";
 
-const Map = forwardRef((props, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,height="100%"}, ref) => {
 
 	const classes = useStyles();
 	const [ol, setOl] = React.useState(new Openlayers());
@@ -22,11 +23,11 @@ const Map = forwardRef((props, ref) => {
 		reportStyle:reportStyle
 	}
 
-	const style=props.style? styles[props.style]:styles['viewStyle'];
+	const mapStyle=style? styles[style]:styles['viewStyle'];
 
 	React.useEffect(() => {
 		ol.addMap({
-			"target": props.id,
+			"target": id,
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
 			"zoom": window.systemMain.defaultZoom,
@@ -50,7 +51,7 @@ const Map = forwardRef((props, ref) => {
 			"name": "data",
 			"type": "vector",
 			"active": true,
-			"style": function(feature,resolution) { return style(feature,resolution,ol);}
+			"style": function(feature,resolution) { return mapStyle(feature,resolution,ol);}
 		});
 		ol.addLayer({
 			"name": "home",
@@ -60,18 +61,18 @@ const Map = forwardRef((props, ref) => {
 		});
 
 		// optionals
-		if (props.handleMapClick !== undefined) {
-			ol.simpleClick({"clickFunction": props.handleMapClick});
+		if (handleMapClick !== undefined) {
+			ol.simpleClick({"clickFunction": handleMapClick});
 		}
-		if (props.onZoomChange !== undefined) {
-			ol.addResolutionEvent({"changeFunction": props.onZoomChange});
+		if (onZoomChange !== undefined) {
+			ol.addResolutionEvent({"changeFunction": onZoomChange});
 			const resolution = ol.updateResolution();
 			// Force a zoom change
-			props.onZoomChange(resolution);
+			onZoomChange(resolution);
 
 		}
-		if (props.onFeatureSeleted !== undefined) {
-			ol.makeControl({"layers": ["data"], "selectedFunction": props.onFeatureSeleted, "multi": true});
+		if (onFeatureSeleted !== undefined) {
+			ol.makeControl({"layers": ["data"], "selectedFunction": onFeatureSeleted, "multi": true});
 		}
 
 	}, [ol]);
@@ -152,7 +153,7 @@ const Map = forwardRef((props, ref) => {
 	}
 
 	const MapSpeedDial = () => {
-		if(props.speedDial===false)
+		if(speedDial===false)
 			return <></>;
 
 
@@ -166,12 +167,16 @@ const Map = forwardRef((props, ref) => {
 	}
 
 	return (
-		<div id={props.id} className={classes[props.className]}>
+		<Box id={id} sx={{
+			position: "relative",
+			width:"100%",
+			height:height
+		}}>
 			<MapSpeedDial/>
 			{window.systemMain.mapAttribution&&
 				<div className={classes.mapAttribution}>{window.systemMain.mapAttribution}</div>
 			}
-		</div>
+		</Box>
 	)
 });
 

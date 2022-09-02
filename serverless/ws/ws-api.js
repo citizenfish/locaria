@@ -158,7 +158,7 @@ module.exports.run = (event, context, callback) => {
 				aclPayload = {
 					"_userID": tokenPacket['cognito:username'],
 					"_email": tokenPacket['email'],
-					"_groups": [...tokenPacket['cognito:groups'],...["PUBLIC"]],
+					"_groups": [...tokenPacket['cognito:groups'], ...["PUBLIC"]],
 					"_newACL": packet.data.acl
 				};
 			}
@@ -226,16 +226,17 @@ module.exports.run = (event, context, callback) => {
 				// Secure API
 				case 'sapi':
 					if (tokenPacket.valid === true) {
+						aclPayload["_newACL"] = packet.data.acl;
 						client = database.getClient();
 						updateSession(tokenPacket['cognito:groups']);
 						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
 
 							let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
-							console.log(packet.data);
+							//console.log(packet.data);
 							let qarguments = [packet.data, aclPayload];
 
-							console.log(qarguments);
-							console.log(querysql);
+							//console.log(qarguments);
+							//console.log(querysql);
 							client.query(querysql, qarguments, function (err, result) {
 								if (err) {
 									console.log(err);
@@ -267,54 +268,54 @@ module.exports.run = (event, context, callback) => {
 				/// New loader API
 				case 'lapi':
 					if (tokenPacket.valid === true) {
-							client = database.getClient();
-							updateSession(tokenPacket['cognito:groups']);
-							if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
-								// Valid user with loader token
-								let cb = (result) => {
-									sendToClient(result)
-								}
-								switch (packet.data.method) {
-									case 'get_files':
-										get_files(packet, client, cb);
-										break;
-									case 'add_file':
-										add_file(packet);
-										break;
-									case 'update_file':
-										update_file(packet, client, cb);
-										break;
-									case 'delete_file':
-										delete_file(packet, client, cb);
-										break;
-									default:
-										payload.packet['response_code'] = 401;
-										sendToClient(payload);
-										break;
-								}
-							} else {
-								payload.packet['response_code'] = 313;
-								console.log(`tokenPacket['cognito:groups'] does not contain Loader!`);
-								sendToClient(payload);
+						client = database.getClient();
+						updateSession(tokenPacket['cognito:groups']);
+						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Loader') !== -1) {
+							// Valid user with loader token
+							let cb = (result) => {
+								sendToClient(result)
+							}
+							switch (packet.data.method) {
+								case 'get_files':
+									get_files(packet, client, cb);
+									break;
+								case 'add_file':
+									add_file(packet);
+									break;
+								case 'update_file':
+									update_file(packet, client, cb);
+									break;
+								case 'delete_file':
+									delete_file(packet, client, cb);
+									break;
+								default:
+									payload.packet['response_code'] = 401;
+									sendToClient(payload);
+									break;
 							}
 						} else {
-							payload.packet['response_code'] = 300;
-							payload.packet = tokenPacket;
+							payload.packet['response_code'] = 313;
+							console.log(`tokenPacket['cognito:groups'] does not contain Loader!`);
 							sendToClient(payload);
 						}
+					} else {
+						payload.packet['response_code'] = 300;
+						payload.packet = tokenPacket;
+						sendToClient(payload);
+					}
 					break;
 				case 'token':
 					if (tokenPacket.valid === true) {
-							client = database.getClient();
-							updateSession(tokenPacket['cognito:groups']);
-							payload.packet = tokenPacket;
-							sendToClient(payload);
-						} else {
-							payload.packet['response_code'] = 300;
-							payload.packet = tokenPacket;
-							sendToClient(payload);
+						client = database.getClient();
+						updateSession(tokenPacket['cognito:groups']);
+						payload.packet = tokenPacket;
+						sendToClient(payload);
+					} else {
+						payload.packet['response_code'] = 300;
+						payload.packet = tokenPacket;
+						sendToClient(payload);
 
-						}
+					}
 					break;
 				default:
 					payload.packet['response_code'] = 201;
@@ -333,6 +334,7 @@ module.exports.run = (event, context, callback) => {
 		let qarguments = [packet.data];
 		//console.log(querysql);
 		//console.log(qarguments);
+		console.log(arguments);
 		client.query(querysql, qarguments, function (err, result) {
 			if (err) {
 				console.log(err);
@@ -342,7 +344,7 @@ module.exports.run = (event, context, callback) => {
 			} else {
 				//console.log(result.rows[0]['locaria_gateway']);
 
-
+				console.log(result.rows[0]);
 				let s3 = new AWS.S3();
 				let s3parameters = {
 					Bucket: result.rows[0]['locaria_gateway'].details.s3_bucket,
@@ -374,8 +376,8 @@ module.exports.run = (event, context, callback) => {
 		let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
 
 		let uuid = uuidv4();
-		let filePath = `${process.env.theme}/assets/${uuid}.${packet.data.attributes.ext}`;
-		let urlPath = `/assets/${uuid}.${packet.data.attributes.ext}`;
+		let filePath = `${process.env.theme}${process.env.environment}/assets/${uuid}.${packet.data.attributes.ext}`;
+		let urlPath = `assets/${uuid}.${packet.data.attributes.ext}`;
 		client = database.getClient();
 		let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
 		packet.data.attributes.s3_bucket = process.env.importBucket;
@@ -473,7 +475,7 @@ module.exports.run = (event, context, callback) => {
 	}
 
 	function validateToken(packet, success) {
-		if (packet.data.id_token === undefined) {
+		if (packet.data.id_token === undefined || packet.data.id_token === null) {
 			success({"valid": false, "message": "No id_token provided"});
 			return;
 		}
@@ -484,7 +486,8 @@ module.exports.run = (event, context, callback) => {
 		fetch(url, {
 			method: 'GET',
 			headers: {'Content-Type': 'application/json'}
-		}).then(res => res.json())
+		})
+			.then(res => res.json())
 			.then(function (json) {
 				//console.log(json);
 				let pems = {};
@@ -528,7 +531,9 @@ module.exports.run = (event, context, callback) => {
 					}
 				}
 
-			});
+			}).catch(function (e) {
+			success({"valid": false, "message": "Fetch error"});
+		});
 	}
 
 	function compressGeoJSON(payload) {

@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux"
 import Typography from "@mui/material/Typography"
 import Box from"@mui/material/Box"
-import Map from "../../../widgets/map"
+import Map from "../../../widgets/maps/map"
 import Grid from "@mui/material/Grid"
 import {FormControl, InputLabel, Input,  Switch, FormGroup,FormControlLabel} from "@mui/material"
 import Button from "@mui/material/Button";
