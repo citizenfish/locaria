@@ -91,7 +91,7 @@ export default function ApiSelector() {
             if (json.packet.parameters.installed_apis){
                 let rows = []
                 let id = 0
-                let configs = json.packet.parameters.installed_apis
+                let configs = json.packet.parameters.installed_apis.data
                 delete configs.last_updated
                 for (let a in configs){
                     rows.push({

@@ -186,14 +186,17 @@ export default function AdminContentPagesEdit() {
 			<LeftNav isOpenContent={true}/>
 			<Box
 				component="main"
-				sx={{flexGrow: 1, marginTop: '60px'}}>
+				sx={{marginTop: '60px'}}>
 				<form onSubmit={formik.handleSubmit} >
 
-					<Grid container spacing={2} sx={{mt:1, p:3}}>
+					<Grid container spacing={1}
+						  sx={{mt:1, p:3}}
+						  justifyContent="center"
+						  alignItems="center">
 						{currentTab === 0 &&
 						<>
 							<Grid item md={1}>
-								<Button sx={{marginRight:"5px"}}
+								<Button
 										variant="outlined"
 										color="warning"
 										onClick={() => {
@@ -214,7 +217,7 @@ export default function AdminContentPagesEdit() {
 								</Button>
 							</Grid>
 							<Grid item md={1}>
-								<Button sx={{marginRight:"5px"}}
+								<Button
 										variant="outlined"
 										color="error"
 										onClick={() => {
@@ -228,7 +231,7 @@ export default function AdminContentPagesEdit() {
 						</>
 						}
 						<Grid item md={1}>
-							<Button sx={{marginRight:"5px"}}
+							<Button
 									variant="outlined"
 									color="error"
 									onClick={() => {
@@ -242,7 +245,7 @@ export default function AdminContentPagesEdit() {
 						</Grid>
 					</Grid >
 					<TabPanel value={currentTab} index={0}>
-							<Box sx={{border: 1, borderRadius: 1, p: 2}}>
+							<Box sx={{border: 1, borderRadius: 1, p: 2, m:2}}>
 							<Grid container spacing={2}>
 								<Grid item md={6} sx={formGrid}>
 									<span style={{marginRight: 20}}>

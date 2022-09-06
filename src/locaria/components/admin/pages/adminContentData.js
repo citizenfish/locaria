@@ -144,14 +144,19 @@ export default function AdminContentData() {
 				sx={{flexGrow: 1, bgcolor: 'background.default', p: 3, marginTop: '60px'}}
 			>
 
-				<Grid container spacing={2}>
+				<Grid container spacing={2} justifyContent="center" alignItems="center">
 					<Grid item md={6}>
 						<CategorySelector/>
-						<Button onClick={()=>{setOpenAdd(true)}} variant={"outlined"} disabled={category==='*'? true:false}>Add</Button>
-
+					</Grid>
+					<Grid item md={2}>
+						<Button onClick={()=>{setOpenAdd(true)}}
+								variant={"outlined"}
+								disabled={category==='*'? true:false}>
+							{category !== '*' ? `Add ${category}` : 'Select a category'}
+						</Button>
 					</Grid>
 					<Grid item md={4}>
-						<Typography>The data manager allows you to edit data and articles in the system.</Typography>
+						<Typography>The data manager allows you to and and edit data published by Locaria. A data item must be associated with a category.</Typography>
 
 						{overview&&overview.total_updates>0&&
 							<Button onClick={refreshView} variant={"outlined"}>Refresh {overview.total_updates} items</Button>

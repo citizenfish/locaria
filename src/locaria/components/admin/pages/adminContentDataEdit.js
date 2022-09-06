@@ -157,20 +157,26 @@ export default function AdminContentDataEdit() {
 			<LeftNav isOpenContent={true}/>
 			<Box
 				component="main"
-				sx={{flexGrow: 1, marginTop: '60px',width:"calc(100vw - 250px)"}}
+				sx={{marginTop: '60px'}}
 			>
 				<Grid container spacing={2} sx={{mt: 1, p: 3}}>
 					<Grid item md={1}>
-						<Button color="warning" onClick={cancelFeature} variant="outlined">Cancel</Button>
+						<Button color="warning"
+								onClick={cancelFeature}
+								variant="outlined">Cancel</Button>
 					</Grid>
 					{featureData&&
 						<>
 							<Grid item md={1}>
-								<Button color="success" onClick={saveFeature} variant="outlined"
+								<Button color="success"
+										onClick={saveFeature}
+										variant="outlined"
 										disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
 							</Grid>
 							<Grid item md={1}>
-								<Button color="error" onClick={deleteFeature} variant="outlined"
+								<Button color="error"
+										onClick={deleteFeature}
+										variant="outlined"
 										disabled={feature === -1 ? true : false}>Delete</Button>
 							</Grid>
 						</>
@@ -180,17 +186,41 @@ export default function AdminContentDataEdit() {
 					</Grid>
 				</Grid>
 				{featureData &&
-					<Grid container spacing={2}>
+					<Grid container spacing={2} sx={{m:2}}>
 						<Grid item md={6}>
-							<Map id={"dropMap"} speedDial={false} height={"500px"} ref={mapRef}
+							<Map id={"dropMap"}
+								 speedDial={false}
+								 height={"250px"}
+								 ref={mapRef}
 								 handleMapClick={mapClick}/>
 						</Grid>
 						<Grid item md={6}>
-							<SimpleUploadWidget images={featureData.data.images} setFunction={imageSelect} feature={feature}/>
+							<SimpleUploadWidget sx={{height: '100%'}}
+												images={featureData.data.images}
+												setFunction={imageSelect}
+												feature={feature}/>
 						</Grid>
 					</Grid>
 				}
-				{featureData !== undefined ? <><FieldView data={featureData} mode={"write"}/></> : <h1>Feature has been deleted, refresh the view to remove it from live</h1>}
+				{featureData !== undefined ?
+					<Box
+						component="main"
+						sx={{
+							border: "1px solid black",
+							width: 'calc(100vw - 300px)',
+							height: "500px",
+							whiteSpace: "pre",
+							padding: "5px",
+							overflow: "scroll",
+							boxShadow: 2,
+							borderRadius: 1,
+							m:2
+						}}
+					>
+						<FieldView data={featureData} mode={"write"}/>
+					</Box>
+
+					: <h1>Feature has been deleted, refresh the view to remove it from live</h1>}
 
 			</Box>
 		</Box>
