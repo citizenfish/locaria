@@ -21,7 +21,9 @@ const FieldView = ({data, mode}) => {
 
 		if (fields) {
 			return (
-				<Box sx={{border: 1, borderRadius: 1, p: 2}}>
+				<Box sx={{
+					p:2
+				}}>
 					{fields.main ?
 						<FormatFields fields={fields.main}
 									  data={data}

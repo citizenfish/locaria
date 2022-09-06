@@ -234,13 +234,14 @@ export default function EditMarkdown({documentObj, mode, id}) {
 				 onKeyDown={(e) => {}}
 				 sx={{
 						border: "1px solid black",
-						width: "100%",
+					 	width: 'calc(100vw - 300px)',
 						height: "500px",
 						whiteSpace: "pre",
-						padding: "5px",
+						padding: 2,
 						overflow: "scroll",
 					 	boxShadow: 2,
-					 	borderRadius: 1
+					 	borderRadius: 1,
+					 	m:'20px'
 					}}
 				 contentEditable={true}
 				 suppressContentEditableWarning={true}

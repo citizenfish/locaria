@@ -115,7 +115,7 @@ export default function SimpleUploadWidget({images, sx, title, setFunction, feat
 				<CardHeader title={title}
 							subheader="Select or upload an image">
 				</CardHeader>
-				<ImageList sx={{width: "100%", height: '100%', paddingBottom: 2}} cols={10}>
+				<ImageList sx={{paddingBottom: 2}} cols={10}>
 					{list.map((item) => (
 						<ImageListItem
 							sx={{
