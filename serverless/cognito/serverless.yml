@@ -15,6 +15,8 @@ resources:
     CognitoUserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
+        LambdaConfig:
+         PostConfirmation: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):PostConfirmationTriggerLambdaFunctionQualifiedArn}
         MfaConfiguration: "OFF"
         UserPoolName: locaria-pool-${env:theme}${env:environment}
         UsernameAttributes:
@@ -92,5 +94,15 @@ resources:
         Precedence: 3
         UserPoolId:
           Ref: CognitoUserPool
+    OnCognitoSignupPermission:
+      Type: 'AWS::Lambda::Permission'
+      Properties:
+        Action: "lambda:InvokeFunction"
+        FunctionName: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):PostConfirmationTriggerLambdaFunctionQualifiedArn}
+        Principal: "cognito-idp.amazonaws.com"
+        SourceArn:
+          Fn::Join: [ "", [ "arn:aws:cognito-idp", ":", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":", "userpool/", Ref: "CognitoUserPool"] ]
+
+
 plugins:
   - serverless-stack-output

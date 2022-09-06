@@ -39,6 +39,15 @@
       }
     },
     {
+      "dir": "cognitoEvents",
+      "outputsSitePrefix": true,
+      "outputs": {
+      },
+      "functions": [
+        "postConfirmationTrigger.js"
+      ]
+    },
+    {
       "dir": "cognito",
       "outputsSitePrefix": true,
       "outputs": {

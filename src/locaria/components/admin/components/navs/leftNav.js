@@ -16,11 +16,12 @@ import {useCookies} from "react-cookie";
 import {useDispatch, useSelector} from "react-redux";
 import {setOverview} from "../../redux/slices/adminPagesSlice";
 
-export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
+export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpenUsers}) {
 
 	const [openContent, setOpenContent] = useState(isOpenContent || false)
 	const [openSettings, setOpenSettings] = useState(isOpenSettings || false)
 	const [openImport, setOpenImport] = useState(isOpenImport || false)
+	const [openUsers, setOpenUsers] = useState(isOpenUsers || false)
 
 	const overview = useSelector((state) => state.adminPages.overview);
 	const token = useSelector((state) => state.adminPages.token);
@@ -46,6 +47,15 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 		setOpenSettings(false)
 		setOpenImport(true)
 		history.push(`/Admin/Import/Upload`);
+	}
+
+
+	const handleClickUsers = () => {
+		setOpenContent(false)
+		setOpenSettings(false)
+		setOpenImport(false)
+		setOpenUsers(true)
+		history.push(`/Admin/Users/Manage`);
 	}
 
 	useEffect(() => {
@@ -198,6 +208,30 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport}) {
 								<ArticleIcon/>
 							</ListItemIcon>
 							<ListItemText primary={"Styles"}/>
+						</ListItemButton>
+					</List>
+				</Collapse>
+
+
+				{/* Users */}
+				<ListItemButton  onClick={() => {
+					handleClickUsers();
+				}}>
+					<ListItemIcon>
+						<EditIcon/>
+					</ListItemIcon>
+					<ListItemText primary={"User Manager"}/>
+					{openUsers && <ExpandMore/>}
+				</ListItemButton>
+				<Collapse in={openUsers} timeout="auto" unmountOnExit>
+					<List component="div">
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/Users/Manage`);
+						}}>
+							<ListItemIcon>
+								<ArticleIcon/>
+							</ListItemIcon>
+							<ListItemText primary={"Manage"}/>
 						</ListItemButton>
 					</List>
 				</Collapse>

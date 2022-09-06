@@ -36,6 +36,11 @@ provider:
             - execute-api:Invoke
           Resource:
             - "*"
+        - Effect: 'Allow'
+          Action:
+            - cognito-idp:*
+          Resource:
+            - "*"
 
 custom:
   stage: ${opt:stage, self:provider.stage}

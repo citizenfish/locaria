@@ -231,29 +231,67 @@ module.exports.run = (event, context, callback) => {
 						updateSession(tokenPacket['cognito:groups']);
 						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
 
-							let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
-							//console.log(packet.data);
-							let qarguments = [packet.data, aclPayload];
+							switch(packet.data.method) {
+								case 'user_list':
+									let cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
 
-							//console.log(qarguments);
-							//console.log(querysql);
-							client.query(querysql, qarguments, function (err, result) {
-								if (err) {
-									console.log(err);
-									payload.packet['response_code'] = 311;
-									sendToClient(payload);
+									let params = {
+										UserPoolId: process.env.pool
+									};
 
-								} else {
-									if (result.rows[0]['locaria_internal_gateway'] === null) {
-										payload.packet['response_code'] = 500;
+
+
+									cognitoIdentityServiceProvider.listUsers(params, function(err, data) {
+										if (err) {
+											payload.packet['response_code'] = 500;
+											payload.packet=err;
+										} else {
+											payload.packet['response_code'] = 200;
+
+											let userList=[];
+											for(let user in data.users) {
+												let userPacket={
+													id: data.users[user].Username,
+													status: data.users[user].UserStatus
+												}
+												for(let attribute in data.users[user].Attributes) {
+													userPacket[data.users[user].Attributes[attribute].Name]=userPacket[data.users[user].Attributes[attribute].Value];
+												}
+												userList.push(userPacket);
+											}
+
+											payload.packet = data;
+										}
 										sendToClient(payload);
-									} else {
-										payload.packet = result.rows[0]['locaria_internal_gateway'];
-										payload.method = packet.data.method;
-										sendToClient(payload);
-									}
-								}
-							});
+									});
+									break;
+								default:
+									let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
+									//console.log(packet.data);
+									let qarguments = [packet.data, aclPayload];
+
+									//console.log(qarguments);
+									//console.log(querysql);
+									client.query(querysql, qarguments, function (err, result) {
+										if (err) {
+											console.log(err);
+											payload.packet['response_code'] = 311;
+											sendToClient(payload);
+
+										} else {
+											if (result.rows[0]['locaria_internal_gateway'] === null) {
+												payload.packet['response_code'] = 500;
+												sendToClient(payload);
+											} else {
+												payload.packet = result.rows[0]['locaria_internal_gateway'];
+												payload.method = packet.data.method;
+												sendToClient(payload);
+											}
+										}
+									});
+									break;
+							}
+
 						} else {
 							payload.packet['response_code'] = 312;
 							sendToClient(payload);
