@@ -44,7 +44,10 @@
       "outputs": {
         "cognitoPoolId": "!Ref CognitoUserPool",
         "poolClientId": "!Ref CognitoUserPoolClient"
-      }
+      },
+      "functions": [
+        "postConfirmationTrigger.js"
+      ]
     },
     {
       "dir": "ws",
