@@ -249,18 +249,18 @@ module.exports.run = (event, context, callback) => {
 											payload.packet['response_code'] = 200;
 
 											let userList=[];
-											for(let user in data.users) {
+											for(let user in data.Users) {
 												let userPacket={
-													id: data.users[user].Username,
-													status: data.users[user].UserStatus
+													id: data.Users[user].Username,
+													status: data.Users[user].UserStatus
 												}
-												for(let attribute in data.users[user].Attributes) {
-													userPacket[data.users[user].Attributes[attribute].Name]=userPacket[data.users[user].Attributes[attribute].Value];
+												for(let attribute in data.Users[user].Attributes) {
+													userPacket[data.Users[user].Attributes[attribute].Name]=data.Users[user].Attributes[attribute].Value;
 												}
 												userList.push(userPacket);
 											}
 
-											payload.packet = data;
+											payload.packet = userList;
 										}
 										sendToClient(payload);
 									});
