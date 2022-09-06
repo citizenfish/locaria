@@ -184,7 +184,10 @@ export default function AdminContentPagesEdit() {
 				sx={{flexGrow: 1, marginTop: '60px'}}>
 				<form onSubmit={formik.handleSubmit} >
 
-					<Grid container spacing={2} sx={{mt:1, p:3}}>
+					<Grid container spacing={2}
+						  sx={{mt:1, p:3}}
+						  justifyContent="center"
+						  alignItems="center">
 						{currentTab === 0 &&
 						<>
 							<Grid item md={1}>
