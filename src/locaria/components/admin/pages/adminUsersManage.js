@@ -15,6 +15,7 @@ import {useCookies} from "react-cookie";
 import {setPage, setPages} from "../redux/slices/adminPagesSlice";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid"
+import StripedDataGrid from "../../widgets/data/stripedDataGrid";
 
 
 
@@ -24,9 +25,14 @@ export default function AdminUsersManage() {
 	const history = useHistory();
 	const page = useSelector((state) => state.adminPages.page);
 	const [cookies, setCookies] = useCookies(['id_token']);
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
+	const [users,setUsers]= useState(undefined);
 
 	useEffect(() => {
+		window.websocket.registerQueue('userList', (json) => {
+			setUsers(json.packet);
+		});
+
 		updateUserList();
 	});
 
@@ -41,6 +47,32 @@ export default function AdminUsersManage() {
 			}
 		});
 
+	}
+
+	const columns = [
+		{field: 'email', headerName: 'Email', width: 200},
+		{field: 'status',headerName: 'Status', width: 400},
+		{field: 'id', headerName: 'ID', width:200},
+		{field: 'actions', headerName: 'Actions', width: 250, renderCell: userActions}
+	];
+
+	const userActions = (params)=> {
+		let id = params.row.id
+		return (
+			<Grid container>
+				<Grid item md={4}>
+					<Button variant="outlined"
+							color="success"
+							size="small"
+							onClick={() => {
+								dispatch(setPage(page))
+								history.push(`/Admin/Users/Manage/${id}`)
+							}}>
+						Edit
+					</Button>
+				</Grid>
+			</Grid>
+		)
 	}
 
 	return (
@@ -63,6 +95,14 @@ export default function AdminUsersManage() {
 						<Typography>The page manager allows you to edit users on your Locaria site.</Typography>
 					</Grid>
 				</Grid>
+				<Box sx={{ height: '800px', width: 1, mt: '40px'}}>
+					{users &&
+						<StripedDataGrid
+							columns={columns}
+							rows={users}
+						/>
+					}
+				</Box>
 			</Box>
 		</Box>
 	)

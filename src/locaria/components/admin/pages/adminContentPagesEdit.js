@@ -149,10 +149,15 @@ export default function AdminContentPagesEdit() {
 
 		window.websocket.registerQueue('getPageData', (json) => {
 			let data = {data: "# New file", type: "Markdown", title: "My page title"};
-			if (json&&json.packet&&json.packet.parameters&&json.packet.parameters[page])
-				data = json.packet.parameters[page];
+			let acl=["PUBLIC"];
+			if (json&&json.packet&&json.packet.parameters&&json.packet.parameters[page]) {
+				data = json.packet.parameters[page].data;
+			}
+			if(json.packet.parameters[page]['_acl']&&json.packet.parameters[page]['_acl'].view) {
+				acl= json.packet.parameters[page]['_acl'].view;
+			}
 			setPageData(data);
-			setGroupNames(data['_acl'].view?data['_acl'].view:["PUBLIC"]);
+			setGroupNames(acl);
 			setMarkdownData(data.data);
 			formik.setFieldValue("title",data.title);
 			formik.setFieldValue("description",data.description);
