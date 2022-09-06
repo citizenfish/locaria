@@ -230,17 +230,43 @@ module.exports.run = (event, context, callback) => {
 						client = database.getClient();
 						updateSession(tokenPacket['cognito:groups']);
 						if (tokenPacket['cognito:groups'] && tokenPacket['cognito:groups'].indexOf('Admins') !== -1) {
+							let cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
 
+							let params = {
+								UserPoolId: process.env.pool
+							};
 							switch(packet.data.method) {
+								case 'delete_group':
+									params.Username=packet.data.id;
+									params.GroupName=packet.data.group;
+									cognitoIdentityServiceProvider.adminRemoveUserFromGroup(params, function(err, data) {
+										if (err) {
+											payload.packet['response_code'] = 500;
+											payload.packet=err;
+										} else {
+											payload.packet['response_code'] = 200;
+											payload.packet.message = "Removed from group";
+											sendToClient(payload);
+										}
+
+										});
+									break;
+								case 'add_group':
+									params.Username=packet.data.id;
+									params.GroupName=packet.data.group;
+									cognitoIdentityServiceProvider.adminAddUserToGroup(params, function(err, data) {
+										if (err) {
+											payload.packet['response_code'] = 500;
+											payload.packet=err;
+										} else {
+											payload.packet['response_code'] = 200;
+											payload.packet.message = "Added to group";
+											sendToClient(payload);
+										}
+
+									});
+									break;
 								case 'user_list':
-									let cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
-
-									let params = {
-										UserPoolId: process.env.pool
-									};
-
-
-
 									cognitoIdentityServiceProvider.listUsers(params, function(err, data) {
 										if (err) {
 											payload.packet['response_code'] = 500;
@@ -264,6 +290,41 @@ module.exports.run = (event, context, callback) => {
 										}
 										sendToClient(payload);
 									});
+									break;
+								case 'user_details':
+									params.Username=packet.data.id;
+									cognitoIdentityServiceProvider.adminGetUser(params, function(err, data) {
+										if (err) {
+											payload.packet = err;
+											payload.packet['response_code'] = 500;
+
+										} else {
+											let userPacket={
+												id: data.Username,
+												status: data.UserStatus
+											}
+											for(let attribute in data.UserAttributes) {
+												userPacket[data.UserAttributes[attribute].Name]=data.UserAttributes[attribute].Value;
+											}
+											payload.packet = userPacket;
+										}
+										cognitoIdentityServiceProvider.adminListGroupsForUser(params, function (err, data) {
+											if (err) {
+												payload.packet = err;
+												payload.packet['response_code'] = 500;
+
+											} else {
+												let groupList=[];
+												for(let group in data.Groups) {
+													groupList.push(data.Groups[group].GroupName);
+												}
+												payload.packet.groups = groupList;
+											}
+											sendToClient(payload);
+										});
+									})
+
+
 									break;
 								default:
 									let querysql = 'SELECT locaria_core.locaria_internal_gateway($1::JSONB,$2::JSONB)';
