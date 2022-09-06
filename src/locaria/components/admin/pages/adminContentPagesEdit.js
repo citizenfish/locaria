@@ -20,6 +20,7 @@ import MdSerialize from "../../../libs/mdSerialize";
 import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import {cognitoGroups} from "../../../libs/cognitoGroups";
 
 
 const validationSchemaEdit = yup.object({
@@ -279,10 +280,10 @@ export default function AdminContentPagesEdit() {
 												paddingRight: 50
 												}}}
 									>
-										<MenuItem key={"permAdmin"}
-												  value={"Admins"}>Admins</MenuItem>
-										<MenuItem key={"permUser"}
-												  value={"Users"}>Users</MenuItem>
+										{cognitoGroups.index.map((group)=>{
+											return (<MenuItem key={"perm"+group}
+															 value={group}>{group}</MenuItem>)
+										})}
 										<MenuItem key={"permPublic"}
 												  value={"PUBLIC"}>PUBLIC</MenuItem>
 									</Select>

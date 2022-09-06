@@ -33,8 +33,9 @@ export default function AdminUsersManage() {
 			setUsers(json.packet);
 		});
 
-		updateUserList();
-	});
+		if(users===undefined)
+			updateUserList();
+	},[users]);
 
 	const updateUserList = (values) => {
 
@@ -48,13 +49,6 @@ export default function AdminUsersManage() {
 		});
 
 	}
-
-	const columns = [
-		{field: 'email', headerName: 'Email', width: 200},
-		{field: 'status',headerName: 'Status', width: 400},
-		{field: 'id', headerName: 'ID', width:200},
-		{field: 'actions', headerName: 'Actions', width: 250, renderCell: userActions}
-	];
 
 	const userActions = (params)=> {
 		let id = params.row.id
@@ -74,6 +68,15 @@ export default function AdminUsersManage() {
 			</Grid>
 		)
 	}
+
+	const columns = [
+		{field: 'email', headerName: 'Email', width: 400},
+		{field: 'status',headerName: 'Status', width: 200},
+		{field: 'id', headerName: 'ID', width:200},
+		{field: 'actions', headerName: 'Actions', width: 250, renderCell: userActions}
+	];
+
+
 
 	return (
 		<Box sx={{display: 'flex'}}>

@@ -15,6 +15,7 @@ import AdminAPISettings from "./admin/pages/adminAPISettings";
 import AdminFileManager from "./admin/pages/adminFileManager";
 import AdminDownload from "./admin/pages/adminDownload";
 import AdminUsersManage from "./admin/pages/adminUsersManage";
+import AdminUsersManageEdit from "./admin/pages/adminUsersManageEdit";
 
 const AdminApp = () => {
 
@@ -50,6 +51,7 @@ const AdminApp = () => {
 					<Route exact path="/Admin/Settings/Appearance"  component={AdminSettingsAppearance}/>
 					<Route exact path="/Admin/Settings/Appearance/Edit"  component={AdminSettingsAppearanceEdit}/>
 					<Route exact path="/Admin/Users/Manage"  component={AdminUsersManage}/>
+					<Route exact path="/Admin/Users/Manage/:user"  component={AdminUsersManageEdit}/>
 					<Route exact path="/Admin/Content/Pages"  component={AdminContentPages}/>
 					<Route exact path="/Admin/Content/Pages/Edit/:selectedPage?"  component={AdminContentPagesEdit}/>
 					<Route exact path="/Admin/Content/Data"  component={AdminContentData}/>
