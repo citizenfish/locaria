@@ -49,7 +49,8 @@ export default function StyleSelector (props) {
 					color="warning"
 					size="small"
 					onClick={() => {
-
+						dispatch(setStyle(style))
+						props.setOpenPreview(true)
 					}}>
 				Preview
 			</Button>
@@ -83,20 +84,3 @@ export default function StyleSelector (props) {
 	)
 
 }
-
-/*
-		<FormControl style={{minWidth: 400, marginTop: 20}}>
-			<InputLabel id="locaria-settings-select-label">Select style</InputLabel>
-			<Select
-				labelId="locaria-settings-select-label"
-				id="locaria-settings-select"
-				value={style}
-				label="Style"
-				onChange={(e) => {
-					dispatch(setStyle(e.target.value));
-				}}
-			>
-				{styleList}
-			</Select>
-		</FormControl>
- */

@@ -15,6 +15,7 @@ import {useCookies} from "react-cookie";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import Grid from "@mui/material/Grid";
+import RenderMarkdown from "../../widgets/markdown/renderMarkdown";
 
 const validationSchemaAdd = yup.object({
 	name: yup
@@ -26,11 +27,12 @@ const validationSchemaAdd = yup.object({
 
 export default function AdminSettingsAppearance() {
 	const history = useHistory();
-	const [openDelete, setOpenDelete] = useState(false);
-	const [openAdd, setOpenAdd] = useState(false);
+	const [openDelete, setOpenDelete] = useState(false)
+	const [openAdd, setOpenAdd] = useState(false)
+	const [openPreview, setOpenPreview] = useState(false)
 
 	const dispatch = useDispatch()
-	const [cookies, setCookies] = useCookies(['id_token']);
+	const [cookies, setCookies] = useCookies(['id_token'])
 
 	const style = useSelector((state) => state.adminPages.style);
 
@@ -65,6 +67,10 @@ export default function AdminSettingsAppearance() {
 		},
 	});
 
+	const makeStyle = () => {
+		return JSON.stringify(window.systemMain.styles[style]);
+	}
+
 	return (
 		<Box sx={{display: 'flex'}}>
 			<TokenCheck></TokenCheck>
@@ -91,9 +97,20 @@ export default function AdminSettingsAppearance() {
 					</Grid>
 				</Grid>
 
-				<StyleSelector setOpenDelete={setOpenDelete}/>
+				<StyleSelector setOpenDelete={setOpenDelete} setOpenPreview={setOpenPreview}/>
 
 			</Box>
+
+			<Dialog open={openPreview}>
+				<DialogTitle>Preview {style}</DialogTitle>
+				<DialogContent>
+					<RenderMarkdown markdown={`${makeStyle()}# H1 Heading\n${makeStyle()}## H2 Heading\n${makeStyle()}### H3 Heading\n\n${makeStyle()}This is how a normal paragraph will appear`}></RenderMarkdown>
+				</DialogContent>
+				<DialogActions>
+					<Button color="success" onClick={() => {setOpenPreview(false)}}>Close</Button>
+				</DialogActions>
+			</Dialog>
+
 
 			<Dialog open={openDelete} onClose={handleCloseDelete}>
 				<DialogTitle>Delete Style</DialogTitle>
