@@ -16,6 +16,7 @@ export default function AdminFileManager() {
     const [showUpload, setShowUpload] = useState(false)
 
 
+
     return(
         <Box sx={{display: 'flex'}}>
             <TokenCheck></TokenCheck>
@@ -31,19 +32,25 @@ export default function AdminFileManager() {
                         <Button sx={{marginRight:"5px"}}
                                 variant="outlined"
                                 color="success"
+                                disabled={showUpload}
                                 onClick={() => {
                                         setShowUpload(true)
                         }}>
                             Upload file
                         </Button>
+                        {showUpload &&
+                        <Button variant="outlined"
+                                color="error"
+                                onClick={()=> {setShowUpload(false)}}>Hide Upload
+                        </Button>}
                     </Grid>
                     <Grid item md={6}>
-                        <Typography>The file manager allows you to upload files and import data into Locaria. A wide variety of file formats are supported including Microsoft Excel, CSV and geospatial formats supported byt the GDAL libraries.</Typography>
+                        <Typography>The file manager allows you to upload files and import data into Locaria. A wide variety of file formats are supported including Microsoft Excel, CSV and geospatial formats supported by the GDAL libraries.</Typography>
                     </Grid>
                 </Grid>
+                {showUpload && <FileUploader setShowUpload={setShowUpload}/>}
+                <AdminFileSelector/>
 
-                {!showUpload && <AdminFileSelector/>}
-                {showUpload && <FileUploader/>}
             </Box>
         </Box>
     )

@@ -3,7 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-       "tests/unit_tests/search/search_test_with_acl.sql"
+       "tests/unit_tests/utility/aws_lambda_interface.sql"
       ],
       "substitutions": "../tests.json"
     }

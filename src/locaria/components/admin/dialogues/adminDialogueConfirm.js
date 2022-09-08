@@ -14,7 +14,7 @@ export default function AdminDialogConfirm(props) {
     };
 
     const handleConfirm = () => {
-        p.confirmFunction()
+        p.confirmFunction(p.confirmParams)
         p.openSet({open:false})
     }
 
