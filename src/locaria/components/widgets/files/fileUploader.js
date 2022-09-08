@@ -14,7 +14,28 @@ export default function FileUploader(props) {
     const fileInput = useRef(null)
     const [cookies, setCookies] = useCookies(['location']);
     const [fileProgress,setFileProgress] = useState(0)
+    const [dragActive, setDragActive] = React.useState(false);
 
+    const handleDrag = (e) => {
+
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === "dragenter" || e.type === "dragover") {
+            setDragActive(true);
+        } else if (e.type === "dragleave") {
+            setDragActive(false);
+        }
+    };
+
+    const handleDrop =(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            console.log(e.dataTransfer.files[0])
+            handleFileInput({target: {files:[e.dataTransfer.files[0]]}})
+        }
+    }
 
     const handleFileInput = (e) => {
         // TODO handle validations etc...
@@ -31,7 +52,8 @@ export default function FileUploader(props) {
                 "file_attributes" : {
                     "file_type" : contentType,
                     "name" : file.name,
-                    "ext" : extension
+                    "ext" : extension,
+                    "upload": true
                 },
                 "contentType" : contentType,
                 "id_token": cookies['id_token']
@@ -56,7 +78,7 @@ export default function FileUploader(props) {
 
             axios.put(url,  file, config)
                 .then(function (res) {
-                    setFileProgress(0)
+                    //setFileProgress(0)
                 })
                 .catch(function(err) {
                     console.log(err)
@@ -67,45 +89,71 @@ export default function FileUploader(props) {
     },[])
 
    return (
-       <Box
-           component="div"
-           sx={{
-               p:2,
-               mt:2,
-               flexGrow: 1,
-           }}
-       >
-           <Grid container spacing={3}>
-               <Grid item xs={2}>
-                     <input type="file"
-                            id = "fileUploadButton"
-                            style = {{display :'none'}}
-                            onChange={handleFileInput} />
-                     <label htmlFor={'fileUploadButton'}>
-                         {
-                             fileProgress == 0 &&
-                             <Button variant="contained"
-                                     onClick={e => fileInput.current && fileInput.current.click() }
-                                     component="span">
-                                 Upload File
-                             </Button>
-                         }
-                         { fileProgress > 0 &&
-                            <Button variant="contained">Uploading ..</Button> }
-                         { fileProgress === -1 &&
-                            <Button variant={"contained"}
-                                    onClick={() => {setFileProgress(0)}}>Upload ERROR</Button>}
-                     </label>
+       <div onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}>
+           <Box
+               component="div"
+               sx={{
+                   p:2,
+                   mt:2,
+                   border: '2px dashed #c3c4c7',
+                   borderRadius: 1,
+                   display: "flex",
+                   ...(dragActive && {backgroundColor: 'rgba(176,176,176,0.38)'}),
+                   ...(!dragActive && {backgroundColor: '#efeded'})
+               }}
+           >
+               <Grid container spacing={1}>
+
+                   <Grid item md={12} sx={{justifyContent: "center", alignItems:"center", display: "flex", flexDirection:'column'}}>
+                         <input type="file"
+                                id = "fileUploadButton"
+                                style = {{display :'none'}}
+                                onChange={handleFileInput} />
+                       <Typography variant={'subtitle1'}>Drop a file to upload</Typography>
+                       <Typography paragraph = {true} variant={'body2'}>or</Typography>
+                         <label htmlFor={'fileUploadButton'}>
+                             {
+                                 (fileProgress === 0 || fileProgress === 100) &&
+                                 <Button variant="outlined"
+                                         onClick={e => fileInput.current && fileInput.current.click() }
+                                         component="span">
+                                     Select File
+                                 </Button>
+                             }
+                             { fileProgress > 0 && fileProgress < 100 &&
+                                <Button variant="outlined"
+                                        disabled={true}>Uploading ..</Button> }
+                             { fileProgress === -1 &&
+                                <Button variant={"contained"}
+                                        onClick={() => {setFileProgress(0)}}>Upload ERROR</Button>}
+
+                         </label>
+                   </Grid>
                </Grid>
-               <Grid item xs={4}>
-                   <Typography variant="subtitle1" noWrap>
-                       {file !== undefined && fileProgress !== 0 && file.name}
-                   </Typography>
-               </Grid>
-               <Grid item xs={4}>
-                   {fileProgress > 0 && <LinearProgressWithLabel value={fileProgress} />}
-               </Grid>
-           </Grid>
-       </Box>
+           </Box>
+           {file !== undefined && fileProgress !== 0 && fileProgress !== 100 &&
+               <Box
+                   component="div"
+                   sx={{
+                       mt:2,
+                       border: '1px solid rgba(224, 224, 224, 1)',
+                       borderRadius: 1,
+                       display: "flex",
+                       p:2,
+                       justifyContent: "center",
+                       alignItems:"center",
+                       flexDirection:'column'
+                   }}
+               >
+                           <Typography variant="subtitle1" noWrap>
+                               Uploading
+                           </Typography>
+                           <Typography variant="subtitle1" noWrap>
+                               <b>{file.name}</b>
+                           </Typography>
+                           {fileProgress > 0 && fileProgress < 100 && <LinearProgressWithLabel value={fileProgress} />}
+               </Box>
+           }
+       </div>
    )
 }

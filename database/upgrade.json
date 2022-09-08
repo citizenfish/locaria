@@ -6,7 +6,9 @@
           "database/functions/locaria_gateway.sql",
           "database/functions/internal/data/add_item.sql",
           "database/functions/internal/data/get_tables.sql",
-          "database/functions/search/search.sql"
+          "database/functions/search/search.sql",
+          "database/functions/utility/aws_lambda_interface.sql",
+          "database/functions/triggers/files_trigger.sql"
       ],
       "substitutions": "../tests.json"
     }

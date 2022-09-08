@@ -12,7 +12,7 @@ DECLARE
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
-
+    RAISE NOTICE 'DEBUG aws_lambda_interface run';
     SELECT parameter
     INTO lambda_config
     FROM parameters

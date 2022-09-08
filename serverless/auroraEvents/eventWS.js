@@ -42,7 +42,7 @@ module.exports.run = (event, context, callback) => {
         client.query("SELECT locaria_core.session_api('search_group', $1)", [event['group']], function (err, result) {
             if (err) {
                 client.end();
-                callback(null, {"response_code": 3000, "message": "search_id FAILED"});
+                callback(null, {"response_code": 3000, "message": "search_group FAILED"});
             } else {
                 sendWSMessage(result.rows[0].session_api);
             }
