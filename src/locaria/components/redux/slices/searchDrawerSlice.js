@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {createSlice} from '@reduxjs/toolkit'
 
 export const searchDrawerSlice = createSlice({
@@ -14,7 +16,8 @@ export const searchDrawerSlice = createSlice({
 		tagList: [],
 		refresh: false,
 		page: 1,
-		totalPages: 0
+		totalPages: 0,
+		features: {},
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -45,6 +48,9 @@ export const searchDrawerSlice = createSlice({
 			}
 			state.refresh=true;
 
+		},
+		setFeatures: (state,action) => {
+			state.features=action.payload;
 		},
 		newSearch: (state, action) => {
 			state.open = true;
@@ -79,6 +85,32 @@ export const searchDrawerSlice = createSlice({
 			}
 			state.refresh=true;
 
+
+
+			let packetSearch = {
+				"queue": "searchFeatures",
+				"api": "api",
+				"data": {
+					"method": "search",
+					"category": state.categories,
+					"search_text": state.search
+
+				}
+			};
+			/*if (displayLimit)
+				packetSearch.data['display_limit'] = displayLimit;*/
+/*
+			if (limit)
+				packetSearch.data['limit'] = limit;
+*/
+
+/*
+			if (rankingAttributes)
+				packetSearch.data['ranking_attributes'] = rankingAttributes;
+			if (actualTags.length > 0)
+				packetSearch.data.tags = actualTags;
+*/
+			window.websocket.send(packetSearch);
 		},
 		closeSearchDrawer: (state) => {
 			state.open = false;
@@ -202,7 +234,8 @@ export const {
 	setTotalPages,
 	clearRefresh,
 	setDistanceType,
-	newSearch
+	newSearch,
+	setFeatures
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer

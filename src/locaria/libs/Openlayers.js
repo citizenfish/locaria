@@ -45,6 +45,9 @@ import bbox from '@turf/bbox';
 import bboxPolygon from '@turf/bbox-polygon';
 import buffer from '@turf/buffer';
 import {centroid,polygon} from "@turf/turf";
+import VectorTileSource from "ol/source/VectorTile";
+import MVT from "ol/format/MVT";
+import VectorTileLayer from "ol/layer/VectorTile";
 
 
 proj4.defs([
@@ -415,6 +418,32 @@ export default class Openlayers {
 			visible: options.active,
 			name: options.name,
 			source: source,
+		});
+		return olLayer;
+	}
+
+	/**
+	 * Add an xyz layer
+	 * @param options
+	 * @return {TileLayer}
+	 * @private
+	 */
+	_addLayer_vectorTile(options) {
+		let self = this;
+
+		let source = new VectorTileSource({
+			format: new MVT(),
+			url:options.url,
+		})
+		let olLayer = new VectorTileLayer({
+			extent: options.extent,
+			opacity: options.opacity,
+			visible: options.active,
+			name: options.name,
+			source: source,
+			style: options.style,
+			declutter: true
+
 		});
 		return olLayer;
 	}

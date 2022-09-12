@@ -3,7 +3,7 @@ import React from 'react';
 import pluginsDefs from "./pluginsDef"
 export default function RenderPlugin({plugin,args}) {
 
-	if (pluginsDefs[plugin].obj) {
+	if (pluginsDefs[plugin]&&pluginsDefs[plugin].obj) {
 		let PluginComponent = pluginsDefs[plugin].obj;
 		return (
 				<PluginComponent {...args}/>

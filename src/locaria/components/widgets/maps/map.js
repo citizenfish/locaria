@@ -1,17 +1,18 @@
 import React, {forwardRef, useRef, useImperativeHandle} from 'react';
 
-import {channels, configs} from "themeLocaria";
+import { configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
-import {viewStyle, locationStyle,reportStyle} from "mapStyle";
+import {viewStyle, locationStyle,reportStyle,vectorStyle} from "mapStyle";
 import Openlayers from "libs/Openlayers";
 
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import Chip from "@mui/material/Chip";
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Box from "@mui/material/Box";
+import {act} from "react-dom/test-utils";
 
-const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,height="100%"}, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle}, ref) => {
 
 	const classes = useStyles();
 	const [ol, setOl] = React.useState(new Openlayers());
@@ -20,10 +21,12 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 	const styles={
 		viewStyle:viewStyle,
 		locationStyle:locationStyle,
-		reportStyle:reportStyle
+		reportStyle:reportStyle,
+		vectorStyle:vectorStyle
 	}
 
-	const mapStyle=style? styles[style]:styles['viewStyle'];
+	const mapLayerStyle=style? styles[style]:styles['viewStyle'];
+	const mapBaseStyle=mapStyle? styles[mapStyle]:styles['viewStyle'];
 
 	React.useEffect(() => {
 		ol.addMap({
@@ -31,16 +34,32 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
 			"zoom": window.systemMain.defaultZoom,
-			"center": ol.decodeCoords(configs.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
+			"center": ol.decodeCoords(window.systemMain.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
 			"maxZoom": 16
 		});
-		ol.addLayer({
-			"name": "xyz",
-			"type": "xyz",
-			"url": window.systemMain.mapXYZ,
-			"active": true
 
-		});
+		switch(mapType) {
+			case 'vectorTile':
+				ol.addLayer({
+					"name": "vectorTiles",
+					"type": "vectorTile",
+					"url": mapSource||window.systemMain.mapSource,
+					"active": true,
+					"style":mapBaseStyle
+
+				});
+				break;
+			case 'xyz':
+			default:
+				ol.addLayer({
+					"name": "xyz",
+					"type": "xyz",
+					"url": mapSource||window.systemMain.mapSource,
+					"active": true
+
+				});
+				break;
+		}
 		ol.addLayer({
 			"name": "location",
 			"type": "vector",
@@ -51,7 +70,7 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			"name": "data",
 			"type": "vector",
 			"active": true,
-			"style": function(feature,resolution) { return mapStyle(feature,resolution,ol);}
+			"style": function(feature,resolution) { return mapLayerStyle(feature,resolution,ol);}
 		});
 		ol.addLayer({
 			"name": "home",
@@ -166,12 +185,16 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 
 	}
 
-	return (
-		<Box id={id} sx={{
+	let actualSx={...{
 			position: "relative",
 			width:"100%",
-			height:height
-		}}>
+			height:"100%"
+		},...sx};
+
+
+
+	return (
+		<Box id={id} sx={actualSx}>
 			<MapSpeedDial/>
 			{window.systemMain.mapAttribution&&
 				<div className={classes.mapAttribution}>{window.systemMain.mapAttribution}</div>
