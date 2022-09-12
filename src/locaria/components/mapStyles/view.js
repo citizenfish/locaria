@@ -232,3 +232,123 @@ export function viewStyle(feature, resolution,ol) {
 
 
 }
+
+const styleSettings = {
+	roadStroke:   [128, 128, 128, 1],
+	roadWidth: 25,
+	roadLineCap: 'round',
+	roadLineJoin: 'bevel',
+	roadLabelSize: 17,
+	roadLabelTextBaseline: 'middle',
+	roadLabelStroke: [255, 255, 255],
+	roadLabelFill: [255, 255, 255],
+	greenspaceFill: [0,255,0,0.1],
+	backgroundFill:[128, 128, 128,0.1],
+	surfaceWaterFill: [0, 0, 255,0.1],
+	buildingFill: [250, 218, 180, 0.3],
+	buildingStroke:[250, 218, 180, 0.7],
+	areaFontSize: 100,
+	areaStroke: [255, 255, 255,0.9],
+	areaFill: [128, 128, 128, 1],
+	areaWidth: 7,
+	font: '"Montserrat"',
+	noprint: []
+}
+
+export function vectorStyle(feature, resolution,ol) {
+	let type = feature.get('layer')||'';
+
+	if(type === 'Roads' && styleSettings.noprint.indexOf('Roads') === -1){
+		let width = Math.round(styleSettings.roadWidth/resolution)
+		return [
+			new Style({
+				stroke: new Stroke({
+					color: styleSettings.roadStroke,
+					width: width,
+					lineCap : styleSettings.roadLineCap,
+					lineJoin: styleSettings.roadLineJoin
+				})
+			})
+		]
+	}
+
+	if(type === 'Roads/label' && resolution < 2.5 && styleSettings.noprint.indexOf('Roads/label') === -1) {
+		let name = feature.get('_name').toUpperCase()
+		let font_size = Math.round(styleSettings.roadLabelSize/resolution)
+		return [
+			new Style({
+				text: new Text({
+					text: name,
+					textBaseline: styleSettings.roadLabelTextBaseline,
+					font: `${font_size}px ${styleSettings.font}`,
+					placement: 'line',
+					stroke: new Stroke(
+						{color: styleSettings.roadLabelStroke}
+					),
+					fill: new Fill({color: styleSettings.roadLabelFill})
+				})
+			})
+		]
+	}
+
+	if(type.match(/Greenspace|Woodland/) && styleSettings.noprint.indexOf('Greenspace') === -1) {
+		return [
+			new Style({
+				fill: new Fill({
+					color: styleSettings.greenspaceFill
+				})
+			})
+		]
+	}
+
+	if(type === 'Background' && styleSettings.noprint.indexOf('Background') === -1) {
+		return [
+			new Style({
+				fill: new Fill({
+					color: styleSettings.backgroundFill
+				})
+			})
+		]
+	}
+
+	if(type === 'Surfacewater' && styleSettings.noprint.indexOf('Surfacewater') === -1) {
+		return [
+			new Style({
+				fill: new Fill({
+					color: styleSettings.surfaceWaterFill
+				})
+			})
+		]
+	}
+
+	if((type === 'Local_buildings' || type === 'Functional_sites' || type === 'Sites') && styleSettings.noprint.indexOf('Buildings') === -1 ) {
+		return [
+			new Style({
+				fill: new Fill({
+					color: styleSettings.buildingFill
+				}),
+				stroke: new Stroke(
+					{
+						color: styleSettings.buildingStroke
+					}
+				)
+			})
+		]
+	}
+	if(type.match(/Suburban/) && resolution >= 2.5 && styleSettings.noprint.indexOf('Suburban') === -1){
+		let name = feature.get('_name').toUpperCase()
+		let font_size = Math.round(styleSettings.areaFontSize/resolution)
+		return [
+			new Style({
+				text: new Text({
+					text: name,
+					font: `${font_size}px ${styleSettings.font}`,
+					placement: 'point',
+					stroke: new Stroke({color: styleSettings.areaStroke, width: styleSettings.areaWidth}),
+					fill: new Fill({color: styleSettings.areaFill})
+				})
+			})
+		]
+	}
+
+}

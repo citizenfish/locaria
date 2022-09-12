@@ -23,7 +23,7 @@ export default function AdminContentDataEdit() {
 	const [cookies, setCookies] = useCookies(['location']);
 	const feature = useSelector((state) => state.adminPages.feature);
 	const [featureData, setFeatureData] = useState(undefined);
-	const [images, setImages] = useState(undefined);
+	const [images, setImages] = useState([]);
 	const category = useSelector((state) => state.categorySelect.currentSelected);
 	const mapRef = useRef();
 
@@ -43,7 +43,9 @@ export default function AdminContentDataEdit() {
 			} else {
 				if (json.packet.features[0]) {
 					setFeatureData(json.packet.features[0].properties);
-					setImages(json.packet.features[0].properties.data.images);
+					if(json.packet.features[0].properties.data&&json.packet.features[0].properties.data.images)
+						setImages(json.packet.features[0].properties.data.images);
+					else setImages([]);
 				}
 				mapRef.current.addGeojson(json.packet)
 				mapRef.current.zoomToLayersExtent(["data"], 50000);
@@ -119,6 +121,8 @@ export default function AdminContentDataEdit() {
 	function saveFeature() {
 		let data = FormFieldsToData(featureData.category);
 
+		if(!data.data)
+			data.data={};
 		let packet = {
 			queue: "saveFeature",
 			api: "sapi",
@@ -190,13 +194,13 @@ export default function AdminContentDataEdit() {
 						<Grid item md={6}>
 							<Map id={"dropMap"}
 								 speedDial={false}
-								 height={"250px"}
+								 sx={{height:"250px"}}
 								 ref={mapRef}
 								 handleMapClick={mapClick}/>
 						</Grid>
 						<Grid item md={6}>
 							<SimpleUploadWidget sx={{height: '100%'}}
-												images={featureData.data.images}
+												images={featureData.data&&featureData.data.images? featureData.data.images:[]}
 												setFunction={imageSelect}
 												feature={feature}/>
 						</Grid>

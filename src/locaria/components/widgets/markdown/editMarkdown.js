@@ -19,6 +19,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 
 import pluginsDefs from "./pluginsDef";
 import Grid from "@mui/material/Grid";
+import ArgsSerialize from "../../../libs/argsSerialize";
 
 
 export default function EditMarkdown({documentObj, mode, id}) {
@@ -55,9 +56,12 @@ export default function EditMarkdown({documentObj, mode, id}) {
 
 	const handleSavePlugin = (e) => {
 		debugger;
+		const ARGS=new ArgsSerialize();
 
+		let params=document.getElementById('params').value
+		params=ARGS.escapeStringArgs(params);
 		setOpenPlugin(false);
-		plugin.target.setAttribute('data-params', document.getElementById('params').value);
+		plugin.target.setAttribute('data-params', params );
 
 	}
 

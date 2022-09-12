@@ -3,11 +3,15 @@ const Database = require("./database");
 
 module.exports.run = (event, context, callback) => {
 
-	let path=event.path.replace(/^\//,'');
+	let path=event.path;
+	path=path.replace(/^\//,'');
 	path=path.replace(/\/.*$/,'');
-	path=path.replace('index.html');
-	if(path==='')
-		path='Home';
+	path=path.replace('index.html','');
+	if(path===''||path===undefined) {
+		path = 'Home';
+	}
+	console.log(`processed-defaults: ${path}`)
+
 	const conn = {
 		user: process.env.auroraMasterUser,
 		host: process.env.postgresHost,
@@ -19,24 +23,24 @@ module.exports.run = (event, context, callback) => {
 
 	let database = new Database(client, conn, callback);
 
-	console.log(event);
 
+	let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB,$2::JSONB)';
+	let qarguments = [
+		{
+			method: "get_parameters",
+			parameter_name: path
+
+		}, {}];
 
 	database.connect(() => {
 
 		client = database.getClient();
 
 
-		let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB,$2::JSONB)';
-		let qarguments = [
-			{
-				method: "get_parameters",
-				parameter_name: path
 
-			}, {}];
+
 
 		client.query(querysql, qarguments, function (err, result) {
-			console.log(result.rows[0]['locaria_gateway']);
 
 			const html = `\
 				<!DOCTYPE html>\

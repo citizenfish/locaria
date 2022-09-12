@@ -1,4 +1,4 @@
-service: locaria-aurora-events-${env:theme}
+service: locaria-aurora-events-${env:theme}${env:environment}
 projectDir: ../../../
 provider:
   name: aws
@@ -8,9 +8,9 @@ provider:
   environment:
     postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
     postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
-    websocket: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}.json):ServiceEndpointWebsocket}
+    websocket: ${file(../outputs/${self:custom.stage}-outputs-${env:theme}-${env:environment}.json):ServiceEndpointWebsocket}
     stage: ${self:custom.stage}
-    auroraDatabaseName: locaria${env:theme}
+    auroraDatabaseName: locaria${env:theme}${env:environment}
     auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
     auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
   iam:
