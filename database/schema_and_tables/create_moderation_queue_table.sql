@@ -4,7 +4,8 @@ CREATE  TABLE locaria_core.moderation_queue(
 id              BIGSERIAL PRIMARY KEY,
 fid             TEXT NOT NULL,
 attributes      JSONB,
-status          TEXT DEFAULT 'RECEIVED'
+status          TEXT DEFAULT 'RECEIVED',
+created         TIMESTAMP DEFAULT now()
 
 );
 

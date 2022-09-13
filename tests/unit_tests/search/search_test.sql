@@ -37,5 +37,16 @@ BEGIN
     RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 6', ret_var#>'{geojson,features}'->0 , '{properties,description,title}', 'find me order');
 
     RAISE NOTICE ' Should only be one feature %', ret_var#>>'{geojson,features}';
+
+    --Test seven a json path test
+    parameters = jsonb_build_object('search_text', '', 'method', 'search', 'jsonpath', 'lax $._identifier == "foo1"') ;
+    SELECT locaria_gateway(parameters) INTO ret_var;
+    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 6', ret_var#>'{geojson,features}'->0 , '{properties,data,_identifier}', 'foo1');
+
+    --Test 8 should not bring anything back
+    parameters = jsonb_build_object('search_text', '', 'method', 'search', 'jsonpath', 'lax $._identifier == "foo2"') ;
+    SELECT locaria_gateway(parameters) INTO ret_var;
+    RAISE NOTICE '%', locaria_tests.test_result_processor('search TEST 6', ret_var->0->'features' , '{}', 'EMPTY');
+
 END;
 $$ LANGUAGE PLPGSQL;

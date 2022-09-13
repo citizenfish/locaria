@@ -9,7 +9,7 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-    SELECT jsonb_object_agg(parameter_name,
+    SELECT jsonb_object_agg(REPLACE(parameter_name, '_PUBLIC', ''),
                             jsonb_build_object('data', parameter  -  COALESCE(parameters_var->>'delete_key', ''))
                                        || jsonb_build_object('last_updated', to_char(last_updated, 'DD/MM/YYYY HH24:MI'))
                                        || CASE WHEN COALESCE(parameters_var->>'send_acl', 'false')::BOOLEAN
@@ -26,8 +26,12 @@ BEGIN
         RETURN jsonb_build_object('parameters',ret_var);
     END IF;
 
-    RETURN jsonb_build_object('error', 'parameter not found');
+    --We try for PUBLIC version if acl fails on standard
+    IF (parameters_var->>'parameter_name') IS NOT NULL AND NOT parameters_var->>'parameter_name' ~ '_PUBLIC' THEN
+        RETURN locaria_core.get_parameters( parameters_var || jsonb_build_object('parameter_name', concat(parameters_var->>'parameter_name', '_PUBLIC')));
+    END IF;
 
+    RETURN jsonb_build_object('error', 'parameter not found');
 END;
 $$
     LANGUAGE PLPGSQL;

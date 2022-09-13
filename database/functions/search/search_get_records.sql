@@ -20,6 +20,8 @@ DECLARE
     min_range_var FLOAT;
     max_range_var FLOAT;
     ranking_attribute_var TEXT [] DEFAULT ARRAY ['description','title'];
+    jsonpath_var TEXT DEFAULT '';
+
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -113,6 +115,9 @@ BEGIN
         ranking_attribute_var = string_to_array(search_parameters->>'ranking_attributes',',');
     END IF;
 
+    --We support jsonpath but need to be concious that this is not currently indexed
+   jsonpath_var = NULLIF(search_parameters->>'jsonpath', '');
+
     --This is the core search query
 
     RETURN QUERY
@@ -145,6 +150,8 @@ BEGIN
                 AND (NOT filter_var OR attributes @> json_filter)
                 --Free text on JSONB attributes search
                 AND (search_ts_query = '_IGNORE' OR jsonb_to_tsvector('English'::regconfig, attributes->'description', '["string", "numeric"]'::jsonb) @@ search_ts_query)
+                --jsonpath search
+                AND (jsonpath_var IS NULL OR jsonb_path_match(attributes->'data', jsonpath_var::JSONPATH))
                 --Bounding box search
                 AND (bbox_var IS NULL OR wkb_geometry && bbox_var)
                 --distance search

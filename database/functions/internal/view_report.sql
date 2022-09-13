@@ -21,11 +21,11 @@ BEGIN
         AND attributes->>'method' IN ('add_item', 'update_item', 'delete_item')
     ), COUNTS AS (
         SELECT distinct on (method) method,
-                                    jsonb_build_object(method||'_fids', jsonb_strip_nulls(jsonb_agg(fid)),
-                                                       method, count(*)) AS obj
+               jsonb_build_object(method||'_fids', jsonb_strip_nulls(jsonb_agg(fid)),
+               method,
+               count(*)) AS obj
         FROM PENDING_RECORDS
         GROUP BY method
-
     )  SELECT  jsonb_build_object('total', (SELECT count(*) FROM global_search_view),
                                   'update_item', 0,
                                   'add_item',0,

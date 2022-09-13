@@ -12,9 +12,9 @@ BEGIN
      SELECT attributes,
             moderated_update
      INTO item_var,
-          moderated_update_var
+         moderated_update_var
      FROM global_search_view
-     --Only allow editables to be updated
+          --Only allow editables to be updated
      WHERE fid = parameters->>'fid' AND edit;
 
      IF item_var IS NULL THEN
@@ -22,7 +22,7 @@ BEGIN
      END IF;
 
      --Moderated updates don't need acl as they go into queue for auth
-     IF moderated_update_var THEN
+     IF moderated_update_var AND (parameters->>'moderation_id') IS NULL THEN
          RETURN add_to_moderation_queue(parameters);
      END IF;
 
@@ -32,7 +32,8 @@ BEGIN
 
     EXECUTE format($SQL$
                 UPDATE %1$s
-                SET attributes = attributes || COALESCE($1, jsonb_build_object()),
+                SET attributes = attributes || COALESCE($1, jsonb_build_object())
+                                            || jsonb_build_object('acl', (attributes->'acl') || $6),
                     wkb_geometry = COALESCE($2, wkb_geometry),
                     category_id  = COALESCE($3, category_id),
                     search_date  = COALESCE($4, search_date)
@@ -44,7 +45,8 @@ BEGIN
                 ST_TRANSFORM(ST_GEOMFROMEWKT(parameters->>'geometry'),4326),
                 (SELECT id FROM categories WHERE category = parameters->>'category'),
                 (parameters->>'search_date')::TIMESTAMP,
-                item_var->>'ofid';
+                item_var->>'ofid',
+                COALESCE(parameters#>'{acl,_newACL}', jsonb_build_object());
 
     --If this was a moderation then update its status
 
