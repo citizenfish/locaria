@@ -5,6 +5,7 @@ add_item adds an item to the database by inserting it into a defined data table.
 After insertion a history item is added to the history table with the parameters passed to the add_item method.
 
 The acl is set to the default system 
+
 ## Parameters
 
 ### table

@@ -4,7 +4,16 @@ The get_moderation_items method retrieves items from the moderation queue that a
 
 ## Parameters
 
-No parameters are required
+### filter
+
+Default: {}
+Type: JSON
+
+A filter applied to moderation item retrieval, most useful is:-
+
+{
+category : 'foo'
+}
 
 ## Returns
 

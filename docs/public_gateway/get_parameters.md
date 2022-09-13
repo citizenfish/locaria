@@ -2,6 +2,8 @@
 
 The get_parameters method returns an structure of JSON structures from the parameters table of the database. It is used to retrieve individual parameters by name or a set of parameters by usage type.
 
+If the search fails the function will append _PUBLIC to the parameter name and try again. This caters for parameters that have two varients, admin and public types.
+
 ## Parameters
 
 ### parameter_name

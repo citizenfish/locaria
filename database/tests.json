@@ -3,7 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-       "tests/unit_tests/utility/aws_lambda_interface.sql"
+       "tests/unit_tests/moderation/add_item.sql"
       ],
       "substitutions": "../tests.json"
     }
