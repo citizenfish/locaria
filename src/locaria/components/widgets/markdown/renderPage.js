@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import RenderMarkdown from "./renderMarkdown";
 import {LinearProgress, useMediaQuery} from "@mui/material";
 import {useHistory, useParams} from "react-router-dom";
@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import MenuDrawer from "../drawers/menuDrawer";
 import {setMobile} from "../../redux/slices/mediaSlice";
 import {useCookies} from "react-cookie";
+import {setFeatures} from "../../redux/slices/searchDrawerSlice";
 
 export default function RenderPage() {
 
@@ -91,6 +92,14 @@ export default function RenderPage() {
 		window.websocket.sendBulk('pageBulkLoader', bulkPackage);
 	}
 
+
+	useEffect(() => {
+		window.websocket.registerQueue("searchFeatures", function (json) {
+			dispatch(setFeatures(json.packet.geojson));
+		});
+
+	}, []);
+
 	React.useEffect(() => {
 
 		window.websocket.registerQueue('pageBulkLoader', (json) => {
@@ -101,6 +110,8 @@ export default function RenderPage() {
 				dispatch(setReport(json));
 			}
 		});
+
+
 
 		getAllData();
 		window.addEventListener('resize', handleResize);

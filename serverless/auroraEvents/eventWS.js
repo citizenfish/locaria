@@ -28,22 +28,30 @@ module.exports.run = (event, context, callback) => {
      */
     let client = new pg.Client(conn);
     client.connect();
+    console.log(event);
 
     if(event['id']) {
+        console.log('MODE ID');
         client.query("SELECT locaria_core.session_api('search_id', $1)", [event['id']], function (err, result) {
             if (err) {
+                console.log(err);
                 client.end();
                 callback(null, {"response_code": 3000, "message": "search_id FAILED"});
             } else {
                 sendWSMessage([result.rows[0].session_api.id]);
+                console.log(result.rows[0].session_api.id);
+
             }
         });
     } else {
+        console.log('MODE GROUP');
         client.query("SELECT locaria_core.session_api('search_group', $1)", [event['group']], function (err, result) {
             if (err) {
+                console.log(err);
                 client.end();
                 callback(null, {"response_code": 3000, "message": "search_group FAILED"});
             } else {
+                console.log(result.rows[0].session_api);
                 sendWSMessage(result.rows[0].session_api);
             }
         });
@@ -76,6 +84,7 @@ module.exports.run = (event, context, callback) => {
 
 
             console.log(`Sending [${number}] - ${connectionId}`);
+            console.log(payload);
 
             apiClient
                 .postToConnection({ConnectionId: connectionId, Data: payload})

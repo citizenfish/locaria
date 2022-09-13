@@ -2,7 +2,6 @@ import TopFeatures from "../search/topFeatures";
 import PageList from "../pages/pageList";
 import ContactFull from "../contact/contactFull";
 import ContactMailchimp from "../contact/contactMailchimp";
-import FooterTypeSimple from "../footers/footerTypeSimple";
 import NavTypeSimple from "../navs/navTypeSimple";
 import SiteMap from "../pages/siteMap";
 import LogoStrapLine from "../logos/logoStrapLine";
@@ -11,9 +10,16 @@ import TextSearchWidget from "../search/textSearchWidget";
 import SocialIcons from "../social/socialIcons";
 import SlideShow from "../images/slideShow";
 import NavButton from "../navs/navButton";
-import footerTypeSimple from "../footers/footerTypeSimple";
+import FooterTypeSimple from "../footers/footerTypeSimple";
+import SimpleMap from "../maps/simpleMap";
+import SearchProxy from "../search/searchProxy";
 
 const pluginsDefs = {
+	"SearchProxy": {
+		"obj": SearchProxy,
+		"description": "Search proxy",
+		"params": [{param: "category", default: "News"}]
+	},
 	"TopFeatures": {
 		"obj": TopFeatures,
 		"description": "Show a panel of features",
@@ -35,7 +41,7 @@ const pluginsDefs = {
 		"params": [{param: "category", default: "News"}]
 	},
 	"FooterTypeSimple": {
-		"obj": footerTypeSimple,
+		"obj": FooterTypeSimple,
 		"description": "Show a panel of features",
 		"params": [{param: "category", default: "News"}]
 	},
@@ -77,6 +83,11 @@ const pluginsDefs = {
 	"NavButton": {
 		"obj": NavButton,
 		"description": "Show a panel of features",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SimpleMap": {
+		"obj": SimpleMap,
+		"description": "Searchable map",
 		"params": [{param: "category", default: "News"}]
 	}
 }
