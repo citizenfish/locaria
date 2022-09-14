@@ -12,7 +12,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Box from "@mui/material/Box";
 import {act} from "react-dom/test-utils";
 
-const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle}, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20}, ref) => {
 
 	const classes = useStyles();
 	const [ol, setOl] = React.useState(new Openlayers());
@@ -35,7 +35,7 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			"renderer": ["canvas"],
 			"zoom": window.systemMain.defaultZoom,
 			"center": ol.decodeCoords(window.systemMain.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
-			"maxZoom": 16
+			"maxZoom": maxZoom
 		});
 
 		switch(mapType) {

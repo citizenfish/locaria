@@ -87,7 +87,7 @@ const FormatField = ({field, data, mode}) => {
 		'description': {read: DataItemDescription, write: DataItemTextInput},
 		'p': {read: DataItemP, write: DataItemTextInput},
 		'h2': {read: DataItemH2, write: DataItemTextInput},
-		'md': {read: dataItemMarkdown, write: dataItemEditMarkdown}
+		'md': {read: dataItemMarkdown, write: dataItemEditMarkdown, options: {simple:true}}
 	}
 
 	if (dataItems[field.display] && dataItems[field.display][mode]) {
@@ -97,6 +97,7 @@ const FormatField = ({field, data, mode}) => {
 					 name={field.name}
 					 data={dataActual}
 					 sx={field.sx}
+					 {...dataItems[field.display].options}
 			/>
 		)
 	} else {

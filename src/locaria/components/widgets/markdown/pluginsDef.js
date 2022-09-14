@@ -13,6 +13,8 @@ import NavButton from "../navs/navButton";
 import FooterTypeSimple from "../footers/footerTypeSimple";
 import SimpleMap from "../maps/simpleMap";
 import SearchProxy from "../search/searchProxy";
+import SearchCategory from "../search/searchCategory";
+import SimpleForm from "../data/simpleForm";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -88,6 +90,16 @@ const pluginsDefs = {
 	"SimpleMap": {
 		"obj": SimpleMap,
 		"description": "Searchable map",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SearchCategory": {
+		"obj": SearchCategory,
+		"description": "Search Category",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SimpleForm": {
+		"obj": SimpleForm,
+		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	}
 }
