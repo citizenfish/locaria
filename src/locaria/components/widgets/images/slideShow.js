@@ -3,42 +3,64 @@ import React from 'react';
 import Carousel from 'react-material-ui-carousel'
 import Paper from "@mui/material/Paper";
 import UrlCoder from "../../../libs/urlCoder"
-import {useMediaQuery} from "@mui/material";
+import {useSelector} from "react-redux";
+import Box from "@mui/material/Box";
 
-export default function SlideShow({images,format,orientation="portrait"}) {
+export default function SlideShow({images, format = "contain", feature = false, interval,duration}) {
+	let useImages = images || [];
+	const report = useSelector((state) => state.viewDraw.report);
+	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
 
-	const  desktop=useMediaQuery('(min-width:600px)');
-	let height=550;
-	if(orientation==='landscape') {
-		height=desktop?550:300;
+	if (feature === true && report && report.viewLoader) {
+		useImages = [];
+		for (let i in report.viewLoader.packet.features[0].properties.data.images)
+			useImages.push({"url": report.viewLoader.packet.features[0].properties.data.images[i]})
 	}
 
 	return (
-		<Carousel height={height} sx={{
-			margin: "10px"
-		}}>
-			{
-				images.map( (item, i) => <Item key={i} item={item} format={format} height={height}/> )
+		<>
+			{useImages.length > 1 &&
+				<Carousel interval={interval} duration={duration} height={!mobile ? "450px" : "320px"}>
+					{
+						useImages.map((item, i) => <Item key={i} item={item} format={format}/>)
+					}
+				</Carousel>
 			}
-		</Carousel>
+			{useImages.length === 1 &&
+				<Box height={!mobile ? "450px" : "320px"}>
+					<Item key={"single"} item={useImages[0]} format={format}/>
+				</Box>
+			}
+		</>
 	)
 }
 
-function Item({item,format,height})
-{
+function Item({item, format}) {
 	const url = new UrlCoder();
-	let sx={backgroundImage: `url(${url.decode(item.url,true)})`,width: "100%",height:`${height}px`,backgroundSize: "cover"};
+
+	if(item.type==="video") {
+		return (
+			<video width="100%" height="100%" autoPlay="autoplay" muted loop>
+				<source src={url.decode(item.url, true)} type="video/mp4"/>
+			</video>
+		)
+	}
+	let sx={
+		backgroundImage: `url(${url.decode(item.url, true)})`,
+		height: "100%",
+		backgroundSize: "cover",
+		boxShadow: "none"
+	}
+
 	if(format==='contain') {
 		sx.backgroundSize="contain";
 		sx.backgroundRepeat="no-repeat";
 		sx.backgroundPositionX="center";
 		sx.backgroundPositionY="center";
 	}
+
 	return (
-		<Paper sx={sx}>
-{/*			<h2>{item.name}</h2>
-			<p>{item.description}</p>*/}
-		</Paper>
+		<Paper sx={sx}/>
 	)
 }

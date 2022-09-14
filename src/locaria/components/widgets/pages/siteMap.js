@@ -10,20 +10,11 @@ import Carousel from "react-material-ui-carousel";
 import Paper from "@mui/material/Paper";
 import ClickAway from "../utils/clickAway";
 import {useSelector} from "react-redux";
+import SlideShow from "../images/slideShow";
 
-const SiteMap = function ({mode, images, feature, format,duration = 1000,interval=8000}) {
-
-	let useImages = images || [];
-	const report = useSelector((state) => state.viewDraw.report);
-
-	if (feature === true && report && report.viewLoader) {
-		useImages = [];
-		for (let i in report.viewLoader.packet.features[0].properties.data.images)
-			useImages.push({"url": report.viewLoader.packet.features[0].properties.data.images[i]})
-	}
+const SiteMap = function ({mode, images, feature, format,duration = 500,interval=2000}) {
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
-
 
 	if (mode === 'full') {
 		return (
@@ -52,12 +43,7 @@ const SiteMap = function ({mode, images, feature, format,duration = 1000,interva
 						{!mobile ? <Panels></Panels> : <></>}
 					</Box>
 				</Box>
-				<Carousel interval={interval} duration={duration} height={!mobile ? "450px" : "320px"}>
-					{
-						useImages.map((item, i) => <Item key={i} item={item} format={format}/>)
-					}
-				</Carousel>
-
+					<SlideShow interval={interval} duration={duration} feature={feature} format={format} images={images}/>
 			</Box>
 		)
 	}
@@ -78,33 +64,6 @@ const SiteMap = function ({mode, images, feature, format,duration = 1000,interva
 	)
 }
 
-function Item({item, format}) {
-	const url = new UrlCoder();
-
-	if(item.type==="video") {
-		return (
-			<video width="100%" height="100%" autoPlay="autoplay" muted loop>
-					<source src={url.decode(item.url, true)} type="video/mp4"/>
-			</video>
-		)
-	}
-	let sx={
-		backgroundImage: `url(${url.decode(item.url, true)})`,
-		height: "100%",
-		backgroundSize: "cover"
-	}
-
-	if(format==='contain') {
-		sx.backgroundSize="contain";
-		sx.backgroundRepeat="no-repeat";
-		sx.backgroundPositionX="center";
-		sx.backgroundPositionY="center";
-	}
-
-	return (
-		<Paper sx={sx}/>
-	)
-}
 
 const Panels = () => {
 	const history = useHistory();

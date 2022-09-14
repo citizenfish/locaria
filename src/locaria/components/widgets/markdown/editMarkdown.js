@@ -22,7 +22,7 @@ import Grid from "@mui/material/Grid";
 import ArgsSerialize from "../../../libs/argsSerialize";
 
 
-export default function EditMarkdown({documentObj, mode, id}) {
+export default function EditMarkdown({documentObj, mode, id,simple=false}) {
 
 	const dispatch = useDispatch();
 
@@ -187,26 +187,32 @@ export default function EditMarkdown({documentObj, mode, id}) {
 								HR
 							</Button>
 						</ButtonGroup>
-						<ButtonGroup>
+						{simple === false &&
+							<ButtonGroup>
 
 
-							<Button sx={{ml:2}}
-									variant={"text"}
-									color={"success"}
-									onClick={()=>{setShowPlugins(!showPlugins)}}
-							>
-								{showPlugins === false ? 'Plugins' : 'Hide Plugins'}
+								<Button sx={{ml: 2}}
+										variant={"text"}
+										color={"success"}
+										onClick={() => {
+											setShowPlugins(!showPlugins)
+										}}
+								>
+									{showPlugins === false ? 'Plugins' : 'Hide Plugins'}
 
-							</Button>
-							<Button sx={{ml:2}}
-									variant={"text"}
-									color={"warning"}
-									onClick={()=>{setShowStyles(!showStyles)}}
-							>
-								{showStyles === false ? 'Styles' : 'Hide Styles'}
+								</Button>
+								<Button sx={{ml: 2}}
+										variant={"text"}
+										color={"warning"}
+										onClick={() => {
+											setShowStyles(!showStyles)
+										}}
+								>
+									{showStyles === false ? 'Styles' : 'Hide Styles'}
 
-							</Button>
-						</ButtonGroup>
+								</Button>
+							</ButtonGroup>
+						}
 						<Button variant={"text"}
 								color="error"
 								onClick={() => {pressClearFormatting()}}
@@ -230,6 +236,7 @@ export default function EditMarkdown({documentObj, mode, id}) {
 								 <RenderStyles/>
 							</Grid>
 						</Box>
+					}
 					}
 				</Grid>
 
