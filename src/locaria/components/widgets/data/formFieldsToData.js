@@ -22,7 +22,11 @@ export default function FormFieldsToData(category) {
 				break
 			default:
 				element=document.getElementById(fields.main[field].key);
-				setObjectWithPath(attribute,fields.main[field].key,element.value);
+				if(element)
+					setObjectWithPath(attribute,fields.main[field].key,element.value);
+				else {
+					console.log(`Could not get element with key ${fields.main[field].key}`);
+				}
 				break;
 
 		}
