@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import FormFieldsToData from "./formFieldsToData";
 import TypographyHeader from "../typography/typographyHeader";
 import {useCookies} from "react-cookie";
+import Box from "@mui/material/Box";
 
 export default function SimpleForm({category}) {
 
@@ -49,10 +50,12 @@ export default function SimpleForm({category}) {
 		)
 	} else {
 		return (
-			<>
+			<Box sx={{
+				color: "black"
+			}}>
 				<FieldView data={fakeData} mode={"write"}></FieldView>
 				<Button onClick={submitForm}>Submit</Button>
-			</>
+			</Box>
 		)
 	}
 }

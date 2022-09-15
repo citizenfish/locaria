@@ -1,17 +1,16 @@
 import React from 'react';
-import {Switch, BrowserRouter as Router, Route,Redirect } from 'react-router-dom';
+import {Switch, BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 
 import Maintenance from 'components/maintenance';
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
 import store from './redux/store'
-import { Provider } from 'react-redux'
+import {Provider} from 'react-redux'
 
 import RenderPage from "./widgets/markdown/renderPage";
 import * as PropTypes from "prop-types";
 import CookieConsent from "react-cookie-consent";
-
 
 
 const App = () => {
@@ -40,10 +39,6 @@ const App = () => {
 	}
 
 
-
-
-
-
 	React.useEffect(() => {
 
 
@@ -57,6 +52,11 @@ const App = () => {
 		}
 
 		window.websocket.registerQueue("tokenCheck", function (json) {
+			if(cookies['after']==="true") {
+				setCookies('after', false, {path: '/', sameSite: true});
+				if(cookies['last']!==undefined)
+					window.location=cookies['last'];
+			}
 			if (json.packet.email) {
 				// if its has its new, if not just keep the old one
 				setUser(true);
@@ -77,7 +77,6 @@ const App = () => {
 				setCookies('groups', [], {path: '/', sameSite: true});
 				// This is bad token so lets go home
 				setUser(false);
-
 			}
 		});
 
@@ -103,34 +102,41 @@ const App = () => {
 	}, []);
 
 
-	if(configs.siteMaintenance===true) {
+	if (configs.siteMaintenance === true) {
 		return (
 			<Provider store={store}>
-					<Router>
-						<Switch>
-							<Route component={Maintenance}/>
-						</Switch>
-					</Router>
+				<Router>
+					<Switch>
+						<Route component={Maintenance}/>
+					</Switch>
+				</Router>
 			</Provider>
 		)
 	} else {
 
 		return (
 			<Provider store={store}>
-					<Router>
-						<Switch>
-							<Route path="/Login/" component={()=> { window.location=`https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`; }}/>
-							<Route path="/SignUp/" component={()=> { window.location=`https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`; }}/>
-							<Route path="/:page/fp/:category?/:feature?" component={RenderPage}/>
-							<Route path="/:page/sp/:category?/:search?" component={RenderPage}/>
-							<Route path="/:page/" component={RenderPage}/>
-							<Route path="/" component={RenderPage}></Route>
-							<Route exact path="/:id_token?" component={RenderPage}/>
+				<Router>
+					<Switch>
+						<Route path="/Login/" component={() => {
+							setCookies('after', true, {path: '/', sameSite: true});
+							window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
+						}}/>
+						<Route path="/SignUp/" component={() => {
+							setCookies('after', true, {path: '/', sameSite: true});
+							window.location = `https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
+						}}/>
+						<Route path="/:page/fp/:category?/:feature?" component={RenderPage}/>
+						<Route path="/:page/sp/:category?/:search?" component={RenderPage}/>
+						<Route path="/:page/" component={RenderPage}/>
+						<Route path="/" component={RenderPage}></Route>
+						<Route exact path="/:id_token?" component={RenderPage}/>
 
-							<Route component={RenderPage}/>
-						</Switch>
-					</Router>
-				<CookieConsent>This website uses cookies to enhance the user experience only, we do not issue 3rd party cookies.</CookieConsent>
+						<Route component={RenderPage}/>
+					</Switch>
+				</Router>
+				<CookieConsent>This website uses cookies to enhance the user experience only, we do not issue 3rd party
+					cookies.</CookieConsent>
 			</Provider>
 		);
 	}

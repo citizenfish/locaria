@@ -5,8 +5,7 @@ import Websockets from "./libs/Websockets";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import {theme, resources} from "themeLocaria";
-import {ThemeProvider} from '@mui/material/styles';
+import {resources} from "themeLocaria";
 import CssBaseline from "@mui/material/CssBaseline";
 
 
@@ -115,10 +114,10 @@ function errored(event) {
 
 function Main() {
     return (
-        <ThemeProvider theme={theme}>
+        <>
             <CssBaseline/>
             <App/>
-        </ThemeProvider>
+        </>
     )
 }
 

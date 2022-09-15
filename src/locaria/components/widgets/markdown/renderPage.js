@@ -101,6 +101,8 @@ export default function RenderPage() {
 	}, []);
 
 	React.useEffect(() => {
+		if(page!==undefined)
+			setCookies('last', page, {path: '/', sameSite: true});
 
 		window.websocket.registerQueue('pageBulkLoader', (json) => {
 			if(json.getPageData.packet.error) {

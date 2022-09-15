@@ -61,6 +61,7 @@ class MdSerialize {
 			case 'B': return "bold";
 			case 'I': return "italic";
 			case 'BR': return "br";
+			case 'A': return "link";
 			default:
 				debugger;
 		}

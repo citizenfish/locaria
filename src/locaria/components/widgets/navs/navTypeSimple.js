@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import BurgerMenu from "./burgerMenu";
 import {useHistory} from "react-router-dom";
+import RenderMarkdown from "../markdown/renderMarkdown";
 
 const NavTypeSimple = function ({menu}) {
 
@@ -39,15 +40,7 @@ const NavTypeSimple = function ({menu}) {
 
 
                 }}>
-
-                    <Typography variant="h1" sx={{
-                        flexGrow: 1,
-                        fontSize: "1.5rem",
-                        display: "inline-block",
-                        fontFamily: window.systemMain.headerBackgroundFont
-                    }}>
-                        {window.systemLang.siteTitle ? window.systemLang.siteTitle : 'Locaria'}
-                    </Typography>
+                    <RenderMarkdown markdown={window.systemLang.siteTitle ? window.systemLang.siteTitle : 'Locaria'}/>
                 </Grid>
                 <Grid onClick={()=>{history.push('/')}} item md={6} sx={{
                     display: {
@@ -55,15 +48,7 @@ const NavTypeSimple = function ({menu}) {
                         xs: "none"
                     },
                 }}>
-                    <Typography variant="h1" sx={{
-                        flexGrow: 1,
-                        fontSize: "1rem",
-                        display: "inline-block",
-                        marginLeft: "10px",
-                        fontFamily:"Montserrat"
-                    }}>
-                        {window.systemLang.siteSubTitle}
-                    </Typography>
+                    <RenderMarkdown markdown={window.systemLang.siteSubTitle}/>
                 </Grid>
             </Grid>
         </Box>

@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {TextField} from "@mui/material";
+import {Select, TextField} from "@mui/material";
 import Grid from "@mui/material/Grid";
-const DataItemTextInput = ({id,name,data}) => {
+import MenuItem from "@mui/material/MenuItem";
+const DataItemSelect = ({id,name,data}) => {
 
     const [dataLocal, setDataLocal]=useState(data);
 
@@ -11,7 +12,14 @@ const DataItemTextInput = ({id,name,data}) => {
                   {name}
             </Grid>
             <Grid item md={4}>
-                <TextField
+                <Select>
+                    <MenuItem key={"permPublic"}
+                              value={"PUBLIC"}>PUBLIC</MenuItem>
+                </Select>
+
+
+
+                {/*<TextField
                     margin="dense"
                     id={id}
                     //label={name}
@@ -26,7 +34,7 @@ const DataItemTextInput = ({id,name,data}) => {
                         color: "black"
                     }}
                     onChange={(e)=>{setDataLocal(e.target.value)}}
-                />
+                />*/}
             </Grid>
 
     </Grid>
@@ -34,4 +42,4 @@ const DataItemTextInput = ({id,name,data}) => {
     )
 }
 
-export default DataItemTextInput;
+export default DataItemSelect;
