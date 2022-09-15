@@ -237,7 +237,6 @@ export default function EditMarkdown({documentObj, mode, id,simple=false}) {
 							</Grid>
 						</Box>
 					}
-					}
 				</Grid>
 
 			</Box>

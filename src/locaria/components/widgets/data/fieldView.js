@@ -10,6 +10,7 @@ import DataItemTextInput from "./dataItemsWrite/dataItemTextInput";
 import dataItemEditMarkdown from "./dataItemsWrite/dataItemEditMarkdown";
 import Box from "@mui/material/Box";
 import DataItemP from "./dataItemsRead/dataItemP";
+import DataItemSelect from "./dataItemsWrite/dataItemSelect";
 
 const FieldView = ({data, mode}) => {
 
@@ -22,7 +23,7 @@ const FieldView = ({data, mode}) => {
 		if (fields) {
 			return (
 				<Box sx={{
-					p:2
+					p: 2
 				}}>
 					{fields.main ?
 						<FormatFields fields={fields.main}
@@ -56,16 +57,16 @@ const FormatFields = ({fields, data, mode}) => {
 		return (
 			<Grid container>
 				{fields.map(value => {
-					if(value.visible!==false||mode==="write")
-					return (
-					<Grid item md={12}>
+						if (value.visible !== false || mode === "write")
+							return (
+								<Grid item md={12}>
 
-						<FormatField field={value}
-									 data={data}
-									 key={value.key}
-									 mode={mode}/>
-					</Grid>)
-				}
+									<FormatField field={value}
+												 data={data}
+												 key={value.key}
+												 mode={mode}/>
+								</Grid>)
+					}
 				)}
 			</Grid>
 		);
@@ -82,16 +83,51 @@ const FormatField = ({field, data, mode}) => {
 		return (<></>);
 	}
 
-	const dataItems = {
-		'title': {read: DataItemTitle, write: DataItemTextInput},
-		'description': {read: DataItemDescription, write: DataItemTextInput},
-		'p': {read: DataItemP, write: DataItemTextInput},
-		'h2': {read: DataItemH2, write: DataItemTextInput},
-		'md': {read: dataItemMarkdown, write: dataItemEditMarkdown, options: {simple:true}}
+	const dataReadItems = {
+		'title': {"element": DataItemTitle},
+		'description': {"element": DataItemDescription},
+		'p': {"element": DataItemP},
+		'h2': {"element": DataItemH2},
+		'md': {"element": dataItemMarkdown}
 	}
 
-	if (dataItems[field.display] && dataItems[field.display][mode]) {
-		let Element = dataItems[field.display][mode];
+	const dataWriteItem = {
+		'title': {"element": DataItemTextInput},
+		'description': {"element": DataItemTextInput},
+		'p': {"element": DataItemTextInput},
+		'h2': {"element": DataItemTextInput},
+		'md': {"element": dataItemEditMarkdown, options: {simple: true}},
+		'select': {"element": DataItemSelect},
+	}
+
+	let options = {};
+	let Element = (<></>);
+
+	if (mode === 'read' && dataReadItems[field.read]) {
+		Element = dataReadItems[field.read].element;
+		options = dataReadItems[field.read].options;
+	}
+
+	if (mode === 'write') {
+		if (field.write && dataWriteItem[field.write]) {
+			Element = dataWriteItem[field.write].element;
+			options = dataReadItems[field.read].options;
+		} else {
+			Element = DataItemTextInput;
+		}
+	}
+
+	return (
+		<Element id={field.key}
+				 name={field.name}
+				 data={dataActual}
+				 sx={field.sx}
+				 {...options}
+		/>
+	)
+
+	/*if (dataItems[field.display] && dataItems[field.display][mode]) {
+		//let Element = dataItems[field.display][mode];
 		return (
 			<Element id={field.key}
 					 name={field.name}
@@ -104,7 +140,7 @@ const FormatField = ({field, data, mode}) => {
 		return (
 			<></>
 		)
-	}
+	}*/
 
 }
 
@@ -118,7 +154,7 @@ const getData = (data, path, func) => {
 	let result;
 	const classes = useStyles();
 
-	if (func){
+	if (func) {
 		return func(data, classes);
 	}
 

@@ -12,7 +12,7 @@ import ClickAway from "../utils/clickAway";
 import {useSelector} from "react-redux";
 import SlideShow from "../images/slideShow";
 
-const SiteMap = function ({mode, images, feature, format,duration = 500,interval=2000}) {
+const SiteMap = function ({mode, images, feature, format="cover",duration = 500,interval=2000}) {
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
