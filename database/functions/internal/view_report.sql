@@ -13,23 +13,33 @@ BEGIN
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
 
     WITH PENDING_RECORDS AS (
-        SELECT
-            COALESCE(attributes->>'fid', attributes->>'id') AS fid,
-            attributes->>'method' AS method
-        FROM history
-        WHERE NOT in_view
-        AND attributes->>'method' IN ('add_item', 'update_item', 'delete_item')
-    ), COUNTS AS (
-        SELECT distinct on (method) method,
-               jsonb_build_object(method||'_fids', jsonb_strip_nulls(jsonb_agg(fid)),
-               method,
-               count(*)) AS obj
-        FROM PENDING_RECORDS
-        GROUP BY method
-    )  SELECT  jsonb_build_object('total', (SELECT count(*) FROM global_search_view),
-                                  'update_item', 0,
-                                  'add_item',0,
-                                  'delete_item',0) || jsonb_object_agg(obj)
+            SELECT
+                COALESCE(attributes->>'fid', attributes->>'id') AS fid,
+                attributes->>'method' AS method
+            FROM history
+            WHERE NOT in_view
+            AND attributes->>'method' IN ('add_item', 'update_item', 'delete_item')
+
+        ), COUNTS AS (
+
+            SELECT distinct on (method) method,
+                   jsonb_build_object(method||'_fids', jsonb_strip_nulls(jsonb_agg(fid)),
+                   method,
+                   count(*)) AS obj
+            FROM PENDING_RECORDS
+            GROUP BY method
+
+        ), MODERATION_COUNT AS (
+
+            SELECT count(*) AS mc
+            FROM moderation_queue
+            WHERE status = 'RECEIVED'
+
+    )  SELECT  jsonb_build_object('total',          (SELECT count(*) FROM global_search_view),
+                                  'moderations',    (SELECT mc FROM MODERATION_COUNT),
+                                  'update_item',    0,
+                                  'add_item',       0,
+                                  'delete_item',    0) || jsonb_object_agg(obj)
         INTO ret_var
         FROM counts;
 

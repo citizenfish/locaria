@@ -21,6 +21,7 @@ export default function AdminContentDataEdit() {
 
 
 	const [cookies, setCookies] = useCookies(['location']);
+	//TODO feature does not really belong in pages state? move into own state
 	const feature = useSelector((state) => state.adminPages.feature);
 	const [featureData, setFeatureData] = useState(undefined);
 	const [images, setImages] = useState([]);

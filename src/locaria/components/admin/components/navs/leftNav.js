@@ -1,9 +1,7 @@
 import React, {useEffect,useState} from 'react';
-
 import {Badge, Collapse, Drawer, ListItemButton} from "@mui/material";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArticleIcon from '@mui/icons-material/Article';
@@ -11,7 +9,7 @@ import StorageIcon from '@mui/icons-material/Storage';
 import ListItemText from "@mui/material/ListItemText";
 import EditIcon from "@mui/icons-material/Edit";
 import {useHistory} from "react-router-dom";
-import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import {ExpandMore} from "@mui/icons-material";
 import {useCookies} from "react-cookie";
 import {useDispatch, useSelector} from "react-redux";
 import {setOverview} from "../../redux/slices/adminPagesSlice";
@@ -136,6 +134,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 							</ListItemIcon>
 							<ListItemText primary={"Page Manager"}/>
 						</ListItemButton>
+
 						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
 							history.push(`/Admin/Content/Data`);
 						}}>
@@ -145,6 +144,17 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 								</Badge>
 							</ListItemIcon>
 							<ListItemText primary={"Data Manager"}/>
+						</ListItemButton>
+
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/Content/Moderation`);
+						}}>
+							<ListItemIcon>
+								<Badge badgeContent={overview ? overview.moderations : 0} color="primary" showZero>
+									<StorageIcon/>
+								</Badge>
+							</ListItemIcon>
+							<ListItemText primary={"Moderation"}/>
 						</ListItemButton>
 					</List>
 				</Collapse>

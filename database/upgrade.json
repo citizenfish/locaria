@@ -13,7 +13,9 @@
           "database/functions/search/search_get_records.sql",
           "database/schema_and_tables/create_moderation_queue_table.sql",
           "database/functions/internal/data/get_moderation_items.sql",
-          "database/functions/internal/data/update_item.sql"
+          "database/functions/internal/data/update_item.sql",
+          "database/functions/internal/view_report.sql",
+          "database/functions/internal/data/delete_item.sql"
       ],
       "substitutions": "../tests.json"
     }

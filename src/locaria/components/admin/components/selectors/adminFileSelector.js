@@ -94,7 +94,6 @@ export default function AdminFileSelector(props) {
         window.websocket.registerQueue('getFiles', (json)=>{
             if(json.packet.files) {
                 let rows=[]
-                let id = 0
                 let file_list = json.packet.files
                 for(let i in file_list){
                     let file = file_list[i]
