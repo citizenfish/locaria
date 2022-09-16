@@ -49,6 +49,7 @@ BEGIN
                                                             'category_id',  category_id,
                                                             'fid',          lower(MD5(concat(table_var,':',ret_var->>'id'))),
                                                             'id',           ret_var->>'id',
+                                                            'parameters',   parameters -'table' - 'category',
                                                             'table',        parameters->>'table'));
     END IF;
 

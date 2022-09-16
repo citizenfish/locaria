@@ -16,6 +16,7 @@ import AdminFileManager from "./admin/pages/adminFileManager";
 import AdminDownload from "./admin/pages/adminDownload";
 import AdminUsersManage from "./admin/pages/adminUsersManage";
 import AdminUsersManageEdit from "./admin/pages/adminUsersManageEdit";
+import AdminModerationList from "./admin/pages/adminModerationList";
 
 const AdminApp = () => {
 
@@ -45,6 +46,7 @@ const AdminApp = () => {
 		<Provider store={store}>
 			<Router>
 				<Switch>
+					<Route exact path="/Admin/Content/Moderation"  component={AdminModerationList}/>
 					<Route exact path="/Admin/Import/Download"  component={AdminDownload}/>
 					<Route exact path="/Admin/Import/Upload"  component={AdminFileManager}/>
 					<Route exact path="/Admin/API/Settings"  component={AdminAPISettings}/>

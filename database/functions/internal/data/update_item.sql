@@ -13,7 +13,7 @@ BEGIN
             moderated_update
      INTO item_var,
          moderated_update_var
-     FROM global_search_view
+     FROM global_search_view_live
           --Only allow editables to be updated
      WHERE fid = parameters->>'fid' AND edit;
 
