@@ -7,6 +7,8 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import AdminDialogConfirm from "../../dialogues/adminDialogueConfirm";
+import {setFeature} from "../../redux/slices/adminPagesSlice";
+import {useHistory} from "react-router-dom";
 
 
 export default function AdminModerationSelector(props){
@@ -16,6 +18,8 @@ export default function AdminModerationSelector(props){
     const moderationItems = useSelector((state) => state.featureState.moderations)
     const [dialogProps, setDialogueProps] = useState({open : false});
     const [refresh, setRefresh] = useState(false);
+    const history = useHistory();
+
 
     const deleteModeration = (fid) =>{
         window.websocket.send({
@@ -38,13 +42,15 @@ export default function AdminModerationSelector(props){
                 fid : params.fid,
                 moderation_id: params.id,
                 id_token: cookies['id_token'],
+                //An item becomes published by having the acl "PUBLIC" on view
                 acl: {view:['PUBLIC']}
             }
         })
     }
 
-    const editModeration = (id,fid) => {
-
+    const editModeration = (fid) => {
+        dispatch(setFeature(fid));
+        history.push(`/Admin/Content/Data/Edit/${fid}`);
     }
 
     const moderationActions = (params) => {
@@ -100,7 +106,8 @@ export default function AdminModerationSelector(props){
                             color="error"
                             size="small"
                             onClick={ () => {
-                                editModeration(mID,mFID)
+                                //TODO at the moment this does not show the update that need moderating, only the original data
+                                editModeration(mFID)
                             }}>
                         View
                     </Button>
@@ -141,7 +148,7 @@ export default function AdminModerationSelector(props){
 
         window.websocket.registerQueue('moderationActions', (json) =>{
 
-            //update the count shown in leftNav
+            //update the count shown in leftNav this queue is set up there
             window.websocket.send({
                 "queue": "getTotals",
                 "api": "sapi",
