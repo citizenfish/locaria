@@ -5,6 +5,7 @@ import Paper from "@mui/material/Paper";
 import UrlCoder from "../../../libs/urlCoder"
 import {useSelector} from "react-redux";
 import Box from "@mui/material/Box";
+import {objectPathExists} from "../../../libs/objectTools";
 
 export default function SlideShow({images, format = "contain", feature = false, interval,duration}) {
 	let useImages = images || [];
@@ -12,7 +13,7 @@ export default function SlideShow({images, format = "contain", feature = false, 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
 
-	if (feature === true && report && report.viewLoader) {
+	if (feature === true && objectPathExists(report,'viewLoader.packet.features[0].properties.data.images')) {
 		useImages = [];
 		for (let i in report.viewLoader.packet.features[0].properties.data.images)
 			useImages.push({"url": report.viewLoader.packet.features[0].properties.data.images[i]})

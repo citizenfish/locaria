@@ -1,16 +1,17 @@
 import React from 'react';
 import {useSelector} from "react-redux";
 import {FieldView} from "../data/fieldView";
+import {objectPathExists} from "../../../libs/objectTools";
 
 
 export default function ViewFullDetails() {
     const report = useSelector((state) => state.viewDraw.report);
 
 
-    if(report&&report.viewLoader) {
+    if(objectPathExists(report,'viewLoader.packet.features[0].properties')) {
         return (
             <>
-                <FieldView data={report.viewLoader.packet.features[0].properties}/>
+                <FieldView data={report.viewLoader.packet.features[0]}/>
             </>
         )
     } else {

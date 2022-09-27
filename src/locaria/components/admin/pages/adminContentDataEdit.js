@@ -11,10 +11,7 @@ import {FieldView} from "../../widgets/data/fieldView";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import FormFieldsToData from "../../widgets/data/formFieldsToData";
-import Map from "../../widgets/maps/map"
-import UploadWidget from "../../widgets/data/uploadWidget";
-import SimpleUploadWidget from "../../widgets/data/simpleUploadWidget";
+import {FormFieldsToData} from "../../widgets/data/formFieldsToData";
 
 
 export default function AdminContentDataEdit() {
@@ -23,6 +20,8 @@ export default function AdminContentDataEdit() {
 	const [cookies, setCookies] = useCookies(['location']);
 	//TODO feature does not really belong in pages state? move into own state
 	const feature = useSelector((state) => state.adminPages.feature);
+	const formData = useSelector((state) => state.formSlice.formData);
+
 	const [featureData, setFeatureData] = useState(undefined);
 	const [images, setImages] = useState([]);
 	const category = useSelector((state) => state.categorySelect.currentSelected);
@@ -43,13 +42,15 @@ export default function AdminContentDataEdit() {
 				setFeatureData({});
 			} else {
 				if (json.packet.features[0]) {
-					setFeatureData(json.packet.features[0].properties);
-					if(json.packet.features[0].properties.data&&json.packet.features[0].properties.data.images)
+					setFeatureData(json.packet.features[0]);
+					/*if(json.packet.features[0].properties.data&&json.packet.features[0].properties.data.images)
 						setImages(json.packet.features[0].properties.data.images);
-					else setImages([]);
+					else setImages([]);*/
 				}
-				mapRef.current.addGeojson(json.packet)
-				mapRef.current.zoomToLayersExtent(["data"], 50000);
+				/*if(json.packet) {
+					mapRef.current.addGeojson(json.packet)
+					mapRef.current.zoomToLayersExtent(["data"], 50000);
+				}*/
 			}
 		});
 
@@ -66,7 +67,7 @@ export default function AdminContentDataEdit() {
 
 		if (feature) {
 			if (feature === -1) {
-				setFeatureData({category: category})
+				setFeatureData({properties:{category: category}})
 			} else {
 				window.websocket.send({
 					queue: "viewLoader",
@@ -102,7 +103,7 @@ export default function AdminContentDataEdit() {
 		history.push(`/Admin/Content/Data/`);
 	}
 
-	const mapClick = (e) => {
+	/*const mapClick = (e) => {
 
 		const geojson = {
 			"features": [
@@ -117,10 +118,10 @@ export default function AdminContentDataEdit() {
 		setPoint(e.ewkt);
 
 	}
-
+*/
 
 	function saveFeature() {
-		let data = FormFieldsToData(featureData.category);
+		let data = FormFieldsToData(featureData.properties.category,formData);
 
 		if(!data.data)
 			data.data={};
@@ -128,16 +129,16 @@ export default function AdminContentDataEdit() {
 			queue: "saveFeature",
 			api: "sapi",
 			data: {
-				attributes: data,
+				attributes: data.properties,
 				id_token: cookies['id_token'],
-				category: featureData.category,
+				category: featureData.properties.category,
 			}
 		};
 
-		packet.data.attributes.data.images=images;
+		//packet.data.attributes.data.images=images;
 
 		if (feature === -1) {
-			let channel = window.systemCategories.getChannelProperties(featureData.category);
+			let channel = window.systemCategories.getChannelProperties(featureData.properties.category);
 
 			packet.data.method = "add_item";
 			packet.data.table = channel.table;
@@ -145,8 +146,8 @@ export default function AdminContentDataEdit() {
 			packet.data.method = "update_item";
 			packet.data.fid = feature;
 		}
-		if (point !== undefined)
-			packet.data.geometry = point;
+		if (data.geometry)
+			packet.data.geometry = data.geometry;
 		window.websocket.send(packet);
 
 	}
@@ -162,7 +163,7 @@ export default function AdminContentDataEdit() {
 			<LeftNav isOpenContent={true}/>
 			<Box
 				component="main"
-				sx={{marginTop: '60px'}}
+				sx={{marginTop: '60px',padding:"50px"}}
 			>
 				<Grid container spacing={2} sx={{mt: 1, p: 3}}>
 					<Grid item md={1}>
@@ -190,41 +191,8 @@ export default function AdminContentDataEdit() {
 						<Typography>The data editor allows you to edit data.</Typography>
 					</Grid>
 				</Grid>
-				{featureData &&
-					<Grid container spacing={2} sx={{m:2}}>
-						<Grid item md={6}>
-							<Map id={"dropMap"}
-								 speedDial={false}
-								 sx={{height:"250px"}}
-								 ref={mapRef}
-								 handleMapClick={mapClick}/>
-						</Grid>
-						<Grid item md={6}>
-							<SimpleUploadWidget sx={{height: '100%'}}
-												images={featureData.data&&featureData.data.images? featureData.data.images:[]}
-												setFunction={imageSelect}
-												feature={feature}/>
-						</Grid>
-					</Grid>
-				}
 				{featureData !== undefined ?
-					<Box
-						component="main"
-						sx={{
-							border: "1px solid black",
-							width: 'calc(100vw - 300px)',
-							height: "500px",
-							whiteSpace: "pre",
-							padding: "5px",
-							overflow: "scroll",
-							boxShadow: 2,
-							borderRadius: 1,
-							m:2
-						}}
-					>
 						<FieldView data={featureData} mode={"write"}/>
-					</Box>
-
 					: <h1>Feature has been deleted, refresh the view to remove it from live</h1>}
 
 			</Box>
@@ -232,9 +200,3 @@ export default function AdminContentDataEdit() {
 	)
 }
 
-
-/*
-<Button color="success" onClick={saveFeature} variant="contained">Save</Button>
-				<Button color="warning" onClick={cancelFeature} variant="contained">Cancel</Button>
-				<Button color="error" onClick={deleteFeature} variant="contained">Delete</Button>
- */

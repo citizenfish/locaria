@@ -11,7 +11,6 @@ import ApiSelector from "../components/selectors/apiSelector";
 export default function AdminAPISettings() {
 
     const [cookies, setCookies] = useCookies(['location']);
-    const dispatch = useDispatch()
     const history = useHistory();
 
     return(

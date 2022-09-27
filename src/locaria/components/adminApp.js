@@ -1,7 +1,8 @@
 import React from 'react';
 import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
-import store from './admin/redux/store'
+//import store from './admin/redux/store'
+import store from './redux/store'
 import {Provider} from 'react-redux'
 
 import AdminHome from "./admin/pages/adminHome";
