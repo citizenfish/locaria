@@ -31,7 +31,7 @@ export default function AdminContentData() {
 	const [openAdd, setOpenAdd] = useState(false);
 
 	const dispatch = useDispatch()
-	const history = useHistory();
+	const history = useHistory()
 
 	const selectRow = (row) => {
 		dispatch(setFeature(row.id));

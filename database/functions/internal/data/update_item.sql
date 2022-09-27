@@ -4,7 +4,7 @@ DECLARE
     item_var JSONB;
     ret_var JSONB;
     moderated_update_var BOOLEAN;
-
+    table_var TEXT;
 BEGIN
 
      SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -12,21 +12,29 @@ BEGIN
      SELECT attributes,
             moderated_update
      INTO item_var,
-         moderated_update_var
+          moderated_update_var
      FROM global_search_view_live
           --Only allow editables to be updated
      WHERE fid = parameters->>'fid' AND edit;
+
+     table_var = item_var->>'table';
 
      IF item_var IS NULL THEN
         RETURN jsonb_build_object('error', concat_ws(' ', 'fid not found or cannot be updated:', parameters->>'fid'));
      END IF;
 
-     --Moderated updates don't need acl as they go into queue for auth
-     IF moderated_update_var AND (parameters->>'moderation_id') IS NULL THEN
-         RETURN add_to_moderation_queue(parameters);
-     END IF;
+     IF NOT (acl_check(parameters->'acl', item_var->'acl')->>'update')::BOOLEAN THEN
+         --Moderated updates don't need acl as they go into queue for auth
+         IF moderated_update_var AND (parameters->>'moderation_id') IS NULL THEN
+             RETURN add_to_moderation_queue(jsonb_build_object( 'type',         'update',
+                                                                'category',     COALESCE(parameters->>'category', item_var->'category'->>0),
+                                                                'fid',          parameters->>'fid',
+                                                                'id',           item_var->>'ofid',
+                                                                'parameters',   parameters,
+                                                                'table',        table_var));
+         END IF;
 
-    IF NOT (acl_check(parameters->'acl', item_var->'acl')->>'update')::BOOLEAN THEN
+
         RETURN jsonb_build_object('error', 'acl_failure', 'response_code', 602);
     END IF;
 
@@ -39,7 +47,7 @@ BEGIN
                     search_date  = COALESCE($4, search_date)
                 WHERE id = $5::BIGINT
                 RETURNING jsonb_build_object('message', concat_ws(' ', 'update success:', id))
-         $SQL$, item_var->>'table')
+         $SQL$,  table_var)
          INTO ret_var
          USING  parameters->'attributes',
                 ST_TRANSFORM(ST_GEOMFROMEWKT(parameters->>'geometry'),4326),
@@ -52,8 +60,7 @@ BEGIN
 
      UPDATE moderation_queue
          SET status = 'ACCEPTED'
-     WHERE (parameters->>'moderation_id') IS NOT NULL
-     AND id = (parameters->>'moderation_id')::BIGINT;
+     WHERE  fid = parameters->>'fid';
 
     RETURN ret_var || jsonb_build_object('history', add_history(parameters || ret_var));
 
