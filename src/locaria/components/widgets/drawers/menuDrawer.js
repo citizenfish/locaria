@@ -83,7 +83,7 @@ function DrawSiteMap() {
 
 		}}>
 			<ListItemIcon>
-				<HomeIcon/>
+				<HomeIcon sx={{color: "white"}}/>
 			</ListItemIcon>
 			<ListItemText primary={"Home"}/>
 		</ListItem>
@@ -143,7 +143,7 @@ function DrawSiteMap() {
 
 	}
 
-	return (<>{topMenuArray}</>);
+	return (<Box sx={{color: "white"}}>{topMenuArray}</Box>);
 }
 
 export default MenuDrawer;

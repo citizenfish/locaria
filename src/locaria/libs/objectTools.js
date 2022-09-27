@@ -11,4 +11,26 @@ function setObjectWithPath(obj,path,value) {
 	ptr[pathArray[pathArray.length-1]]=value;
 }
 
-export {setObjectWithPath};
+function objectPathExists(obj,path) {
+	path=`obj.${path}`;
+	let result=undefined;
+	try {
+		result=eval(path);
+	} catch (e) {
+		return false;
+	}
+	if(result===undefined)
+		return false;
+	return true;
+}
+
+function objectPathGet(obj, path) {
+	if(objectPathExists(obj,path)) {
+		path=`obj.${path}`;
+		return eval(path);
+	}
+	return undefined;
+
+}
+
+export {setObjectWithPath,objectPathExists,objectPathGet};

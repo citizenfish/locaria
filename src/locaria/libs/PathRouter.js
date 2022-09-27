@@ -1,4 +1,4 @@
-import {openHomeDrawer} from "../components/redux/slices/homeDrawerSlice";
+import {openHomeDrawer} from "../../../deprecated/homeDrawerSlice";
 import {openLayout} from "../components/redux/slices/layoutSlice";
 import {openSearchDrawer} from "../components/redux/slices/searchDrawerSlice";
 

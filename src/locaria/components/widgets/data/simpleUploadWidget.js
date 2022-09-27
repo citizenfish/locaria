@@ -4,10 +4,7 @@ import axios from "axios";
 import {useCookies} from "react-cookie";
 import {Card, CardActions, CardContent, ImageList, ImageListItem, InputLabel, Select} from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
-import FormControl from "@mui/material/FormControl";
-import MenuItem from "@mui/material/MenuItem";
 import UrlCoder from "../../../libs/urlCoder";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {arrayToggleElement} from "../../../libs/arrayTools";
 
 const url = new UrlCoder();
@@ -16,7 +13,7 @@ let files = {};
 // We need unique queue ids as this component can be used multiple tiles
 let uniqueId = 0;
 const getUniqueId = () => uniqueId++;
-export default function SimpleUploadWidget({images, sx, title, setFunction, feature}) {
+export default function SimpleUploadWidget({images, sx, title, setFunction}) {
 
 
 	const idRef = useRef(null);
@@ -28,7 +25,7 @@ export default function SimpleUploadWidget({images, sx, title, setFunction, feat
 	const fileInput = useRef(null)
 	const [cookies, setCookies] = useCookies(['location']);
 	const [list, setList] = useState([]);
-	const [selected, setSelected] = useState(images ? images : []);
+	const [selected, setSelected] = useState(images ? [...images] : []);
 
 
 	useEffect(() => {
@@ -52,7 +49,12 @@ export default function SimpleUploadWidget({images, sx, title, setFunction, feat
 			axios.put(url, files[idRef.current], config)
 				.then(function (res) {
 					setFileProgress(0);
+					let newList = arrayToggleElement([...selected], json.packet.uuid)
+					setSelected(newList);
+					setFunction(newList);
 					updateList(json.packet.uuid);
+
+
 				})
 				.catch(function (err) {
 					console.log(err);
@@ -99,8 +101,7 @@ export default function SimpleUploadWidget({images, sx, title, setFunction, feat
 					"file_type": contentType,
 					"name": files[idRef.current].name,
 					"ext": extension,
-					"usage": "Features",
-					"feature":feature
+					"usage": "Features"
 				},
 				"contentType": contentType,
 				"id_token": cookies['id_token']
@@ -133,7 +134,7 @@ export default function SimpleUploadWidget({images, sx, title, setFunction, feat
 							rows={1}
 							onClick={(e) => {
 								const uuid = e.target.getAttribute('data-uuid');
-								let newList = arrayToggleElement(selected, uuid)
+								let newList = arrayToggleElement([...selected], uuid)
 								setSelected(newList);
 								//setFunction(url.encode(`${item.url}`, uuid));
 								setFunction(newList);

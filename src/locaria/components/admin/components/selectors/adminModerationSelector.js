@@ -7,8 +7,9 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import AdminDialogConfirm from "../../dialogues/adminDialogueConfirm";
-import {setFeature} from "../../redux/slices/adminPagesSlice";
+import {objectPathGet} from "../../../../libs/objectTools";
 import {useHistory} from "react-router-dom";
+import {setFeature} from "../../redux/slices/adminPagesSlice";
 
 
 export default function AdminModerationSelector(props){
@@ -19,7 +20,6 @@ export default function AdminModerationSelector(props){
     const [dialogProps, setDialogueProps] = useState({open : false});
     const [refresh, setRefresh] = useState(false);
     const history = useHistory();
-
 
     const deleteModeration = (fid) =>{
         window.websocket.send({
@@ -136,9 +136,9 @@ export default function AdminModerationSelector(props){
                         id: item.id,
                         fid: item.fid,
                         category: item.attributes.category,
-                        type: item.attributes.type.toUpperCase(),
-                        title: item.attributes.parameters.attributes.description.title,
-                        userEmail: item.attributes.parameters.acl._email
+                        type: objectPathGet(item,'attributes.type'),
+                        title: objectPathGet(item,'attributes.parameters.attributes.description.title'),
+                        userEmail: objectPathGet(item,'attributes.parameters.acl._email')
                     })
                 }
                 dispatch(setModerations(rows))

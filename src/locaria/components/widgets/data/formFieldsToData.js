@@ -1,11 +1,23 @@
+import React from 'react';
+
+
 import MdSerialize from "../../../libs/mdSerialize";
 import {setObjectWithPath} from "../../../libs/objectTools";
 
 
-export default function FormFieldsToData(category) {
+function FormFieldsCheckRequired(updates) {
+
+	for(let field in updates) {
+		console.log(updates[field].required);
+		if(updates[field].required===true&&updates[field].complete!==true)
+			return false;
+	}
+	return true;
+}
+
+function FormFieldsToData(category,updates) {
 
 	const MD = new MdSerialize();
-
 	let channel = window.systemCategories.getChannelProperties(category);
 	let fields = channel.fields;
 	let attribute={
@@ -19,11 +31,24 @@ export default function FormFieldsToData(category) {
 				element=document.getElementById(fields.main[field].key);
 				let obj=MD.parseHTML(element);
 				setObjectWithPath(attribute,fields.main[field].key,obj);
-				break
+				break;
+			case 'subCategory':
+				if(updates[fields.main[field].key]) {
+					let splitPath = updates[fields.main[field].key].split(".");
+					setObjectWithPath(attribute, 'data.categoryLevel1', splitPath[0]);
+					if(splitPath[1])
+						setObjectWithPath(attribute, 'data.categoryLevel2', splitPath[1]);
+					if(splitPath[2])
+						setObjectWithPath(attribute, 'data.categoryLevel3', splitPath[2]);
+
+				} else {
+					console.log(`Could not get element with key ${fields.main[field].key}`);
+				}
+				break;
 			default:
-				element=document.getElementById(fields.main[field].key);
-				if(element)
-					setObjectWithPath(attribute,fields.main[field].key,element.value);
+				//element=document.getElementById(fields.main[field].key);
+				if(updates[fields.main[field].key])
+					setObjectWithPath(attribute,fields.main[field].key,updates[fields.main[field].key].value);
 				else {
 					console.log(`Could not get element with key ${fields.main[field].key}`);
 				}
@@ -33,3 +58,5 @@ export default function FormFieldsToData(category) {
 	}
 	return attribute;
 }
+
+export {FormFieldsCheckRequired,FormFieldsToData}

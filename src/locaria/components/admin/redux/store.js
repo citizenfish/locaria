@@ -5,6 +5,7 @@ import categorySelectSlice from "./slices/categorySelectSlice"
 import apiSelectSlice from "./slices/apiSelectSlice";
 import fileSelectSlice from "./slices/fileSelectSlice";
 import featureSlice from "./slices/featureSlice";
+import formSlice from "../../redux/slices/formSlice";
 
 export default configureStore({
 	reducer: {
@@ -12,6 +13,8 @@ export default configureStore({
 		categorySelect: categorySelectSlice,
 		apiSelect: apiSelectSlice,
 		fileSelect: fileSelectSlice,
-		featureState: featureSlice
+		featureState: featureSlice,
+		formSlice: formSlice
+
 	}
 })
