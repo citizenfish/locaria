@@ -27,11 +27,6 @@ function FormFieldsToData(category,updates) {
 
 	for(let field in fields.main) {
 		switch(fields.main[field].display) {
-			case 'md':
-				element=document.getElementById(fields.main[field].key);
-				let obj=MD.parseHTML(element);
-				setObjectWithPath(attribute,fields.main[field].key,obj);
-				break;
 			case 'subCategory':
 				if(updates[fields.main[field].key]) {
 					let splitPath = updates[fields.main[field].key].split(".");
@@ -45,6 +40,7 @@ function FormFieldsToData(category,updates) {
 					console.log(`Could not get element with key ${fields.main[field].key}`);
 				}
 				break;
+			case 'md':
 			default:
 				//element=document.getElementById(fields.main[field].key);
 				if(updates[fields.main[field].key])

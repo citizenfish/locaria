@@ -28,17 +28,22 @@ const DataItemMap = ({id, name, data,prompt,required}) => {
 	},[data]);*/
 
 	useEffect(() => {
-		const geojson = {
-			"features": [
-				{
-					type: "Feature",
-					geometry: {type: "Point", coordinates: data.coordinates},
-					properties: {}
-				}
-			], type: "FeatureCollection"
-		};
-		mapRef.current.addGeojson(geojson, "data", true);
-		dispatch(setupField({index: id, value: data,required:required}))
+		if(data&&data.coordinates) {
+			const geojson = {
+				"features": [
+					{
+						type: "Feature",
+						geometry: {type: "Point", coordinates: data.coordinates},
+						properties: {fid:"location"}
+					}
+				], type: "FeatureCollection"
+			};
+			mapRef.current.addGeojson(geojson, "data", true);
+			dispatch(setupField({index: id, value: `SRID=4326;POINT(${data.coordinates[0]} ${data.coordinates[1]})`,required:required}))
+
+ 		} else {
+			dispatch(setupField({index: id, value: undefined, required: required}))
+		}
 	},[]);
 
 
