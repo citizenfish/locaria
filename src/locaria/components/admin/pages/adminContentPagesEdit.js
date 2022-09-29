@@ -90,7 +90,6 @@ export default function AdminContentPagesEdit() {
 		let obj=MD.parseHTML(element);
 		dispatch(setEditor(undefined));
 
-		debugger;
 
 		window.websocket.send({
 			"queue": "setPageData",

@@ -20,6 +20,7 @@
 		"@babel/preset-react": "^7.14.5",
 		"@mui/x-data-grid": "^5.15.2",
 		"@mui/x-date-pickers": "^5.0.2",
+		"material-jsoneditor": "^2.0.0",
 		"@nautoguide/grunt-pgsql": "^0.1.4",
 		"@reduxjs/toolkit": "^1.7.2",
 		"@turf/turf": "^5.1.6",
