@@ -7,6 +7,7 @@ export const searchDrawerSlice = createSlice({
 	initialState: {
 		open: false,
 		categories: [],
+		subCategories:[],
 		search: '',
 		locationShow: false,
 		distance: 0,
@@ -45,6 +46,9 @@ export const searchDrawerSlice = createSlice({
 
 			if (action.payload && action.payload.search){
 				state.search = action.payload.search;
+			}
+			if (action.payload && action.payload.subCategories){
+				state.subCategories = action.payload.subCategories;
 			}
 			state.refresh=true;
 
@@ -149,6 +153,12 @@ export const searchDrawerSlice = createSlice({
 			}
 			state.refresh=true
 		},
+		setSubCategoryList : (state, action) => {
+			if (action.payload) {
+				state.subCategories = action.payload
+			}
+			state.refresh=true
+		},
 		toggleLocationShow: (state) => {
 			state.locationShow = !state.locationShow;
 		},
@@ -235,7 +245,8 @@ export const {
 	clearRefresh,
 	setDistanceType,
 	newSearch,
-	setFeatures
+	setFeatures,
+	setSubCategoryList
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer

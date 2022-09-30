@@ -78,7 +78,7 @@ const DataItemMap = ({id, name, data,prompt,required}) => {
 			</Grid>
 			<Grid item md={8}>
 				<Map id={"dropMap"}
-					 speedDial={false}
+					 speedDial={true}
 					 sx={{height: "250px"}}
 					 ref={mapRef}
 					 handleMapClick={mapClick}/>
