@@ -9,6 +9,8 @@ export const adminPagesSlice = createSlice({
 		open: false,
 		pages: undefined,
 		page: "",
+		configs: undefined,
+		config: "",
 		style: undefined,
 		overview: undefined,
 		feature: undefined,
@@ -32,6 +34,12 @@ export const adminPagesSlice = createSlice({
 		},
 		setPages: (state, actions) => {
 			state.pages = actions.payload;
+		},
+		setConfigs: (state,actions) => {
+			state.configs=actions.payload;
+		},
+		setConfig: (state,actions) => {
+			state.config=actions.payload;
 		},
 		addPage: (state, actions) => {
 			state.pages.push(actions.payload);
@@ -95,6 +103,6 @@ export const adminPagesSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {setPages, addPage, setPage, setStyle,updateStyle,setOverview,setFeature,clearUI,setEditor,setUser,setToken} = adminPagesSlice.actions
+export const {setPages, addPage, setPage, setStyle,updateStyle,setOverview,setFeature,clearUI,setEditor,setUser,setToken,setConfigs,setConfig} = adminPagesSlice.actions
 
 export default adminPagesSlice.reducer

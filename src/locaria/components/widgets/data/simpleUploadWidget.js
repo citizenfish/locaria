@@ -26,8 +26,13 @@ export default function SimpleUploadWidget({images, sx, title, setFunction}) {
 	const [cookies, setCookies] = useCookies(['location']);
 	const [list, setList] = useState([]);
 	const [selected, setSelected] = useState(images ? [...images] : []);
+	const [available, setAvailable] = useState(images ? [...images] : []);
 
 
+	useEffect(() => {
+		updateList();
+
+	},[]);
 	useEffect(() => {
 		window.websocket.registerQueue(`${idRef.current}listAssets`, function (json) {
 			setList(json.packet.assets);
@@ -62,17 +67,14 @@ export default function SimpleUploadWidget({images, sx, title, setFunction}) {
 				})
 
 		});
-
-		updateList();
-
-	}, [])
+	}, [selected])
 
 
 	const updateList = (add) => {
-		let imagesActual = images;
+		let imagesActual = available;
 		if (add)
 			imagesActual = arrayToggleElement(imagesActual, add);
-
+		setAvailable(imagesActual);
 		window.websocket.send({
 			"queue": `${idRef.current}listAssets`,
 			"api": "api",

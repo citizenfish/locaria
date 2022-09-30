@@ -14,12 +14,13 @@ import {useCookies} from "react-cookie";
 import {useDispatch, useSelector} from "react-redux";
 import {setOverview} from "../../redux/slices/adminPagesSlice";
 
-export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpenUsers}) {
+export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpenUsers,isOpenConfig}) {
 
 	const [openContent, setOpenContent] = useState(isOpenContent || false)
 	const [openSettings, setOpenSettings] = useState(isOpenSettings || false)
 	const [openImport, setOpenImport] = useState(isOpenImport || false)
 	const [openUsers, setOpenUsers] = useState(isOpenUsers || false)
+	const [openConfig, setOpenConfig] = useState(isOpenConfig || false)
 
 	const overview = useSelector((state) => state.adminPages.overview);
 	const token = useSelector((state) => state.adminPages.token);
@@ -27,23 +28,26 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 	const [cookies, setCookies] = useCookies(['location'])
 
 	const handleClickContent = () => {
-		setOpenSettings(false)
-		setOpenImport( false)
+		setOpenSettings(false);
+		setOpenImport( false);
+		setOpenConfig(false);
 		setOpenContent(true)
 		history.push(`/Admin/Content/Pages`);
 	};
 
 	const handleClickSettings = () => {
-		setOpenContent(false)
-		setOpenImport(false)
+		setOpenContent(false);
+		setOpenImport(false);
+		setOpenConfig(false);
 		setOpenSettings(true)
 		history.push(`/Admin/Settings/Appearance`);
 	};
 
 	const handleClickImport = () => {
-		setOpenContent(false)
-		setOpenSettings(false)
-		setOpenImport(true)
+		setOpenContent(false);
+		setOpenSettings(false);
+		setOpenConfig(false);
+		setOpenImport(true);
 		history.push(`/Admin/Import/Upload`);
 	}
 
@@ -52,8 +56,19 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 		setOpenContent(false)
 		setOpenSettings(false)
 		setOpenImport(false)
+		setOpenConfig(false);
+
 		setOpenUsers(true)
 		history.push(`/Admin/Users/Manage`);
+	}
+
+	const handleClickConfig = () => {
+		setOpenContent(false)
+		setOpenSettings(false)
+		setOpenImport(false)
+		setOpenUsers(false);
+		setOpenConfig(true);
+		history.push(`/Admin/Config`);
 	}
 
 	useEffect(() => {
@@ -242,6 +257,29 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 								<ArticleIcon/>
 							</ListItemIcon>
 							<ListItemText primary={"Manage"}/>
+						</ListItemButton>
+					</List>
+				</Collapse>
+
+				{/* Config */}
+				<ListItemButton  onClick={() => {
+					handleClickConfig();
+				}}>
+					<ListItemIcon>
+						<EditIcon/>
+					</ListItemIcon>
+					<ListItemText primary={"Config"}/>
+					{openConfig && <ExpandMore/>}
+				</ListItemButton>
+				<Collapse in={openConfig} timeout="auto" unmountOnExit>
+					<List component="div">
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/Config`);
+						}}>
+							<ListItemIcon>
+								<ArticleIcon/>
+							</ListItemIcon>
+							<ListItemText primary={"Parameters"}/>
 						</ListItemButton>
 					</List>
 				</Collapse>

@@ -20,9 +20,10 @@ import DialogContentText from "@mui/material/DialogContentText";
 import pluginsDefs from "./pluginsDef";
 import Grid from "@mui/material/Grid";
 import ArgsSerialize from "../../../libs/argsSerialize";
+import {setObjectWithPath} from "../../../libs/objectTools";
 
 
-export default function EditMarkdown({documentObj, mode, id,simple=false}) {
+export default function EditMarkdown({documentObj, mode, id,simple=false,updateFunction}) {
 
 	const dispatch = useDispatch();
 
@@ -241,7 +242,13 @@ export default function EditMarkdown({documentObj, mode, id,simple=false}) {
 
 			</Box>
 			<Box id={id}
-				 onKeyDown={(e) => {}}
+				 onKeyUp={(e) => {
+					if(updateFunction) {
+						let element=document.getElementById(id);
+						let obj=MD.parseHTML(element);
+						updateFunction(obj);
+					}
+				 }}
 				 sx={{
 						border: "1px solid black",
 					 	width: 'calc(100vw - 300px)',
