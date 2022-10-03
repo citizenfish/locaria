@@ -3,19 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-          "database/functions/locaria_gateway.sql",
-          "database/functions/internal/data/add_item.sql",
-          "database/functions/internal/data/get_tables.sql",
-          "database/functions/search/search.sql",
-          "database/functions/utility/aws_lambda_interface.sql",
-          "database/functions/triggers/files_trigger.sql",
-          "database/functions/internal/admin/get_parameters.sql",
-          "database/functions/search/search_get_records.sql",
-          "database/schema_and_tables/create_moderation_queue_table.sql",
-          "database/functions/internal/data/get_moderation_items.sql",
-          "database/functions/internal/data/update_item.sql",
-          "database/functions/internal/view_report.sql",
-          "database/functions/internal/data/delete_item.sql"
+          "database/functions/utility/asset_url_maker.sql"
       ],
       "substitutions": "../tests.json"
     }
