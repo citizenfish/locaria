@@ -154,7 +154,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 							history.push(`/Admin/Content/Data`);
 						}}>
 							<ListItemIcon>
-								<Badge badgeContent={overview ? overview.total_updates : 0} color="primary" showZero>
+								<Badge badgeContent={overview&&overview.total_updates? '*' : 0} color="primary">
 									<StorageIcon/>
 								</Badge>
 							</ListItemIcon>
@@ -165,7 +165,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 							history.push(`/Admin/Content/Moderation`);
 						}}>
 							<ListItemIcon>
-								<Badge badgeContent={overview ? overview.moderations : 0} color="primary" showZero>
+								<Badge badgeContent={overview&&overview.moderations>0 ? '*' : 0} color="primary">
 									<StorageIcon/>
 								</Badge>
 							</ListItemIcon>
