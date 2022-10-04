@@ -11,7 +11,7 @@ import {setFieldValue} from "../../redux/slices/formSlice";
 import {setSearch, setSubCategoryList} from "../../redux/slices/searchDrawerSlice";
 import {useDispatch} from "react-redux";
 
-export default function SearchCategory() {
+export default function SearchCategory({id="search",sx}) {
 	const dispatch = useDispatch()
 
 	const [selected, setSelected] = React.useState([]);

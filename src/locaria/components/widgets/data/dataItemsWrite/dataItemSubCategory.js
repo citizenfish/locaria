@@ -14,10 +14,13 @@ const DataItemSubCategory = ({id,name,data,prompt,required}) => {
 
     const [selected, setSelected] = React.useState([]);
 
+    let mapper={};
+
     const handleSelect = (event, nodeIds) => {
-        console.log(nodeIds);
+       /* console.log(nodeIds);*/
+        console.log(mapper[nodeIds]);
         setSelected(nodeIds);
-        dispatch(setFieldValue({index:id,value:nodeIds}))
+        dispatch(setFieldValue({index:id,value:mapper[nodeIds]}))
     };
 
 
@@ -26,17 +29,21 @@ const DataItemSubCategory = ({id,name,data,prompt,required}) => {
     },[]);
 
 
-    function DataMapTreeLevel({ptr,color='white'}) {
+    function DataMapTreeLevel({ptr,idPath,path,color='white'}) {
         let treeLevel=[];
         for(let p in ptr) {
+            let newPath=`${idPath? idPath+'.':''}${ptr[p].name.replace(/[^a-zA-Z]/g,'')}`;
+            let newArrayPath=[...path];
+            newArrayPath.push(ptr[p].name);
+            mapper[newPath]=newArrayPath;
             if(ptr[p].color)
                 color=ptr[p].color;
             treeLevel.push(
-                <TreeItem label={ptr[p].name} nodeId={ptr[p].id} sx={{
+                <TreeItem label={ptr[p].name} nodeId={newPath} sx={{
                     background: color
                 }}>
                     {ptr[p].subs &&
-                        <DataMapTreeLevel ptr={ptr[p].subs} color={color}/>
+                        <DataMapTreeLevel ptr={ptr[p].subs} color={color} idPath={newPath} path={newArrayPath}/>
                     }
                 </TreeItem>
             );
@@ -58,7 +65,7 @@ const DataItemSubCategory = ({id,name,data,prompt,required}) => {
                     selected={selected}
                     onNodeSelect={handleSelect}
                 >
-                    <DataMapTreeLevel ptr={window.dataMap}/>
+                    <DataMapTreeLevel ptr={window.dataMap} idPath={""} path={[]}/>
                 </TreeView>
             </Grid>
 

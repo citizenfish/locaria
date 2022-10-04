@@ -217,12 +217,30 @@ function sendSQLFiles(stage, theme, environment,configFile, callBack) {
 					});
 					//fileList = deployConfig.databases[id].tables;
 					fileList = [];
-					deployConfig.databases[id].tables.forEach(function (f) {
-						fileList.push(...expand({cwd: './'}, [f]));
-					});
-					items = fileList.length;
-					sendFile(0);
 
+					if(deployConfig.databases[id].tables.constructor === Array) {
+
+						deployConfig.databases[id].tables.forEach(function (f) {
+							fileList.push(...expand({cwd: './'}, [f]));
+						});
+						items = fileList.length;
+						sendFile(0);
+					} else {
+						let options=Object.keys(deployConfig.databases[id].tables);
+						options.forEach(function (f) {
+							console.log(f);
+						});
+						let option=options[0];
+						readline.question(`Select [${option}]?`, (cmd) => {
+							if(cmd)
+								option=cmd;
+							deployConfig.databases[id].tables[option].forEach(function (f) {
+								fileList.push(...expand({cwd: './'}, [f]));
+							});
+							items = fileList.length;
+							sendFile(0);
+						});
+					}
 				}
 			});
 

@@ -114,7 +114,7 @@ export const searchDrawerSlice = createSlice({
 			if (actualTags.length > 0)
 				packetSearch.data.tags = actualTags;
 */
-			window.websocket.send(packetSearch);
+//			window.websocket.send(packetSearch);
 		},
 		closeSearchDrawer: (state) => {
 			state.open = false;

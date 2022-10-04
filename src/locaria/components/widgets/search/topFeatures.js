@@ -13,21 +13,24 @@ const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rank
 	const categories = useSelector((state) => state.searchDraw.categories);
 	const actualTags = useSelector((state) => state.searchDraw.tags);
 	const refresh = useSelector((state) => state.searchDraw.refresh);
+	const features = useSelector((state) => state.searchDraw.features);
 
-	const [results, setResults] = useState(undefined);
 	const [searchId, setSearchId] = useState(undefined);
 	let sxId = 0;
 
-
 	useEffect(() => {
+		dispatch(newSearch({categories: category, tags: tags}));
+	},[]);
+
+/*	useEffect(() => {
 		if (id&&id !== searchId) {
 			setSearchId(id);
 			dispatch(newSearch({categories: category, tags: tags}));
 		}
-	}, [id]);
+	}, [id]);*/
 
 
-	useEffect(() => {
+	/*useEffect(() => {
 		window.websocket.registerQueue("topFeatures", function (json) {
 			setResults(json.packet.geojson.features);
 		});
@@ -42,7 +45,7 @@ const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rank
 		}
 
 	}, [refresh]);
-
+*/
 	function doSearch() {
 		let packetSearch = {
 			"queue": "topFeatures",
@@ -79,7 +82,7 @@ const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rank
 		}
 	}
 
-	if (results === undefined) {
+	if (features === undefined || features.features === undefined) {
 		return (<></>);
 	} else {
 		return (
@@ -87,7 +90,7 @@ const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rank
 				<Grid container spacing={4} sx={{
 					flexGrow: 1
 				}}>
-					{results.map((result) => {
+					{features.features.map((result) => {
 						return (
 							<Grid item md={3} key={result.properties.fid} sx={{
 								width: "100%"

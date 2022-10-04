@@ -151,7 +151,7 @@ module.exports.run = (event, context, callback) => {
 			let aclPayload = {
 				"_userID": "PUBLIC",
 				"_email": "PUBLIC",
-				"_groups": [],
+				"_groups": ["PUBLIC"],
 				"_newACL": {}
 			};
 			if (tokenPacket.valid === true) {
