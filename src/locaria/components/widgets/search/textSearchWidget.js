@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import {useDispatch, useSelector} from "react-redux";
 import {newSearch, setSearch} from "../../redux/slices/searchDrawerSlice";
 
-export default function TextSearchWidget({id, sx, heading, placeholder}) {
+export default function TextSearchWidget({id = "search", sx, heading, placeholder}) {
 	const dispatch = useDispatch()
 
 	const [searchString, setSearchString] = useState("");
@@ -27,7 +27,7 @@ export default function TextSearchWidget({id, sx, heading, placeholder}) {
 		...{
 			padding: "10px",
 			backgroundColor: window.systemMain.headerBackground,
-			width: mobile?"100%":"40%",
+			width: mobile ? "100%" : "40%",
 			marginBottom: "20px"
 		}, ...sx || {}
 	};
@@ -38,7 +38,7 @@ export default function TextSearchWidget({id, sx, heading, placeholder}) {
 				color: "black"
 			}}>
 				<Grid item md={5}>
-					<TypographyHeader sx={{color:"white"}} element={"h1"}>
+					<TypographyHeader sx={{color: "white"}} element={"h1"}>
 						{heading || 'Search'}
 					</TypographyHeader>
 				</Grid>
@@ -49,7 +49,9 @@ export default function TextSearchWidget({id, sx, heading, placeholder}) {
 							backgroundColor: "white"
 						}
 					}}
-							   onChange={e => dispatch(setSearch({search: e.target.value}))}
+							   onChange={(e) => {
+								   dispatch(setSearch({search: e.target.value}));
+							   }}
 							   placeholder={placeholder || ''} variant="standard"/>
 				</Grid>
 			</Grid>
