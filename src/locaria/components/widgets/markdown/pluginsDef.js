@@ -15,6 +15,8 @@ import SimpleMap from "../maps/simpleMap";
 import SearchProxy from "../search/searchProxy";
 import SearchCategory from "../search/searchCategory";
 import SimpleForm from "../data/simpleForm";
+import SubCatMap from "../maps/subCatMap";
+import SelectedPanel from "../viewLayouts/selectedPanel";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -92,6 +94,11 @@ const pluginsDefs = {
 		"description": "Searchable map",
 		"params": [{param: "category", default: "News"}]
 	},
+	"SubCatMap": {
+		"obj": SubCatMap,
+		"description": "Searchable map with subs",
+		"params": [{param: "category", default: "News"}]
+	},
 	"SearchCategory": {
 		"obj": SearchCategory,
 		"description": "Search Category",
@@ -99,6 +106,11 @@ const pluginsDefs = {
 	},
 	"SimpleForm": {
 		"obj": SimpleForm,
+		"description": "Display simple input form",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SelectedPanel": {
+		"obj": SelectedPanel,
 		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	}

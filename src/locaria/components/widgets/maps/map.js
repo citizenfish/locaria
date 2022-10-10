@@ -28,6 +28,16 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 	const mapLayerStyle=style? styles[style]:styles['viewStyle'];
 	const mapBaseStyle=mapStyle? styles[mapStyle]:styles['viewStyle'];
 
+	function onFeatureSeletedWrapper(feature) {
+		let properties=[];
+		if(feature&&feature[0]) {
+			for(let f in feature) {
+				properties.push({properties:feature[f].getProperties()})
+			}
+		}
+		onFeatureSeleted(properties);
+	}
+
 	React.useEffect(() => {
 		ol.addMap({
 			"target": id,
@@ -91,7 +101,7 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 
 		}
 		if (onFeatureSeleted !== undefined) {
-			ol.makeControl({"layers": ["data"], "selectedFunction": onFeatureSeleted, "multi": true});
+			ol.makeControl({"layers": ["data"], "selectedFunction": onFeatureSeletedWrapper, "multi": true});
 		}
 
 	}, [ol]);
