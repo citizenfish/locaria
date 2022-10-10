@@ -18,7 +18,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DataItemUpload from "./dataItemsWrite/dataItemUpload";
 import dataItemImages from "./dataItemsRead/dataItemImages";
-import {DataItemSocialTwitter} from "./dataItemsRead/dataItemSocial";
+import {
+	DataItemSocialFacebook,
+	DataItemSocialGeneric,
+	DataItemSocialInstagram,
+	DataItemSocialTwitter
+} from "./dataItemsRead/dataItemSocial";
+import DataItemGrid from "./dataItemsRead/dataItemGrid";
+import Divider from "@mui/material/Divider";
 
 const FieldView = ({data, mode='read',fields="main"}) => {
 
@@ -80,18 +87,25 @@ const FormatFields = ({fields, data, mode}) => {
 							</Grid>
 						)
 					} else {
+						switch (value.type) {
+							case 'hr':
+								return <Divider sx={{margin:"10px"}}/>
+							default:
+								if (value.visible !== false || mode === "write") {
+									let md = value.md || 12;
+									return (
+										<Grid item md={md}>
 
-						if (value.visible !== false || mode === "write") {
-							let md = value.md || 12;
-							return (
-								<Grid item md={md}>
-
-									<FormatField field={value}
-												 data={data}
-												 key={value.key}
-												 mode={mode}/>
-								</Grid>)
+											<FormatField field={value}
+														 data={data}
+														 key={value.key}
+														 mode={mode}/>
+										</Grid>)
+								}
+								break;
 						}
+
+
 					}
 				}
 			)}
@@ -112,10 +126,14 @@ const FormatField = ({field, data, mode}) => {
 		'title': {"element": DataItemTitle},
 		'description': {"element": DataItemDescription},
 		'p': {"element": DataItemP},
+		'grid': {"element": DataItemGrid},
 		'h2': {"element": DataItemH2},
 		'md': {"element": dataItemMarkdown},
 		'images': {"element": dataItemImages},
 		'twitter': {"element": DataItemSocialTwitter},
+		'facebook': {"element": DataItemSocialFacebook},
+		'instagram': {"element": DataItemSocialInstagram},
+		'social': {"element": DataItemSocialGeneric},
 	}
 
 	const dataWriteItem = {
