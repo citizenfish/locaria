@@ -3,14 +3,17 @@ import Box from "@mui/material/Box";
 import {TreeItem, TreeView} from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import {setSearch, setSubCategoryList} from "../../redux/slices/searchDrawerSlice";
-import {useDispatch} from "react-redux";
+import {setSearch, setSubCategoryList, toggleSubCategoryItem} from "../../redux/slices/searchDrawerSlice";
+import {useDispatch, useSelector} from "react-redux";
+import List from "@mui/material/List";
+import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 
-export default function SearchCategory({id="search",sx,multi=true}) {
+export default function SearchCategory({id="search",sx,multi=true,levels=1}) {
 	const dispatch = useDispatch()
 
-	const [selected, setSelected] = React.useState([]);
 	const [searchId, setSearchId] = useState(undefined);
+	const subCategories = useSelector((state) => state.searchDraw.subCategories);
+
 	let mapper={};
 
 	useEffect(() => {
@@ -21,16 +24,18 @@ export default function SearchCategory({id="search",sx,multi=true}) {
 	}, [id]);
 
 
-	const handleSelect = (event, nodeIds) => {
+	const handleCheck = (nodeIds) => {
 		console.log(nodeIds);
-		if(multi)
-			dispatch(setSubCategoryList(nodeIds));
+
+		if(multi===true)
+			dispatch(toggleSubCategoryItem(nodeIds));
 		else
 			dispatch(setSubCategoryList([nodeIds]));
 	};
 
-	function SearchCategoryRecursive({ptr,idPath,path,color='white'}) {
+	function SearchCategoryRecursive({ptr,idPath,path,color='white'},level,maxLevel) {
 		let treeLevel=[];
+		level++;
 		for(let p in ptr) {
 			let newPath=`${idPath? idPath+'.':''}${ptr[p].name.replace(/[^a-zA-Z]/g,'')}`;
 			let newArrayPath=[...path];
@@ -39,43 +44,43 @@ export default function SearchCategory({id="search",sx,multi=true}) {
 			if(ptr[p].color)
 				color=ptr[p].color;
 			treeLevel.push(
-				<TreeItem label={ptr[p].name} nodeId={newPath} sx={{
+				/*<TreeItem label={ptr[p].name} nodeId={newPath} sx={{
 					background: color
-				}}>
-					{ptr[p].subs &&
+				}}>*/
+				<ListItem sx={{padding:"0px",background: color}}>
+
+					<ListItemButton role={undefined} onClick={()=>{handleCheck(newPath)}} dense>
+						<ListItemIcon>
+							<Checkbox
+								edge="start"
+								checked={subCategories.indexOf(newPath) !== -1}
+								tabIndex={-1}
+								disableRipple
+								inputProps={{ 'aria-labelledby': newPath }}
+							/>
+						</ListItemIcon>
+						<ListItemText id={newPath} primary={`${ptr[p].name}`} />
+					</ListItemButton>
+
+					{ptr[p].subs&&level<maxLevel &&
 						<SearchCategoryRecursive ptr={ptr[p].subs} color={color} idPath={newPath} path={newArrayPath}/>
 					}
+				</ListItem>
+/*
 				</TreeItem>
+*/
 			);
 		}
 		return treeLevel;
 	}
-/*	function SearchCategoryRecursive({ptr,color='white'}) {
-		let treeLevel=[];
-		for(let p in ptr) {
-			if(ptr[p].color)
-				color=ptr[p].color;
-			treeLevel.push(
-				<TreeItem label={ptr[p].name} nodeId={ptr[p].id} sx={{
-					background: color
-				}}>
-					{ptr[p].subs &&
-						<SearchCategoryRecursive ptr={ptr[p].subs} color={color}/>
-					}
-				</TreeItem>
-			);
-		}
-		return treeLevel;
-	}*/
+
 
 	return (
 		<Box sx={{
 			textAlign: 'left'
 		}}>
-{/*
-			<SearchCategoryRecursive levels={window.dataMap}/>
-*/}
-			<TreeView
+			<List sx={{ width: '100%' }} >
+			{/*<TreeView
 				aria-label="file system navigator"
 				defaultCollapseIcon={<ExpandMoreIcon />}
 				defaultExpandIcon={<ChevronRightIcon />}
@@ -83,43 +88,14 @@ export default function SearchCategory({id="search",sx,multi=true}) {
 				selected={selected}
 				onNodeSelect={handleSelect}
 				multiSelect={true}
-			>
-				<SearchCategoryRecursive ptr={window.dataMap} idPath={""} path={[]}/>
+			>*/}
+				<SearchCategoryRecursive ptr={window.dataMap} idPath={""} path={[]} level={0} maxLevel={levels}/>
+{/*
 			</TreeView>
+*/}
+			</List>
 		</Box>
 	)
 }
 
-function categorySubTicks() {
-	return (
-		<Box sx={{border:"1px solid black"}}>
 
-
-		</Box>
-	)
-}
-
-/*
-function SearchCategoryRecursive({levels}) {
-	let items = [];
-
-	for (let level in levels) {
-		let subLevels = [];
-		if (levels[level].subs) {
-			subLevels = <SearchCategoryRecursive levels={levels[level].subs}/>;
-		}
-
-		items.push(
-			<Box sx={{padding: "5px"}}>
-				<TypographyHeader sx={{color: levels[level].color}}
-								  element={"h3"}>{levels[level].name}</TypographyHeader>
-				<Box>
-					{subLevels}
-				</Box>
-			</Box>
-		)
-	}
-
-	return items;
-
-}*/

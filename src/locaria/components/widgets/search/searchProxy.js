@@ -32,7 +32,15 @@ export default function SearchProxy() {
 		};
 
 		if(subCategories&&subCategories.length>0) {
-			packetSearch.data.jsonpath='lax $.categoryLevel1 == "Shops"';
+			let jsonPath="lax ";
+			let i=0;
+			for(let sub in subCategories) {
+				i++;
+				jsonPath+=`$.categoryLevel1 == \"${subCategories[sub]}\"`;
+				if(i<subCategories.length)
+					jsonPath+=' || ';
+			}
+			packetSearch.data.jsonpath=jsonPath;
 		}
 		window.websocket.send(packetSearch);
 
