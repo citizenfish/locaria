@@ -8,6 +8,7 @@ export default function SearchProxy() {
 
 	const refresh = useSelector((state) => state.searchDraw.refresh);
 	const categories = useSelector((state) => state.searchDraw.categories);
+	const subCategories = useSelector((state) => state.searchDraw.subCategories);
 	const search = useSelector((state) => state.searchDraw.search);
 
 	useEffect(() => {
@@ -29,6 +30,10 @@ export default function SearchProxy() {
 
 			}
 		};
+
+		if(subCategories&&subCategories.length>0) {
+			packetSearch.data.jsonpath='lax $.categoryLevel1 == "Shops"';
+		}
 		window.websocket.send(packetSearch);
 
 	}

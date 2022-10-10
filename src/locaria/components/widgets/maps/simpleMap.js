@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Map from "../maps/map"
 import {useDispatch, useSelector} from "react-redux";
-import {newSearch} from "../../redux/slices/searchDrawerSlice";
+import {newSearch, setFeature} from "../../redux/slices/searchDrawerSlice";
 
-export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,category,tag,mapType,mapSource,mapStyle}) {
+export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomChange,speedDial,sx,category,tag,mapType,mapSource,mapStyle}) {
 
 	const mapRef = useRef();
 	const dispatch = useDispatch();
@@ -14,6 +14,11 @@ export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomCh
 			dispatch(newSearch({categories: category, tags: tag}));
 	},[]);
 
+	function onFeatureSeleted(features) {
+		dispatch(setFeature(features[0].properties.fid))
+
+	}
+
 	useEffect(() => {
 		console.log(features);
 		mapRef.current.addGeojson(features)
@@ -21,7 +26,7 @@ export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomCh
 	},[features]);
 
 		return (
-		<Map style={style} id={id} sx={sx} ref={mapRef} mapType={mapType} mapSource={mapSource} mapStyle={mapStyle}></Map>
+		<Map style={style} id={id} sx={sx} ref={mapRef} mapType={mapType} mapSource={mapSource} mapStyle={mapStyle} onFeatureSeleted={onFeatureSeleted}></Map>
 	)
 
 }

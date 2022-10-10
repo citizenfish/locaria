@@ -19,6 +19,8 @@ export const searchDrawerSlice = createSlice({
 		page: 1,
 		totalPages: 0,
 		features: {},
+		feature:undefined,
+		fid: undefined
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -56,6 +58,15 @@ export const searchDrawerSlice = createSlice({
 		setFeatures: (state,action) => {
 			state.features=action.payload;
 		},
+		setFeature: (state, action) => {
+			for(let f in state.features.features) {
+				if(state.features.features[f].properties.fid===action.payload) {
+					state.feature=state.features.features[f];
+					return;
+				}
+			}
+			console.log(`Cant find ${action.payload}`);
+		},
 		newSearch: (state, action) => {
 			state.open = true;
 			state.page=1;
@@ -88,33 +99,6 @@ export const searchDrawerSlice = createSlice({
 				state.search = action.payload.search;
 			}
 			state.refresh=true;
-
-
-
-			let packetSearch = {
-				"queue": "searchFeatures",
-				"api": "api",
-				"data": {
-					"method": "search",
-					"category": state.categories,
-					"search_text": state.search
-
-				}
-			};
-			/*if (displayLimit)
-				packetSearch.data['display_limit'] = displayLimit;*/
-/*
-			if (limit)
-				packetSearch.data['limit'] = limit;
-*/
-
-/*
-			if (rankingAttributes)
-				packetSearch.data['ranking_attributes'] = rankingAttributes;
-			if (actualTags.length > 0)
-				packetSearch.data.tags = actualTags;
-*/
-//			window.websocket.send(packetSearch);
 		},
 		closeSearchDrawer: (state) => {
 			state.open = false;
@@ -246,6 +230,7 @@ export const {
 	setDistanceType,
 	newSearch,
 	setFeatures,
+	setFeature,
 	setSubCategoryList
 } = searchDrawerSlice.actions
 

@@ -17,8 +17,10 @@ import DataItemMap from "./dataItemsWrite/dataItemMap";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DataItemUpload from "./dataItemsWrite/dataItemUpload";
+import dataItemImages from "./dataItemsRead/dataItemImages";
+import {DataItemSocialTwitter} from "./dataItemsRead/dataItemSocial";
 
-const FieldView = ({data, mode}) => {
+const FieldView = ({data, mode='read',fields="main"}) => {
 
 
 
@@ -27,9 +29,9 @@ const FieldView = ({data, mode}) => {
 
 		let channel = window.systemCategories.getChannelProperties(data.properties.category);
 
-		let fields = channel.fields;
+		let fieldsObj = channel.fields;
 
-		if (fields) {
+		if (fieldsObj) {
 			return (
 				<Box sx={{
 					p: 2
@@ -37,10 +39,10 @@ const FieldView = ({data, mode}) => {
 					<Grid container>
 						<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
 
-						{fields.main ?
-							<FormatFields fields={fields.main}
+						{fieldsObj[fields] ?
+							<FormatFields fields={fieldsObj[fields]}
 										  data={data}
-										  mode={mode || 'read'}/> : null}
+										  mode={mode}/> : null}
 						</LocalizationProvider>
 					</Grid>
 				</Box>
@@ -70,21 +72,32 @@ const FormatFields = ({fields, data, mode}) => {
 	if (fields && fields.length > 0) {
 		return (<>
 			{fields.map(value => {
-					if (value.visible !== false || mode === "write")
+					if(value.children) {
+						let md = value.md || 12;
 						return (
-							<Grid item md={12}>
+							<Grid item md={md}>
+								<FormatFields fields={value.children} mode={mode} data={data}></FormatFields>
+							</Grid>
+						)
+					} else {
 
-								<FormatField field={value}
-											 data={data}
-											 key={value.key}
-											 mode={mode}/>
-							</Grid>)
+						if (value.visible !== false || mode === "write") {
+							let md = value.md || 12;
+							return (
+								<Grid item md={md}>
+
+									<FormatField field={value}
+												 data={data}
+												 key={value.key}
+												 mode={mode}/>
+								</Grid>)
+						}
+					}
 				}
 			)}
 		</>);
 	}
 	return null;
-
 }
 
 const FormatField = ({field, data, mode}) => {
@@ -100,7 +113,9 @@ const FormatField = ({field, data, mode}) => {
 		'description': {"element": DataItemDescription},
 		'p': {"element": DataItemP},
 		'h2': {"element": DataItemH2},
-		'md': {"element": dataItemMarkdown}
+		'md': {"element": dataItemMarkdown},
+		'images': {"element": dataItemImages},
+		'twitter': {"element": DataItemSocialTwitter},
 	}
 
 	const dataWriteItem = {
