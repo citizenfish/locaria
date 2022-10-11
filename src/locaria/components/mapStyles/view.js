@@ -4,6 +4,13 @@ import marker from "../../../theme/default/images/marker.svg"
 import UrlCoder from "../../libs/urlCoder";
 const url=new UrlCoder();
 
+
+/**
+ *  Style for location item
+ * @param feature
+ * @param resolution
+ * @returns {Style[]}
+ */
 export function locationStyle(feature, resolution) {
 
 	let type=feature.get('featureType');
@@ -52,11 +59,12 @@ export function locationStyle(feature, resolution) {
 			})
 		})
 	]
-
-
-
 }
 
+/**
+ *  Linked style for nmrn (legacy)
+ * @returns {Style}
+ */
 const linkedFeatureStyle = () => {
 	return  new Style({
 		zIndex: 50,
@@ -74,11 +82,84 @@ const linkedFeatureStyle = () => {
 	})
 }
 
+/**
+ * Style for category & subs
+ * @param feature
+ * @param resolution
+ * @param ol
+ */
+export function categoryStyle(feature,resolution,ol) {
+
+	let category = feature.get('category');
+	let data = feature.get('data');
+	let description = feature.get('description');
+	let label=description.title;
+	let subsColor = window.systemCategories.getChannelSubsColor(category,data.categoryLevel1,data.categoryLevel2,data.categoryLevel3);
+	const geometry = feature.getGeometry();
+
+	let radius=10;
+	if(resolution>10)
+		radius=5;
+
+	if (geometry.getType() === 'Point') {
+		return  new Style({
+			zIndex: 50,
+			image: new Circle({
+
+				radius: radius,
+				stroke: new Stroke({
+					color: "rgba(0,0,0,0.75)",
+					width: 1,
+				}),
+				fill: new Fill({
+					color: subsColor
+				})
+			}),
+			text: new Text({
+				text: label,
+				font: 'bold 11px "Soleil"',
+				textBaseline: 'bottom',
+				offsetY: 30,
+				fill: new Fill({
+					color: '#000000'
+				}),
+				stroke: new Stroke({
+					color: '#FFFFFF',
+					width: 3.5
+				})
+			})
+		})
+	} else {
+		let fill = [255, 0, 0, 0.3];
+		return [
+			new Style({
+				stroke: new Stroke({
+					color: [22, 22, 22, 1],
+					width: 1
+				}),
+				fill: new Fill({
+					color: fill,
+					width: 1
+				})
+			})
+		]
+	}
+}
+
+
+/**
+ *  Old default style with svg icons
+ * @param feature
+ * @param resolution
+ * @param ol
+ * @returns {[Style,Style]|[Style]}
+ */
 const defaultFeatureStyle = (feature,resolution,ol) => {
 	let category = feature.get('category');
 	let tags = feature.get('tags');
 	let description = feature.get('description');
 	let icon = window.systemCategories.getChannelMapIcon(category, tags);
+	let subs = window.systemCategories.getChannelSubs(category);
 	if (icon === undefined) {
 		icon =  marker
 	}

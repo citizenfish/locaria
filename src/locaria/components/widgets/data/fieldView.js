@@ -49,7 +49,8 @@ const FieldView = ({data, mode='read',fields="main"}) => {
 						{fieldsObj[fields] ?
 							<FormatFields fields={fieldsObj[fields]}
 										  data={data}
-										  mode={mode}/> : null}
+										  mode={mode}
+										  category={data.properties.category}/> : null}
 						</LocalizationProvider>
 					</Grid>
 				</Box>
@@ -75,7 +76,7 @@ const FieldView = ({data, mode='read',fields="main"}) => {
 
 }
 
-const FormatFields = ({fields, data, mode}) => {
+const FormatFields = ({fields, data, mode,category}) => {
 	if (fields && fields.length > 0) {
 		return (<>
 			{fields.map(value => {
@@ -83,7 +84,7 @@ const FormatFields = ({fields, data, mode}) => {
 						let md = value.md || 12;
 						return (
 							<Grid item md={md}>
-								<FormatFields fields={value.children} mode={mode} data={data}></FormatFields>
+								<FormatFields fields={value.children} mode={mode} data={data}> category={category}</FormatFields>
 							</Grid>
 						)
 					} else {
@@ -99,7 +100,8 @@ const FormatFields = ({fields, data, mode}) => {
 											<FormatField field={value}
 														 data={data}
 														 key={value.key}
-														 mode={mode}/>
+														 mode={mode}
+														 category={category}/>
 										</Grid>)
 								}
 								break;
@@ -114,7 +116,7 @@ const FormatFields = ({fields, data, mode}) => {
 	return null;
 }
 
-const FormatField = ({field, data, mode}) => {
+const FormatField = ({field, data, mode,category}) => {
 
 	let dataActual = getData(data, field.key, field.dataFunction);
 
@@ -175,6 +177,7 @@ const FormatField = ({field, data, mode}) => {
 				 data={dataActual}
 				 prompt={field.prompt}
 				 sx={field.sx}
+				 category={category}
 				 {...options}
 		/>
 	)

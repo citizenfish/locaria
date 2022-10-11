@@ -8,11 +8,13 @@ import {useDispatch, useSelector} from "react-redux";
 import List from "@mui/material/List";
 import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 
-export default function SearchCategory({id="search",sx,multi=true,levels=1}) {
+export default function SearchCategory({id="search",sx,multi=true,levels=1,category}) {
 	const dispatch = useDispatch()
 
 	const [searchId, setSearchId] = useState(undefined);
 	const subCategories = useSelector((state) => state.searchDraw.subCategories);
+
+	let categorySubs=window.systemCategories.getChannelSubs(category);
 
 	let mapper={};
 
@@ -89,7 +91,7 @@ export default function SearchCategory({id="search",sx,multi=true,levels=1}) {
 				onNodeSelect={handleSelect}
 				multiSelect={true}
 			>*/}
-				<SearchCategoryRecursive ptr={window.dataMap} idPath={""} path={[]} level={0} maxLevel={levels}/>
+				<SearchCategoryRecursive ptr={categorySubs} idPath={""} path={[]} level={0} maxLevel={levels}/>
 {/*
 			</TreeView>
 */}

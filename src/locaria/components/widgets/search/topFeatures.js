@@ -12,40 +12,16 @@ const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rank
 	const search = useSelector((state) => state.searchDraw.search);
 	const categories = useSelector((state) => state.searchDraw.categories);
 	const actualTags = useSelector((state) => state.searchDraw.tags);
-	const refresh = useSelector((state) => state.searchDraw.refresh);
 	const features = useSelector((state) => state.searchDraw.features);
 
-	const [searchId, setSearchId] = useState(undefined);
 	let sxId = 0;
 
 	useEffect(() => {
-		dispatch(newSearch({categories: category, tags: tags}));
+		console.log(displayLimit);
+		dispatch(newSearch({categories: category, tags: tags, limit:limit,displayLimit:displayLimit }));
 	},[]);
 
-/*	useEffect(() => {
-		if (id&&id !== searchId) {
-			setSearchId(id);
-			dispatch(newSearch({categories: category, tags: tags}));
-		}
-	}, [id]);*/
 
-
-	/*useEffect(() => {
-		window.websocket.registerQueue("topFeatures", function (json) {
-			setResults(json.packet.geojson.features);
-		});
-
-
-		if (refresh === true) {
-			doSearch();
-		}
-
-		return () => {
-			window.websocket.removeQueue("topFeatures");
-		}
-
-	}, [refresh]);
-*/
 	function doSearch() {
 		let packetSearch = {
 			"queue": "topFeatures",

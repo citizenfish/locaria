@@ -30,7 +30,7 @@ function objectPathGet(obj, path) {
 		return eval(path);
 	}
 	return undefined;
-
 }
+
 
 export {setObjectWithPath,objectPathExists,objectPathGet};
