@@ -20,7 +20,9 @@ export const searchDrawerSlice = createSlice({
 		totalPages: 0,
 		features: {},
 		feature:undefined,
-		fid: undefined
+		fid: undefined,
+		limit: undefined,
+		displayLimit: undefined
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -98,6 +100,17 @@ export const searchDrawerSlice = createSlice({
 			if (action.payload && action.payload.search){
 				state.search = action.payload.search;
 			}
+			if (action.payload && action.payload.limit){
+				state.limit = action.payload.limit;
+			} else {
+				state.limit= undefined;
+			}
+			if (action.payload && action.payload.displayLimit){
+				state.displayLimit = action.payload.displayLimit;
+			} else {
+				state.displayLimit=undefined;
+			}
+
 			state.refresh=true;
 		},
 		closeSearchDrawer: (state) => {

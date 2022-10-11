@@ -8,13 +8,15 @@ import {useDispatch} from "react-redux";
 import {setFieldValue, setupField} from "../../../redux/slices/formSlice";
 import DataItemsTypography from "./dataItemsTypography";
 
-const DataItemSubCategory = ({id,name,data,prompt,required}) => {
+const DataItemSubCategory = ({id,name,data,prompt,required,category}) => {
 
     const dispatch = useDispatch()
 
     const [selected, setSelected] = React.useState([]);
 
     let mapper={};
+
+    let categorySubs=window.systemCategories.getChannelSubs(category);
 
     const handleSelect = (event, nodeIds) => {
        /* console.log(nodeIds);*/
@@ -65,7 +67,7 @@ const DataItemSubCategory = ({id,name,data,prompt,required}) => {
                     selected={selected}
                     onNodeSelect={handleSelect}
                 >
-                    <DataMapTreeLevel ptr={window.dataMap} idPath={""} path={[]}/>
+                    <DataMapTreeLevel ptr={categorySubs} idPath={""} path={[]}/>
                 </TreeView>
             </Grid>
 

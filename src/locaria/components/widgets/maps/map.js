@@ -11,8 +11,9 @@ import Chip from "@mui/material/Chip";
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Box from "@mui/material/Box";
 import {act} from "react-dom/test-utils";
+import {categoryStyle} from "../../mapStyles/view";
 
-const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20}, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom=5}, ref) => {
 
 	const classes = useStyles();
 	const [ol, setOl] = React.useState(new Openlayers());
@@ -22,7 +23,8 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 		viewStyle:viewStyle,
 		locationStyle:locationStyle,
 		reportStyle:reportStyle,
-		vectorStyle:vectorStyle
+		vectorStyle:vectorStyle,
+		categoryStyle:categoryStyle
 	}
 
 	const mapLayerStyle=style? styles[style]:styles['viewStyle'];
@@ -38,12 +40,13 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 		onFeatureSeleted(properties);
 	}
 
+
 	React.useEffect(() => {
 		ol.addMap({
 			"target": id,
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
-			"zoom": window.systemMain.defaultZoom,
+			"zoom": zoom,
 			"center": ol.decodeCoords(window.systemMain.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
 			"maxZoom": maxZoom
 		});

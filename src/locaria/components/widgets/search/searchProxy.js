@@ -10,6 +10,8 @@ export default function SearchProxy() {
 	const categories = useSelector((state) => state.searchDraw.categories);
 	const subCategories = useSelector((state) => state.searchDraw.subCategories);
 	const search = useSelector((state) => state.searchDraw.search);
+	const limit = useSelector((state) => state.searchDraw.limit);
+	const displayLimit = useSelector((state) => state.searchDraw.displayLimit);
 
 	useEffect(() => {
 		window.websocket.registerQueue("searchFeatures", function (json) {
@@ -26,10 +28,15 @@ export default function SearchProxy() {
 			"data": {
 				"method": "search",
 				"category": categories,
-				"search_text": search
+				"search_text": search,
 
 			}
 		};
+
+		if(limit)
+			packetSearch.data.limit=limit;
+		if(displayLimit)
+			packetSearch.data.display_limit=displayLimit;
 
 		if(subCategories&&subCategories.length>0) {
 			let jsonPath="lax ";
@@ -43,8 +50,8 @@ export default function SearchProxy() {
 			packetSearch.data.jsonpath=jsonPath;
 		}
 		window.websocket.send(packetSearch);
-
 	}
+
 	useEffect(() => {
 
 
@@ -54,7 +61,7 @@ export default function SearchProxy() {
 
 		}
 
-	}, [refresh]);
+	}, [refresh,displayLimit,limit,subCategories,search]);
 
 	return (<></>)
 }

@@ -3,7 +3,7 @@ import Map from "../maps/map"
 import {useDispatch, useSelector} from "react-redux";
 import {newSearch, setFeature} from "../../redux/slices/searchDrawerSlice";
 
-export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomChange,speedDial,sx,category,tag,mapType,mapSource,mapStyle}) {
+export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomChange,speedDial,sx,category,tag,mapType,mapSource,mapStyle,maxZoom,zoom}) {
 
 	const mapRef = useRef();
 	const dispatch = useDispatch();
@@ -26,7 +26,7 @@ export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomCh
 	},[features]);
 
 		return (
-		<Map style={style} id={id} sx={sx} ref={mapRef} mapType={mapType} mapSource={mapSource} mapStyle={mapStyle} onFeatureSeleted={onFeatureSeleted}></Map>
+		<Map style={style} id={id} sx={sx} ref={mapRef} mapType={mapType} mapSource={mapSource} mapStyle={mapStyle} onFeatureSeleted={onFeatureSeleted} zoom={zoom} maxZoom={maxZoom}></Map>
 	)
 
 }
