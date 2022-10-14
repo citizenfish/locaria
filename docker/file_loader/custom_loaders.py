@@ -9,6 +9,7 @@ sys.path[0:0] = ['../modules']
 from locaria_file_utils import get_parameters
 from dateutil.relativedelta import relativedelta
 import datetime
+import shapely.wkt
 
 def custom_loader_main(db,file):
     func = file["attributes"]["custom_loader"]
@@ -24,8 +25,69 @@ def custom_loader_main(db,file):
         return thelist_events(db,file)
     elif func == 'reed_jobs':
         return reed_jobs(db,file)
+    elif func == 'openSessions':
+        return openSessions(db,file)
     else:
         return 'ERROR'
+
+def openSessions(db,file):
+    #TODO this is prototype code, needs to cope with failures better and upload files as received rather than in bulk at end
+    parameters = get_parameters(db,'openSessions')
+    tmp_dir = file["attributes"]["tmp_dir"]
+    multifile =[]
+
+    for provider in parameters['providers']:
+        for type in provider['types']:
+            path = f"{tmp_dir}/{provider['name']}_{type['name']}.json"
+            url = type['url'] #TODO fix last page bug with GLL https://www.better.org.uk/odi/sessions.json?afterTimestamp=1665152210&afterId=53759683
+
+            print(f"Processing {provider['name']} {type['name']} into {path}")
+            nextData = True
+            features = []
+            while nextData:
+                print(f"Downloading {url}")
+                try:
+                    res = requests.get(url)
+                except Exception as e:
+                    print(f"Request error {str(e)}")
+                    break
+                if res.status_code != 200:
+                    print(f"Bad response code {res.status_code}")
+                    break
+                try:
+                    sessions = res.json()
+                except Exception as e:
+                    print(f"Json error {str(e)}")
+                    break
+
+                if sessions.get('items','') != '' and sessions['next'] != url and len(sessions['next']) > 0:
+                    url = sessions['next']
+                    for s in sessions['items']:
+                        properties = s.get('data',s)
+                        if properties == None:
+                            properties = s
+                        geo = {}
+                        if properties.get('location', '') != '':
+                            geo = properties.get('location',{}).get('geo',{})
+                        if properties.get('VenuePointData','') != '':
+                            wkt = properties.get('VenuePointData',{}).get('Geography',{}).get('WellKnownText','')
+                            #"POINT (-0.1515177 51.4810847)"
+                            if wkt != '':
+                               shp = shapely.wkt.loads(wkt)
+                               #TODO this needs improving
+                               geo = {'longitude' : list(shp.coords)[0][0], 'latitude' : list(shp.coords)[0][1]}
+                        features.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [geo.get('longitude',0),geo.get('latitude',0)]}, 'properties' : properties})
+                else:
+                    nextData = False
+
+            if len(features) > 0:
+                data = {'type' : 'FeatureCollection'}
+                data['features'] = features
+                writeFileJson(path,data)
+                table = f"{parameters.get('schema', 'locaria_uploads')}.{provider['name']}_{type['name']}"
+                multifile.append({'path' : path, 'table' : table, 'flatten' : parameters.get('flatten', False)})
+
+    return {'multifile' : multifile, 'message' : 'Processed multiple files for openSessions'}
 
 def reed_jobs(db,file):
     parameters = get_parameters(db,'reed_jobs').get('reed_jobs',{})
@@ -44,7 +106,7 @@ def reed_jobs(db,file):
     tmp_dir = file["attributes"]["tmp_dir"]
     path = f"{tmp_dir}/reed_jobs.json"
 
-    #Make GeoJson even though we have no coords
+    #Make GeoJson ready for OGR2OGR
     features = []
     for f in jobs['results']:
         features.append({'type' : 'Feature', 'geometry' : {'type' : 'Point', 'coordinates' : [parameters.get('defaultGeometryX'), parameters.get('defaultGeometryY')]}, 'properties' : f})

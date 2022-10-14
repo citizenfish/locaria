@@ -43,6 +43,7 @@ for f in files_to_process["files"]:
     else:
         f['table_name'] = f"{upload_schema}.{table_name}"
 
+    print(f"DEBUG 1 {f['table_name']}")
     # Add any parameters to file structure so passed to processing functions
     f["parameters"] = parameters if "error" not in parameters else {}
 
@@ -64,7 +65,7 @@ for f in files_to_process["files"]:
             continue
 
         f.update(custom_loader_result)
-        print(f)
+        print(f"DEBUG 2 {f['table_name']}")
 
     else:
         # We are now expecting file to be in S3 so must have a bucket
@@ -104,8 +105,9 @@ for f in files_to_process["files"]:
     else:
         result = process_file_generic(db,f)
 
+
     if result['status'] == 'FARGATE_PROCESSED':
-        result['attributes'] = {'result': result['result'], 'imported_table_name' : f['table_name'], 'processing_time' : round(time.time() - start_time,2), 'record_count' : get_record_count(db, f['table_name'])}
+        result['attributes'] = {'result': result['result'], 'imported_table_name' : f['table_name'], 'processing_time' : round(time.time() - start_time,2), 'record_count' : get_record_count(db, f['table_name']), 'tables': result.get('tables', [f['table_name']])}
         result['result'] = "Loading complete"
 
         # Custom loaders do not need any additional mapping/user intervention

@@ -55,11 +55,11 @@ def get_parameters(db, parameter_name = None, schema = 'locaria_core'):
 
         parameters = db.execute(f"SELECT {schema}.locaria_internal_gateway(%s,%s) AS p", [json.dumps(q_params), json.dumps({'_groups': ["Admins"]})])
         ret = parameters.fetchone()[0]
-        return ret.get('parameters', {'error': 'parameter not found'}).get(parameter_name).get('data')
+        return ret.get('parameters', {}).get(parameter_name,{}).get('data',{})
 
     except Exception as error:
         print("Cannot get parameter", error)
-        exit()
+        return {}
 
 def update_file_status(db,schema,id,update):
     update["method"] = "update_file"
@@ -133,6 +133,7 @@ def process_file_generic(db,file,parameters):
         print(file['multifile'])
         ret = []
         count = 0
+        tables = []
         for f in file['multifile']:
             mparameters = []
             if 'flatten' in f and f['flatten']:
@@ -140,13 +141,16 @@ def process_file_generic(db,file,parameters):
                 mparameters.extend(['-oo','FLATTEN_NESTED_ATTRIBUTES=YES'])
             else:
                 mparameters = parameters.copy()
-            file['filename'] = f['path']
-            # the custom loader can dictate tablename or simply use
-            file['table_name'] = f.get('table', file['table_name'] + f"_{count}")
+            # Passing by reference so must not affect original record
+            of = file.copy()
+            of['filename'] = f['path']
+            # the custom loader can dictate table_name or simply use
+            of['table_name'] = f.get('table', file['table_name'] + f"_{count}")
             count += 1
-            ret.append(ogr_loader(file, mparameters))
+            ret.append(ogr_loader(of, mparameters))
+            tables.append(of['table_name'])
 
-        return {'status' : 'FARGATE_PROCESSED', 'result' : ret, 'message' : 'OGR SUCCESS - Multi'}
+        return {'status' : 'FARGATE_PROCESSED', 'result' : ret, 'message' : 'OGR SUCCESS - Multi', 'tables' : tables}
     else:
         #log_parameters = parameters[:]
         ogr = ogr_loader(file,parameters)

@@ -3,7 +3,8 @@
     {
       "stopOnError": true,
       "tables": [
-          "database/functions/utility/asset_url_maker.sql"
+          "database/functions/utility/asset_url_maker.sql",
+        "database/functions/internal/view_report.sql"
       ],
       "substitutions": "../tests.json"
     }

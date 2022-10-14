@@ -212,6 +212,15 @@ Type: Text (representing a path to an attribute value)
 
 Used to rank results higher using this specific attribute. So search results with search_text in this attribute are ordered higher up the list. In the example above we are looking at the title object within the description object. 
 
+### jsonpath
+
+Default: null
+Type: Text
+
+A jsonpath search query string conforming to https://www.postgresql.org/docs/12/functions-json.html
+
+This operates on the data object of the items attributes
+
 ## Returns
 
 ### Datagrid format

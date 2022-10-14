@@ -35,7 +35,8 @@ BEGIN
             FROM moderation_queue
             WHERE status = 'RECEIVED'
 
-    )  SELECT  jsonb_build_object('total',          (SELECT count(*) FROM global_search_view),
+    )  SELECT  jsonb_build_object('published',    (SELECT count(*) FROM global_search_view),
+                                  'live_view',     (SELECT count(*) FROM global_search_view_live),
                                   'moderations',    (SELECT mc FROM MODERATION_COUNT),
                                   'update_item',    0,
                                   'add_item',       0,
