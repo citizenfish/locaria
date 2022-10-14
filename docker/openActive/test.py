@@ -15,6 +15,6 @@ config = get_local_config('config.json')
 db = openActiveDB(config, True)
 
 feedsToProcess = {}
-feedsToProcess['session'] = uuid.uuid4()
+feedsToProcess['session'] = '07911356-276a-44c3-8315-3d163a474764'
 urls = db.getURLs(feedsToProcess['session'])
-print(urls)
+print(type(urls))

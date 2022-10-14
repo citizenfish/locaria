@@ -27,7 +27,7 @@ if DEBUG: print(db.internalGateway('version', {}))
 # Get a list of feeds that we are going to retrieve data from
 feedsToProcess = db.getParameter(FEEDS_PROCESS_PARAMETER)
 if not feedsToProcess.get('urls'): feedsToProcess['urls'] = {}
-feedsToProcess['session'] = uuid.uuid4()
+feedsToProcess['session'] = str(uuid.uuid4())
 
 # Get parameters from feeds
 feeds = db.getParameter(FEEDS_PARAMETER)
@@ -51,9 +51,10 @@ if __name__ == '__main__': # Important as multiprocess respawns
     urls = db.getURLs(feedsToProcess['session'])
     feedsToProcess['urls'] = urls
     end = time.perf_counter()
-    feedsToProcess['processTime'] = end - start
+    feedsToProcess['processTime'] = round(end - start, 0)
+
     # Update our urls
     print(db.setParameter(FEEDS_PROCESS_PARAMETER, feedsToProcess))
     db.close()
 
-    print(f"Completed in {feedsToProcess['processTime']}.1f: seconds")
+    print(f"Completed in {feedsToProcess['processTime']} seconds")
