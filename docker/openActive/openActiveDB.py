@@ -58,5 +58,5 @@ class openActiveDB(locariaDB):
         return res
 
     def getURLs(self, session):
-        res = self.query(URLS_QUERY, ( str(session), ) ) # note , to keep as tuple not string
-        return res
+        res = self.query(URLS_QUERY, ( str(session), ) )[0] # note , to keep as tuple not string
+        return res[0]
