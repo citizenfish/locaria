@@ -28,7 +28,6 @@ BEGIN
 
     GET DIAGNOSTICS delete_count = ROW_COUNT;
 
-     --TODO moderations delete
     DELETE FROM moderation_queue WHERE fid =  parameters->>'fid';
 
     IF delete_count = 1 THEN

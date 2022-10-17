@@ -16,6 +16,7 @@ BEGIN
      END IF;
 
      RETURN ret_var;
+
 EXCEPTION WHEN OTHERS THEN
 
     RETURN jsonb_build_object('error', SQLERRM);
