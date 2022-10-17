@@ -6,8 +6,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import AdminApp from './components/adminApp';
 import {resources} from "themeLocaria";
-import {theme} from "../theme/default/adminStyle";
-import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from "@mui/material/CssBaseline";
 
 
@@ -114,10 +112,10 @@ function errored(event) {
 
 function Main() {
     return (
-        <ThemeProvider theme={theme}>
+        <>
             <CssBaseline/>
             <AdminApp/>
-        </ThemeProvider>
+        </>
     )
 }
 

@@ -214,14 +214,30 @@ const getData = (data, path, func) => {
 		return func(data, classes);
 	}
 
-
-	try {
-		result = safeEval(`data.${path}`, data);
-	} catch (e) {
-		//console.log(e);
-		return "";
+	switch(path) {
+		case 'subCategory':
+			result=[];
+			if(data.properties&&data.properties.data) {
+				if (data.properties.data.categoryLevel1)
+					result.push(data.properties.data.categoryLevel1);
+				if (data.properties.data.categoryLevel2)
+					result.push(data.properties.data.categoryLevel2);
+				if (data.properties.data.categoryLevel3)
+					result.push(data.properties.data.categoryLevel3);
+			}
+			break;
+		default:
+			try
+			{
+				result = safeEval(`data.${path}`, data);
+			} catch (e) {
+				//console.log(e);
+				result="";
+			}
+			break;
 	}
 	return result;
+
 }
 
 export {FieldView, FormatField};
