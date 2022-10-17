@@ -6,6 +6,7 @@
 		"build:multi:main:dev": "node scripts/builder.js multi main dev",
 		"build:sb:swindonbid:dev": "node scripts/builder.js sb swindonbid dev",
 		"build:sb:swindonbid:live": "node scripts/builder.js sb swindonbid live",
+		"build:multi:activeprescription:dev": "node scripts/builder.js multi activeprescription dev",
 		"build:multi:nmrn:dev": "node scripts/builder.js multi nmrn dev",
 		"build:multi:sailortown": "node scripts/builder.js multi sailortown",
 		"runLocalSite": "webpack serve",

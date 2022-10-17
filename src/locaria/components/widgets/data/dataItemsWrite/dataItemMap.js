@@ -7,7 +7,7 @@ import Map from "../../maps/map";
 import Typography from "@mui/material/Typography";
 import DataItemsTypography from "./dataItemsTypography";
 
-const DataItemMap = ({id, name, data,prompt,required}) => {
+const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,maxZoom,zoom}) => {
 
 	const mapRef = useRef();
 
@@ -81,7 +81,13 @@ const DataItemMap = ({id, name, data,prompt,required}) => {
 					 speedDial={true}
 					 sx={{height: "250px"}}
 					 ref={mapRef}
-					 handleMapClick={mapClick}/>
+					 handleMapClick={mapClick}
+					 mapSource={mapSource}
+					 mapType={mapType}
+					 mapStyle={mapStyle}
+					 maxZoom={maxZoom}
+					 zoom={zoom}
+					 />
 			</Grid>
 
 		</Grid>

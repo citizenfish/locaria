@@ -133,17 +133,13 @@ export default function AdminContentDataEdit() {
 	}
 */
 
-	function saveFeaturePublish() {
-			saveFeature("saveFeaturePublish");
-	}
-
-	function saveFeature(queue="saveFeature") {
+	function saveFeature(queueName="saveFeature") {
 		let data = FormFieldsToData(featureData.properties.category,formData);
 
 		if(!data.data)
 			data.data={};
 		let packet = {
-			queue: queue,
+			queue: queueName,
 			api: "sapi",
 			data: {
 				attributes: data.properties,
@@ -188,13 +184,13 @@ export default function AdminContentDataEdit() {
 					{featureData&&
 						<>
 								<Button color="success"
-										onClick={saveFeature}
+										onClick={(e)=>saveFeature()}
 										variant="outlined"
 										sx={{margin:"5px"}}
 										disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
 
 								<Button color="success"
-										onClick={saveFeaturePublish}
+										onClick={(e)=>saveFeature("saveFeaturePublish")}
 										variant="outlined"
 										sx={{margin:"5px"}}
 										disabled={feature === -1 && point === undefined ? true : false}>Save & Publish</Button>
