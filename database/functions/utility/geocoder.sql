@@ -13,7 +13,6 @@ BEGIN
     --Full text we go looking for postcode
     IF parameters->>'_geocoder_type' = 'full_text_postcode' THEN
         parameters = parameters  || jsonb_build_object('_geocoder_type', 'postcode', 'postcode', upper(substring(parameters::TEXT FROM postcode_regex_var)));
-        RAISE NOTICE 'DEBUG POSTCODE %',parameters->>'postcode';
     END IF;
 
     --postcode geocoder is default
@@ -27,7 +26,6 @@ BEGIN
         postcode = REPLACE(UPPER(parameters->>'postcode'), ' ', '');
         postcode = CONCAT_WS(' ',LEFT(postcode, LENGTH(postcode) - 3), RIGHT(postcode, 3));
 
-        RAISE NOTICE 'POSTCODE %', postcode;
 
         SELECT COALESCE(jsonb_agg(P.*), jsonb_build_array())
         INTO ret_var
@@ -40,7 +38,6 @@ BEGIN
             WHERE attributes @> jsonb_build_object('local_type', 'Postcode',
                                                    'name1', COALESCE(NULLIF(postcode,''), 'FAIL'))
         ) P;
-        RAISE NOTICE 'DEBUG %',ret_var;
     END IF;
 
     --WGS84

@@ -32,7 +32,7 @@ BEGIN
                               ) AS attributes,
            search_date AS start_date,
            --note we default end date to the end of the day
-           COALESCE(to_timestamp(attributes->>'end_date', 'DD/MM/YYYY HH24:MI:SS')::TIMESTAMP ,search_date::DATE::TIMESTAMP + INTERVAL '23 HOURS 59 MINUTES') AS end_date,
+           COALESCE(make_timestamp(attributes->>'end_date') ,search_date::DATE::TIMESTAMP + INTERVAL '23 HOURS 59 MINUTES') AS end_date,
            COALESCE(attributes->>'range_min','0')::FLOAT as range_min,
            COALESCE(attributes->>'range_max','0')::FLOAT AS range_max,
            edit,

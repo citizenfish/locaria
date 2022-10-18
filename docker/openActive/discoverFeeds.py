@@ -4,21 +4,19 @@ import json
 
 #This is simply for testing locally
 sys.path[0:0] = ['../modules']
+from openActiveConfig import *
 from locariaDB import *
 from locaria_file_utils import get_local_config
 from locaria_api_utils import *
 
-debug = True
-FEEDS_PARAMETER = 'openActiveFeeds'
-FEEDS_PROCESS_PARAMETER = 'openActiveFeedsToProcess'
 
 config = get_local_config('config.json')
-db = locariaDB(config, debug)
+db = locariaDB(config, DEBUG)
 if not db.connection:
     print("Unable to connect to database")
     exit()
 
-if debug: print(db.internalGateway('version', {}))
+if DEBUG: print(db.internalGateway('version', {}))
 
 # This is the parameter we are going to update in database
 # It will be a list of feeds that will be traversed by the feedProcessor.py script
