@@ -3,8 +3,13 @@
     {
       "stopOnError": true,
       "tables": [
-          "database/functions/utility/asset_url_maker.sql",
-        "database/functions/internal/view_report.sql"
+        "database/functions/utility/asset_url_maker.sql",
+        "database/functions/internal/view_report.sql",
+        "database/functions/utility/geocoder.sql",
+        "database/functions/utility/make_timestamp.sql",
+        "database/functions/utility/tag_maker.sql",
+        "database/functions/utility/unique_array_elements.sql",
+        "database/functions/view_creation/create_materialised_view.sql"
       ],
       "substitutions": "../tests.json"
     }

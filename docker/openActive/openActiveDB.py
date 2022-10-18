@@ -60,3 +60,14 @@ class openActiveDB(locariaDB):
     def getURLs(self, session):
         res = self.query(URLS_QUERY, ( str(session), ) )[0] # note , to keep as tuple not string
         return res[0]
+
+    def deleteOldRecords(self, table):
+        if self.debug: print(f"Deleting from {table}")
+        query = DELETE_QUERY.replace('**TABLE**', table)
+        res = self.query(query)
+        return res
+
+    def countRecords(self,table):
+        query =  COUNT_QUERY.replace('**TABLE**', table)
+        res = self.query(query)
+        return res[0]

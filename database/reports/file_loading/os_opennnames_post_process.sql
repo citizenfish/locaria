@@ -10,7 +10,7 @@ $SQL$
         CREATE MATERIALIZED VIEW locaria_data.location_search_view
         AS
         SELECT
-            fid AS id,
+            ogc_fid AS id,
             row_to_json(N.*)::JSONB || jsonb_build_object('address', name1) -'wkb_geometry' AS attributes,
             wkb_geometry
         FROM locaria_uploads.opennames N

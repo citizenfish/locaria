@@ -7,14 +7,13 @@ from multiprocessing import Pool
 
 #This is simply for testing locally
 sys.path[0:0] = ['../modules']
+from openActiveConfig import *
 from openActiveDB import *
 from locaria_file_utils import get_local_config
 from feedFunctions import loadRPDE
 
-PROCS = 4
-DEBUG = True
-FEEDS_PARAMETER = 'openActiveFeeds'
-FEEDS_PROCESS_PARAMETER = 'openActiveFeedsToProcess'
+
+stats = {}
 
 config = get_local_config('config.json')
 db = openActiveDB(config, DEBUG)
@@ -53,8 +52,16 @@ if __name__ == '__main__': # Important as multiprocess respawns
     end = time.perf_counter()
     feedsToProcess['processTime'] = round(end - start, 0)
 
-    # Update our urls
-    print(db.setParameter(FEEDS_PROCESS_PARAMETER, feedsToProcess))
-    db.close()
+    # Remove deleted records and calculate table stats
+    for f in feeds['feedTypes']:
+        db.deleteOldRecords(f)
+        c = db.countRecords(f)
+        stats[f] = c[0]
 
-    print(f"Completed in {feedsToProcess['processTime']} seconds")
+    feedsToProcess['stats'] = stats
+
+    # Update our urls and stats
+    db.setParameter(FEEDS_PROCESS_PARAMETER, feedsToProcess)
+
+    db.close()
+    print(f"Completed in {feedsToProcess['processTime']} seconds {stats}")

@@ -14,7 +14,14 @@ from feedFunctions import loadRPDE
 config = get_local_config('config.json')
 db = openActiveDB(config, True)
 
-feedsToProcess = {}
-feedsToProcess['session'] = '07911356-276a-44c3-8315-3d163a474764'
-urls = db.getURLs(feedsToProcess['session'])
-print(type(urls))
+FEEDS_PARAMETER = 'openActiveFeeds'
+feeds = db.getParameter(FEEDS_PARAMETER)
+
+stats = {}
+for f in feeds['feedTypes']:
+    res = db.deleteOldRecords(f)
+    print(res)
+    c = db.countRecords(f)
+    stats[f] = c[0]
+
+print(stats)
