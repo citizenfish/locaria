@@ -1,5 +1,4 @@
-import React, {useRef} from 'react';
-import {useStyles} from 'theme/styles';
+import React from 'react';
 import Grid from "@mui/material/Grid";
 
 import DataItemTitle from "./dataItemsRead/dataItemTitle";
@@ -208,10 +207,9 @@ const safeEval = (str, data) => {
 
 const getData = (data, path, func) => {
 	let result;
-	const classes = useStyles();
 
 	if (func) {
-		return func(data, classes);
+		return func(data);
 	}
 
 	switch(path) {
