@@ -17,6 +17,8 @@ import SearchCategory from "../search/searchCategory";
 import SimpleForm from "../data/simpleForm";
 import SubCatMap from "../maps/subCatMap";
 import SelectedPanel from "../viewLayouts/selectedPanel";
+import NavTypeFull from "../navs/navTypeFull";
+import SiteMapLocation from "../pages/siteMapLocation";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -54,8 +56,18 @@ const pluginsDefs = {
 		"description": "Show a panel of features",
 		"params": [{param: "category", default: "News"}]
 	},
+	"NavTypeFull": {
+		"obj": NavTypeFull,
+		"description": "Show a panel of features",
+		"params": [{param: "category", default: "News"}]
+	},
 	"SiteMap": {
 		"obj": SiteMap,
+		"description": "Show a panel of features",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SiteMapLocation": {
+		"obj": SiteMapLocation,
 		"description": "Show a panel of features",
 		"params": [{param: "category", default: "News"}]
 	},

@@ -13,8 +13,6 @@ import {closeMenuDraw} from "../../redux/slices/menuDrawerSlice";
 import UrlCoder from "../../../libs/urlCoder"
 import List from "@mui/material/List";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
-import {alpha} from "@mui/material/styles";
-import {preventDefault} from "ol/events/Event";
 
 
 const MenuDrawer = function () {
@@ -29,7 +27,7 @@ const MenuDrawer = function () {
 				open={open}
 				sx={{
 					'& .MuiPaper-root': {
-						backgroundColor: window.systemMain.headerBackground,
+						backgroundColor: window.systemMain.menuBackground,
 						paddingRight: '40px',
 						'& .MuiSvgIcon-root': {
 						}
@@ -83,7 +81,7 @@ function DrawSiteMap() {
 
 		}}>
 			<ListItemIcon>
-				<HomeIcon sx={{color: "white"}}/>
+				<HomeIcon sx={{color: window.systemMain.defaultIconColor}}/>
 			</ListItemIcon>
 			<ListItemText primary={"Home"}/>
 		</ListItem>
@@ -143,7 +141,7 @@ function DrawSiteMap() {
 
 	}
 
-	return (<Box sx={{color: "white"}}>{topMenuArray}</Box>);
+	return (<Box sx={{color: window.systemMain.menuColor}}>{topMenuArray}</Box>);
 }
 
 export default MenuDrawer;

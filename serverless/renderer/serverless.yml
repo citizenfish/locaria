@@ -1,4 +1,4 @@
-service: locaria-renderer-${env:theme}${env:environment}
+service: lr-${env:theme}${env:environment}
 projectDir: ../../../
 provider:
   name: aws

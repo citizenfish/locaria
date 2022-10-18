@@ -1,12 +1,11 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import BurgerMenu from "./burgerMenu";
 import {useHistory} from "react-router-dom";
 import RenderMarkdown from "../markdown/renderMarkdown";
 
-const NavTypeSimple = function ({menu}) {
+const NavTypeSimple = function ({}) {
 
     const history = useHistory();
 

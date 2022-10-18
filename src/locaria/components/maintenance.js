@@ -1,17 +1,11 @@
 import React from 'react';
 
-import {useStyles} from "stylesLocaria";
-
-
-
 import { Paper} from "@mui/material";
 
 const Maintenance = () => {
-	const classes = useStyles();
-
 	return (
 
-				<Paper className={classes.maintenance}>
+				<Paper>
 					<h1>Site Maintenance</h1>
 				</Paper>
 	)
