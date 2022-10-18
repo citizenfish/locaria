@@ -1,84 +1,51 @@
 import React from "react";
-import {BottomNavigation, BottomNavigationAction} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import {openMenuDraw} from "../../redux/slices/menuDrawerSlice";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import SearchIcon from "@mui/icons-material/Search";
-
-import {useStyles} from "stylesLocaria";
-import {useDispatch, useSelector} from "react-redux";
-import {openLayout} from "../../redux/slices/layoutSlice";
-import {openSearchDrawer} from "../../redux/slices/searchDrawerSlice";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
+import BurgerMenu from "./burgerMenu";
+import {useHistory} from "react-router-dom";
+import RenderMarkdown from "../markdown/renderMarkdown";
 
-const NavTypeFull = function () {
-    const classes = useStyles();
-    const dispatch = useDispatch()
-    const searchDrawOpen = useSelector((state) => state.searchDraw.open);
+const NavTypeFull = function ({}) {
 
-    const toggleSearchWrapper = function () {
-        if (searchDrawOpen === true) {
-            //dispatch(closeSearchDrawer());
-            dispatch(openLayout());
-        } else {
-            dispatch(openSearchDrawer());
+    const history = useHistory();
 
-        }
-    }
 
     return (
-        <Box className={classes['navTypeFull']}
-             sx={{
-                 width: "100vw",
-                 height: 64,
-                 backgroundColor: window.systemMain.headerBackground,
-                 zIndex: '150',
-                 top: 0,
-                 justifyContent: 'space-between !important',
-                 padding: '5px 0 !important'
+        <Box key={"navTypeSimple"} sx={{
+            marginBottom: "20px",
+            marginLeft: "5px",
+            width: "100%"
         }}>
-            <Grid container>
-                <Grid item xs={1}>
-                    <IconButton sx={{margin: "0 auto", display: "flex"}}
-                                onClick={() => {
-                                    dispatch(openMenuDraw());
-                                }}>
-                        <MenuIcon color="icons" fontSize="large"/>
-                    </IconButton>
+            <Grid container justifyContent="left" spacing={0.5} sx={{
+                width: "100%",
+                zIndex: '150',
+                backgroundColor: window.systemMain.headerBackground,
+                marginTop: "5px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+            }}>
+                <Grid item md={1} sx={{
+                    textAlign: "left",
+                    verticalAlign: "middle",
+
+                }}>
+                    <BurgerMenu></BurgerMenu>
+
                 </Grid>
-                <Grid item xs={10}>
-                    <Grid container sx={{
-                        borderLeft: "2px solid white",
-                        borderRight: "2px solid white"
-                    }}>
-                        <Grid item xs={12}>
-                            <Typography sx={{
-                                flexGrow: 1,
-                                textAlign: "center"
-                            }} variant="h6">
-                                {window.systemLang.siteTitle ? window.systemLang.siteTitle.toUpperCase() : 'Locaria'}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography sx={{
-                                flexGrow: 1,
-                                textAlign: "center"
-                            }} variant="body2">
-                                {window.systemLang.siteSubTitle}
-                            </Typography>
-                        </Grid>
-                    </Grid>
+                <Grid onClick={()=>{history.push('/')}} item md={5} sx={{
+                    textAlign: "right",
+                    verticalAlign: "middle",
+                }}>
+                    <RenderMarkdown markdown={window.systemLang.siteTitle ? window.systemLang.siteTitle : 'Locaria'}/>
                 </Grid>
-                <Grid item xs={1}>
-                    <IconButton sx={{margin: "0 auto", display: "flex"}}
-                                onClick={() => {
-                                    toggleSearchWrapper()
-                                }}>
-                        <SearchIcon color="icons" fontSize="large"/>
-                    </IconButton>
+                <Grid onClick={()=>{history.push('/')}} item md={6} sx={{
+                    display: {
+                        md: "block",
+                        xs: "none"
+                    },
+                }}>
                 </Grid>
             </Grid>
         </Box>

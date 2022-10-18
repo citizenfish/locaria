@@ -59,6 +59,19 @@ export default function AdminContentDataEdit() {
 			history.push(`/Admin/Content/Data/`);
 		});
 
+		window.websocket.registerQueue("saveFeaturePublish", function (json) {
+			window.websocket.send({
+				"queue": "refreshView",
+				"api": "sapi",
+				"data": {
+					"method": "refresh_search_view",
+					"id_token": cookies['id_token']
+				}
+			});
+			dispatch(setOverview(undefined));
+			history.push(`/Admin/Content/Data/`);
+		});
+
 		window.websocket.registerQueue("deleteFeature", function (json) {
 			dispatch(setOverview(undefined));
 
@@ -120,13 +133,13 @@ export default function AdminContentDataEdit() {
 	}
 */
 
-	function saveFeature() {
+	function saveFeature(queueName="saveFeature") {
 		let data = FormFieldsToData(featureData.properties.category,formData);
 
 		if(!data.data)
 			data.data={};
 		let packet = {
-			queue: "saveFeature",
+			queue: queueName,
 			api: "sapi",
 			data: {
 				attributes: data.properties,
@@ -134,8 +147,6 @@ export default function AdminContentDataEdit() {
 				category: featureData.properties.category,
 			}
 		};
-
-		//packet.data.attributes.data.images=images;
 
 		if (feature === -1) {
 			let channel = window.systemCategories.getChannelProperties(featureData.properties.category);
@@ -166,28 +177,33 @@ export default function AdminContentDataEdit() {
 				sx={{marginTop: '60px',padding:"50px"}}
 			>
 				<Grid container spacing={2} sx={{mt: 1, p: 3}}>
-					<Grid item md={1}>
+					<Grid item md={8}>
 						<Button color="warning"
 								onClick={cancelFeature}
-								variant="outlined">Cancel</Button>
-					</Grid>
+								variant="outlined" sx={{margin:"5px"}}>Cancel</Button>
 					{featureData&&
 						<>
-							<Grid item md={1}>
 								<Button color="success"
-										onClick={saveFeature}
+										onClick={(e)=>saveFeature()}
 										variant="outlined"
+										sx={{margin:"5px"}}
 										disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
-							</Grid>
-							<Grid item md={1}>
+
+								<Button color="success"
+										onClick={(e)=>saveFeature("saveFeaturePublish")}
+										variant="outlined"
+										sx={{margin:"5px"}}
+										disabled={feature === -1 && point === undefined ? true : false}>Save & Publish</Button>
 								<Button color="error"
 										onClick={deleteFeature}
 										variant="outlined"
+										sx={{margin:"5px"}}
 										disabled={feature === -1 ? true : false}>Delete</Button>
-							</Grid>
 						</>
 					}
-					<Grid item md={9}>
+					</Grid>
+
+					<Grid item md={4}>
 						<Typography>The data editor allows you to edit data.</Typography>
 					</Grid>
 				</Grid>

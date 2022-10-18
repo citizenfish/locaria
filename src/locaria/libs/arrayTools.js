@@ -7,4 +7,13 @@ function arrayToggleElement(array,element) {
 	return array;
 }
 
-export {arrayToggleElement};
+function findArrayObject(array,key,value) {
+	for(let a in array) {
+		if(array[a][key]===value) {
+			return array[a];
+		}
+	}
+	return undefined;
+}
+
+export {arrayToggleElement,findArrayObject};

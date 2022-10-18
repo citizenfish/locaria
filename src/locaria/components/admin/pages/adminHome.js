@@ -5,12 +5,10 @@ import Box from "@mui/material/Box";
 import TokenCheck from "../components/utils/tokenCheck";
 import {Typography, Grid, CardContent, Card,CardActionArea} from "@mui/material";
 import {useHistory} from "react-router-dom";
-import {useTheme} from "@mui/styles";
 
 export default function AdminHome() {
 
 	const history = useHistory();
-	const theme = useTheme()
 	return (
 		<Box sx={{display: 'flex'}}>
 			<TokenCheck></TokenCheck>
@@ -28,7 +26,7 @@ export default function AdminHome() {
 					</Grid>
 					<Grid item md={4}>
 						<Card
-							style={{backgroundColor: theme.palette.primary.main, margin: "20px"}}
+							style={{backgroundColor: '#074fa1', margin: "20px"}}
 							sx={{
 								'.MuiCardContent-root': {
 									':last-child': {
@@ -62,7 +60,7 @@ export default function AdminHome() {
 					</Grid>
 					<Grid item md={4}>
 						<Card
-							style={{backgroundColor:theme.palette.secondary.main, margin: "20px"}}
+							style={{backgroundColor:'#074fa1', margin: "20px"}}
 							sx={{
 								'.MuiCardContent-root': {
 									':last-child': {
@@ -96,7 +94,7 @@ export default function AdminHome() {
 					</Grid>
 					<Grid item md={4}>
 						<Card
-							style={{backgroundColor:theme.palette.tertiary.main, margin: "20px"}}
+							style={{backgroundColor:"rgb(189,123,41)", margin: "20px"}}
 							sx={{
 								'.MuiCardContent-root': {
 									':last-child': {

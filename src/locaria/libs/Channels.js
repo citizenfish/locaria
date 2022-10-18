@@ -1,3 +1,5 @@
+import {findArrayObject} from "./arrayTools";
+
 export default class Channels {
 
 	constructor(channels) {
@@ -42,6 +44,24 @@ export default class Channels {
 			return foundChannel;
 		} else {
 			//console.log(`Request for [${channel}] that doesn't exits`);
+			return undefined;
+		}
+	}
+
+	getChannelSubsColor(channel,categoryLevel1,categoryLevel2,categoryLevel3) {
+		let subs=this.getChannelSubs(channel);
+		let col=findArrayObject(subs,"name",categoryLevel1);
+		if(col&&col.color)
+			return col.color;
+		return '#000';
+
+	}
+
+	getChannelSubs(channel) {
+		let foundChannel=this._findChannel(channel);
+		if(foundChannel) {
+			return foundChannel.subCategories;
+		} else {
 			return undefined;
 		}
 	}

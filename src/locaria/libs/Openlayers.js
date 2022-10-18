@@ -442,7 +442,8 @@ export default class Openlayers {
 			name: options.name,
 			source: source,
 			style: options.style,
-			declutter: true
+			declutter: true,
+			renderMode: 'vector'
 
 		});
 		return olLayer;

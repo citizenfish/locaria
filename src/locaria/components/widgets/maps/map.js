@@ -1,7 +1,5 @@
 import React, {forwardRef, useRef, useImperativeHandle} from 'react';
 
-import { configs} from "themeLocaria";
-import {useStyles} from "stylesLocaria";
 
 import {viewStyle, locationStyle,reportStyle,vectorStyle} from "mapStyle";
 import Openlayers from "libs/Openlayers";
@@ -11,10 +9,11 @@ import Chip from "@mui/material/Chip";
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Box from "@mui/material/Box";
 import {act} from "react-dom/test-utils";
+import {categoryStyle} from "../../mapStyles/view";
+import {alpha} from "@mui/material/styles";
 
-const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20}, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom=5}, ref) => {
 
-	const classes = useStyles();
 	const [ol, setOl] = React.useState(new Openlayers());
 	const [location, setLocation] = React.useState(null);
 
@@ -22,18 +21,30 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 		viewStyle:viewStyle,
 		locationStyle:locationStyle,
 		reportStyle:reportStyle,
-		vectorStyle:vectorStyle
+		vectorStyle:vectorStyle,
+		categoryStyle:categoryStyle
 	}
 
 	const mapLayerStyle=style? styles[style]:styles['viewStyle'];
 	const mapBaseStyle=mapStyle? styles[mapStyle]:styles['viewStyle'];
+
+	function onFeatureSeletedWrapper(feature) {
+		let properties=[];
+		if(feature&&feature[0]) {
+			for(let f in feature) {
+				properties.push({properties:feature[f].getProperties()})
+			}
+		}
+		onFeatureSeleted(properties);
+	}
+
 
 	React.useEffect(() => {
 		ol.addMap({
 			"target": id,
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
-			"zoom": window.systemMain.defaultZoom,
+			"zoom": zoom,
 			"center": ol.decodeCoords(window.systemMain.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
 			"maxZoom": maxZoom
 		});
@@ -91,7 +102,7 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 
 		}
 		if (onFeatureSeleted !== undefined) {
-			ol.makeControl({"layers": ["data"], "selectedFunction": onFeatureSeleted, "multi": true});
+			ol.makeControl({"layers": ["data"], "selectedFunction": onFeatureSeletedWrapper, "multi": true});
 		}
 
 	}, [ol]);
@@ -178,8 +189,27 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 
 		return (
 			<>
-				<Chip color={"primary"} icon={<ZoomInIcon/>}  onClick={mapZoomIn} className={classes.mapZoomInButton}/>
-				<Chip color={"primary"} icon={<ZoomOutIcon/>} onClick={mapZoomOut} className={classes.mapZoomOutButton}/>
+				<Chip color={"primary"} icon={<ZoomInIcon/>}  onClick={mapZoomIn} sx={{
+					position: "absolute !important",
+					bottom: "50px !important",
+					right: "20px !important",
+					zIndex:1,
+					backgroundColor:  "#AAA",
+					color:  "#000",
+					width: 40,
+					paddingLeft: "10px !important"
+
+				}}/>
+				<Chip color={"primary"} icon={<ZoomOutIcon/>} onClick={mapZoomOut} sx={{
+					position: "absolute !important",
+					bottom: "100px !important",
+					right: "20px !important",
+					zIndex:1,
+					backgroundColor:  "#AAA",
+					color:  "#000",
+					width: 40,
+					paddingLeft: "10px !important"
+				}}/>
 			</>
 		)
 
@@ -197,7 +227,16 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 		<Box id={id} sx={actualSx}>
 			<MapSpeedDial/>
 			{window.systemMain.mapAttribution&&
-				<div className={classes.mapAttribution}>{window.systemMain.mapAttribution}</div>
+				<Box sx={{
+					position: "absolute",
+					zIndex: 1,
+					bottom: 5,
+					right: 5,
+					background: "rgba(255,255,255,0.9)",
+					padding: 2,
+					fontSize: "0.7rem",
+					color: "black"
+				}}>{window.systemMain.mapAttribution}</Box>
 			}
 		</Box>
 	)

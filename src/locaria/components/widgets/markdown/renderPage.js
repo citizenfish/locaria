@@ -3,12 +3,13 @@ import RenderMarkdown from "./renderMarkdown";
 import {LinearProgress, useMediaQuery} from "@mui/material";
 import {useHistory, useParams} from "react-router-dom";
 import {setReport} from "../../redux/slices/viewDrawerSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import MenuDrawer from "../drawers/menuDrawer";
 import {setMobile} from "../../redux/slices/mediaSlice";
 import {useCookies} from "react-cookie";
-import {setFeatures} from "../../redux/slices/searchDrawerSlice";
+import {clearRefresh, setFeatures} from "../../redux/slices/searchDrawerSlice";
+import SearchProxy from "../search/searchProxy";
 
 export default function RenderPage() {
 
@@ -20,6 +21,9 @@ export default function RenderPage() {
 	let {feature} = useParams();
 	const [pageData, setPageData] = React.useState(undefined);
 	const [cookies, setCookies] = useCookies(['id_token']);
+
+
+
 
 	let hash = window.location.hash;
 
@@ -93,12 +97,8 @@ export default function RenderPage() {
 	}
 
 
-	useEffect(() => {
-		window.websocket.registerQueue("searchFeatures", function (json) {
-			dispatch(setFeatures(json.packet.geojson));
-		});
 
-	}, []);
+
 
 	React.useEffect(() => {
 		if(page!==undefined)
@@ -135,6 +135,7 @@ export default function RenderPage() {
 					width: "100vw"
 
 				}}>
+					<SearchProxy></SearchProxy>
 					<RenderMarkdown markdown={pageData.data} key={'mdTop'}/>
 				</Box>
 				<MenuDrawer></MenuDrawer>

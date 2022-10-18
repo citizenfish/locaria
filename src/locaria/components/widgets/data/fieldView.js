@@ -1,5 +1,4 @@
-import React, {useRef} from 'react';
-import {useStyles} from 'theme/styles';
+import React from 'react';
 import Grid from "@mui/material/Grid";
 
 import DataItemTitle from "./dataItemsRead/dataItemTitle";
@@ -17,8 +16,17 @@ import DataItemMap from "./dataItemsWrite/dataItemMap";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DataItemUpload from "./dataItemsWrite/dataItemUpload";
+import dataItemImages from "./dataItemsRead/dataItemImages";
+import {
+	DataItemSocialFacebook,
+	DataItemSocialGeneric,
+	DataItemSocialInstagram,
+	DataItemSocialTwitter
+} from "./dataItemsRead/dataItemSocial";
+import DataItemGrid from "./dataItemsRead/dataItemGrid";
+import Divider from "@mui/material/Divider";
 
-const FieldView = ({data, mode}) => {
+const FieldView = ({data, mode='read',fields="main"}) => {
 
 
 
@@ -27,9 +35,9 @@ const FieldView = ({data, mode}) => {
 
 		let channel = window.systemCategories.getChannelProperties(data.properties.category);
 
-		let fields = channel.fields;
+		let fieldsObj = channel.fields;
 
-		if (fields) {
+		if (fieldsObj) {
 			return (
 				<Box sx={{
 					p: 2
@@ -37,10 +45,11 @@ const FieldView = ({data, mode}) => {
 					<Grid container>
 						<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
 
-						{fields.main ?
-							<FormatFields fields={fields.main}
+						{fieldsObj[fields] ?
+							<FormatFields fields={fieldsObj[fields]}
 										  data={data}
-										  mode={mode || 'read'}/> : null}
+										  mode={mode}
+										  category={data.properties.category}/> : null}
 						</LocalizationProvider>
 					</Grid>
 				</Box>
@@ -66,28 +75,47 @@ const FieldView = ({data, mode}) => {
 
 }
 
-const FormatFields = ({fields, data, mode}) => {
+const FormatFields = ({fields, data, mode,category}) => {
 	if (fields && fields.length > 0) {
 		return (<>
 			{fields.map(value => {
-					if (value.visible !== false || mode === "write")
+					if(value.children) {
+						let md = value.md || 12;
 						return (
-							<Grid item md={12}>
+							<Grid item md={md}>
+								<FormatFields fields={value.children} mode={mode} data={data}> category={category}</FormatFields>
+							</Grid>
+						)
+					} else {
+						switch (value.type) {
+							case 'hr':
+								return <Divider sx={{margin:"10px"}}/>
+							default:
+								if (value.visible !== false || mode === "write") {
+									let md = value.md || 12;
+									return (
+										<Grid item md={md}>
 
-								<FormatField field={value}
-											 data={data}
-											 key={value.key}
-											 mode={mode}/>
-							</Grid>)
+											<FormatField field={value}
+														 data={data}
+														 key={value.key}
+														 mode={mode}
+														 category={category}/>
+										</Grid>)
+								}
+								break;
+						}
+
+
+					}
 				}
 			)}
 		</>);
 	}
 	return null;
-
 }
 
-const FormatField = ({field, data, mode}) => {
+const FormatField = ({field, data, mode,category}) => {
 
 	let dataActual = getData(data, field.key, field.dataFunction);
 
@@ -99,8 +127,14 @@ const FormatField = ({field, data, mode}) => {
 		'title': {"element": DataItemTitle},
 		'description': {"element": DataItemDescription},
 		'p': {"element": DataItemP},
+		'grid': {"element": DataItemGrid},
 		'h2': {"element": DataItemH2},
-		'md': {"element": dataItemMarkdown}
+		'md': {"element": dataItemMarkdown},
+		'images': {"element": dataItemImages},
+		'twitter': {"element": DataItemSocialTwitter},
+		'facebook': {"element": DataItemSocialFacebook},
+		'instagram': {"element": DataItemSocialInstagram},
+		'social': {"element": DataItemSocialGeneric},
 	}
 
 	const dataWriteItem = {
@@ -142,6 +176,7 @@ const FormatField = ({field, data, mode}) => {
 				 data={dataActual}
 				 prompt={field.prompt}
 				 sx={field.sx}
+				 category={category}
 				 {...options}
 		/>
 	)
@@ -172,20 +207,35 @@ const safeEval = (str, data) => {
 
 const getData = (data, path, func) => {
 	let result;
-	const classes = useStyles();
 
 	if (func) {
-		return func(data, classes);
+		return func(data);
 	}
 
-
-	try {
-		result = safeEval(`data.${path}`, data);
-	} catch (e) {
-		//console.log(e);
-		return "";
+	switch(path) {
+		case 'subCategory':
+			result=[];
+			if(data.properties&&data.properties.data) {
+				if (data.properties.data.categoryLevel1)
+					result.push(data.properties.data.categoryLevel1);
+				if (data.properties.data.categoryLevel2)
+					result.push(data.properties.data.categoryLevel2);
+				if (data.properties.data.categoryLevel3)
+					result.push(data.properties.data.categoryLevel3);
+			}
+			break;
+		default:
+			try
+			{
+				result = safeEval(`data.${path}`, data);
+			} catch (e) {
+				//console.log(e);
+				result="";
+			}
+			break;
 	}
 	return result;
+
 }
 
 export {FieldView, FormatField};

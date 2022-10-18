@@ -7,7 +7,7 @@ import {useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import {objectPathExists} from "../../../libs/objectTools";
 
-export default function SlideShow({images, format = "contain", feature = false, interval,duration}) {
+export default function SlideShow({images, format = "contain", feature = false, interval,duration,sx}) {
 	let useImages = images || [];
 	const report = useSelector((state) => state.viewDraw.report);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
@@ -18,9 +18,8 @@ export default function SlideShow({images, format = "contain", feature = false, 
 		for (let i in report.viewLoader.packet.features[0].properties.data.images)
 			useImages.push({"url": report.viewLoader.packet.features[0].properties.data.images[i]})
 	}
-
 	return (
-		<>
+		<Box sx={sx}>
 			{useImages.length > 1 &&
 				<Carousel interval={interval} duration={duration} height={!mobile ? "450px" : "320px"}>
 					{
@@ -33,22 +32,22 @@ export default function SlideShow({images, format = "contain", feature = false, 
 					<Item key={"single"} item={useImages[0]} format={format}/>
 				</Box>
 			}
-		</>
+		</Box>
 	)
 }
 
 function Item({item, format}) {
 	const url = new UrlCoder();
-
+	let urlActual=item.url||item;
 	if(item.type==="video") {
 		return (
 			<video width="100%" height="100%" autoPlay="autoplay" muted loop>
-				<source src={url.decode(item.url, true)} type="video/mp4"/>
+				<source src={url.decode(urlActual, true)} type="video/mp4"/>
 			</video>
 		)
 	}
 	let sx={
-		backgroundImage: `url(${url.decode(item.url, true)})`,
+		backgroundImage: `url(${url.decode(urlActual, true)})`,
 		height: "100%",
 		backgroundSize: "cover",
 		boxShadow: "none"

@@ -19,6 +19,10 @@ export const searchDrawerSlice = createSlice({
 		page: 1,
 		totalPages: 0,
 		features: {},
+		feature:undefined,
+		fid: undefined,
+		limit: undefined,
+		displayLimit: undefined
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -56,6 +60,15 @@ export const searchDrawerSlice = createSlice({
 		setFeatures: (state,action) => {
 			state.features=action.payload;
 		},
+		setFeature: (state, action) => {
+			for(let f in state.features.features) {
+				if(state.features.features[f].properties.fid===action.payload) {
+					state.feature=state.features.features[f];
+					return;
+				}
+			}
+			console.log(`Cant find ${action.payload}`);
+		},
 		newSearch: (state, action) => {
 			state.open = true;
 			state.page=1;
@@ -87,34 +100,18 @@ export const searchDrawerSlice = createSlice({
 			if (action.payload && action.payload.search){
 				state.search = action.payload.search;
 			}
+			if (action.payload && action.payload.limit){
+				state.limit = action.payload.limit;
+			} else {
+				state.limit= undefined;
+			}
+			if (action.payload && action.payload.displayLimit){
+				state.displayLimit = action.payload.displayLimit;
+			} else {
+				state.displayLimit=undefined;
+			}
+
 			state.refresh=true;
-
-
-
-			let packetSearch = {
-				"queue": "searchFeatures",
-				"api": "api",
-				"data": {
-					"method": "search",
-					"category": state.categories,
-					"search_text": state.search
-
-				}
-			};
-			/*if (displayLimit)
-				packetSearch.data['display_limit'] = displayLimit;*/
-/*
-			if (limit)
-				packetSearch.data['limit'] = limit;
-*/
-
-/*
-			if (rankingAttributes)
-				packetSearch.data['ranking_attributes'] = rankingAttributes;
-			if (actualTags.length > 0)
-				packetSearch.data.tags = actualTags;
-*/
-			window.websocket.send(packetSearch);
 		},
 		closeSearchDrawer: (state) => {
 			state.open = false;
@@ -151,13 +148,22 @@ export const searchDrawerSlice = createSlice({
 			if (action.payload) {
 				state.categories = action.payload
 			}
-			state.refresh=true
+			state.refresh=true;
 		},
 		setSubCategoryList : (state, action) => {
 			if (action.payload) {
 				state.subCategories = action.payload
 			}
-			state.refresh=true
+			state.refresh=true;
+		},
+		toggleSubCategoryItem : (state,action) => {
+			if(state.subCategories.indexOf(action.payload)!==-1) {
+				state.subCategories.splice(state.subCategories.indexOf(action.payload),1);
+			} else {
+				state.subCategories.push(action.payload);
+			}
+			state.refresh=true;
+
 		},
 		toggleLocationShow: (state) => {
 			state.locationShow = !state.locationShow;
@@ -246,7 +252,9 @@ export const {
 	setDistanceType,
 	newSearch,
 	setFeatures,
-	setSubCategoryList
+	setFeature,
+	setSubCategoryList,
+	toggleSubCategoryItem
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer

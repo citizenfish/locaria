@@ -1,26 +1,17 @@
 import React from 'react';
-import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import {Badge} from "@mui/material";
 
 const DataItemsTypography = ({name, prompt, required}) => {
 
 
 	return (
 		<>
+			{required&& <Typography sx={{color: "red", display:"inline-block", paddingRight: "5px"}}>*</Typography>}
 
-			<Badge color="error"  badgeContent={"Required"} sx={{
-				"& .MuiBadge-badge": {
-					opacity: "0.5"
-				}
-			}} anchorOrigin={{
-				vertical: 'top',
-				horizontal: 'left',
-			}} invisible={!required}>
 				<Typography sx={{
-					fontWeight: "600"
+					fontWeight: "600",
+					display:"inline-block"
 				}}>{name}</Typography>
-			</Badge>
 			{prompt && <Typography sx={{
 				fontSize: "0.8em"
 			}}>{prompt}</Typography>}

@@ -42,6 +42,13 @@ module.exports.run = (event, context, callback) => {
 
 		client.query(querysql, qarguments, function (err, result) {
 
+			let description='Home';
+			let title='Home';
+			if(result.rows[0]['locaria_gateway']&&result.rows[0]['locaria_gateway']['parameters']&&result.rows[0]['locaria_gateway']['parameters'][path]) {
+				description=result.rows[0]['locaria_gateway']['parameters'][path]['data']['description'];
+				title=result.rows[0]['locaria_gateway']['parameters'][path]['data']['title'];
+			}
+
 			const html = `\
 				<!DOCTYPE html>\
 				<html lang="en">\
@@ -52,8 +59,8 @@ module.exports.run = (event, context, callback) => {
 				<link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">\
 				<script type="module" src="/dist/full.bundle.js"></script>\
 				<meta charset="UTF-8">\
-				<meta name="description" content="${result.rows[0]['locaria_gateway']['parameters'][path]['data']['description']}"/>
-				<title>${result.rows[0]['locaria_gateway']['parameters'][path]['data']['title']}</title>\
+				<meta name="description" content="${description}"/>
+				<title>${title}</title>\
 				</head>\
 				<body class="on-home">\
 				<div id="root" class="contain">\
