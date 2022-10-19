@@ -3,31 +3,21 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import {Checkbox, Collapse, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {setupField} from "../../redux/slices/formSlice";
-import {findArrayObject} from "../../../libs/arrayTools";
+import {arrayToggleElement, findArrayObject} from "../../../libs/arrayTools";
 
 export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,selected}) {
 
 	const [tree, setTree] = useState([]);
-	const [opens,setOpens]= useState({})
+	const [tags, setTags] = useState([]);
 
 	let mapper={};
 
-	const toggleOpen = (path) => {
-		let newOpens={...opens};
-
-		if(newOpens[path])
-			newOpens[path]=!newOpens[path];
-		else
-			newOpens[path]=true;
-		setOpens(newOpens);
-	}
 
 	useEffect(() => {
-		let path='';
-		//let selectedArray=selected.split('.');
-		//let selectedArray=selected.split('.');
+
 		if(Array.isArray(selected)) {
-			let newOpens={};
+			setTags(selected);
+			/*let newOpens={};
 			let tree;
 			if (selected[0]) {
 				tree=findArrayObject(treeData,"name",selected[0]);
@@ -47,7 +37,7 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 			if (selected[2]) {
 				setTree([selected[0].replace(/[^a-zA-Z]/g,'')+'.'+selected[1].replace(/[^a-zA-Z]/g,'')+'.'+selected[2].replace(/[^a-zA-Z]/g,'')]);
 			}
-			setOpens(newOpens);
+			setOpens(newOpens);*/
 
 		}
 
@@ -55,7 +45,15 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 
 
 
-	const handleCheck = (nodeIds) => {
+	const handleCheck = (nodeIds,name) => {
+
+
+
+		let tagsCopy=[...tags];
+		tagsCopy=arrayToggleElement(tagsCopy,name);
+		setTags(tagsCopy);
+
+		console.log(tagsCopy);
 		let treecopy=[...tree];
 		if(treecopy.indexOf(nodeIds)!==-1) {
 			treecopy.splice(treecopy.indexOf(nodeIds),1);
@@ -69,11 +67,11 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 		}*/
 
 		if(multi===true) {
-			setTree(treecopy);
-			setFunction(treecopy);
+			//setTree(treecopy);
+			setFunction(tagsCopy);
 		} else {
-			setTree([nodeIds]);
-			setFunction(mapper[nodeIds]);
+			//setTree([nodeIds]);
+			setFunction(name);
 		}
 	};
 
@@ -87,35 +85,28 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 			mapper[newPath]=newArrayPath;
 			if(ptr[p].color)
 				color=ptr[p].color;
-			let handleItem=(<ListItemButton role={undefined} onClick={()=>{toggleOpen(newPath)}} dense>
 
-				<ListItemText id={newPath} primary={`${ptr[p].name}`} />
-			</ListItemButton>);
 
-			if(!ptr[p].subs||level===maxLevel) {
-				handleItem=(<ListItemButton role={undefined} onClick={()=>{handleCheck(newPath)}} dense>
+			treeLevel.push(
+				<ListItem sx={{padding:"0px",background: color}}>
+					<ListItemButton role={undefined} onClick={()=>{handleCheck(newPath,ptr[p].name);}} dense>
 						<ListItemIcon>
 							<Checkbox
 								edge="start"
-								checked={tree.indexOf(newPath) !== -1}
+								checked={tags.indexOf(ptr[p].name) !== -1}
 								tabIndex={-1}
 								disableRipple
 								inputProps={{'aria-labelledby': newPath}}
 							/>
 						</ListItemIcon>
-					<ListItemText id={newPath} primary={`${ptr[p].name}`} />
-				</ListItemButton>);
-			}
-
-			treeLevel.push(
-				<ListItem sx={{padding:"0px",background: color}}>
-					{handleItem}
+						<ListItemText id={newPath} primary={`${ptr[p].name}`} />
+					</ListItemButton>
 				</ListItem>
 			);
 
 			if(ptr[p].subs&&level<maxLevel) {
 				treeLevel.push(
-					<Collapse in={opens[newPath]} timeout="auto" unmountOnExit>
+					<Collapse in={tags.indexOf(ptr[p].name) !== -1} timeout="auto" unmountOnExit>
 						<List sx={{padding: "0px", background: color, paddingLeft: `${level*5}px`}}>
 							<SearchCategoryRecursive ptr={ptr[p].subs} color={color} idPath={newPath} path={newArrayPath} level={level} maxLevel={maxLevel}/>
 						</List>

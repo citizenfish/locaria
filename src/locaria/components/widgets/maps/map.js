@@ -1,18 +1,16 @@
 import React, {forwardRef, useRef, useImperativeHandle} from 'react';
 
 
-import {viewStyle, locationStyle,reportStyle,vectorStyle} from "mapStyle";
+import {viewStyle, locationStyle,reportStyle,vectorStyle,boundaryStyle} from "mapStyle";
 import Openlayers from "libs/Openlayers";
 
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import Chip from "@mui/material/Chip";
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Box from "@mui/material/Box";
-import {act} from "react-dom/test-utils";
 import {categoryStyle} from "../../mapStyles/view";
-import {alpha} from "@mui/material/styles";
 
-const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom=5}, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom=5,boundsGeojson,buffer}, ref) => {
 
 	const [ol, setOl] = React.useState(new Openlayers());
 	const [location, setLocation] = React.useState(null);
@@ -72,6 +70,15 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 				break;
 		}
 		ol.addLayer({
+			"name": "bounds",
+			"type": "vector",
+			"active": true,
+			"style": boundaryStyle
+		});
+		if(boundsGeojson) {
+			ol.addGeojson({"layer": "bounds", "geojson": boundsGeojson, "clear": true});
+		}
+		ol.addLayer({
 			"name": "location",
 			"type": "vector",
 			"active": true,
@@ -83,12 +90,7 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			"active": true,
 			"style": function(feature,resolution) { return mapLayerStyle(feature,resolution,ol);}
 		});
-		ol.addLayer({
-			"name": "home",
-			"type": "vector",
-			"active": true,
-			"style": locationStyle
-		});
+
 
 		// optionals
 		if (handleMapClick !== undefined) {
@@ -103,6 +105,9 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 		}
 		if (onFeatureSeleted !== undefined) {
 			ol.makeControl({"layers": ["data"], "selectedFunction": onFeatureSeletedWrapper, "multi": true});
+		}
+		if (buffer) {
+			ol.zoomToLayersExtent({"layers": ["bounds"], "buffer": buffer});
 		}
 
 	}, [ol]);

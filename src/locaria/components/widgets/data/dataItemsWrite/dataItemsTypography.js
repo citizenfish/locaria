@@ -1,5 +1,6 @@
 import React from 'react';
 import Typography from "@mui/material/Typography";
+import RenderMarkdown from "../../markdown/renderMarkdown";
 
 const DataItemsTypography = ({name, prompt, required}) => {
 
@@ -14,7 +15,7 @@ const DataItemsTypography = ({name, prompt, required}) => {
 				}}>{name}</Typography>
 			{prompt && <Typography sx={{
 				fontSize: "0.8em"
-			}}>{prompt}</Typography>}
+			}}><RenderMarkdown markdown={prompt}/></Typography>}
 		</>
 	)
 }
