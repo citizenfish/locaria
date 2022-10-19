@@ -1,31 +1,26 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Grid from "@mui/material/Grid";
 
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setFieldValue, setupField} from "../../../redux/slices/formSlice";
 import Map from "../../maps/map";
 import Typography from "@mui/material/Typography";
 import DataItemsTypography from "./dataItemsTypography";
 
-const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,maxZoom,zoom}) => {
+const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,maxZoom,zoom,boundsGeojson,buffer,sx}) => {
+
+	const formData = useSelector((state) => state.formSlice.formData);
 
 	const mapRef = useRef();
+	let actualSx={...{
+			height: "250px"
+		},...sx};
 
-/*	useEffect(() => {
-		console.log(data);
-		if(data!==undefined) {
-			const geojson = {
-				"features": [
-					{
-						type: "Feature",
-						geometry: {type: "Point", coordinates: data.coordinates},
-						properties: {}
-					}
-				], type: "FeatureCollection"
-			};
-			mapRef.current.addGeojson(geojson, "data", true);
-		}
-	},[data]);*/
+	if(formData[id]&&formData[id].complete===false) {
+		actualSx.borderColor="#f00";
+		actualSx.borderStyle="solid";
+		actualSx.borderWidth="1px";
+	}
 
 	useEffect(() => {
 		if(data&&data.coordinates) {
@@ -70,16 +65,14 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 	//const [selected, setSelected] = React.useState([]);
 
 	return (
-		<Grid container spacing={2} sx={{
-			marginBottom: "10px"
-		}}>
+		<Grid container spacing={2} sx={{marginBottom: "10px"}}>
 			<Grid item md={4}>
 				<DataItemsTypography name={name} prompt={prompt} required={required}/>
 			</Grid>
 			<Grid item md={8}>
 				<Map id={"dropMap"}
 					 speedDial={true}
-					 sx={{height: "250px"}}
+					 sx={actualSx}
 					 ref={mapRef}
 					 handleMapClick={mapClick}
 					 mapSource={mapSource}
@@ -87,6 +80,8 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 					 mapStyle={mapStyle}
 					 maxZoom={maxZoom}
 					 zoom={zoom}
+					 boundsGeojson={boundsGeojson}
+					 buffer={buffer}
 					 />
 			</Grid>
 
