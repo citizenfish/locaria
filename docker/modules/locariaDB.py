@@ -75,10 +75,10 @@ class locariaDB:
                 e = self.setError(error)
                 return [{"error" : e, "query" : query}]
 
-    def internalGateway(self, method, parameters):
+    def internalGateway(self, method, parameters, public = 'internal_'):
 
         parameters["method"] = method
-        query = f"SELECT {self.schema}.locaria_internal_gateway(%s,%s) AS ig"
+        query = f"SELECT {self.schema}.locaria_{public}gateway(%s,%s) AS ig"
 
         try:
             res = self.query(query,(json.dumps(parameters), json.dumps(self.acl)))
@@ -86,8 +86,11 @@ class locariaDB:
 
         except Exception as error:
             e = self.setError(error)
-            print(f"internalGateway Error {e}")
+            print(f"{public}Gateway Error {e}")
             return {"error" : e}
+
+    def publicGateway(self, method, parameters):
+        return self.internalGateway(method, parameters, public = '')
 
     def getParameter(self, parameter_name):
 
@@ -104,8 +107,12 @@ class locariaDB:
             self.query(query, values, 'values')
 
         except Exception as error:
-            e = self.setError(error)
+            e = self.setError(str(error))
             print(f"bulkInsertor error {e}")
             return {}
 
         return {"bulkJsonInserter" : "OK"}
+
+    def placeGeocoder(self, place):
+
+        return self.publicGateway('location_search', {'location' : place})[0]

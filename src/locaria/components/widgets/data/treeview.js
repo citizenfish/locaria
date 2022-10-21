@@ -83,6 +83,7 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 			let newArrayPath=[...path];
 			newArrayPath.push(ptr[p].name);
 			mapper[newPath]=newArrayPath;
+
 			if(ptr[p].color)
 				color=ptr[p].color;
 

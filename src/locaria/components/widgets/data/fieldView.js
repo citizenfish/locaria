@@ -216,7 +216,7 @@ const getData = (data, path, func) => {
 	switch(path) {
 		case 'subCategory':
 			result=[];
-			if(data.properties&&data.properties.data) {
+			if(data.properties && data.properties.data) {
 				if (data.properties.data.categoryLevel1)
 					result.push(data.properties.data.categoryLevel1);
 				if (data.properties.data.categoryLevel2)

@@ -38,7 +38,7 @@ export default function SearchProxy() {
 		if(displayLimit)
 			packetSearch.data.display_limit=displayLimit;
 
-		if(subCategories&&subCategories.length>0) {
+		if(subCategories && subCategories.length > 0) {
 			let jsonPath="lax ";
 			let i=0;
 			for(let sub in subCategories) {
