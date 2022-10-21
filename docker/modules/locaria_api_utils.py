@@ -33,3 +33,44 @@ def getJsonLD(url):
     except Exception as error:
             print(str(error))
             return {}
+
+def getLinks(site):
+
+    try:
+        ret = []
+        html = requests.get(site['url']).content
+        soup = bs(html, "html.parser")
+
+        for link in soup.find_all("a", class_ = site.get('urlClass')):
+            retUrl = f"{site.get('domain','')}{link.get('href','')}"
+            ret.append({'url' : retUrl, 'name' : link.text})
+
+        return ret
+
+    except Exception as error:
+            print(str(error))
+            return []
+
+def getLocariaInfo(url, params):
+    try:
+        print(url)
+        ret = {'description' : {}, 'data' : {}}
+        html = requests.get(url).content
+        soup = bs(html, "html.parser")
+        ret['description']['title'] = soup.find("h1").text
+        ret['description']['text'] = soup.find("div", class_ = params.get('textClass')).text
+        return ret
+
+    except Exception as error:
+            print(str(error))
+            return []
+
+
+def getScripts(url):
+    html = requests.get(url).content
+    soup = bs(html, "html.parser")
+    scripts = ''
+    for script in soup.find_all('script'):
+        scripts += script.text
+    return scripts
+

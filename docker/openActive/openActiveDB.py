@@ -1,6 +1,8 @@
 import sys
 import json
 import re
+from more_itertools import unique_everseen
+from operator import itemgetter
 
 sys.path[0:0] = ['../modules']
 from locariaDB import *
@@ -45,9 +47,13 @@ class openActiveDB(locariaDB):
         for table in items:
 
             if len(items[table]) > 0:
+                # We now have to sift for duplicate id,org and pick the latest modified to prevent "ON CONFLICT DO UPDATE command cannot affect row a second time"
+                _insert_data = items[table]
+                _insert_data.sort(key = itemgetter(0,1)) # sort by modified to ensure the latest goes into database
+                insert_data = list(unique_everseen(_insert_data, key = itemgetter(0,1))) # pick the unique org/id combinations
                 if self.debug: print(f"Inserting {len(items[table])} items into {table}")
                 query = INSERT_QUERY.replace('**TABLE**', table)
-                ret[table] = self.bulkInserter(query, items[table])
+                ret[table] = self.bulkInserter(query, insert_data)
 
         return ret
 
