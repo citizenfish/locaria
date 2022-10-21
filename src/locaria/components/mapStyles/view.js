@@ -83,6 +83,20 @@ const linkedFeatureStyle = () => {
 }
 
 /**
+ *  Linked style for nmrn (legacy)
+ * @returns {Style}
+ */
+export function  boundaryStyle (feature,resolution,ol)  {
+	return new Style({
+			stroke: new Stroke({
+				color: [22, 22, 22, 1],
+				width: 2
+			})
+		});
+}
+
+
+/**
  * Style for category & subs
  * @param feature
  * @param resolution

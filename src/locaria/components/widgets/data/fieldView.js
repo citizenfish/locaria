@@ -166,6 +166,7 @@ const FormatField = ({field, data, mode,category}) => {
 			options = {...dataWriteItem[field.write].options, ...field.options};
 		} else {
 			Element = DataItemTextInput;
+			options = {...dataWriteItem['title'].options, ...field.options};
 		}
 	}
 

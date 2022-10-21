@@ -10,15 +10,10 @@ const DataItemSubCategory = ({id,name,data,prompt,required,category}) => {
 
     const dispatch = useDispatch()
 
-    const [selected, setSelected] = React.useState([]);
-
-
     let categorySubs=window.systemCategories.getChannelSubs(category);
 
     const handleSelect = (nodeIds) => {
-        setSelected(nodeIds);
-        if(nodeIds[0])
-            dispatch(setFieldValue({index:id,value:nodeIds}));
+        dispatch(setFieldValue({index:id,value:nodeIds}));
     };
 
 
@@ -34,7 +29,7 @@ const DataItemSubCategory = ({id,name,data,prompt,required,category}) => {
                 <DataItemsTypography name={name} prompt={prompt} required={required}/>
             </Grid>
             <Grid item md={8}>
-                <Treeview multi={false} levels={3} setFunction={handleSelect} treeData={categorySubs} selected={data}/>
+                <Treeview multi={true} levels={3} setFunction={handleSelect} treeData={categorySubs} selected={data}/>
 
             </Grid>
 
