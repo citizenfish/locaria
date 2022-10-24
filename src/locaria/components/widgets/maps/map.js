@@ -10,7 +10,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Box from "@mui/material/Box";
 import {categoryStyle} from "../../mapStyles/view";
 
-const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom=5,boundsGeojson,buffer}, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom,boundsGeojson,buffer}, ref) => {
 
 	const [ol, setOl] = React.useState(new Openlayers());
 	const [location, setLocation] = React.useState(null);
@@ -42,7 +42,7 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			"target": id,
 			"projection": "EPSG:3857",
 			"renderer": ["canvas"],
-			"zoom": zoom,
+			"zoom": zoom||window.systemMain.defaultZoom,
 			"center": ol.decodeCoords(window.systemMain.defaultLocation.location, "EPSG:4326", "EPSG:3857"),
 			"maxZoom": maxZoom
 		});

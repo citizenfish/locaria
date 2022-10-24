@@ -89,7 +89,7 @@ export default function ThelistEventsApiEditor(props) {
                                              borderRadius: '5px',
                                              height: '500px'
                                          }}>
-                    <Map ref={mapRef} id = {"thelistapi"} className={"mapView"} handleMapClick={mapClick}/>
+                    <Map ref={mapRef} id = {"thelistapi"} className={"mapView"} handleMapClick={mapClick} zoom={10}/>
                 </Box>
                     <Grid item md={4}>
                         <Button variant="outlined"
