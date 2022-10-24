@@ -9,8 +9,11 @@ import TypographyHeader from "../typography/typographyHeader";
 import Carousel from "react-material-ui-carousel";
 import Paper from "@mui/material/Paper";
 import ClickAway from "../utils/clickAway";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import SlideShow from "../images/slideShow";
+import SearchLocationPopup from "../search/SearchLocationPopup";
+import {locationPopup} from "../../redux/slices/searchDrawerSlice";
+import {TextField} from "@mui/material";
 
 const SiteMapLocation = function ({mode, images, feature, format = "cover", duration = 500, interval = 2000}) {
 
@@ -21,7 +24,7 @@ const SiteMapLocation = function ({mode, images, feature, format = "cover", dura
 			background: window.systemMain.themePanels,
 			flexGrow: 1,
 			textAlign: 'center',
-			height: !mobile ? "500px" : "370px",
+			height: !mobile ? "550px" : "370px",
 			backgroundSize: "cover",
 			backgroundPositionY: "50%",
 			position: "relative"
@@ -29,20 +32,21 @@ const SiteMapLocation = function ({mode, images, feature, format = "cover", dura
 			<Box sx={{
 				position: "absolute",
 				width: "100%",
-				maxWidth: "1100px"
+				maxWidth: "1100px",
+				top: "-40px"
+
 			}}>
 				<Box sx={{
 					position: "relative",
-					//top: "-480px",
-					zIndex: 100,
-					top: "10px",
+					zIndex: 10,
 					paddingLeft: "5px",
 					paddingRight: "5px"
 				}}>
-					{!mobile ? <Panels></Panels> : <></>}
+					<Panels></Panels>
 				</Box>
 			</Box>
-			<SlideShow interval={interval} duration={duration} feature={feature} format={format} images={images}/>
+			<SlideShow sx={{marginTop:"50px"}} interval={interval} duration={duration} feature={feature} format={format} images={images}/>
+			<SearchLocationPopup isOpen={true}></SearchLocationPopup>
 		</Box>
 	)
 
@@ -52,6 +56,8 @@ const SiteMapLocation = function ({mode, images, feature, format = "cover", dura
 
 const Panels = () => {
 	const history = useHistory();
+	const dispatch = useDispatch();
+
 	const url = new UrlCoder();
 	const [collapseOpen, setCollapseOpen] = useState({});
 	const [render, forceRender] = useState(0);
@@ -123,26 +129,26 @@ const Panels = () => {
 				}}>
 
 					<Box sx={{
-						backgroundColor: window.siteMap[p].backgroundColor,
-						color: window.siteMap[p].color,
+						backgroundColor: collapseOpen[p] ? window.siteMap[p].backgroundColorHover:window.siteMap[p].backgroundColor,
 						fontSize: "0.8rem",
-						border: {
-							md: `2px solid ${window.siteMap[p].color}`,
-							xs: `1px solid ${window.siteMap[p].color}`
-						},
+						border: `1px solid ${window.siteMap[p].color}`,
+						borderRadius: "12px",
 						width: '100%',
 						padding: "5px",
-						opacity: collapseOpen[p] ? 0.5 : 1,
 						cursor: "pointer"
 
 
 					}} onClick={() => {
 						toggleCollapseOpen(p);
 
-						if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
-							let route = url.route(window.siteMap[p].link);
-							if (route === true) {
-								history.push(window.siteMap[p].link);
+						if(window.siteMap[p].needsLocation) {
+							dispatch(locationPopup({open:true,page:window.siteMap[p].link}));
+						} else {
+							if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
+								let route = url.route(window.siteMap[p].link);
+								if (route === true) {
+									history.push(window.siteMap[p].link);
+								}
 							}
 						}
 					}}
@@ -153,7 +159,7 @@ const Panels = () => {
 							 //collapseAll();
 						 }}
 					>
-						<TypographyHeader sx={{color: window.siteMap[p].color}}
+						<TypographyHeader sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color}}
 										  element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
 					</Box>
 					{panelItems.length > 0 &&

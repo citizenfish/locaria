@@ -19,7 +19,7 @@ export default function SlideShow({images, format = "contain", feature = false, 
 			useImages.push({"url": report.viewLoader.packet.features[0].properties.data.images[i]})
 	}
 	return (
-		<Box sx={sx}>
+		<Box id={"GalleryBox"} key={"GalleryBox"} sx={sx}>
 			{useImages.length > 1 &&
 				<Carousel interval={interval} duration={duration} height={!mobile ? "450px" : "320px"}>
 					{

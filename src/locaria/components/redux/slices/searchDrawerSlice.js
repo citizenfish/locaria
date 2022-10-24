@@ -22,7 +22,9 @@ export const searchDrawerSlice = createSlice({
 		feature:undefined,
 		fid: undefined,
 		limit: undefined,
-		displayLimit: undefined
+		displayLimit: undefined,
+		locationOpen: false,
+		locationPage: undefined
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -225,6 +227,11 @@ export const searchDrawerSlice = createSlice({
 		},
 		clearRefresh: (state) => {
 			state.refresh=false;
+		},
+		locationPopup: (state,action) => {
+			state.locationOpen=action.payload.open;
+			state.locationPage=action.payload.page;
+
 		}
 
 	},
@@ -254,7 +261,8 @@ export const {
 	setFeatures,
 	setFeature,
 	setSubCategoryList,
-	toggleSubCategoryItem
+	toggleSubCategoryItem,
+	locationPopup
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer
