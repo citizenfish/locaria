@@ -16,8 +16,16 @@ if not db.connection:
     print("Unable to connect to database")
     exit()
 
+parameters = db.getParameter(DATA_SCRAPER_PARAMETER)
+
 # process sites that require link scraping
-for site in SITES:
+for site in parameters.get('link_sites_ignore', []):
     site['urls']= getLinks(site)
     proc = classSelectors[site['class']](site, DEBUG)
     res = proc.processUrls(db)
+
+
+# process data read from local files in json format
+for site in parameters.get('local_files', []):
+    proc = classSelectors[site['class']](site, DEBUG)
+    res = proc.processJson(db)

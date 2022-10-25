@@ -1,5 +1,7 @@
 import sys
 import re
+import json
+
 sys.path[0:0] = ['../modules']
 from locaria_api_utils import *
 
@@ -31,7 +33,7 @@ class sustainablefoodplaces:
 
         for index, (s, l, t) in enumerate(zip(suffixes, latlngs, titles)):
             url = f"{self.params['domain']}{s[1]}"
-            feature = getLocariaInfo(url,self.params)
+            feature = getLocariaInfo(url, self.params)
             point = l[1].replace(' ','').split(',')
             feature['geometry'] = f"SRID=4326;POINT({point[1]} {point[0]})"
             feature['description']['title'] = t[1]
@@ -43,4 +45,24 @@ class sustainablefoodplaces:
 
         return res
 
-classSelectors = {'sustainablefoodplaces' : sustainablefoodplaces}
+class mindlocations:
+    def __init__(self, params, debug = True):
+
+        self.debug = debug
+        self.params = params
+        self.table = params.get('table', 'mindlocations')
+
+        self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(location TEXT PRIMARY KEY, attributes JSONB)"
+        self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (location, attributes) VALUES %s ON CONFLICT(location) DO UPDATE SET attributes=EXCLUDED.attributes"
+
+    def processJson(self, db):
+        db.query(self.table_create)
+        if self.debug: print(f"Processing mindlocations: {self.params['uri']}")
+        features = []
+        f = open(self.params['uri'])
+        json_data = json.load(f)
+        for mind in json_data:
+            features.append( (mind['name'], json.dumps(mind)) )
+
+        res = db.bulkInserter(self.insert, features)
+classSelectors = {'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations}
