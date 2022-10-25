@@ -1,4 +1,4 @@
-service: locaria-cognito-events-${env:theme}${env:environment}
+service: locaria-ce-${env:theme}${env:environment}
 projectDir: ../../../
 provider:
   name: aws

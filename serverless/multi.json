@@ -39,15 +39,21 @@
       }
     },
     {
+      "dir": "cognitoEvents",
+      "outputsSitePrefix": true,
+      "outputs": {
+      },
+      "functions": [
+        "postConfirmationTrigger.js"
+      ]
+    },
+    {
       "dir": "cognito",
       "outputsSitePrefix": true,
       "outputs": {
         "cognitoPoolId": "!Ref CognitoUserPool",
         "poolClientId": "!Ref CognitoUserPoolClient"
-      },
-      "functions": [
-        "postConfirmationTrigger.js"
-      ]
+      }
     },
     {
       "dir": "ws",
