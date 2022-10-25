@@ -15,7 +15,7 @@ import SearchLocationPopup from "../search/SearchLocationPopup";
 import {locationPopup} from "../../redux/slices/searchDrawerSlice";
 import {TextField} from "@mui/material";
 
-const SiteMapLocation = function ({mode, images, feature, format = "cover", duration = 500, interval = 2000}) {
+const SiteMapLocation = function ({mode, images, feature, format = "cover", duration = 500, interval = 2000,defaultPage = ""}) {
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
@@ -46,7 +46,7 @@ const SiteMapLocation = function ({mode, images, feature, format = "cover", dura
 				</Box>
 			</Box>
 			<SlideShow sx={{marginTop:"50px"}} interval={interval} duration={duration} feature={feature} format={format} images={images}/>
-			<SearchLocationPopup isOpen={true}></SearchLocationPopup>
+			<SearchLocationPopup isOpen={true} defaultPage={defaultPage}></SearchLocationPopup>
 		</Box>
 	)
 
