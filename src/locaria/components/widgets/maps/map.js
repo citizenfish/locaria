@@ -10,7 +10,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Box from "@mui/material/Box";
 import {categoryStyle} from "../../mapStyles/view";
 
-const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom,boundsGeojson,buffer}, ref) => {
+const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeatureSeleted,speedDial,sx,mapType='xyz',mapSource,mapStyle,maxZoom=20,zoom,boundsGeojson,buffer,initialGeojson}, ref) => {
 
 	const [ol, setOl] = React.useState(new Openlayers());
 	const [location, setLocation] = React.useState(null);
@@ -90,6 +90,9 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			"active": true,
 			"style": function(feature,resolution) { return mapLayerStyle(feature,resolution,ol);}
 		});
+		if(initialGeojson ) {
+			ol.addGeojson({"layer": "data", "geojson": initialGeojson , "clear": true});
+		}
 
 
 		// optionals
