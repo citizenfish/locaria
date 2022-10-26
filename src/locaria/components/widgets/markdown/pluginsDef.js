@@ -19,6 +19,7 @@ import SubCatMap from "../maps/subCatMap";
 import SelectedPanel from "../viewLayouts/selectedPanel";
 import NavTypeFull from "../navs/navTypeFull";
 import SiteMapLocation from "../pages/siteMapLocation";
+import SearchLocationFilters from "../search/searchLocationFilters";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -123,6 +124,11 @@ const pluginsDefs = {
 	},
 	"SelectedPanel": {
 		"obj": SelectedPanel,
+		"description": "Display simple input form",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SearchLocationFilters": {
+		"obj": SearchLocationFilters,
 		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	}
