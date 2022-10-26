@@ -4,7 +4,7 @@ function getLocation(successCallback,errorCallback) {
 		navigator.geolocation.getCurrentPosition(function(position) {
 			console.log("Latitude is :", position.coords.latitude);
 			console.log("Longitude is :", position.coords.longitude);
-			successCallback([position.coords.latitude,position.coords.longitude])
+			successCallback([position.coords.longitude,position.coords.latitude])
 		},
 			function (message) {
 				console.log(message);

@@ -1,4 +1,4 @@
-service: locaria-aurora-triggers-${env:theme}
+service: locaria-at-${env:theme}
 projectDir: ../../../
 provider:
   name: aws

@@ -11,6 +11,7 @@ export default function SearchProxy() {
 	const subCategories = useSelector((state) => state.searchDraw.subCategories);
 	const search = useSelector((state) => state.searchDraw.search);
 	const limit = useSelector((state) => state.searchDraw.limit);
+	const location = useSelector((state) => state.searchDraw.location);
 	const displayLimit = useSelector((state) => state.searchDraw.displayLimit);
 
 	useEffect(() => {
@@ -33,6 +34,8 @@ export default function SearchProxy() {
 			}
 		};
 
+		if(location)
+			packetSearch.data.location=`SRID=4326;POINT(${location[0]} ${location[1]})`;
 		if(limit)
 			packetSearch.data.limit=limit;
 		if(displayLimit)
@@ -61,7 +64,7 @@ export default function SearchProxy() {
 
 		}
 
-	}, [refresh,displayLimit,limit,subCategories,search]);
+	}, [refresh,displayLimit,limit,subCategories,search,location]);
 
 	return (<></>)
 }

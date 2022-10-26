@@ -25,7 +25,8 @@ export const searchDrawerSlice = createSlice({
 		displayLimit: undefined,
 		locationOpen: false,
 		locationPage: undefined,
-		geolocation: undefined
+		geolocation: undefined,
+		location: undefined,
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -182,6 +183,11 @@ export const searchDrawerSlice = createSlice({
 			state.distanceType = action.payload;
 			state.refresh=true;
 		},
+		setLocation: (state,action) => {
+			state.location = action.payload;
+			state.refresh=true;
+		},
+
 		setTags: (state, action) => {
 			state.tags = action.payload;
 			state.page=1;
@@ -267,7 +273,8 @@ export const {
 	setSubCategoryList,
 	toggleSubCategoryItem,
 	locationPopup,
-	setGeolocation
+	setGeolocation,
+	setLocation
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer

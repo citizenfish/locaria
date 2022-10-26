@@ -25,6 +25,7 @@ import {
 } from "./dataItemsRead/dataItemSocial";
 import DataItemGrid from "./dataItemsRead/dataItemGrid";
 import Divider from "@mui/material/Divider";
+import DataItemImage from "./dataItemsRead/dataItemImage";
 
 const FieldView = ({data, mode='read',fields="main"}) => {
 
@@ -131,6 +132,7 @@ const FormatField = ({field, data, mode,category}) => {
 		'h2': {"element": DataItemH2},
 		'md': {"element": dataItemMarkdown},
 		'images': {"element": dataItemImages},
+		'image': {"element": DataItemImage},
 		'twitter': {"element": DataItemSocialTwitter},
 		'facebook': {"element": DataItemSocialFacebook},
 		'instagram': {"element": DataItemSocialInstagram},
