@@ -100,7 +100,7 @@ A location to be used to centre the search when location_distance criteria are p
 eg:
 
 ```
-SRID=4326;POINT(-1.1,53.2)
+SRID=4326;POINT(-1.1 53.2)
 ```
 
 ### location_distance
