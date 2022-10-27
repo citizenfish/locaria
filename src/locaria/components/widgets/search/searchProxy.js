@@ -14,6 +14,9 @@ export default function SearchProxy() {
 	const location = useSelector((state) => state.searchDraw.location);
 	const displayLimit = useSelector((state) => state.searchDraw.displayLimit);
 
+
+
+
 	useEffect(() => {
 		window.websocket.registerQueue("searchFeatures", function (json) {
 			dispatch(setFeatures(json.packet.geojson));

@@ -26,6 +26,8 @@ import {
 import DataItemGrid from "./dataItemsRead/dataItemGrid";
 import Divider from "@mui/material/Divider";
 import DataItemImage from "./dataItemsRead/dataItemImage";
+import DataItemH1 from "./dataItemsRead/dataItemH1";
+import DataItemLinkButton from "./dataItemsRead/dataItemLinkButton";
 
 const FieldView = ({data, mode='read',fields="main"}) => {
 
@@ -129,6 +131,7 @@ const FormatField = ({field, data, mode,category}) => {
 		'description': {"element": DataItemDescription},
 		'p': {"element": DataItemP},
 		'grid': {"element": DataItemGrid},
+		'h1': {"element": DataItemH1},
 		'h2': {"element": DataItemH2},
 		'md': {"element": dataItemMarkdown},
 		'images': {"element": dataItemImages},
@@ -137,6 +140,7 @@ const FormatField = ({field, data, mode,category}) => {
 		'facebook': {"element": DataItemSocialFacebook},
 		'instagram': {"element": DataItemSocialInstagram},
 		'social': {"element": DataItemSocialGeneric},
+		'linkButton': {"element": DataItemLinkButton},
 	}
 
 	const dataWriteItem = {
