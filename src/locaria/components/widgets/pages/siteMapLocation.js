@@ -4,51 +4,82 @@ import Grid from "@mui/material/Grid";
 import {useHistory} from "react-router-dom";
 
 import UrlCoder from "../../../libs/urlCoder"
-import {useMediaQuery} from "@mui/material";
 import TypographyHeader from "../typography/typographyHeader";
-import Carousel from "react-material-ui-carousel";
-import Paper from "@mui/material/Paper";
+
 import ClickAway from "../utils/clickAway";
 import {useDispatch, useSelector} from "react-redux";
 import SlideShow from "../images/slideShow";
 import SearchLocationPopup from "../search/SearchLocationPopup";
 import {locationPopup} from "../../redux/slices/searchDrawerSlice";
-import {TextField} from "@mui/material";
 
-const SiteMapLocation = function ({mode, images, feature, format = "cover", duration = 500, interval = 2000,defaultPage = ""}) {
+const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage = ""}) {
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
-	return (
-		<Box sx={{
-			background: window.systemMain.themePanels,
-			flexGrow: 1,
-			textAlign: 'center',
-			height: !mobile ? "550px" : "370px",
-			backgroundSize: "cover",
-			backgroundPositionY: "50%",
-			position: "relative"
-		}} key={"siteMap"}>
-			<Box sx={{
-				position: "absolute",
-				width: "100%",
-				maxWidth: "1100px",
-				top: "-40px"
 
-			}}>
+	if(mode==='full') {
+		return (
+			<Box sx={{
+				background: window.systemMain.themePanels,
+				flexGrow: 1,
+				textAlign: 'center',
+				height: "550px" ,
+				backgroundSize: "cover",
+				backgroundPositionY: "50%",
+				position: "relative"
+			}} key={"siteMap"}>
 				<Box sx={{
-					position: "relative",
-					zIndex: 10,
-					paddingLeft: "5px",
-					paddingRight: "5px"
+					position: "absolute",
+					width: "100%",
+					maxWidth: "1100px",
+					top: "-40px"
+
 				}}>
-					<Panels></Panels>
+					<Box sx={{
+						position: "relative",
+						zIndex: 10,
+						paddingLeft: "5px",
+						paddingRight: "5px"
+					}}>
+						<Panels></Panels>
+					</Box>
 				</Box>
+						<SlideShow sx={{marginTop: "50px"}} interval={interval} duration={duration} feature={feature}
+								   format={format} images={images}/>
+						<SearchLocationPopup isOpen={true} defaultPage={defaultPage}></SearchLocationPopup>
 			</Box>
-			<SlideShow sx={{marginTop:"50px"}} interval={interval} duration={duration} feature={feature} format={format} images={images}/>
-			<SearchLocationPopup isOpen={true} defaultPage={defaultPage}></SearchLocationPopup>
-		</Box>
-	)
+		)
+	} else {
+		return (
+			<Box sx={{
+				background: window.systemMain.themePanels,
+				flexGrow: 1,
+				textAlign: 'center',
+				height: "45px",
+				backgroundSize: "cover",
+				backgroundPositionY: "50%",
+				position: "relative"
+			}} key={"siteMap"}>
+				<Box sx={{
+					position: "absolute",
+					width: "100%",
+					maxWidth: "1100px",
+
+				}}>
+					<Box sx={{
+						position: "relative",
+						zIndex: 10,
+						paddingLeft: "5px",
+						paddingRight: "5px"
+					}}>
+						<Panels></Panels>
+					</Box>
+				</Box>
+
+			</Box>
+		)
+	}
+
 
 
 }

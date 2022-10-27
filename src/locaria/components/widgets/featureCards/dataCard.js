@@ -5,7 +5,7 @@ import {useHistory} from "react-router-dom";
 import {FieldView} from "../data/fieldView";
 
 
-const DataCard = ({feature, sx,field}) => {
+const DataCard = ({feature, sx,field,clickEnabled=true}) => {
 
 	const history = useHistory();
 
@@ -19,9 +19,12 @@ const DataCard = ({feature, sx,field}) => {
 			cursor: "pointer"
 		}, ...sx? sx:{}
 	};
+
+	//console.log(feature);
 	return (
 		<Box sx={actualSx} onClick={() => {
-			history.push(`/${channel.page || 'View'}/fp/${feature.properties.category}/${feature.properties.fid}`);
+			if(clickEnabled===true)
+				history.push(`/${channel.page || 'View'}/fp/${feature.properties.category}/${feature.properties.fid}`);
 		}}>
 
 			<Box sx={{
