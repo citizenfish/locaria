@@ -7,7 +7,6 @@ export const searchDrawerSlice = createSlice({
 	initialState: {
 		open: false,
 		categories: [],
-		subCategories:[],
 		search: '',
 		locationShow: false,
 		distance: 0,
@@ -27,6 +26,7 @@ export const searchDrawerSlice = createSlice({
 		locationPage: undefined,
 		geolocation: undefined,
 		location: undefined,
+		subCategories: {}
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -115,6 +115,12 @@ export const searchDrawerSlice = createSlice({
 				state.displayLimit=undefined;
 			}
 
+			if (action.payload && action.payload.location){
+				state.location = action.payload.location;
+			} else {
+				state.location= undefined;
+			}
+
 			state.refresh=true;
 		},
 		closeSearchDrawer: (state) => {
@@ -154,21 +160,8 @@ export const searchDrawerSlice = createSlice({
 			}
 			state.refresh=true;
 		},
-		setSubCategoryList : (state, action) => {
-			if (action.payload) {
-				state.subCategories = action.payload
-			}
-			state.refresh=true;
-		},
-		toggleSubCategoryItem : (state,action) => {
-			if(state.subCategories.indexOf(action.payload)!==-1) {
-				state.subCategories.splice(state.subCategories.indexOf(action.payload),1);
-			} else {
-				state.subCategories.push(action.payload);
-			}
-			state.refresh=true;
 
-		},
+
 		toggleLocationShow: (state) => {
 			state.locationShow = !state.locationShow;
 		},
@@ -190,6 +183,13 @@ export const searchDrawerSlice = createSlice({
 
 		setTags: (state, action) => {
 			state.tags = action.payload;
+			state.page=1;
+			state.totalPages=0;
+			state.refresh=true;
+
+		},
+		setSubCategory: (state, action) => {
+			state.subCategories[action.payload.sub]=action.payload.data;
 			state.page=1;
 			state.totalPages=0;
 			state.refresh=true;
@@ -270,11 +270,11 @@ export const {
 	newSearch,
 	setFeatures,
 	setFeature,
-	setSubCategoryList,
-	toggleSubCategoryItem,
 	locationPopup,
 	setGeolocation,
-	setLocation
+	setLocation,
+	setSubCategory
+
 } = searchDrawerSlice.actions
 
 export default searchDrawerSlice.reducer

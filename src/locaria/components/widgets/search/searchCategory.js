@@ -20,7 +20,7 @@ export default function SearchCategory({id="search",sx,multi=true,levels=1,categ
 
 
 	const handleCheck = (nodeIds) => {
-		dispatch(setSubCategoryList(nodeIds));
+		//dispatch(setSubCategoryList(nodeIds));
 	}
 
 

@@ -13,8 +13,8 @@ import DataItemSelect from "./dataItemsWrite/dataItemSelect";
 import DataItemSubCategory from "./dataItemsWrite/dataItemSubCategory";
 import DataItemDateInput from "./dataItemsWrite/dataItemDateInput";
 import DataItemMap from "./dataItemsWrite/dataItemMap";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import DataItemUpload from "./dataItemsWrite/dataItemUpload";
 import dataItemImages from "./dataItemsRead/dataItemImages";
 import {
@@ -29,11 +29,9 @@ import DataItemImage from "./dataItemsRead/dataItemImage";
 import DataItemH1 from "./dataItemsRead/dataItemH1";
 import DataItemLinkButton from "./dataItemsRead/dataItemLinkButton";
 
-const FieldView = ({data, mode='read',fields="main"}) => {
+const FieldView = ({data, mode = 'read', fields = "main"}) => {
 
-
-
-
+	console.log(data);
 	if (data && data.properties && data.properties.category) {
 
 		let channel = window.systemCategories.getChannelProperties(data.properties.category);
@@ -48,11 +46,11 @@ const FieldView = ({data, mode='read',fields="main"}) => {
 					<Grid container>
 						<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
 
-						{fieldsObj[fields] ?
-							<FormatFields fields={fieldsObj[fields]}
-										  data={data}
-										  mode={mode}
-										  category={data.properties.category}/> : null}
+							{fieldsObj[fields] ?
+								<FormatFields fields={fieldsObj[fields]}
+											  data={data}
+											  mode={mode}
+											  category={data.properties.category}/> : null}
 						</LocalizationProvider>
 					</Grid>
 				</Box>
@@ -78,21 +76,35 @@ const FieldView = ({data, mode='read',fields="main"}) => {
 
 }
 
-const FormatFields = ({fields, data, mode,category}) => {
+const FormatFields = ({fields, data, mode, category}) => {
 	if (fields && fields.length > 0) {
 		return (<>
 			{fields.map(value => {
-					if(value.children) {
+					if (value.children) {
 						let md = value.md || 12;
-						return (
-							<Grid item md={md}>
-								<FormatFields fields={value.children} mode={mode} data={data}> category={category}</FormatFields>
-							</Grid>
-						)
+						if (value.container) {
+							return (
+								<Grid item md={md}>
+
+									<Grid container spacing={2}>
+										<FormatFields fields={value.children} mode={mode}
+													  data={data}> category={category}</FormatFields>
+									</Grid>
+								</Grid>
+
+							)
+						} else {
+							return (
+								<Grid item md={md}>
+									<FormatFields fields={value.children} mode={mode}
+												  data={data}> category={category}</FormatFields>
+								</Grid>
+							)
+						}
 					} else {
 						switch (value.type) {
 							case 'hr':
-								return <Divider sx={{margin:"10px"}}/>
+								return <Divider sx={{margin: "10px"}}/>
 							default:
 								if (value.visible !== false || mode === "write") {
 									let md = value.md || 12;
@@ -118,7 +130,7 @@ const FormatFields = ({fields, data, mode,category}) => {
 	return null;
 }
 
-const FormatField = ({field, data, mode,category}) => {
+const FormatField = ({field, data, mode, category}) => {
 
 	let dataActual = getData(data, field.key, field.dataFunction);
 
@@ -219,10 +231,10 @@ const getData = (data, path, func) => {
 		return func(data);
 	}
 
-	switch(path) {
+	switch (path) {
 		case 'subCategory':
-			result=[];
-			if(data.properties && data.properties.data) {
+			result = [];
+			if (data.properties && data.properties.data) {
 				if (data.properties.data.categoryLevel1)
 					result.push(data.properties.data.categoryLevel1);
 				if (data.properties.data.categoryLevel2)
@@ -232,12 +244,11 @@ const getData = (data, path, func) => {
 			}
 			break;
 		default:
-			try
-			{
+			try {
 				result = safeEval(`data.${path}`, data);
 			} catch (e) {
 				//console.log(e);
-				result="";
+				result = "";
 			}
 			break;
 	}

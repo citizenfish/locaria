@@ -13,6 +13,7 @@ export default function SearchProxy() {
 	const limit = useSelector((state) => state.searchDraw.limit);
 	const location = useSelector((state) => state.searchDraw.location);
 	const displayLimit = useSelector((state) => state.searchDraw.displayLimit);
+	const setSubCategory = useSelector((state) => state.searchDraw.setSubCategory);
 
 
 
@@ -44,7 +45,28 @@ export default function SearchProxy() {
 		if(displayLimit)
 			packetSearch.data.display_limit=displayLimit;
 
-		if(subCategories && subCategories.length > 0) {
+		if(subCategories['subCategory1']||subCategories['subCategory2']) {
+			let jsonPath="lax ";
+			let i=0;
+
+			for(let sub in subCategories['subCategory1']) {
+				i++;
+				jsonPath+=`$.subCategory1 == \"${subCategories['subCategory1'][sub]}\"`;
+				if(i<subCategories['subCategory1'].length)
+					jsonPath+=' || ';
+			}
+
+			for(let sub in subCategories['subCategory2']) {
+				i++;
+				jsonPath+=`$.subCategory2 == \"${subCategories['subCategory2'][sub]}\"`;
+				if(i<subCategories['subCategory2'].length)
+					jsonPath+=' || ';
+			}
+			packetSearch.data.jsonpath=jsonPath;
+
+		}
+
+		/*if(subCategories && subCategories.length > 0) {
 			let jsonPath="lax ";
 			let i=0;
 			for(let sub in subCategories) {
@@ -54,7 +76,7 @@ export default function SearchProxy() {
 					jsonPath+=' || ';
 			}
 			packetSearch.data.jsonpath=jsonPath;
-		}
+		}*/
 		window.websocket.send(packetSearch);
 	}
 

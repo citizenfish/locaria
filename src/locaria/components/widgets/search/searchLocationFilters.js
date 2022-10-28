@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import SearchCategory from "./searchCategory";
 import DataCard from "../featureCards/dataCard";
+import SearchSubCategory from "./searchSubCategory";
 
 
 const SearchLocationFilters = ({id, category, limit, displayLimit, tags, sx,field,mode='full',clickEnabled}) => {
@@ -16,7 +17,10 @@ const SearchLocationFilters = ({id, category, limit, displayLimit, tags, sx,fiel
 			return (
 				features.features.map((result) => {
 						return (
-							<DataCard feature={result} field={field} clickEnabled={clickEnabled}></DataCard>
+							<DataCard feature={result} field={field} clickEnabled={clickEnabled} sx={{
+								border: "1px solid #AAA",
+								margin: "5px"
+							}}></DataCard>
 						)
 					}
 				)
@@ -34,7 +38,7 @@ const SearchLocationFilters = ({id, category, limit, displayLimit, tags, sx,fiel
 				}}>
 
 					<Grid item md={3} sx={{width: "100%"}}>
-						<SearchCategory category={category}></SearchCategory>
+						<SearchSubCategory category={category}></SearchSubCategory>
 					</Grid>
 					<Grid item md={9} sx={{width: "100%"}}>
 						<ResultItems></ResultItems>

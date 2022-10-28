@@ -12,7 +12,7 @@ import SlideShow from "../images/slideShow";
 import SearchLocationPopup from "../search/SearchLocationPopup";
 import {locationPopup} from "../../redux/slices/searchDrawerSlice";
 
-const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage = ""}) {
+const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage = "",open}) {
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
@@ -41,7 +41,7 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 						paddingLeft: "5px",
 						paddingRight: "5px"
 					}}>
-						<Panels></Panels>
+						<Panels open={open} mode={mode}></Panels>
 					</Box>
 				</Box>
 						<SlideShow sx={{marginTop: "50px"}} interval={interval} duration={duration} feature={feature}
@@ -72,7 +72,7 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 						paddingLeft: "5px",
 						paddingRight: "5px"
 					}}>
-						<Panels></Panels>
+						<Panels open={open} mode={mode}></Panels>
 					</Box>
 				</Box>
 
@@ -85,7 +85,7 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 }
 
 
-const Panels = () => {
+const Panels = ({open,mode}) => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 
@@ -153,6 +153,13 @@ const Panels = () => {
 				</Box>
 			)
 		}
+
+		let background=window.siteMap[p].backgroundColor;
+		if(window.siteMap[p].key===open)
+			background=window.siteMap[p].backgroundColorOpen;
+		if(collapseOpen[p])
+			background=window.siteMap[p].backgroundColorHover;
+
 		panelArray.push(
 			<Grid item md={md} key={window.siteMap[p].key}>
 				<Box sx={{
@@ -160,7 +167,7 @@ const Panels = () => {
 				}}>
 
 					<Box sx={{
-						backgroundColor: collapseOpen[p] ? window.siteMap[p].backgroundColorHover:window.siteMap[p].backgroundColor,
+						backgroundColor: background,
 						fontSize: "0.8rem",
 						border: `1px solid ${window.siteMap[p].color}`,
 						borderRadius: "12px",
@@ -172,7 +179,7 @@ const Panels = () => {
 					}} onClick={() => {
 						toggleCollapseOpen(p);
 
-						if(window.siteMap[p].needsLocation) {
+						if(window.siteMap[p].needsLocation&&mode==='full') {
 							dispatch(locationPopup({open:true,page:window.siteMap[p].link}));
 						} else {
 							if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
@@ -187,7 +194,7 @@ const Panels = () => {
 							 toggleCollapseOpen(p);
 						 }}
 						 onMouseLeave={() => {
-							 //collapseAll();
+							 collapseAll();
 						 }}
 					>
 						<TypographyHeader sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color}}
