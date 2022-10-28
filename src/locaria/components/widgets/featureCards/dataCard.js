@@ -28,7 +28,6 @@ const DataCard = ({feature, sx,field,clickEnabled=true}) => {
 		}}>
 
 			<Box sx={{
-				padding: "15px",
 				height: "200px",
 				border: "1p solid black",
 				overflow: "hidden"

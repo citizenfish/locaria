@@ -11,6 +11,7 @@ import PlaceIcon from '@mui/icons-material/Place';
 import {setupField} from "../../redux/slices/formSlice";
 import {getLocation} from "../../../libs/geolocation";
 import {useCookies} from "react-cookie";
+import {encodeSearchParams} from "../../../libs/searchParams";
 
 export default function SearchLocationPopup({defaultPage}) {
 	const dispatch = useDispatch();
@@ -28,14 +29,19 @@ export default function SearchLocationPopup({defaultPage}) {
 		dispatch(locationPopup({open: false, page: page}));
 	}
 
-	function handleListItemClick(fid,text,location,store=true) {
-		if(store===true) {
+	function handleListItemClick(fid,name,location,store) {
+		if(store!==false) {
 			let newRecent=cookies['recentLocations']||[];
-			newRecent.push({text: text, fid: fid, location: location});
+			if(newRecent.length>5)
+				newRecent.shift();
+			newRecent.push({text: name, fid: fid, location: location});
 			setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
 		}
 		dispatch(setLocation(location));
-		history.push(page);
+		let encodedPage=page+encodeSearchParams({
+			location:location
+		})
+		history.push(encodedPage);
 		dispatch(locationPopup({open: false}));
 	}
 
@@ -43,7 +49,7 @@ export default function SearchLocationPopup({defaultPage}) {
 	function handleGeoSuccess(location) {
 		dispatch(setGeolocation(location));
 		dispatch(setLocation(location));
-		history.push(page);
+		handleListItemClick("geo","gelocation",location,false);
 	}
 
 	function handleGeoError(location) {
