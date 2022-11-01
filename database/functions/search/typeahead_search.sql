@@ -19,9 +19,10 @@ BEGIN
            SELECT distinct ON (category) category,
                                          count(*) OVER(PARTITION BY category),
                                          jsonb_agg(jsonb_build_object('fid', fid,
-                                                                      'text', search_text,
+                                                                      'text', concat_ws(' - ',search_text,region),
                                                                       'type', feature_type,
                                                                       'location', location
+
                                              )) OVER(PARTITION BY category)
            FROM (
                     SELECT row_number() OVER (PARTITION BY category) AS rn,

@@ -6,7 +6,8 @@ export const fileSelectSlice = createSlice({
     initialState: {
         currentSelected: {},
         files: [],
-        refresh: false
+        refresh: false,
+        visible: true
     },
 
     reducers: {
@@ -21,11 +22,18 @@ export const fileSelectSlice = createSlice({
         },
         setRefresh:(state, actions) => {
             //no payload we simple toggle to ensure a change
-            state.refresh = !state.refresh
+            if(state.visible){
+                state.refresh = !state.refresh
+            }
+
+        },
+        setVisible:(state,actions) => {
+            state.visible = actions.payload
         }
+
     },
 })
 
-export const {clearFile,setFile,setFiles,setRefresh} = fileSelectSlice.actions
+export const {clearFile,setFile,setFiles,setRefresh,setVisible} = fileSelectSlice.actions
 
 export default fileSelectSlice.reducer

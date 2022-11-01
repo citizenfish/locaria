@@ -4,7 +4,6 @@ CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSO
                                                                                                                                            _search_rank DOUBLE PRECISION,
                                                                                                                                            _wkb_geometry GEOMETRY,
                                                                                                                                            _attributes JSONB
-
                                                                                                                                        ) AS $$
 DECLARE
     default_offset INTEGER DEFAULT 0;
@@ -21,6 +20,7 @@ DECLARE
     max_range_var FLOAT;
     ranking_attribute_var TEXT [] DEFAULT ARRAY ['description','title'];
     jsonpath_var TEXT DEFAULT '';
+    category_var TEXT[];
 
 BEGIN
 
@@ -118,6 +118,7 @@ BEGIN
     --We support jsonpath but need to be concious that this is not currently indexed
     jsonpath_var = NULLIF(search_parameters->>'jsonpath', '');
 
+    category_var = json2text(search_parameters->'category');
     --This is the core search query
 
     RETURN QUERY
@@ -163,14 +164,14 @@ BEGIN
                    --for tags
                    AND ( (search_parameters->'tags') IS NULL OR attributes->'tags' ?| json2text(search_parameters->'tags') )
                    --for categories
-                   AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| json2text(search_parameters->'category') )
+                   AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| category_var )
                    --range query
                    AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
 
                    --Dev note: removed from outer query to improve performance, monitor this
                    AND (acl_check(search_parameters->'acl', attributes->'acl')->>'view')::BOOLEAN
-                   LIMIT default_limit
-                   OFFSET default_offset
+                 LIMIT default_limit
+                     OFFSET default_offset
              ) INNER_SUB
         ORDER by distance ASC, attribute_rank ASC, search_rank DESC;
 

@@ -90,7 +90,8 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			"active": true,
 			"style": function(feature,resolution) { return mapLayerStyle(feature,resolution,ol);}
 		});
-		if(initialGeojson ) {
+
+		if(initialGeojson) {
 			ol.addGeojson({"layer": "data", "geojson": initialGeojson , "clear": true});
 		}
 
@@ -110,7 +111,7 @@ const Map = forwardRef(({style='viewStyle',id,handleMapClick,onZoomChange,onFeat
 			ol.makeControl({"layers": ["data"], "selectedFunction": onFeatureSeletedWrapper, "multi": true});
 		}
 		if (buffer) {
-			ol.zoomToLayersExtent({"layers": ["bounds"], "buffer": buffer});
+			ol.zoomToLayersExtent({"layers": ["bounds","data"], "buffer": buffer});
 		}
 
 	}, [ol]);

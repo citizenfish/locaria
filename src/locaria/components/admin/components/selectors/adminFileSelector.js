@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux"
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import {setFiles,setRefresh,setFile} from "../../redux/slices/fileSelectSlice";
+import {setFiles,setRefresh,setFile,setVisible} from "../../redux/slices/fileSelectSlice";
 import {useCookies} from "react-cookie";
 import StripedDataGrid from "../../../widgets/data/stripedDataGrid";
 import AdminDialogConfirm from "../../dialogues/adminDialogueConfirm";
@@ -31,7 +31,7 @@ export default function AdminFileSelector(props) {
                             onClick={() => {
                                 dispatch(setFile(params.row))
                             }}>
-                        {status === 'REGISTERED' ? 'Process' : 'Configure'}
+                        {status === 'REGISTERED' ? 'Details' : 'Import'}
                     </Button>
                 </Grid>
                 <Grid item md={4}>
@@ -89,6 +89,16 @@ export default function AdminFileSelector(props) {
         })
     },[])
 
+    useEffect(() => {
+
+        //Prevent list refreshing if not visible to stop child components re-rendering
+        if(fileSelected && fileSelected['id'] ){
+            dispatch(setVisible(false))
+        } else{
+            dispatch(setVisible(true))
+        }
+    },[fileSelected])
+
     useEffect(() =>{
 
         window.websocket.registerQueue('getFiles', (json)=>{
@@ -111,16 +121,19 @@ export default function AdminFileSelector(props) {
 
     },[])
 
+
     useEffect(() => {
-        window.websocket.send({
-            queue: 'getFiles',
-            api: "sapi",
-            data: {
-                method: "get_files",
-                filter: {upload: true},
-                id_token: cookies['id_token']
-            }
-        })
+
+            window.websocket.send({
+                queue: 'getFiles',
+                api: "sapi",
+                data: {
+                    method: "get_files",
+                    filter: {upload: true},
+                    id_token: cookies['id_token']
+                }
+            })
+
     },[refresh])
 
     return(

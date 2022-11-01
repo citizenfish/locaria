@@ -15,6 +15,8 @@ table_name_mask = config.get('table_name_mask', 'upload_file_')
 
 # Make database connection, retrieve any parameters and then a list of files to
 db = database_connect(config)
+print("Database connection established")
+
 parameters = get_parameters(db,"file_upload")
 files_to_process = get_files_to_process(db,schema)
 

@@ -13,7 +13,7 @@ export default function FileUploader(props) {
 
     const fileInput = useRef(null)
     const [cookies, setCookies] = useCookies(['location']);
-    const [fileProgress,setFileProgress] = useState(0)
+    const [fileProgress, setFileProgress] = useState(0)
     const [dragActive, setDragActive] = React.useState(false);
 
     const handleDrag = (e) => {
@@ -76,9 +76,10 @@ export default function FileUploader(props) {
                 }
             }
 
-            axios.put(url,  file, config)
+            axios.put(url, file, config)
                 .then(function (res) {
                     //setFileProgress(0)
+                    props.setShowUpload(false)
                 })
                 .catch(function(err) {
                     console.log(err)

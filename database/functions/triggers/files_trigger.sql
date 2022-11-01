@@ -28,6 +28,7 @@ $$
         --When a new file is added or status of an existing changes then inform all Admin clients
         IF (NEW.status != OLD.status) OR OLD.status IS NULL THEN
                 IF (SELECT 1 FROM locaria_core.parameters WHERE parameter_name = 'lambda_config' ) IS NOT NULL THEN
+                    ws_params = jsonb_set(ws_params,'{parameters,packet,packet}', jsonb_build_object('message', 'statusChange', 'status', NEW.status));
                     PERFORM locaria_core.aws_lambda_interface(ws_params);
                 END IF;
         END IF;

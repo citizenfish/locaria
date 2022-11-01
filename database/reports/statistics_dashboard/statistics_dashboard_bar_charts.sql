@@ -57,7 +57,7 @@ SELECT 'statistics_dashboard_bar_charts',
                     ) J
                 ) RN
                 LEFT JOIN (
-                    SELECT DATE_PART('hour', log_timestamp) AS hour,
+                    SELECT DATE_PART('day', log_timestamp) AS day,
                     COUNT(DISTINCT usr) AS   users,
                     COUNT(*) AS searches
                     FROM locaria_core.statistics_view
@@ -65,7 +65,7 @@ SELECT 'statistics_dashboard_bar_charts',
                     AND log_timestamp BETWEEN COALESCE(($1->>'date')::TIMESTAMP, NOW()) - INTERVAL '10 days' AND COALESCE(($1->>'date')::TIMESTAMP, NOW())
                     GROUP BY 1
                 ) LG
-            ON rng = hour
+            ON rng = day
             ORDER BY rng_row_number
        ) L10
 
