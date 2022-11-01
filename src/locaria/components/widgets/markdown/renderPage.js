@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import MenuDrawer from "../drawers/menuDrawer";
 import {setMobile} from "../../redux/slices/mediaSlice";
 import {useCookies} from "react-cookie";
-import {clearRefresh, newSearch, setFeatures} from "../../redux/slices/searchDrawerSlice";
+import {newSearch} from "../../redux/slices/searchDrawerSlice";
 import SearchProxy from "../search/searchProxy";
 import {decodeSearchParams} from "../../../libs/searchParams";
 
@@ -23,9 +23,6 @@ export default function RenderPage({searchMode}) {
 	let {feature} = useParams();
 	const [pageData, setPageData] = React.useState(undefined);
 	const [cookies, setCookies] = useCookies(['id_token']);
-
-
-	console.log(search);
 
 	let hash = window.location.hash;
 
@@ -52,11 +49,9 @@ export default function RenderPage({searchMode}) {
 		if(searchMode===true) {
 			let searchParams=decodeSearchParams(search);
 			searchParams.categories=category;
-			//dispatch(newSearch({categories: category, tags: tags, limit: limit, displayLimit: displayLimit}));
 			dispatch(newSearch(searchParams));
-
 		}
-	});
+	},[page]);
 
 	const getAllData = () => {
 		let bulkPackage = [];

@@ -26,7 +26,8 @@ export const searchDrawerSlice = createSlice({
 		locationPage: undefined,
 		geolocation: undefined,
 		location: undefined,
-		subCategories: {}
+		subCategories: {"subCategory1":[],"subCategory2":[]},
+		rewrite: true
 	},
 	reducers: {
 		/// OLD kill when search draw is gone
@@ -121,6 +122,15 @@ export const searchDrawerSlice = createSlice({
 				state.location= undefined;
 			}
 
+			if (action.payload && action.payload.subCategories){
+				state.subCategories = action.payload.subCategories;
+			} else {
+				state.subCategories= {};
+			}
+
+			if(action.payload.rewrite!==undefined) {
+				state.rewrite=action.payload.rewrite;
+			}
 			state.refresh=true;
 		},
 		closeSearchDrawer: (state) => {
