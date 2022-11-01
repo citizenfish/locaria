@@ -33,6 +33,7 @@ BEGIN
            search_date AS start_date,
            --note we default end date to the end of the day
            COALESCE(make_timestamp(attributes->>'end_date') ,search_date::DATE::TIMESTAMP + INTERVAL '23 HOURS 59 MINUTES') AS end_date,
+           --TODO sanity check on numeric conversions if they enter garbage
            COALESCE(attributes->>'range_min','0')::FLOAT as range_min,
            COALESCE(attributes->>'range_max','0')::FLOAT AS range_max,
            edit,
@@ -86,7 +87,8 @@ BEGIN
     CREATE UNIQUE INDEX locaria_data_global_search_view_u_idx  ON locaria_data.global_search_view (fid);
 
     --Supporting geometry searches
-    CREATE INDEX locaria_data_search_view_geometry_idx ON locaria_data.global_search_view USING GIST (wkb_geometry);
+    CREATE INDEX locaria_data_search_view_geometry_idx ON locaria_data.global_search_view USING GIST (wkb_geometry); --TODO do we need this?
+    CREATE INDEX locaria_data_search_view_geometry_geog_idx ON locaria_data.global_search_view USING GIST ((wkb_geometry::GEOGRAPHY));
 
     --Supporting free text searches
     CREATE INDEX search_view_jsonb_ts_vector  ON locaria_data.global_search_view USING GIN (jsonb_to_tsvector('English'::regconfig, attributes->'description', '["string", "numeric"]'::jsonb));

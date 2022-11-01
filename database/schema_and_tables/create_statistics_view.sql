@@ -9,7 +9,11 @@ SELECT id,
        date_part('month', log_timestamp) AS mn,
        date_part('year', log_timestamp) AS yr,
        COALESCE(log_message#>>'{parameters,search_text}', log_message#>>'{parameters,address}', '') AS srch,
-       COALESCE(log_message#>'{parameters,category}', '[]') as cat,
+       COALESCE(
+           CASE WHEN jsonb_typeof(log_message#>'{parameters,category}') = 'string' THEN
+               jsonb_build_array(log_message#>'{parameters,category}')
+               ELSE log_message#>'{parameters,category}'
+                   END, '[]'::JSONB) as cat,
        COALESCE(log_message#>'{parameters,tags}', '[]') as tags,
        COALESCE(log_message#>>'{parameters,_connectionIdWS}', 'anon') as usr,
        COALESCE(log_message#>>'{search_stats,count}', '0')::INTEGER AS t_cnt,

@@ -10,6 +10,13 @@ GRANT EXECUTE ON FUNCTION cron.schedule_in_database(text, text, text, text, text
 DELETE FROM cron.job WHERE database = 'locaria{{theme}}{{environment}}';
 SELECT cron.schedule_in_database('Logs table partition', '@hourly', $$CALL partition_management.run_maintenance_proc()$$, 'locaria{{theme}}{{environment}}');
 
+--Setup the minutely file processor
+
+SELECT cron.schedule_in_database( 'Minute file loader',
+                                '* * * * *',
+                                'SELECT locaria_core.load_preview_file_data_cron()',
+                                  'locaria{{theme}}{{environment}}' );
+
 --Setup the hourly file processor
 SELECT cron.schedule_in_database('Hourly files processor',
                                  '@hourly',
@@ -37,6 +44,8 @@ SELECT cron.schedule_in_database('Monthly files processor',
                                  $$
                                      SELECT locaria_core.file_cron(jsonb_build_object('filter', jsonb_build_object('cron', 'monthly')))
                                  $$, 'locaria{{theme}}{{environment}}');
+
+
 
 
 

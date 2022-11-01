@@ -38,7 +38,9 @@ SELECT 'statistics_dashboard_pie_charts',
         )G
     )
 
-        SELECT jsonb_build_object('categories', categories, 'tags', tags)
+        SELECT jsonb_build_object('categories', categories,
+                                'tags', COALESCE(jsonb_build_array(jsonb_build_object('angle', 100,
+                                                                                      'label','none')),tags))
       FROM CATEGORIES,TAGS
 
 $SQL$),

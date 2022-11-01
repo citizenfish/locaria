@@ -20,6 +20,7 @@ import AdminUsersManageEdit from "./admin/pages/adminUsersManageEdit";
 import AdminModerationList from "./admin/pages/adminModerationList";
 import AdminConfig from "./admin/pages/adminConfig";
 import AdminConfigParameters from "./admin/pages/adminConfigParameters";
+import AdminDataDashBoard from "./admin/pages/adminDataDashboard";
 
 const AdminApp = () => {
 
@@ -49,6 +50,7 @@ const AdminApp = () => {
 		<Provider store={store}>
 			<Router>
 				<Switch>
+					<Route exact path="/Admin/Reports/Dashboard" component={AdminDataDashBoard}/>
 					<Route exact path="/Admin/Content/Moderation"  component={AdminModerationList}/>
 					<Route exact path="/Admin/Import/Download"  component={AdminDownload}/>
 					<Route exact path="/Admin/Import/Upload"  component={AdminFileManager}/>

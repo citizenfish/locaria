@@ -8,14 +8,16 @@ import AdminFileSelector from "../components/selectors/adminFileSelector";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import {useDispatch, useSelector} from "react-redux";
+import {setFile} from "../redux/slices/fileSelectSlice";
 
 
 export default function AdminFileManager() {
 
 
     const [showUpload, setShowUpload] = useState(false)
-
-
+    const fileSelected = useSelector((state) => state.fileSelect.currentSelected)
+    const dispatch = useDispatch()
 
     return(
         <Box sx={{display: 'flex'}}>
@@ -43,6 +45,11 @@ export default function AdminFileManager() {
                                 color="error"
                                 onClick={()=> {setShowUpload(false)}}>Hide Upload
                         </Button>}
+                        {fileSelected['id'] !== undefined &&
+                        <Button variant = "outlined"
+                                color = "error"
+                                onClick={() => {dispatch(setFile({}))}}>Back to Files
+                        </Button>}
                     </Grid>
                     <Grid item md={6}>
                         <Typography>The file manager allows you to upload files and import data into Locaria. A wide variety of file formats are supported including Microsoft Excel, CSV and geospatial formats supported by the GDAL libraries.</Typography>
@@ -50,7 +57,6 @@ export default function AdminFileManager() {
                 </Grid>
                 {showUpload && <FileUploader setShowUpload={setShowUpload}/>}
                 <AdminFileSelector/>
-
             </Box>
         </Box>
     )

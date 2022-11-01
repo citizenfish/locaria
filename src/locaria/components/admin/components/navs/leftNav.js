@@ -14,24 +14,27 @@ import {useCookies} from "react-cookie";
 import {useDispatch, useSelector} from "react-redux";
 import {setOverview} from "../../redux/slices/adminPagesSlice";
 
-export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpenUsers,isOpenConfig}) {
+export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpenUsers,isOpenConfig,isOpenReports}) {
 
 	const [openContent, setOpenContent] = useState(isOpenContent || false)
 	const [openSettings, setOpenSettings] = useState(isOpenSettings || false)
 	const [openImport, setOpenImport] = useState(isOpenImport || false)
 	const [openUsers, setOpenUsers] = useState(isOpenUsers || false)
 	const [openConfig, setOpenConfig] = useState(isOpenConfig || false)
+	const [openReports, setOpenReports] = useState(isOpenReports || false)
 
 	const overview = useSelector((state) => state.adminPages.overview);
 	const token = useSelector((state) => state.adminPages.token);
 	const dispatch = useDispatch()
 	const [cookies, setCookies] = useCookies(['location'])
 
+	//TODO this is not elegant, needs to be a single function
 	const handleClickContent = () => {
 		setOpenSettings(false);
 		setOpenImport( false);
 		setOpenConfig(false);
 		setOpenContent(true)
+		setOpenReports(false)
 		history.push(`/Admin/Content/Pages`);
 	};
 
@@ -40,6 +43,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 		setOpenImport(false);
 		setOpenConfig(false);
 		setOpenSettings(true)
+		setOpenReports(false)
 		history.push(`/Admin/Settings/Appearance`);
 	};
 
@@ -48,6 +52,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 		setOpenSettings(false);
 		setOpenConfig(false);
 		setOpenImport(true);
+		setOpenReports(false)
 		history.push(`/Admin/Import/Upload`);
 	}
 
@@ -57,7 +62,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 		setOpenSettings(false)
 		setOpenImport(false)
 		setOpenConfig(false);
-
+		setOpenReports(false)
 		setOpenUsers(true)
 		history.push(`/Admin/Users/Manage`);
 	}
@@ -68,7 +73,18 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 		setOpenImport(false)
 		setOpenUsers(false);
 		setOpenConfig(true);
+		setOpenReports(false)
 		history.push(`/Admin/Config`);
+	}
+
+	const handleClickReports = () => {
+		setOpenContent(false)
+		setOpenSettings(false)
+		setOpenImport(false)
+		setOpenUsers(false);
+		setOpenConfig(false);
+		setOpenReports(true)
+		history.push(`/Admin/Reports/Dashboard`);
 	}
 
 	useEffect(() => {
@@ -77,7 +93,7 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 			dispatch(setOverview(json.packet));
 		});
 
-		if(overview===undefined&&token!==undefined) {
+		if(overview === undefined && token !== undefined) {
 			window.websocket.send({
 				"queue": "getTotals",
 				"api": "sapi",
@@ -257,6 +273,29 @@ export default function LeftNav({isOpenContent,isOpenSettings,isOpenImport,isOpe
 								<ArticleIcon/>
 							</ListItemIcon>
 							<ListItemText primary={"Manage"}/>
+						</ListItemButton>
+					</List>
+				</Collapse>
+
+				{/* Reports and Dashboard */}
+				<ListItemButton  onClick={() => {
+					handleClickReports();
+				}}>
+					<ListItemIcon>
+						<EditIcon/>
+					</ListItemIcon>
+					<ListItemText primary={"Reports"}/>
+					{openReports && <ExpandMore/>}
+				</ListItemButton>
+				<Collapse in={openReports} timeout="auto" unmountOnExit>
+					<List component="div">
+						<ListItemButton  sx={{ pl: 4 }} onClick={() => {
+							history.push(`/Admin/Reports/Dashboard`);
+						}}>
+							<ListItemIcon>
+								<ArticleIcon/>
+							</ListItemIcon>
+							<ListItemText primary={"Dashboard"}/>
 						</ListItemButton>
 					</List>
 				</Collapse>

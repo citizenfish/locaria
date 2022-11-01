@@ -3,13 +3,18 @@
     {
       "stopOnError": true,
       "tables": [
-        "database/functions/utility/asset_url_maker.sql",
+        "database/system_parameters/lambda_config_parameters.sql",
+        "database/functions/triggers/files_trigger.sql",
+        "database/functions/internal/file_upload/load_preview_file_data.sql",
+        "database/functions/internal/file_upload/load_preview_file_data_cron.sql",
+        "database/functions/view_creation/create_materialised_view.sql",
+        "database/functions/view_creation/create_typeahead_search_view.sql",
+        "database/functions/search/search_get_records.sql",
+        "database/functions/search/typeahead_search.sql",
         "database/functions/internal/view_report.sql",
-        "database/functions/utility/geocoder.sql",
-        "database/functions/utility/make_timestamp.sql",
-        "database/functions/utility/tag_maker.sql",
-        "database/functions/utility/unique_array_elements.sql",
-        "database/functions/view_creation/create_materialised_view.sql"
+        "database/schema_and_tables/create_statistics_view.sql",
+        "database/reports/statistics_dashboard/statistics_dashboard_pie_charts.sql",
+        "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql"
       ],
       "substitutions": "../tests.json"
     }

@@ -22,7 +22,6 @@ def database_connect(config):
 
         #This will be used later by ogr2ogr so set a standard named environment variable
         os.environ['LOCARIADB'] = os.environ[env_var]
-        print("Database connection established")
         return psycopg.connect(os.environ[env_var])
 
     except Exception as error:

@@ -44,7 +44,11 @@ BEGIN
         IF processed_var >= count_var THEN
             status_var = 'IMPORTED';
         ELSE
-            status_var = 'IMPORTING';
+            IF inserts_var > 0 THEN
+                status_var = 'IMPORTING';
+            ELSE
+                status_var = 'ERROR';
+            END IF;
         END IF;
 
         UPDATE files

@@ -11,6 +11,7 @@ RUN pip3 install boto3
 RUN pip3 install requests
 RUN pip3 install datetime
 RUN pip3 install pandas
+RUN pip3 install xlsxwriter
 
 ENTRYPOINT python3 file_download.py
 
