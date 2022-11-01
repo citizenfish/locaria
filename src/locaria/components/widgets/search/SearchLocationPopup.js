@@ -37,7 +37,6 @@ export default function SearchLocationPopup({defaultPage}) {
 			newRecent.push({text: name, fid: fid, location: location});
 			setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
 		}
-		dispatch(setLocation(location));
 		let encodedPage=page+encodeSearchParams({
 			location:location
 		})
@@ -48,7 +47,6 @@ export default function SearchLocationPopup({defaultPage}) {
 
 	function handleGeoSuccess(location) {
 		dispatch(setGeolocation(location));
-		dispatch(setLocation(location));
 		handleListItemClick("geo","gelocation",location,false);
 	}
 

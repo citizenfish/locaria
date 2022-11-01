@@ -6,16 +6,17 @@ import {useDispatch, useSelector} from "react-redux";
 import {newSearch} from "../../redux/slices/searchDrawerSlice";
 
 
-const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rankingAttributes}) => {
+const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rankingAttributes,rewrite=false}) => {
 
 	const dispatch = useDispatch();
 	const features = useSelector((state) => state.searchDraw.features);
+	const refresh = useSelector((state) => state.searchDraw.refresh);
 
 	let sxId = 0;
 
 	useEffect(() => {
 		if(category) {
-			dispatch(newSearch({categories: category, tags: tags, limit:limit,displayLimit:displayLimit }));
+			dispatch(newSearch({categories: category, tags: tags, limit:limit,displayLimit:displayLimit,rewrite:rewrite }));
 		}
 	},[]);
 

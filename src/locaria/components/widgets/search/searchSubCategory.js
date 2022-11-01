@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {setSearch, setSubCategory, setSubCategoryList} from "../../redux/slices/searchDrawerSlice";
+import React from 'react';
+import {setSubCategory} from "../../redux/slices/searchDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -10,14 +10,13 @@ import {arrayToggleElement} from "../../../libs/arrayTools";
 export default function SearchSubCategory({sx,multi=true,levels=1,category}) {
 	const dispatch = useDispatch()
 
-	const [subCats, setSubCats] = useState([]);
+	const subCategories = useSelector((state) => state.searchDraw.subCategories);
 
 
 	function handleCheck(sub,id) {
-		let catCopy=[...subCats];
-		catCopy=arrayToggleElement(catCopy,id);
-		setSubCats(catCopy);
-		dispatch(setSubCategory({sub:sub,data:catCopy}))
+		let catCopy=JSON.parse(JSON.stringify(subCategories));
+		catCopy[sub]=arrayToggleElement(catCopy[sub],id);
+		dispatch(setSubCategory({sub:sub,data:catCopy[sub]}))
 	}
 
 	function DisplaySubCategorySubs({sub,subArray}) {
@@ -29,7 +28,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category}) {
 						<ListItemIcon>
 							<Checkbox
 								edge="start"
-								checked={subCats.indexOf(subArray[a]) !== -1}
+								checked={subCategories[sub].indexOf(subArray[a]) !== -1}
 								tabIndex={-1}
 								disableRipple
 							/>

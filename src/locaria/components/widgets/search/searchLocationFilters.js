@@ -2,12 +2,11 @@ import React, {useEffect} from 'react';
 import {useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import SearchCategory from "./searchCategory";
 import DataCard from "../featureCards/dataCard";
 import SearchSubCategory from "./searchSubCategory";
 
 
-const SearchLocationFilters = ({id, category, limit, displayLimit, tags, sx,field,mode='full',clickEnabled}) => {
+const SearchLocationFilters = ({id, category, limit, displayLimit, tags, sx,field,mode='full',clickEnabled,urlMode=true}) => {
 
 	const features = useSelector((state) => state.searchDraw.features);
 
