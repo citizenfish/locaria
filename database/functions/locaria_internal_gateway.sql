@@ -7,6 +7,11 @@ DECLARE
     log_var     BOOLEAN DEFAULT FALSE;
     ret_var     JSONB;
     version_var TEXT DEFAULT '0.5';
+    v_state   TEXT;
+    v_msg     TEXT;
+    v_detail  TEXT;
+    v_hint    TEXT;
+    v_context TEXT;
 BEGIN
 
     --This keeps us within our search schema when running code
@@ -123,7 +128,14 @@ BEGIN
 --This block will trap any errors and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
 EXCEPTION
     WHEN OTHERS THEN
+        get stacked diagnostics
+            v_state   = returned_sqlstate,
+            v_msg     = message_text,
+            v_detail  = pg_exception_detail,
+            v_hint    = pg_exception_hint,
+            v_context = pg_exception_context;
 
+        parameters = parameters || jsonb_build_object('stacked_diagnostics', jsonb_build_object('state', v_state, 'msg', v_msg, 'detail', v_detail, 'hint', v_hint, 'context', v_context));
         RETURN jsonb_build_object('route',           'internal_api',
                                   'error',           'request could not be completed',
                                   'response_code',   600) || locaria_core.log(parameters,SQLERRM);

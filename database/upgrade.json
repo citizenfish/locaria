@@ -14,7 +14,8 @@
         "database/functions/internal/view_report.sql",
         "database/schema_and_tables/create_statistics_view.sql",
         "database/reports/statistics_dashboard/statistics_dashboard_pie_charts.sql",
-        "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql"
+        "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql",
+        "database/functions/utility/asset_url_maker.sql"
       ],
       "substitutions": "../tests.json"
     }

@@ -1,11 +1,15 @@
 import sys
 import re
 import json
+import requests
+from requests.auth import HTTPBasicAuth
 
 sys.path[0:0] = ['../modules']
 from locaria_api_utils import *
 
 INSERT_SCHEMA = 'locaria_uploads'
+
+#TODO split classes into own files
 
 class sustainablefoodplaces:
 
@@ -65,4 +69,40 @@ class mindlocations:
             features.append( (mind['name'], json.dumps(mind)) )
 
         res = db.bulkInserter(self.insert, features)
-classSelectors = {'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations}
+
+class datathistle:
+    def __init__(self, parameters, debug = True):
+        self.url = parameters.get('url','https://api.list.co.uk/v1/events')
+        self.debug = debug
+        self.table = parameters.get('table', 'datathistle')
+        self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(event_id TEXT PRIMARY KEY, attributes JSONB)"
+        self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (event_id, attributes) VALUES %s ON CONFLICT(event_id) DO UPDATE SET attributes=EXCLUDED.attributes"
+        self.api_key = parameters.get('apikey','')
+        self.lon = parameters.get('lon', None)
+        self.lat = parameters.get('lat', None)
+        self.distance = parameters.get('distance', None)
+
+    def processAPI(self,db):
+        db.query(self.table_create)
+        if self.debug: print(f"Processing datathstile: {self.url}")
+        if not self.lon or not self.lat or not self.distance:
+            return {'error' : 'missing parameters'}
+
+
+        url = f"{self.url}?near={self.lat},{self.lon}/{self.distance}"
+        count = 0
+        while True:
+            events = []
+            res = requests.get(url, headers={'Authorization': f"Bearer {self.api_key}"})
+            for e in res.json():
+                events.append((e['event_id'], json.dumps(e)))
+            db_res = db.bulkInserter(self.insert, events)
+            url = res.links.get('next', '')
+            count += len(events)
+            if url == '':
+                break
+            url = url['url']
+
+        return {'inserts' : count}
+
+classSelectors = {'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle}
