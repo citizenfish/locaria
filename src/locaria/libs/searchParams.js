@@ -1,8 +1,6 @@
 function decodeSearchParams(search) {
 	let aSearch='/'+decodeURI(search)+'/';
 	let params={
-		limit:30,
-		displayLimit: 30,
 		subCategories:{subCategory1:[],subCategory2:[]}
 	}
 	let match=aSearch.match(/\/s(.*?)\//);
@@ -21,6 +19,18 @@ function decodeSearchParams(search) {
 	if(match) {
 		params.subCategories['subCategory2']=match[1].split(',');
 	}
+	match=aSearch.match(/\/d(.*?)\//);
+	if(match) {
+		params.distance=match[1];
+	}
+	match=aSearch.match(/\/p(.*?)\//);
+	if(match) {
+		params.page=parseInt(match[1]);
+	}
+	match=aSearch.match(/\/t(.*?)\//);
+	if(match) {
+		params.tags=match[1].split(',');
+	}
 	return params;
 }
 
@@ -38,6 +48,15 @@ function encodeSearchParams(params) {
 	}
 	if(params.subCategories&&params.subCategories['subCategory2']&&params.subCategories['subCategory2'].length>0) {
 		search+=`/2${params.subCategories['subCategory2'].join(',')}`;
+	}
+	if(params.tags&&params.tags.length>0) {
+		search+=`/t${params.tags.join(',')}`;
+	}
+	if(params.distance) {
+		search+=`/d${params.distance}`;
+	}
+	if(params.page) {
+		search+=`/p${params.page}`;
 	}
 	return `${search}/`;
 }

@@ -10,7 +10,6 @@ const TopFeatures = ({id, category, limit, displayLimit, tags, sx, sxArray, rank
 
 	const dispatch = useDispatch();
 	const features = useSelector((state) => state.searchDraw.features);
-	const refresh = useSelector((state) => state.searchDraw.refresh);
 
 	let sxId = 0;
 

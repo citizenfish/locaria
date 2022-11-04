@@ -1,4 +1,4 @@
-service: locaria-aurora-events-${env:theme}${env:environment}
+service: locaria-ae-${env:theme}${env:environment}
 projectDir: ../../../
 provider:
   name: aws

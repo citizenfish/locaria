@@ -1,6 +1,6 @@
-import {openHomeDrawer} from "../../../deprecated/homeDrawerSlice";
-import {openLayout} from "../components/redux/slices/layoutSlice";
-import {openSearchDrawer} from "../components/redux/slices/searchDrawerSlice";
+import {openHomeDrawer} from "./homeDrawerSlice";
+import {openLayout} from "../src/locaria/components/redux/slices/layoutSlice";
+import {openSearchDrawer} from "../src/locaria/components/redux/slices/searchDrawerSlice";
 
 const PathRouter=(location) => {
     if (location === '/') {

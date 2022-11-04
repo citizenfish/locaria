@@ -5,63 +5,45 @@ import {createSlice} from '@reduxjs/toolkit'
 export const searchDrawerSlice = createSlice({
 	name: 'searchDraw',
 	initialState: {
-		open: false,
-		categories: [],
-		search: '',
+		// The search payload, change this and search triggers
+		searchParams:{
+			subCategories: {"subCategory1":[],"subCategory2":[]},
+			location: undefined,
+			limit: undefined,
+			displayLimit: undefined,
+			categories: [],
+			search: '',
+			distance: 0,
+			page: 1,
+
+		},
+
+
+
+		loading: false,
+		ready: false,
+
 		locationShow: false,
-		distance: 0,
 		distanceType: 'km',
 		tags: [],
 		resolutionUpdate: false,
 		tagList: [],
-		refresh: false,
-		page: 1,
+
 		totalPages: 0,
+
 		features: {},
 		feature:undefined,
 		fid: undefined,
-		limit: undefined,
-		displayLimit: undefined,
+
+
 		locationOpen: false,
 		locationPage: undefined,
 		geolocation: undefined,
-		location: undefined,
-		subCategories: {"subCategory1":[],"subCategory2":[]},
+
 		rewrite: true
 	},
 	reducers: {
-		/// OLD kill when search draw is gone
-		openSearchDrawer: (state, action) => {
-			state.open = true;
-			state.page=1;
-			state.totalPages=0;
-			if (action.payload && action.payload.categories){
-				if(action.payload.mode==='add') {
-					for(let c in action.payload.categories) {
-						if(state.categories.indexOf(action.payload.categories[c])===-1)
-							state.categories.push(action.payload.categories[c]);
-						else
-							state.categories.splice(state.categories.indexOf(action.payload.categories[c]),1);
-					}
-				}
-				else
-					state.categories = action.payload.categories;
-				state.tags = []; //If category changes then so must tags
-			}
 
-			if(action.payload && action.payload.distance) {
-				state.distance=action.payload.distance;
-			}
-
-			if (action.payload && action.payload.search){
-				state.search = action.payload.search;
-			}
-			if (action.payload && action.payload.subCategories){
-				state.subCategories = action.payload.subCategories;
-			}
-			state.refresh=true;
-
-		},
 		setFeatures: (state,action) => {
 			state.features=action.payload;
 		},
@@ -74,101 +56,89 @@ export const searchDrawerSlice = createSlice({
 			}
 			console.log(`Cant find ${action.payload}`);
 		},
+
+
 		newSearch: (state, action) => {
-			state.open = true;
-			state.page=1;
+
+
+			if(action.payload.page)
+				state.searchParams.page=action.payload.page;
+			else
+				state.searchParams.page=1;
 			state.totalPages=0;
+
+
 			if (action.payload && action.payload.categories){
-				if(action.payload.mode==='add') {
-					for(let c in action.payload.categories) {
-						if(state.categories.indexOf(action.payload.categories[c])===-1)
-							state.categories.push(action.payload.categories[c]);
-						else
-							state.categories.splice(state.categories.indexOf(action.payload.categories[c]),1);
-					}
-				}
-				else
-					state.categories = action.payload.categories;
-				state.tags = []; //If category changes then so must tags
+				state.searchParams.categories = action.payload.categories;
+				state.searchParams.tags = []; //If category changes then so must tags
 			}
 
 			if(action.payload && action.payload.tags) {
-				state.tags=action.payload.tags;
+				state.searchParams.tags=action.payload.tags;
 			}
 
 
 
 			if(action.payload && action.payload.distance) {
-				state.distance=action.payload.distance;
+				state.searchParams.distance=action.payload.distance;
 			}
 
 			if (action.payload && action.payload.search){
-				state.search = action.payload.search;
+				state.searchParams.search = action.payload.search;
 			}
 			if (action.payload && action.payload.limit){
-				state.limit = action.payload.limit;
+				state.searchParams.limit = action.payload.limit;
 			} else {
-				state.limit= undefined;
+				state.searchParams.limit= undefined;
 			}
 			if (action.payload && action.payload.displayLimit){
-				state.displayLimit = action.payload.displayLimit;
+				state.searchParams.displayLimit = action.payload.displayLimit;
 			} else {
-				state.displayLimit=undefined;
+				state.searchParams.displayLimit=undefined;
 			}
 
 			if (action.payload && action.payload.location){
-				state.location = action.payload.location;
+				state.searchParams.location = action.payload.location;
 			} else {
-				state.location= undefined;
+				state.searchParams.location= undefined;
 			}
 
 			if (action.payload && action.payload.subCategories){
-				state.subCategories = action.payload.subCategories;
+				state.searchParams.subCategories = action.payload.subCategories;
 			} else {
-				state.subCategories= {};
+				state.searchParams.subCategories= {};
 			}
 
 			if(action.payload.rewrite!==undefined) {
 				state.rewrite=action.payload.rewrite;
 			}
-			state.refresh=true;
+			state.ready=true;
 		},
-		closeSearchDrawer: (state) => {
-			state.open = false;
-		},
-		toggleSearchDrawer: (state) => {
-			state.open = !state.open;
-		},
+
+
 		deleteSearchCategory: (state, action) => {
 			if (state.categories.indexOf(action.payload) !== -1) {
 				state.categories.splice(state.categories.indexOf(action.payload), 1);
 				state.tags = []; //If category changes then so must tags
 			}
-			state.refresh=true;
 		},
 		clearSearchCategory: (state) => {
 			state.categories = [];
 			state.tags = [];
 			state.page=1;
 			state.totalPages=0;
-			state.refresh=true;
 
 		},
 		setSearch: (state,action) => {
 			state.search = action.payload.search;
 			state.page=1;
 			state.totalPages=0;
-			if(action.payload.refresh)
-				state.refresh=action.payload.refresh;
-			else
-				state.refresh=true;
 
 		},
 		setCategoryList : (state, action) => {
 			if (action.payload) {
 				state.categories = action.payload
 			}
-			state.refresh=true;
 		},
 
 
@@ -176,47 +146,39 @@ export const searchDrawerSlice = createSlice({
 			state.locationShow = !state.locationShow;
 		},
 		setDistance: (state,action) => {
-			state.distance = action.payload;
+			state.searchParams.distance = action.payload;
 			state.page=1;
 			state.totalPages=0;
-			state.refresh=true;
-
 		},
 		setDistanceType: (state,action) => {
 			state.distanceType = action.payload;
-			state.refresh=true;
 		},
 		setLocation: (state,action) => {
 			state.location = action.payload;
-			state.refresh=true;
 		},
 
 		setTags: (state, action) => {
-			state.tags = action.payload;
+			state.searchParams.tags = action.payload;
 			state.page=1;
 			state.totalPages=0;
-			state.refresh=true;
 
 		},
 		setSubCategory: (state, action) => {
-			state.subCategories[action.payload.sub]=action.payload.data;
-			state.page=1;
+			state.searchParams.subCategories[action.payload.sub]=action.payload.data;
+			state.searchParams.page=1;
 			state.totalPages=0;
-			state.refresh=true;
 
 		},
 		deleteTag: (state,action) => {
 			state.tags.splice(state.tags.indexOf(action.payload),1);
 			state.page=1;
 			state.totalPages=0;
-			state.refresh=true;
 
 		},
 		resetTags: (state,action) => {
 			state.tags = [];
 			state.page=1;
 			state.totalPages=0;
-			state.refresh=true;
 
 		},
 		addTag: (state,action) => {
@@ -228,22 +190,17 @@ export const searchDrawerSlice = createSlice({
 			}
 			state.page=1;
 			state.totalPages=0;
-			state.refresh=true;
 
 		},
 		setTagList: (state,action) => {
 			state.tagList=action.payload;
 		},
 		setPage: (state,action)=> {
-			state.page=action.payload;
-			state.refresh=true;
+			state.searchParams.page=action.payload;
 
 		},
 		setTotalPages: (state,action)=> {
 			state.totalPages=parseInt(action.payload);
-		},
-		clearRefresh: (state) => {
-			state.refresh=false;
 		},
 		locationPopup: (state,action) => {
 			state.locationOpen=action.payload.open;
@@ -252,16 +209,24 @@ export const searchDrawerSlice = createSlice({
 		},
 		setGeolocation: (state,action) => {
 			state.geolocation=action.payload;
-		}
+		},
+		startLoading: (state,action) => {
+			state.loading=true;
+		},
+		stopLoading: (state,action) => {
+			state.loading=false;
+		},
+		setDisplayLimit: (state,action)=> {
+			state.searchParams.displayLimit=action.payload;
+			state.loading=false;
+		},
+
 
 	},
 })
 
 // Action creators are generated for each case reducer function
 export const {
-	openSearchDrawer,
-	closeSearchDrawer,
-	toggleSearchDrawer,
 	deleteSearchCategory,
 	clearSearchCategory,
 	setSearch,
@@ -275,7 +240,6 @@ export const {
 	setTagList,
 	setPage,
 	setTotalPages,
-	clearRefresh,
 	setDistanceType,
 	newSearch,
 	setFeatures,
@@ -283,7 +247,10 @@ export const {
 	locationPopup,
 	setGeolocation,
 	setLocation,
-	setSubCategory
+	setSubCategory,
+	startLoading,
+	stopLoading,
+	setDisplayLimit
 
 } = searchDrawerSlice.actions
 
