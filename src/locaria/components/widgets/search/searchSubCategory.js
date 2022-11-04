@@ -10,11 +10,12 @@ import {arrayToggleElement} from "../../../libs/arrayTools";
 export default function SearchSubCategory({sx,multi=true,levels=1,category}) {
 	const dispatch = useDispatch()
 
-	const subCategories = useSelector((state) => state.searchDraw.subCategories);
+	//const subCategories = useSelector((state) => state.searchDraw.subCategories);
+	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 
 
 	function handleCheck(sub,id) {
-		let catCopy=JSON.parse(JSON.stringify(subCategories));
+		let catCopy=JSON.parse(JSON.stringify(searchParams.subCategories));
 		catCopy[sub]=arrayToggleElement(catCopy[sub],id);
 		dispatch(setSubCategory({sub:sub,data:catCopy[sub]}))
 	}
@@ -28,7 +29,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category}) {
 						<ListItemIcon>
 							<Checkbox
 								edge="start"
-								checked={subCategories[sub].indexOf(subArray[a]) !== -1}
+								checked={searchParams.subCategories[sub].indexOf(subArray[a]) !== -1}
 								tabIndex={-1}
 								disableRipple
 							/>

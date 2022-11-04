@@ -3,16 +3,13 @@ import Map from "../maps/map"
 import {useDispatch, useSelector} from "react-redux";
 import {newSearch, setFeature} from "../../redux/slices/searchDrawerSlice";
 
-export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomChange,speedDial,sx,category,tag,mapType,mapSource,mapStyle,maxZoom,zoom}) {
+export default function SimpleMap ({style,id='SimpleMap',handleMapClick,onZoomChange,speedDial,sx,tag,mapType,mapSource,mapStyle,maxZoom,zoom}) {
 
 	const mapRef = useRef();
 	const dispatch = useDispatch();
 	const features = useSelector((state) => state.searchDraw.features);
 
 
-	useEffect(() => {
-			dispatch(newSearch({categories: category, tags: tag}));
-	},[]);
 
 	function onFeatureSeleted(features) {
 		dispatch(setFeature(features[0].properties.fid))

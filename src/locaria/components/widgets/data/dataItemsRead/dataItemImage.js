@@ -12,9 +12,6 @@ const DataItemImage = ({name, data, sx}) => {
 	const url = new UrlCoder();
 	if (data && data[0]) {
 		let urlActual = url.decode(data[0], true);
-
-		console.log(data);
-		console.log(urlActual);
 		return (
 			<img src={urlActual} style={sxActual}></img>
 		)

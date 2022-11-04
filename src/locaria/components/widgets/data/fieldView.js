@@ -28,10 +28,10 @@ import Divider from "@mui/material/Divider";
 import DataItemImage from "./dataItemsRead/dataItemImage";
 import DataItemH1 from "./dataItemsRead/dataItemH1";
 import DataItemLinkButton from "./dataItemsRead/dataItemLinkButton";
+import DataItemDistance from "./dataItemsRead/dataItemDistance";
 
 const FieldView = ({data, mode = 'read', fields = "main"}) => {
 
-	console.log(data);
 	if (data && data.properties && data.properties.category) {
 
 		let channel = window.systemCategories.getChannelProperties(data.properties.category);
@@ -153,6 +153,7 @@ const FormatField = ({field, data, mode, category}) => {
 		'instagram': {"element": DataItemSocialInstagram},
 		'social': {"element": DataItemSocialGeneric},
 		'linkButton': {"element": DataItemLinkButton},
+		'distance': {"element": DataItemDistance},
 	}
 
 	const dataWriteItem = {
