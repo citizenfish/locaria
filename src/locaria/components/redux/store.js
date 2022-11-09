@@ -15,6 +15,7 @@ import categorySelectSlice from "../admin/redux/slices/categorySelectSlice"
 import apiSelectSlice from "../admin/redux/slices/apiSelectSlice";
 import fileSelectSlice from "../admin/redux/slices/fileSelectSlice";
 import featureSlice from "../admin/redux/slices/featureSlice";
+import userSlice from "./slices/userSlice";
 
 export default configureStore({
 	reducer: {
@@ -27,6 +28,7 @@ export default configureStore({
 		typeAhead: typeAhead,
 		mediaSlice: mediaSlice,
 		formSlice: formSlice,
+		userSlice: userSlice,
 //admin
 
 		adminPages: adminPagesSlice,

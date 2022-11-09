@@ -3,16 +3,20 @@ import {Collapse, Divider, Drawer, ListItem, ListItemIcon, ListItemText} from "@
 import Box from "@mui/material/Box";
 import {useHistory} from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import {useDispatch, useSelector} from "react-redux";
 import {closeMenuDraw} from "../../redux/slices/menuDrawerSlice";
 
+import { resources} from "themeLocaria";
 
 
 import UrlCoder from "../../../libs/urlCoder"
 import List from "@mui/material/List";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import {useCookies} from "react-cookie";
 
 
 const MenuDrawer = function () {
@@ -47,7 +51,10 @@ function DrawSiteMap() {
 
 	const url = new UrlCoder();
 	const history = useHistory();
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
+	const [cookies, setCookies] = useCookies();
+
+	const userValid = useSelector((state) => state.userSlice.userValid);
 
 	const [collapseOpen,setCollapseOpen] = useState({});
 	const [render,forceRender]=useState(0);
@@ -87,22 +94,63 @@ function DrawSiteMap() {
 		</ListItem>
 	)
 
+	if(userValid&&cookies.groups&&cookies.groups.indexOf('Admins')!==-1) {
+		topMenuArray.push(
+			<ListItem button key={"AdminHome"} onClick={() => {
+				window.location='/Admin/';
+			}}>
+				<ListItemIcon>
+					<AdminPanelSettingsIcon sx={{color: window.systemMain.defaultIconColor}}/>
+				</ListItemIcon>
+				<ListItemText primary={"Admin"}/>
+			</ListItem>
+		)
+	}
+
+	if(userValid===false) {
+			topMenuArray.push(
+				<ListItem button key={"SignIn"} onClick={() => {
+					window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
+
+				}}>
+					<ListItemIcon>
+						<AccountCircleIcon sx={{color: window.systemMain.defaultIconColor}}/>
+					</ListItemIcon>
+					<ListItemText primary={"Sign in"}/>
+				</ListItem>
+			)
+	} else {
+		topMenuArray.push(
+			<ListItem button key={"Logout"} onClick={() => {
+				setCookies('id_token', "null", {path: '/', sameSite: true});
+				window.location = `/`;
+			}}>
+				<ListItemIcon>
+					<LogoutIcon sx={{color: window.systemMain.defaultIconColor}}/>
+				</ListItemIcon>
+				<ListItemText primary={"Logout"}/>
+			</ListItem>
+		)
+	}
+
 	for (let p in window.siteMap) {
 		let subMenuArray=[];
 		for (let i in window.siteMap[p].items) {
-			subMenuArray.push(
+			// Does the menu item have a group set? if so check they have it
+			if(!window.siteMap[p].items[i].group||cookies.groups.indexOf(window.siteMap[p].items[i].group)!==-1) {
+				subMenuArray.push(
+					<ListItem sx={{pl: 4}} button key={i} onClick={() => {
 
-				<ListItem sx={{ pl: 4 }} button key={i} onClick={() => {
-
-					let route = url.route(window.siteMap[p].items[i].link);
-					if (route === true) {
-						history.push(window.siteMap[p].items[i].link);
-						dispatch(closeMenuDraw());
-					}
-				}}>
-					<ListItemText primary={window.siteMap[p].items[i].name}/>
-				</ListItem>
-			)
+						let route = url.route(window.siteMap[p].items[i].link);
+						if (route === true) {
+							history.push(window.siteMap[p].items[i].link);
+							dispatch(closeMenuDraw());
+						}
+					}}>
+						<ListItemText primary={window.siteMap[p].items[i].name}/>
+					</ListItem>
+				)
+			}
 		}
 
 
