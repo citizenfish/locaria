@@ -21,7 +21,8 @@ DECLARE
     ranking_attribute_var TEXT [] DEFAULT ARRAY ['description','title'];
     jsonpath_var TEXT DEFAULT '';
     category_var TEXT[];
-
+    owned_var BOOLEAN;
+    live_flag BOOLEAN DEFAULT FALSE;
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -121,6 +122,9 @@ BEGIN
     category_var = json2text(search_parameters->'category');
     --This is the core search query
 
+    owned_var = COALESCE(search_parameters->>'owned','FALSE')::BOOLEAN;
+    live_flag = COALESCE(search_parameters->>'live','FALSE')::BOOLEAN;
+
     RETURN QUERY
 
 
@@ -145,7 +149,7 @@ BEGIN
                                           --used to further rank results against a specific attribute
                                           levenshtein(lower(jsonb_extract_path_text(attributes,VARIADIC ranking_attribute_var)), lower(search_parameters->>'search_text')) AS attribute_rank
 
-                 FROM global_search_view
+                 FROM (SELECT * FROM global_search_view WHERE live_flag = FALSE UNION SELECT * FROM global_search_view_live WHERE live_flag = TRUE) VW
                  WHERE wkb_geometry IS NOT NULL
                    --Category, refs and general filters
                    AND (NOT filter_var OR attributes @> json_filter)
@@ -167,9 +171,13 @@ BEGIN
                    AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| category_var )
                    --range query
                    AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
+                   AND (
+                       --Bring back items acl is allowed to view
+                       (owned_var = FALSE AND (acl_check(search_parameters->'acl', attributes->'acl')->>'view')::BOOLEAN)
+                        --Bring back only items owned by the acl sent
+                        OR (owned_var = TRUE AND (acl_check(search_parameters->'acl', attributes->'acl')->>'owner')::BOOLEAN)
+                       )
 
-                   --Dev note: removed from outer query to improve performance, monitor this
-                   AND (acl_check(search_parameters->'acl', attributes->'acl')->>'view')::BOOLEAN
                  LIMIT default_limit
                      OFFSET default_offset
              ) INNER_SUB

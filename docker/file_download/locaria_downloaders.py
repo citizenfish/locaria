@@ -31,6 +31,7 @@ def download_all(db, schema, parameters):
             features.extend(get_category_data(db, category, parameters.get('filters',''), 'datagrid'))
 
         writeFileJson(parameters['path'], features)
+
     # GEOPACKAGE OUTPUT
     elif parameters['format'] == 'geopackage':
         print("Outputting GEOPACKAGE")
@@ -54,7 +55,7 @@ def download_all(db, schema, parameters):
     s3 = boto3.client('s3')
     s3.upload_file(parameters['path'], parameters['s3_bucket'],  parameters['s3_path'])
 
-    return {"status" : "DOWNLOAD_COMPLETED", "message" : "Download Completed", "attributes" : {"name" : parameters['s3_path'], "s3_path" : parameters['s3_path'], "s3_bucket": parameters['s3_bucket']}}
+    return {"status" : "DOWNLOAD_COMPLETED", "message" : "Download Completed", "attributes" : {"name" : parameters['name'], "fileName": parameters["fileName"]}}
 
 def get_category_data(db, category, filters, format):
     print(f"Writing :{category}")

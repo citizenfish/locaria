@@ -17,6 +17,7 @@ BEGIN
 
     --TEST 1 - single item with no acl
     SELECT locaria_core.locaria_gateway(search_params) INTO ret_var;
+
     RAISE NOTICE '%', locaria_tests.test_result_processor('search_test_with_acl TEST 1', ret_var , '{geojson,features}', '*');
 
     --TEST 2 - item with acl
@@ -47,6 +48,15 @@ BEGIN
         );
     SELECT locaria_core.locaria_gateway(search_params, acl) INTO ret_var;
     RAISE NOTICE '%', locaria_tests.test_result_processor('search_test_with_acl TEST 6', ret_var , '{geojson,features}', '[]');
+
+    --TEST 7 live search
+    search_params = search_params || jsonb_build_object('search_text', 'acl 3', 'live', true);
+    acl = jsonb_build_object(
+            '_userID', 'acl 3',
+            '_groups' ,  jsonb_build_array('1')
+        );
+    SELECT locaria_core.locaria_gateway(search_params, acl) INTO ret_var;
+    RAISE NOTICE '%', locaria_tests.test_result_processor('search_test_with_acl TEST 7', ret_var , '{geojson,features}', '*');
 
 END;
 $$LANGUAGE PLPGSQL;
