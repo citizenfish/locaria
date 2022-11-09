@@ -6,8 +6,6 @@ BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'public';
 
-
-
     --TODO should be a fixed set of statuses
     --TODO should be an acl check but none is done?
     UPDATE locaria_core.moderation_queue

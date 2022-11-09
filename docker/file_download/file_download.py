@@ -6,6 +6,8 @@ from locaria_file_utils import *
 from locaria_downloaders import *
 import time
 
+S3_PREFIX = 'loaderDownloads'
+FORMATS = {'geopckage' : 'gpkg', 'json' : 'json'}
 config = get_local_config('config.json')
 
 # Make database connection, retrieve any parameters and then a list of downloads to process
@@ -36,26 +38,19 @@ for f in downloads_to_process['files']:
     attributes['s3_bucket'] = parameters['s3_bucket']
     # We need a temporary directory and filename to download to
     attributes["tmp_dir"] = tempfile.gettempdir()
+    attributes['fileName'] = f"{f['id']}.{FORMATS.get('format', 'xlsx')}"
+    # Storage path on s3
+    attributes['s3_path'] = f"{S3_PREFIX}/{attributes['fileName']}"
+    # tempfile local storage path
+    attributes['path'] = f"/{attributes['tmp_dir']}/{attributes['fileName']}"
 
     if attributes.get('type', 'all_data') == 'all_data':
-        # TODO repeated code could be better
-        if attributes.get('format') == 'json':
-            attributes['s3_path'] = f"downloads/{f['id']}.json"
-            attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.json"
-        elif attributes.get('format') == 'geopackage':
-            attributes['s3_path'] = f"downloads/{f['id']}.gpkg"
-            attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.gpkg"
-        else:
-            attributes['format'] = 'xlsx'
-            attributes['s3_path'] = f"downloads/{f['id']}.xlsx"
-            attributes['path'] = attributes["tmp_dir"] + f"/{f['id']}.xlsx"
-
         try:
             result = download_all(db, schema, attributes)
         except Exception as e:
             result = {'status': 'DOWNLOAD_ERROR', 'message' : f"Error: {str(e)}"}
 
-        update_file_status(db, schema,f['id'],result)
+        update_file_status(db, schema,f['id'], result)
 
     print(f"Processed download {f['id']}")
 

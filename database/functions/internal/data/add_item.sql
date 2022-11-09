@@ -23,6 +23,9 @@ BEGIN
      --Override the default acl
      IF (parameters#>'{acl,_newACL}') IS NOT NULL THEN
          acl_var = acl_var || (parameters#>'{acl,_newACL}');
+     ELSE
+         --set the owner
+         acl_var = acl_var || jsonb_build_object('owner', COALESCE(parameters#>>'{acl,_userID}', 'SYSTEM'));
      END IF;
 
      SELECT id,
