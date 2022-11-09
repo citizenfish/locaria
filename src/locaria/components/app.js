@@ -5,15 +5,17 @@ import Maintenance from 'components/maintenance';
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
 import Openlayers from "libs/Openlayers";
-import store from './redux/store'
-import {Provider} from 'react-redux'
+import {Provider, useDispatch, useSelector} from 'react-redux'
 
 import RenderPage from "./widgets/markdown/renderPage";
-import * as PropTypes from "prop-types";
 import CookieConsent from "react-cookie-consent";
+import {setValidPublic, setValidUser} from "./redux/slices/userSlice";
 
 
 const App = () => {
+
+	const dispatch = useDispatch()
+
 
 	// fix our cookie defaults
 
@@ -21,7 +23,7 @@ const App = () => {
 
 	const [cookies, setCookies] = useCookies(['location']);
 
-	const [user, setUser] = React.useState(false);
+	//const [user, setUser] = React.useState(false);
 
 	if (cookies.location === undefined) {
 		const ol = new Openlayers();
@@ -59,7 +61,8 @@ const App = () => {
 			}
 			if (json.packet.email) {
 				// if its has its new, if not just keep the old one
-				setUser(true);
+				dispatch(setValidUser({groups:json.packet['cognito:groups'],id:json.packet['cognito:username']}));
+				//setUser(true);
 				if (hash) {
 					setCookies('id_token', hash, {path: '/', sameSite: true});
 					setCookies('groups', json.packet['cognito:groups'], {path: '/', sameSite: true});
@@ -76,7 +79,9 @@ const App = () => {
 				setCookies('id_token', null, {path: '/', sameSite: true});
 				setCookies('groups', [], {path: '/', sameSite: true});
 				// This is bad token so lets go home
-				setUser(false);
+				//setUser(false);
+				dispatch(setValidPublic());
+
 			}
 		});
 
@@ -96,7 +101,9 @@ const App = () => {
 					}
 				});
 			} else {
-				setUser(false);
+				//setUser(false);
+				dispatch(setValidPublic());
+
 			}
 		}
 	}, []);
@@ -115,7 +122,7 @@ const App = () => {
 	} else {
 
 		return (
-			<Provider store={store}>
+			<>
 				<Router>
 					<Switch>
 						<Route path="/Login/" component={() => {
@@ -139,7 +146,7 @@ const App = () => {
 				</Router>
 				<CookieConsent>This website uses cookies to enhance the user experience only, we do not issue 3rd party
 					cookies.</CookieConsent>
-			</Provider>
+			</>
 		);
 	}
 };

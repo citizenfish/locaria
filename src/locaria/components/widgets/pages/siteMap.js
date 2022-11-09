@@ -4,13 +4,12 @@ import Grid from "@mui/material/Grid";
 import {useHistory} from "react-router-dom";
 
 import UrlCoder from "../../../libs/urlCoder"
-import {useMediaQuery} from "@mui/material";
 import TypographyHeader from "../typography/typographyHeader";
-import Carousel from "react-material-ui-carousel";
-import Paper from "@mui/material/Paper";
+
 import ClickAway from "../utils/clickAway";
 import {useSelector} from "react-redux";
 import SlideShow from "../images/slideShow";
+import {useCookies} from "react-cookie";
 
 const SiteMap = function ({mode, images, feature, format="cover",duration = 500,interval=2000}) {
 
@@ -70,6 +69,7 @@ const Panels = () => {
 	const url = new UrlCoder();
 	const [collapseOpen, setCollapseOpen] = useState({});
 	const [render, forceRender] = useState(0);
+	const [cookies, setCookies] = useCookies();
 
 	useEffect(() => {
 		let state = collapseOpen;
@@ -109,27 +109,30 @@ const Panels = () => {
 	for (let p in window.siteMap) {
 		let panelItems = [];
 		for (let i in window.siteMap[p].items) {
-			panelItems.push(
-				<Box key={i} onClick={() => {
-					collapseAll();
-					let route = url.route(window.siteMap[p].items[i].link);
-					if (route === true) {
-						history.push(window.siteMap[p].items[i].link);
-					}
-				}} sx={{
-					borderTop: `1px solid ${window.siteMap[p].color}`,
-					fontSize: "0.8rem",
-					'&:hover': {
-						opacity: "0.5"
-					},
-					cursor: "pointer"
+			// Does the menu item have a group set? if so check they have it
+			if(!window.siteMap[p].items[i].group||cookies.groups.indexOf(window.siteMap[p].items[i].group)!==-1) {
+				panelItems.push(
+					<Box key={i} onClick={() => {
+						collapseAll();
+						let route = url.route(window.siteMap[p].items[i].link);
+						if (route === true) {
+							history.push(window.siteMap[p].items[i].link);
+						}
+					}} sx={{
+						borderTop: `1px solid ${window.siteMap[p].color}`,
+						fontSize: "0.8rem",
+						'&:hover': {
+							opacity: "0.5"
+						},
+						cursor: "pointer"
 
-				}}>
-					<TypographyHeader
-						sx={{color: window.siteMap[p].color, fontWeight: 400, padding: "5px", fontSize: "0.8rem"}}
-						element={"h3"}>{window.siteMap[p].items[i].name}</TypographyHeader>
-				</Box>
-			)
+					}}>
+						<TypographyHeader
+							sx={{color: window.siteMap[p].color, fontWeight: 400, padding: "5px", fontSize: "0.8rem"}}
+							element={"h3"}>{window.siteMap[p].items[i].name}</TypographyHeader>
+					</Box>
+				)
+			}
 		}
 		panelArray.push(
 			<Grid item md={md} key={window.siteMap[p].key}>
