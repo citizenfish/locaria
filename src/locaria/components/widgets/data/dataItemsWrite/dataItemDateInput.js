@@ -7,7 +7,7 @@ import {setFieldValue} from "../../../redux/slices/formSlice"
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import DataItemsTypography from "./dataItemsTypography";
 
-const DataItemDateInput = ({id, name, data, prompt, multiline=false,required}) => {
+const DataItemDateInput = ({id, name, data, prompt, multiline=false,required,views=["year","month"],inputFormat="MM/YYYY"}) => {
 
 	const dispatch = useDispatch()
 
@@ -22,13 +22,30 @@ const DataItemDateInput = ({id, name, data, prompt, multiline=false,required}) =
 			</Grid>
 			<Grid item md={8}>
 				<DesktopDatePicker
+					views={views}
 					label={name}
-					inputFormat="DD/MM/YYYY"
+					inputFormat={inputFormat}
 					value={dataLocal}
 					onChange={(e) =>{
-						let formattedDate=`${e.$M}/${e.$D}/${e.$y}`;
+						let formattedDate='';
+						for(let v in views) {
+							switch(views[v]) {
+								case 'year':
+									formattedDate+=`${e.$y}`;
+									break;
+								case 'month':
+									formattedDate+=`${e.$M}`;
+									break;
+								case 'day':
+									formattedDate+=`${e.$D}`;
+									break;
+							}
+							if(v<views.length-1)
+								formattedDate+='/';
+						}
+						//let formattedDate=`${e.$M}/${e.$D}/${e.$y}`;
 						setDataLocal(e);
-						dispatch(setFieldValue({index: id, value: formattedDate}));
+						dispatch(setFieldValue({index: id, value: formattedDate,required: required}));
 					}}
 					renderInput={(params) => <TextField {...params} />}
 				/>

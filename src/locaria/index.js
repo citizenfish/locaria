@@ -18,6 +18,8 @@ import { v4 as uuidv4 } from 'uuid';
 import cssOL from './components/css/ol.css';
 
 import Channels from "libs/Channels";
+import store from "./components/redux/store";
+import {Provider} from "react-redux";
 let tries = 0;
 
 window.websocket = new Websockets();
@@ -124,10 +126,11 @@ function errored(event) {
 
 function Main() {
     return (
-        <>
-            <CssBaseline/>
+        <Provider store={store}>
+
+        <CssBaseline/>
             <App/>
-        </>
+        </Provider>
     )
 }
 

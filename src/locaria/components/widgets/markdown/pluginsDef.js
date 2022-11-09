@@ -20,6 +20,7 @@ import SelectedPanel from "../viewLayouts/selectedPanel";
 import NavTypeFull from "../navs/navTypeFull";
 import SiteMapLocation from "../pages/siteMapLocation";
 import SearchLocationFilters from "../search/searchLocationFilters";
+import FeatureManager from "../moderation/featureManager";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -129,6 +130,11 @@ const pluginsDefs = {
 	},
 	"SearchLocationFilters": {
 		"obj": SearchLocationFilters,
+		"description": "Display simple input form",
+		"params": [{param: "category", default: "News"}]
+	},
+	"FeatureManager": {
+		"obj": FeatureManager,
 		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	}
