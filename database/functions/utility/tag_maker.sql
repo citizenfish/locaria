@@ -14,5 +14,8 @@ BEGIN
              )V
         WHERE key = json_key
     );
+    EXCEPTION WHEN OTHERS THEN
+        PERFORM locaria_core.log(payload_param || jsonb_build_object('error', 'tagm_maker'),SQLERRM);
+        RETURN jsonb_build_array();
 END;
 $$ LANGUAGE PLPGSQL;

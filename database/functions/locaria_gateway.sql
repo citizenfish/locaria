@@ -28,6 +28,9 @@ BEGIN
             --acl is scrubbed above so _newACL cannot be injected
             ret_var = add_item(parameters || internal);
 
+         WHEN parameters ->> 'method' IN ('update_item') THEN --TODO documentation
+             ret_var = update_item(parameters || internal);
+
          WHEN parameters->>'method' IN ('list_categories') THEN
             ret_var = list_categories(parameters);
 

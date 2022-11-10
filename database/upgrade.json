@@ -16,7 +16,12 @@
         "database/reports/statistics_dashboard/statistics_dashboard_pie_charts.sql",
         "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql",
         "database/functions/utility/asset_url_maker.sql",
-        "database/functions/internal/data/add_item.sql"
+        "database/functions/internal/data/add_item.sql",
+        "database/functions/utility/make_timestamp.sql",
+        "database/functions/utility/tag_maker.sql",
+        "database/functions/utility/uk_gridref_parse.sql",
+        "database/functions/utility/geocoder.sql",
+        "database/functions/locaria_gateway.sql"
       ],
       "substitutions": "../tests.json"
     }

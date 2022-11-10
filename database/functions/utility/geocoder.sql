@@ -79,6 +79,14 @@ BEGIN
 
     END IF;
 
+    --OSGrid ref
+    IF parameters->>'_geocoder_type' = 'osgridref' THEN
+        SELECT jsonb_build_array(jsonb_build_object('wkb_geometry', ST_TRANSFORM(ST_GEOMFROMEWKT(locaria_core.uk_gridref_parse(parameters->>'gridref')), 4326)::TEXT,
+                                                    'attributes',   jsonb_build_object())
+                   )
+        INTO ret_var;
+    END IF;
+
     RETURN ret_var;
 
 EXCEPTION WHEN OTHERS THEN
