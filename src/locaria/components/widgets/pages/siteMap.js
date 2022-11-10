@@ -69,7 +69,7 @@ const Panels = () => {
 	const url = new UrlCoder();
 	const [collapseOpen, setCollapseOpen] = useState({});
 	const [render, forceRender] = useState(0);
-	const [cookies, setCookies] = useCookies();
+	const groups = useSelector((state) => state.userSlice.groups);
 
 	useEffect(() => {
 		let state = collapseOpen;
@@ -110,7 +110,7 @@ const Panels = () => {
 		let panelItems = [];
 		for (let i in window.siteMap[p].items) {
 			// Does the menu item have a group set? if so check they have it
-			if(!window.siteMap[p].items[i].group||cookies.groups.indexOf(window.siteMap[p].items[i].group)!==-1) {
+			if(!window.siteMap[p].items[i].group||groups.indexOf(window.siteMap[p].items[i].group)!==-1) {
 				panelItems.push(
 					<Box key={i} onClick={() => {
 						collapseAll();

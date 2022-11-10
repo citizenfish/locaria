@@ -36,6 +36,7 @@
 * 1098 - Error in add_file SQL
 * 1099 - Error in update_file SQL
 * 1100 - Error in delete_file SQL
+* 1101 - Error downloading
 
 # Search
 
