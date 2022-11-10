@@ -16,7 +16,20 @@ export default function AdminDownloadSelector(props) {
     const dispatch = useDispatch()
 
     const downloadActions = (params) =>{
-        return(<Button>Download</Button>)
+        let id = params.row.attributes.fileName;
+        return(<Button onClick={(e)=>{
+            console.log(id);
+            window.websocket.send({
+                queue: 'downloadFile',
+                api: "lapi",
+                data: {
+                    method: "download_file",
+                    id_token: cookies['id_token'],
+                    fileName: id
+                }
+            })
+        }
+        }>Download</Button>)
     }
     const columns = [
         {field: 'id', headerName: 'ID', width: 50},
@@ -35,7 +48,9 @@ export default function AdminDownloadSelector(props) {
 
 
     useEffect(() =>{
-
+        window.websocket.registerQueue('downloadFile', (json)=> {
+            window.open(json.packet.url);
+        });
         window.websocket.registerQueue('getDownloads', (json)=>{
             if(json.packet.files) {
                 let rows=[]

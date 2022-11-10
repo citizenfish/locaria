@@ -55,6 +55,7 @@ function DrawSiteMap() {
 	const [cookies, setCookies] = useCookies();
 
 	const userValid = useSelector((state) => state.userSlice.userValid);
+	const groups = useSelector((state) => state.userSlice.groups);
 
 	const [collapseOpen,setCollapseOpen] = useState({});
 	const [render,forceRender]=useState(0);
@@ -94,7 +95,7 @@ function DrawSiteMap() {
 		</ListItem>
 	)
 
-	if(userValid&&cookies.groups&&cookies.groups.indexOf('Admins')!==-1) {
+	if(userValid&&groups&&groups.indexOf('Admins')!==-1) {
 		topMenuArray.push(
 			<ListItem button key={"AdminHome"} onClick={() => {
 				window.location='/Admin/';
@@ -137,7 +138,7 @@ function DrawSiteMap() {
 		let subMenuArray=[];
 		for (let i in window.siteMap[p].items) {
 			// Does the menu item have a group set? if so check they have it
-			if(!window.siteMap[p].items[i].group||cookies.groups.indexOf(window.siteMap[p].items[i].group)!==-1) {
+			if(!window.siteMap[p].items[i].group||groups.indexOf(window.siteMap[p].items[i].group)!==-1) {
 				subMenuArray.push(
 					<ListItem sx={{pl: 4}} button key={i} onClick={() => {
 

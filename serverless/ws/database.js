@@ -48,7 +48,7 @@ Database.prototype.getClient = function() {
 };
 
 function databaseConnect(client, after) {
-    console.log("Connecting to database");
+    //console.log("Connecting to database");
     let self=this;
 
     client.connect((err) => {
@@ -67,7 +67,7 @@ function databaseConnect(client, after) {
 	        });
         }
         else {
-            console.log("Connected to database");
+            //console.log("Connected to database");
             after();
         }
     });

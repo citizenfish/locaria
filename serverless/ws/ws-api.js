@@ -235,29 +235,30 @@ module.exports.run = (event, context, callback) => {
 							let params = {
 								UserPoolId: process.env.pool
 							};
-							switch(packet.data.method) {
+							switch (packet.data.method) {
+
 								case 'delete_group':
-									params.Username=packet.data.id;
-									params.GroupName=packet.data.group;
-									cognitoIdentityServiceProvider.adminRemoveUserFromGroup(params, function(err, data) {
+									params.Username = packet.data.id;
+									params.GroupName = packet.data.group;
+									cognitoIdentityServiceProvider.adminRemoveUserFromGroup(params, function (err, data) {
 										if (err) {
 											payload.packet['response_code'] = 500;
-											payload.packet=err;
+											payload.packet = err;
 										} else {
 											payload.packet['response_code'] = 200;
 											payload.packet.message = "Removed from group";
 											sendToClient(payload);
 										}
 
-										});
+									});
 									break;
 								case 'add_group':
-									params.Username=packet.data.id;
-									params.GroupName=packet.data.group;
-									cognitoIdentityServiceProvider.adminAddUserToGroup(params, function(err, data) {
+									params.Username = packet.data.id;
+									params.GroupName = packet.data.group;
+									cognitoIdentityServiceProvider.adminAddUserToGroup(params, function (err, data) {
 										if (err) {
 											payload.packet['response_code'] = 500;
-											payload.packet=err;
+											payload.packet = err;
 										} else {
 											payload.packet['response_code'] = 200;
 											payload.packet.message = "Added to group";
@@ -267,21 +268,21 @@ module.exports.run = (event, context, callback) => {
 									});
 									break;
 								case 'user_list':
-									cognitoIdentityServiceProvider.listUsers(params, function(err, data) {
+									cognitoIdentityServiceProvider.listUsers(params, function (err, data) {
 										if (err) {
 											payload.packet['response_code'] = 500;
-											payload.packet=err;
+											payload.packet = err;
 										} else {
 											payload.packet['response_code'] = 200;
 
-											let userList=[];
-											for(let user in data.Users) {
-												let userPacket={
+											let userList = [];
+											for (let user in data.Users) {
+												let userPacket = {
 													id: data.Users[user].Username,
 													status: data.Users[user].UserStatus
 												}
-												for(let attribute in data.Users[user].Attributes) {
-													userPacket[data.Users[user].Attributes[attribute].Name]=data.Users[user].Attributes[attribute].Value;
+												for (let attribute in data.Users[user].Attributes) {
+													userPacket[data.Users[user].Attributes[attribute].Name] = data.Users[user].Attributes[attribute].Value;
 												}
 												userList.push(userPacket);
 											}
@@ -292,19 +293,19 @@ module.exports.run = (event, context, callback) => {
 									});
 									break;
 								case 'user_details':
-									params.Username=packet.data.id;
-									cognitoIdentityServiceProvider.adminGetUser(params, function(err, data) {
+									params.Username = packet.data.id;
+									cognitoIdentityServiceProvider.adminGetUser(params, function (err, data) {
 										if (err) {
 											payload.packet = err;
 											payload.packet['response_code'] = 500;
 
 										} else {
-											let userPacket={
+											let userPacket = {
 												id: data.Username,
 												status: data.UserStatus
 											}
-											for(let attribute in data.UserAttributes) {
-												userPacket[data.UserAttributes[attribute].Name]=data.UserAttributes[attribute].Value;
+											for (let attribute in data.UserAttributes) {
+												userPacket[data.UserAttributes[attribute].Name] = data.UserAttributes[attribute].Value;
 											}
 											payload.packet = userPacket;
 										}
@@ -314,8 +315,8 @@ module.exports.run = (event, context, callback) => {
 												payload.packet['response_code'] = 500;
 
 											} else {
-												let groupList=[];
-												for(let group in data.Groups) {
+												let groupList = [];
+												for (let group in data.Groups) {
 													groupList.push(data.Groups[group].GroupName);
 												}
 												payload.packet.groups = groupList;
@@ -375,6 +376,9 @@ module.exports.run = (event, context, callback) => {
 								sendToClient(result)
 							}
 							switch (packet.data.method) {
+								case 'download_file':
+									download_file(packet);
+									break;
 								case 'get_files':
 									get_files(packet, client, cb);
 									break;
@@ -424,6 +428,28 @@ module.exports.run = (event, context, callback) => {
 
 			}
 		});
+	}
+
+	function download_file(packet) {
+		let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
+		let s3 = new AWS.S3();
+		let s3parameters = {
+			Bucket: process.env.importBucket,
+			Key: `loaderDownloads/${packet.data.fileName}`
+		};
+		let url = s3.getSignedUrl('getObject', s3parameters);
+		payload.method = packet.data.method;
+		if (url && url.valid === false) {
+			payload.response_code = 1101;
+			payload.packet = {
+				message: url
+			}
+		} else {
+			payload.packet = {
+				"url": url,
+			};
+		}
+		sendToClient(payload);
 	}
 
 	function delete_asset(packet) {
