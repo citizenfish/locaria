@@ -60,7 +60,7 @@ BEGIN
 
      UPDATE moderation_queue
          SET status = 'ACCEPTED'
-     WHERE  fid = parameters->>'fid';
+     WHERE  fid = parameters->>'fid' AND COALESCE(parameters->>'internal', 'true')::BOOLEAN;
 
     RETURN ret_var || jsonb_build_object('history', add_history(parameters || ret_var));
 

@@ -21,7 +21,8 @@
         "database/functions/utility/tag_maker.sql",
         "database/functions/utility/uk_gridref_parse.sql",
         "database/functions/utility/geocoder.sql",
-        "database/functions/locaria_gateway.sql"
+        "database/functions/locaria_gateway.sql",
+        "database/functions/internal/data/update_item.sql"
       ],
       "substitutions": "../tests.json"
     }
