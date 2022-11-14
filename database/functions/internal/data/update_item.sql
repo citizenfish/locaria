@@ -5,6 +5,7 @@ DECLARE
     ret_var JSONB;
     moderated_update_var BOOLEAN;
     table_var TEXT;
+    admin_acl JSONB DEFAULT jsonb_build_object('update', jsonb_build_array('Admins', 'Moderator'));
 BEGIN
 
      SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -23,7 +24,7 @@ BEGIN
         RETURN jsonb_build_object('error', concat_ws(' ', 'fid not found or cannot be updated:', parameters->>'fid'));
      END IF;
 
-     IF NOT (acl_check(parameters->'acl', item_var->'acl')->>'update')::BOOLEAN THEN
+     IF NOT (acl_check(parameters->'acl', admin_acl)->>'update')::BOOLEAN THEN --only admins or moderators bypass
          --Moderated updates don't need acl as they go into queue for auth
          IF moderated_update_var AND (parameters->>'moderation_id') IS NULL THEN
              RETURN add_to_moderation_queue(jsonb_build_object( 'type',         'update',
@@ -34,8 +35,10 @@ BEGIN
                                                                 'table',        table_var));
          END IF;
 
-
-        RETURN jsonb_build_object('error', 'acl_failure', 'response_code', 602);
+         --If moderation is not required you must own the item or be an admin
+         IF NOT (acl_check(parameters->'acl', item_var->'acl')->>'update')::BOOLEAN THEN
+            RETURN jsonb_build_object('error', 'acl_failure', 'response_code', 602);
+         END IF;
     END IF;
 
     EXECUTE format($SQL$
@@ -59,7 +62,7 @@ BEGIN
     --If this was a moderation then update its status
 
      UPDATE moderation_queue
-         SET status = 'ACCEPTED'
+         SET status = COALESCE(parameters->>'status','ACCEPTED')
      WHERE  fid = parameters->>'fid' AND COALESCE(parameters->>'internal', 'true')::BOOLEAN;
 
     RETURN ret_var || jsonb_build_object('history', add_history(parameters || ret_var));

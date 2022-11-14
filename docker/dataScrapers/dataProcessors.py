@@ -29,7 +29,7 @@ class sustainablefoodplaces:
 
         if self.debug: print(f"Processing sustainablefoodplaces: {len(self.urls)}")
         features = []
-        # First dig out the titles and geocords
+        # First dig out the titles and geo-coords
         scripts = getScripts(self.params['url'])
         latlngs = re.findall('Latlng([0-9]+).*\((.*)\).*',scripts)
         titles = re.findall("title([0-9]+).*'(.*)'",scripts)
@@ -84,7 +84,7 @@ class datathistle:
 
     def processAPI(self,db):
         db.query(self.table_create)
-        if self.debug: print(f"Processing datathstile: {self.url}")
+        if self.debug: print(f"Processing datathistle: {self.url}")
         if not self.lon or not self.lat or not self.distance:
             return {'error' : 'missing parameters'}
 
@@ -102,6 +102,7 @@ class datathistle:
             if url == '':
                 break
             url = url['url']
+
 
         return {'inserts' : count}
 

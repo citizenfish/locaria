@@ -9,11 +9,12 @@ BEGIN
     SELECT jsonb_agg(J)
     INTO ret_var
     FROM(
-            SELECT row_to_json(MQ.*) AS J
+            SELECT distinct on (fid)
+                   jsonb_build_object('count', count(*) OVER (PARTITION BY fid)) || row_to_json(MQ.*)::JSONB AS J
             FROM locaria_core.moderation_queue MQ
             WHERE status = COALESCE(parameters->>'status', 'RECEIVED')
             AND ((parameters->'filter') IS NULL OR attributes @> (parameters->'filter'))
-            ORDER BY id ASC
+            ORDER BY fid,id DESC
         ) S;
 
     RETURN jsonb_build_object('moderation_items', COALESCE(ret_var,jsonb_build_array()));

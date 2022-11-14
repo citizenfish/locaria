@@ -8,55 +8,40 @@ DECLARE
 BEGIN
     SET SEARCH_PATH = 'locaria_core',  'locaria_data','public';
 
-        --If we are in live mode append any moderations resident in the moderations queue
-        IF COALESCE(parameters->>'live','false')::BOOLEAN
-            --this acl_check makes sure that the user is in a group that has moderator status
-            AND (acl_check(parameters->'acl',NULL)->>'moderate')::BOOLEAN
-            THEN
-            SELECT jsonb_agg(J)
-            INTO moderations_var
-            FROM(
-                    SELECT row_to_json(MQ.*) AS J FROM locaria_core.moderation_queue MQ
-                    --note get_item prefix to prevent ambiguity
-                    WHERE (
-                                fid = get_item.parameters ->> 'fid' OR
-                                attributes @> jsonb_build_object('data', jsonb_build_object('_identifier', get_item.parameters ->>'_identifier')))
-                    AND status = COALESCE(get_item.parameters->>'moderation_status', 'RECEIVED')
-                    ORDER BY id ASC
-                ) S;
-
-        END IF;
-
+       --Returns moderations in geojson format
        EXECUTE format(
        $SQL$
-           SELECT  jsonb_build_object(
+           SELECT  distinct on (F.fid) jsonb_build_object(
                                     'type', 'FeatureCollection',
                                     'features', json_build_array(
                                         json_build_object(
                                                 'type', 'Feature',
-                                                'properties', attributes ||
-                                                              jsonb_build_object('category',     attributes->'category'->0,
+                                                'properties', F.attributes ||
+                                                              jsonb_build_object('category',     F.attributes->'category'->0,
                                                                                  'fid',          $1,
                                                                                  '_live',        $2,
-                                                                                 '_moderations', $3
+                                                                                 '_moderations', COALESCE(CASE WHEN (acl_check($3,NULL)->>'moderate')::BOOLEAN OR (acl_check($3, F.attributes->'acl')->>'owner')::BOOLEAN THEN jsonb_agg(
+                                                                                           jsonb_build_object('geometry',   ST_ASGEOJSON(ST_GEOMFROMEWKT(MQ.attributes#>>'{parameters,geometry}'))::JSONB,
+                                                                                                              'properties', MQ.attributes#>'{parameters,attributes}' || jsonb_build_object('mq_id', MQ.id, 'mq_status', MQ.status, 'mq_type', MQ.attributes->>'type'))
+                                                                                                  ) FILTER (WHERE MQ.id IS NOT NULL)  OVER() END, jsonb_build_array())
                                                                                  ),
                                                 'geometry',   ST_ASGEOJSON(ST_TRANSFORM(wkb_geometry,4326))::JSON
                                         )
                                     )
             )
-              FROM %1$s
-              WHERE (($1 != '' AND fid = $1) OR ($1 = '' AND attributes @> jsonb_build_object('data', jsonb_build_object('_identifier', $5))))
-              AND (acl_check($4, attributes->'acl')->>'view')::BOOLEAN
+              FROM %1$s F
+              LEFT JOIN locaria_core.moderation_queue MQ ON MQ.status IN('RECEIVED','REJECTED') AND F.fid = MQ.fid
+              WHERE (($1 != '' AND F.fid = $1) OR ($1 = '' AND F.attributes @> jsonb_build_object('data', jsonb_build_object('_identifier', $4))))
+              AND (acl_check($3, F.attributes->'acl')->>'view')::BOOLEAN
+              ORDER BY F.fid,MQ.id DESC
         $SQL$,
         CASE WHEN COALESCE(parameters->>'live','false')::BOOLEAN THEN 'global_search_view_live' ELSE 'global_search_view' END
         )
         INTO ret_var
         USING COALESCE(parameters->>'fid', ''),
               COALESCE(parameters->>'live','false')::BOOLEAN,
-              COALESCE(moderations_var, jsonb_build_array()),
               parameters->'acl',
               parameters->>'_identifier';
-
 
        RETURN COALESCE(ret_var, jsonb_build_object('features', jsonb_build_array()));
 

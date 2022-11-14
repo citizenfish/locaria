@@ -6,8 +6,13 @@ DECLARE
     precision_var FLOAT DEFAULT 0.00001;
     limit_var INTEGER DEFAULT 10000;
     display_limit_var INTEGER;
+    my_items BOOLEAN DEFAULT FALSE;
 BEGIN
 
+    RAISE NOTICE 'DEBUG %',search_parameters;
+    IF COALESCE(search_parameters->>'my_items', '') = 'true' THEN
+        my_items = TRUE;
+    END IF;
 
     IF COALESCE(search_parameters->>'typeahead', '') = 'true' THEN
         RETURN locaria_core.typeahead_search(search_parameters);
@@ -16,24 +21,27 @@ BEGIN
     precision_var = COALESCE((search_parameters->>'precision')::FLOAT, precision_var);
     display_limit_var = COALESCE((search_parameters->>'display_limit')::INTEGER, limit_var);
 
-    IF COALESCE(search_parameters->>'my_items','') = 'true' THEN
-        search_parameters = search_parameters ||
-                            jsonb_build_object('filter', jsonb_build_object('acl', jsonb_build_object('owner', COALESCE(search_parameters->>'_userID', 'THIS WILL FAIL'))));
-    END IF;
+--     IF COALESCE(search_parameters->>'my_items','') = 'true' THEN
+--         search_parameters = search_parameters ||
+--                             jsonb_build_object('filter', jsonb_build_object('acl', jsonb_build_object('owner', COALESCE(search_parameters->>'_userID', 'THIS WILL FAIL'))));
+--     END IF;
 
     WITH CLUSTER_RESULTS AS (
 
-            SELECT *
+            SELECT _fid,_search_rank,_attributes,_wkb_geometry
             FROM locaria_core.cluster(search_parameters)
             WHERE COALESCE(search_parameters->>'cluster', '') = 'true'
 
     ), SEARCH_RESULTS AS (
 
             --Only run if we are not clustering
-            SELECT *
+            SELECT distinct on (_fid) _fid,
+                   _search_rank,
+                   _attributes || jsonb_build_object('ms', count(MQ.status) FILTER (WHERE MQ.status ='RECEIVED')  OVER(PARTITION BY _fid)) as _attributes,
+                   _wkb_geometry
             FROM locaria_core.search_get_records(search_parameters, limit_var)
+            LEFT JOIN locaria_core.moderation_queue MQ ON my_items = TRUE AND MQ.status != 'ACCEPTED' AND _fid = MQ.fid
             WHERE COALESCE(search_parameters->>'cluster', '') != 'true'
-
 
     )
     --Datagrid format for admin, Geojson for API
@@ -49,13 +57,15 @@ BEGIN
                                                             'data', _attributes->'data',
                                                             'tags', _attributes->'tags',
                                                             'category', _attributes->'category',
-                                                            'geometry', ST_ASGEOJSON(_wkb_geometry)::JSON
+                                                            'geometry', ST_ASGEOJSON(_wkb_geometry)::JSON,
+                                                            'moderation_status', COALESCE(_attributes->>'ms', '0')::INTEGER
                                                             )
                                                ),
                                       jsonb_build_array()
                                       ),
                                     'count', COALESCE(json_agg(_attributes->>'c')->>0,'0')::INTEGER,
-                                    'feature_count', count(*)
+                                    'feature_count', count(*),
+                                    'my_items', my_items
                                     )
            ELSE
 
