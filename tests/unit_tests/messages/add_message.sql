@@ -12,7 +12,6 @@ $$
         SELECT locaria_gateway(parameters) INTO ret_var;
 
         RAISE NOTICE '%', locaria_tests.test_result_processor('set_parameters TEST 1', ret_var , '{id}', '*');
-        RAISE NOTICE '%',ret_var;
 
     END;
 $$

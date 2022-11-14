@@ -24,6 +24,9 @@ BEGIN
          WHEN parameters->>'method' IN ('get_item') THEN
             ret_var = get_item(parameters);
 
+         WHEN parameters->>'method' IN ('get_my_items') THEN
+             ret_var = get_my_items(parameters);
+
          WHEN parameters->>'method' IN ('add_item') THEN
             --acl is scrubbed above so _newACL cannot be injected
             ret_var = add_item(parameters || internal);
