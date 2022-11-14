@@ -4,7 +4,6 @@ import {Switch, BrowserRouter as Router, Route, Redirect} from 'react-router-dom
 import Maintenance from 'components/maintenance';
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
-import Openlayers from "libs/Openlayers";
 import {Provider, useDispatch, useSelector} from 'react-redux'
 
 import RenderPage from "./widgets/markdown/renderPage";
@@ -16,17 +15,10 @@ const App = () => {
 
 	const dispatch = useDispatch()
 
-
-	// fix our cookie defaults
-
-	//const cognitoidentity = new AWS.CognitoIdentity({apiVersion: '2014-06-30'});
-
 	const [cookies, setCookies] = useCookies(['location']);
 
-	//const [user, setUser] = React.useState(false);
 
 	if (cookies.location === undefined) {
-		const ol = new Openlayers();
 
 		setCookies('location', configs.defaultLocation, {
 			path: '/',
@@ -65,7 +57,7 @@ const App = () => {
 				//setUser(true);
 				if (hash) {
 					setCookies('id_token', hash, {path: '/', sameSite: true});
-					setCookies('groups', json.packet['cognito:groups'], {path: '/', sameSite: true});
+					//setCookies('groups', json.packet['cognito:groups'], {path: '/', sameSite: true});
 					const start = Date.now();
 					const exp = (parseInt(json.packet.exp) * 1000)
 					const diff = exp - (start + 60000);
@@ -77,7 +69,7 @@ const App = () => {
 
 			} else {
 				setCookies('id_token', null, {path: '/', sameSite: true});
-				setCookies('groups', [], {path: '/', sameSite: true});
+				//setCookies('groups', [], {path: '/', sameSite: true});
 				// This is bad token so lets go home
 				//setUser(false);
 				dispatch(setValidPublic());
