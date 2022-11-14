@@ -35,7 +35,7 @@ export default function AdminModerationSelector(props){
 
     const publishModeration = (params) => {
         window.websocket.send({
-            queue: 'moderationActions',
+            queue: 'moderationActionPublish',
             api: "sapi",
             data: {
                 method: "update_item",
@@ -50,7 +50,7 @@ export default function AdminModerationSelector(props){
 
     const editModeration = (fid) => {
         dispatch(setFeature(fid));
-        history.push(`/Admin/Content/Data/Edit/${fid}`);
+        history.push(`/Admin/Content/Moderation/View/${fid}`);
     }
 
     const moderationActions = (params) => {
@@ -159,6 +159,17 @@ export default function AdminModerationSelector(props){
             });
 
             setRefresh(!refresh)
+        });
+
+        window.websocket.registerQueue('moderationActionPublish', (json) =>{
+            window.websocket.send({
+                "queue": "moderationActions",
+                "api": "sapi",
+                "data": {
+                    "method": "refresh_search_view",
+                    "id_token": cookies['id_token']
+                }
+            });
         })
 
     },[])

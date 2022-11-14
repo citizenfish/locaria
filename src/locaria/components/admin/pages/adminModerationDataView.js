@@ -15,7 +15,7 @@ import {FormFieldsToData} from "../../widgets/data/formFieldsToData";
 import {LinearProgress} from "@mui/material";
 
 
-export default function AdminContentDataEdit() {
+export default function AdminModerationDataView() {
 
 
 	const [cookies, setCookies] = useCookies(['location']);
@@ -44,23 +44,12 @@ export default function AdminContentDataEdit() {
 			} else {
 				if (json.packet.features[0]) {
 					setFeatureData(json.packet.features[0]);
-					/*if(json.packet.features[0].properties.data&&json.packet.features[0].properties.data.images)
-						setImages(json.packet.features[0].properties.data.images);
-					else setImages([]);*/
+
 				}
-				/*if(json.packet) {
-					mapRef.current.addGeojson(json.packet)
-					mapRef.current.zoomToLayersExtent(["data"], 50000);
-				}*/
 			}
 		});
 
 		window.websocket.registerQueue("saveFeature", function (json) {
-			dispatch(setOverview(undefined));
-			history.push(`/Admin/Content/Data/`);
-		});
-
-		window.websocket.registerQueue("saveFeaturePublish", function (json) {
 			window.websocket.send({
 				"queue": "refreshView",
 				"api": "sapi",
@@ -70,8 +59,9 @@ export default function AdminContentDataEdit() {
 				}
 			});
 			dispatch(setOverview(undefined));
-			history.push(`/Admin/Content/Data/`);
+			history.push(`/Admin/Content/Moderation`);
 		});
+
 
 		window.websocket.registerQueue("deleteFeature", function (json) {
 			dispatch(setOverview(undefined));
@@ -100,73 +90,61 @@ export default function AdminContentDataEdit() {
 
 	}, [feature])
 
-	function deleteFeature() {
-		window.websocket.send({
-			queue: "deleteFeature",
-			api: "sapi",
-			data: {
-				method: "delete_item",
-				fid: feature,
-				id_token: cookies['id_token']
-			}
-		});
-
-	}
 
 	function cancelFeature() {
-		history.push(`/Admin/Content/Data/`);
+		history.push(`/Admin/Content/Moderation`);
 	}
 
-	/*const mapClick = (e) => {
+	function rejectFeature() {
 
-		const geojson = {
-			"features": [
-				{
-					type: "Feature",
-					geometry: {type: "Point", coordinates: e.coordinate4326},
-					properties: featureData
-				}
-			], type: "FeatureCollection"
+		// Add we must junk the feature with Admin ACL
+		// But rejecting update we maintain the ACL
+		let packet = {
+			queue: "saveFeature",
+			api: "sapi",
+			data: {
+				id_token: cookies['id_token'],
+				acl: {view:["PUBLIC"]},
+				status: "REJECTED"
+			}
 		};
-		mapRef.current.addGeojson(geojson, "data", true);
-		setPoint(e.ewkt);
 
+		for(let m in featureData.properties['_moderations']) {
+			if(featureData.properties['_moderations'][m].properties['mq_type']=="add") {
+				packet.data.acl={view:["Admin','Moderators"]};
+				break;
+			}
+		}
+		packet.data.method = "update_item";
+		packet.data.fid = feature;
+		window.websocket.send(packet);
 	}
-*/
 
-	function saveFeature(queueName="saveFeature") {
+
+	function saveFeature() {
 		let data = FormFieldsToData(featureData.properties.category,formData);
 
 		if(!data.data)
 			data.data={};
 		let packet = {
-			queue: queueName,
+			queue: "saveFeature",
 			api: "sapi",
 			data: {
 				attributes: data.properties,
 				id_token: cookies['id_token'],
 				category: featureData.properties.category,
+				acl: {view:['PUBLIC']}
+
 			}
 		};
-
-		if (feature === -1) {
-			let channel = window.systemCategories.getChannelProperties(featureData.properties.category);
-
-			packet.data.method = "add_item";
-			packet.data.table = channel.table;
-		} else {
-			packet.data.method = "update_item";
-			packet.data.fid = feature;
-		}
+		packet.data.method = "update_item";
+		packet.data.fid = feature;
 		if (data.geometry)
 			packet.data.geometry = data.geometry;
 		window.websocket.send(packet);
-
 	}
 
-	function imageSelect(images) {
-		setImages(images);
-	}
+
 
 	return (
 		<Box sx={{display: 'flex'}}>
@@ -185,31 +163,25 @@ export default function AdminContentDataEdit() {
 					{featureData&&
 						<>
 								<Button color="success"
-										onClick={(e)=>saveFeature()}
+										onClick={saveFeature}
 										variant="outlined"
 										sx={{margin:"5px"}}
-										disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
-
-								<Button color="success"
-										onClick={(e)=>saveFeature("saveFeaturePublish")}
-										variant="outlined"
-										sx={{margin:"5px"}}
-										disabled={feature === -1 && point === undefined ? true : false}>Save & Publish</Button>
+										disabled={feature === -1 && point === undefined ? true : false}>Publish</Button>
 								<Button color="error"
-										onClick={deleteFeature}
+										onClick={rejectFeature}
 										variant="outlined"
 										sx={{margin:"5px"}}
-										disabled={feature === -1 ? true : false}>Delete</Button>
+										disabled={feature === -1 ? true : false}>Reject</Button>
 						</>
 					}
 					</Grid>
 
 					<Grid item md={4}>
-						<Typography>The data editor allows you to edit data.</Typography>
+						<Typography>Moderate the data submission</Typography>
 					</Grid>
 				</Grid>
 				{featureData !== undefined ?
-						<FieldView data={featureData} mode={"write"}/>
+						<FieldView data={featureData} mode={"write"} moderation={true}/>
 					: <LinearProgress/>}
 
 			</Box>

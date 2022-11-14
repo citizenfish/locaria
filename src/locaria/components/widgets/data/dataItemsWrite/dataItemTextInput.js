@@ -5,8 +5,9 @@ import Typography from "@mui/material/Typography";
 import {useDispatch, useSelector} from "react-redux";
 import {setFieldValue, setupField} from "../../../redux/slices/formSlice"
 import DataItemsTypography from "./dataItemsTypography";
+import DataItemModeration from "./dataItemModeration";
 
-const DataItemTextInput = ({id, name, data, prompt, multiline=false,required}) => {
+const DataItemTextInput = ({id, name, data, prompt,dataModeration, multiline=false,required}) => {
 
 	const dispatch = useDispatch()
 	const formData = useSelector((state) => state.formSlice.formData);
@@ -25,6 +26,7 @@ const DataItemTextInput = ({id, name, data, prompt, multiline=false,required}) =
 				<DataItemsTypography name={name} prompt={prompt} required={required}/>
 			</Grid>
 			<Grid item md={8}>
+				<DataItemModeration dataModeration={dataModeration} id={id} update={setDataLocal}></DataItemModeration>
 				<TextField
 					error={formData[id]? !formData[id].complete:false}
 					margin="dense"
