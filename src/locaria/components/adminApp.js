@@ -21,6 +21,7 @@ import AdminModerationList from "./admin/pages/adminModerationList";
 import AdminConfig from "./admin/pages/adminConfig";
 import AdminConfigParameters from "./admin/pages/adminConfigParameters";
 import AdminDataDashBoard from "./admin/pages/adminDataDashboard";
+import AdminModerationDataView from "./admin/pages/adminModerationDataView";
 
 const AdminApp = () => {
 
@@ -52,6 +53,7 @@ const AdminApp = () => {
 				<Switch>
 					<Route exact path="/Admin/Reports/Dashboard" component={AdminDataDashBoard}/>
 					<Route exact path="/Admin/Content/Moderation"  component={AdminModerationList}/>
+					<Route exact path="/Admin/Content/Moderation/View/:fid?"  component={AdminModerationDataView}/>
 					<Route exact path="/Admin/Import/Download"  component={AdminDownload}/>
 					<Route exact path="/Admin/Import/Upload"  component={AdminFileManager}/>
 					<Route exact path="/Admin/API/Settings"  component={AdminAPISettings}/>

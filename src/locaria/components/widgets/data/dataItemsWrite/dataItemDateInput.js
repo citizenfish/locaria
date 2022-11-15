@@ -7,7 +7,7 @@ import {setFieldValue} from "../../../redux/slices/formSlice"
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import DataItemsTypography from "./dataItemsTypography";
 
-const DataItemDateInput = ({id, name, data, prompt, multiline=false,required,views=["year","month"],inputFormat="MM/YYYY"}) => {
+const DataItemDateInput = ({id, name, data, prompt,dataModeration, multiline=false,required,views=["year","month"],inputFormat="MM/YYYY"}) => {
 
 	const dispatch = useDispatch()
 

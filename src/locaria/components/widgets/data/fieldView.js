@@ -30,7 +30,7 @@ import DataItemH1 from "./dataItemsRead/dataItemH1";
 import DataItemLinkButton from "./dataItemsRead/dataItemLinkButton";
 import DataItemDistance from "./dataItemsRead/dataItemDistance";
 
-const FieldView = ({data, mode = 'read', fields = "main"}) => {
+const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 
 	if (data && data.properties && data.properties.category) {
 
@@ -50,6 +50,7 @@ const FieldView = ({data, mode = 'read', fields = "main"}) => {
 								<FormatFields fields={fieldsObj[fields]}
 											  data={data}
 											  mode={mode}
+											  moderation={moderation}
 											  category={data.properties.category}/> : null}
 						</LocalizationProvider>
 					</Grid>
@@ -76,7 +77,7 @@ const FieldView = ({data, mode = 'read', fields = "main"}) => {
 
 }
 
-const FormatFields = ({fields, data, mode, category}) => {
+const FormatFields = ({fields, data, mode, category,moderation}) => {
 	if (fields && fields.length > 0) {
 		return (<>
 			{fields.map(value => {
@@ -88,7 +89,7 @@ const FormatFields = ({fields, data, mode, category}) => {
 
 									<Grid container spacing={2}>
 										<FormatFields fields={value.children} mode={mode}
-													  data={data}> category={category}</FormatFields>
+													  data={data} moderation={moderation}> category={category}</FormatFields>
 									</Grid>
 								</Grid>
 
@@ -97,7 +98,7 @@ const FormatFields = ({fields, data, mode, category}) => {
 							return (
 								<Grid item md={md}>
 									<FormatFields fields={value.children} mode={mode}
-												  data={data}> category={category}</FormatFields>
+												  data={data} moderation={moderation}> category={category}</FormatFields>
 								</Grid>
 							)
 						}
@@ -115,6 +116,7 @@ const FormatFields = ({fields, data, mode, category}) => {
 														 data={data}
 														 key={value.key}
 														 mode={mode}
+														 moderation={moderation}
 														 category={category}/>
 										</Grid>)
 								}
@@ -130,10 +132,24 @@ const FormatFields = ({fields, data, mode, category}) => {
 	return null;
 }
 
-const FormatField = ({field, data, mode, category}) => {
+const FormatField = ({field, data, mode, category,moderation}) => {
 
 	let dataActual = getData(data, field.key, field.dataFunction);
+	let dataModeration=[];
 
+	if(moderation===true) {
+		for(let i in data.properties['_moderations']) {
+			let moditem=getData(data.properties['_moderations'][i], field.key, field.dataFunction);
+			if(moditem&&moditem!==dataActual) {
+				if(dataModeration.length===0)
+					dataModeration.push(dataActual);
+				dataModeration.push(moditem);
+			}
+		}
+		if(dataModeration.length>0)
+			dataActual=dataModeration[dataModeration.length-1];
+		//debugger;
+	}
 	if (mode === 'read' && (dataActual === undefined || dataActual === "" || dataActual === null)) {
 		return (<></>);
 	}
@@ -188,7 +204,6 @@ const FormatField = ({field, data, mode, category}) => {
 			options = {...dataWriteItem['title'].options, ...field.options};
 		}
 	}
-
 	return (
 		<Element id={field.key}
 				 name={field.name}
@@ -197,6 +212,7 @@ const FormatField = ({field, data, mode, category}) => {
 				 prompt={field.prompt}
 				 sx={field.sx}
 				 category={category}
+				 dataModeration={dataModeration}
 				 {...options}
 		/>
 	)

@@ -21,36 +21,69 @@ export default function RenderPage({searchMode}) {
 	let {search} = useParams();
 	let {page} = useParams();
 	let {feature} = useParams();
-	const [pageData, setPageData] = React.useState(undefined);
-	const [cookies, setCookies] = useCookies(['id_token']);
-
-	let hash = window.location.hash;
-
-	let pageActual=page||'Home';
-	if (hash&&hash.match(/#preview/)) {
-		pageActual=`${page}-${cookies['id_token']}`;
-	}
+	const [render, setRender] = React.useState(0);
+	const pageData = React.useRef(undefined);
+	const pageActual = React.useRef(undefined);
+	const channel = React.useRef(undefined);
+	const [cookies, setCookies] = useCookies();
 
 
-	const handleResize = () => {
-		dispatch(setMobile(!useMediaQuery('(min-width:600px)')));
-	};
-
-	handleResize();
-
-	let channel;
-
-	if (category)
-		channel = window.systemCategories.getChannelProperties(category);
 
 
 
 	React.useEffect(() => {
+
+	/*	const handleResize = () => {
+			dispatch(setMobile(!useMediaQuery('(min-width:600px)')));
+		};*/
+
+
+		if (category)
+			channel.current = window.systemCategories.getChannelProperties(category);
+
+/*
+		handleResize();
+*/
+
+		let hash = window.location.hash;
+
+		pageActual.current=page||'Home';
+		if (hash&&hash.match(/#preview/)) {
+			pageActual.current=`${page}-${cookies['id_token']}`;
+		}
 		if(searchMode===true) {
 			let searchParams=decodeSearchParams(search);
 			searchParams.categories=category;
+			searchParams.rewrite=true;
 			dispatch(newSearch(searchParams));
 		}
+
+		if(page!==undefined)
+			setCookies('last', page, {path: '/', sameSite: true});
+
+		window.websocket.registerQueue('pageBulkLoader', (json) => {
+			if(json.getPageData.packet.error) {
+				history.push("/");
+			} else {
+				pageData.current=json.getPageData.packet.parameters[pageActual.current].data;
+				//setPageData(json.getPageData.packet.parameters[pageActual].data);
+				dispatch(setReport(json));
+				setRender(render+1);
+				document.title = pageData.current.title;
+			}
+		});
+
+
+		pageData.current=undefined;
+		getAllData();
+/*
+		window.addEventListener('resize', handleResize);
+*/
+
+		return () => {
+			pageData.current=undefined;
+		}
+
 	},[page]);
 
 	const getAllData = () => {
@@ -61,7 +94,7 @@ export default function RenderPage({searchMode}) {
 				"api": "api",
 				"data": {
 					"method": "get_parameters",
-					"parameter_name": pageActual,
+					"parameter_name": pageActual.current,
 					"id_token": cookies['id_token']
 				}
 			}
@@ -87,14 +120,14 @@ export default function RenderPage({searchMode}) {
 			}
 		}
 
-		if (channel && channel.report) {
+		if (channel.current && channel.current.report) {
 			bulkPackage.push(
 				{
 					"queue": "reportLoader",
 					"api": "api",
 					"data": {
 						"method": "report",
-						"report_name": channel.report,
+						"report_name": channel.current.report,
 						"fid": feature
 					}
 				}
@@ -103,32 +136,7 @@ export default function RenderPage({searchMode}) {
 
 		window.websocket.sendBulk('pageBulkLoader', bulkPackage);
 	}
-
-
-
-
-
-	React.useEffect(() => {
-		if(page!==undefined)
-			setCookies('last', page, {path: '/', sameSite: true});
-
-		window.websocket.registerQueue('pageBulkLoader', (json) => {
-			if(json.getPageData.packet.error) {
-				history.push("/");
-			} else {
-				setPageData(json.getPageData.packet.parameters[pageActual].data);
-				dispatch(setReport(json));
-			}
-		});
-
-
-
-		getAllData();
-		window.addEventListener('resize', handleResize);
-	}, [page]);
-
-	if (pageData) {
-		document.title = pageData.title;
+	if(pageData.current&&pageData.current.data) {
 		return (
 			<Box sx={{
 				display: "flex",
@@ -144,7 +152,7 @@ export default function RenderPage({searchMode}) {
 
 				}}>
 					<SearchProxy></SearchProxy>
-					<RenderMarkdown markdown={pageData.data} key={'mdTop'}/>
+					<RenderMarkdown markdown={pageData.current.data} key={'mdTop'}/>
 				</Box>
 				<MenuDrawer></MenuDrawer>
 			</Box>

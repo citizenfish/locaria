@@ -15,26 +15,23 @@ const App = () => {
 
 	const dispatch = useDispatch()
 
-	const [cookies, setCookies] = useCookies(['location']);
-
-
-	if (cookies.location === undefined) {
-
-		setCookies('location', configs.defaultLocation, {
-			path: '/',
-			sameSite: true
-		});
-	}
-	if (cookies.distanceSelect === undefined) {
-		setCookies('distanceSelect', configs.defaultDistanceSelect, {path: '/', sameSite: true});
-	}
-	if (cookies.distance === undefined) {
-		setCookies('distance', configs.defaultDistance, {path: '/', sameSite: true});
-	}
+	const [cookies, setCookies] = useCookies();
 
 
 	React.useEffect(() => {
+		if (cookies.location === undefined) {
 
+			setCookies('location', configs.defaultLocation, {
+				path: '/',
+				sameSite: true
+			});
+		}
+		if (cookies.distanceSelect === undefined) {
+			setCookies('distanceSelect', configs.defaultDistanceSelect, {path: '/', sameSite: true});
+		}
+		if (cookies.distance === undefined) {
+			setCookies('distance', configs.defaultDistance, {path: '/', sameSite: true});
+		}
 
 		//let {hash} = useLocation();
 		let hash = window.location.hash;

@@ -71,6 +71,19 @@ resources:
                 - Content-Type
               QueryString: false
           CacheBehaviors:
+          - PathPattern: "/Admin/*"
+            AllowedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            CachedMethods: [ "GET", "HEAD", "OPTIONS" ]
+            TargetOriginId: RendererAPIOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            Compress: true
+            ForwardedValues:
+              Headers:
+                - Accept
+                - Referer
+                - Athorization
+                - Content-Type
+              QueryString: false
           - PathPattern: "*.ico"
             AllowedMethods: [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
             CachedMethods: [ "GET", "HEAD", "OPTIONS" ]

@@ -6,22 +6,13 @@ import Grid from "@mui/material/Grid";
 import {useDispatch, useSelector} from "react-redux";
 import {newSearch, setSearch} from "../../redux/slices/searchDrawerSlice";
 
-export default function TextSearchWidget({id = "search", sx, heading, placeholder, format = 'full'}) {
+export default function TextSearchWidget({ sx, heading, placeholder, format = 'full'}) {
 	const dispatch = useDispatch()
 
-	const [searchString, setSearchString] = useState("");
 	const search = useSelector((state) => state.searchDraw.search);
-	const [searchId, setSearchId] = useState(undefined);
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
-
-	useEffect(() => {
-		if (id !== searchId) {
-			setSearchId(id);
-			dispatch(setSearch({search: '', refresh: false}));
-		}
-	}, [id]);
 
 	let elementSx={
 		...{
