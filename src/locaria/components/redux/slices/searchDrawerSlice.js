@@ -9,7 +9,7 @@ export const searchDrawerSlice = createSlice({
 		searchParams:{
 			subCategories: {"subCategory1":[],"subCategory2":[]},
 			location: undefined,
-			limit: undefined,
+			limit: 10000,
 			displayLimit: undefined,
 			categories: [],
 			search: '',
@@ -85,7 +85,10 @@ export const searchDrawerSlice = createSlice({
 
 			if (action.payload && action.payload.search){
 				state.searchParams.search = action.payload.search;
+			} else {
+				state.searchParams.search = "";
 			}
+
 			if (action.payload && action.payload.limit){
 				state.searchParams.limit = action.payload.limit;
 			} else {
@@ -130,7 +133,7 @@ export const searchDrawerSlice = createSlice({
 
 		},
 		setSearch: (state,action) => {
-			state.search = action.payload.search;
+			state.searchParams.search = action.payload.search;
 			state.page=1;
 			state.totalPages=0;
 

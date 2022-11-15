@@ -8,12 +8,15 @@ import Box from "@mui/material/Box";
 import {useSelector} from "react-redux";
 import {Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import DialogContentText from "@mui/material/DialogContentText";
+import {useHistory, useParams} from "react-router-dom";
 
 export default function SimpleForm({category}) {
 
 	const [submitted, setSubmitted] = useState(false);
 	const [cookies, setCookies] = useCookies(['cookies']);
 	const [dialogOpen, setDialogOpen] = useState(false);
+	let {page} = useParams();
+	const history = useHistory();
 
 	const formData = useSelector((state) => state.formSlice.formData);
 
@@ -72,6 +75,7 @@ export default function SimpleForm({category}) {
 		}
 	}
 	if (submitted === true) {
+		history.push(`/${page}Submit/`);
 		return (
 			<TypographyHeader element={"h1"}>Submitted</TypographyHeader>
 		)

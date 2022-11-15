@@ -29,12 +29,13 @@ export default function SearchProxy() {
 			let pageTotal=(json.packet.options.count+count)/displayLimit;
 
 			dispatch(setTotalPages(Math.ceil(pageTotal)));
-			let encodedPage = `/${searchParams.categories}/sp/${page}` + encodeSearchParams({
+			let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
 				location: searchParams.location,
 				subCategories: searchParams.subCategories,
 				distance: searchParams.distance,
 				tags: searchParams.tags,
-				page: searchParams.page
+				page: searchParams.page,
+				search: searchParams.search
 			})
 			if (rewrite === true)
 				window.history.replaceState(null, "New Page Title", encodedPage)
