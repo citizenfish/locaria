@@ -8,6 +8,7 @@ DECLARE
     version_var TEXT DEFAULT '0.8';
     --added to shared methods with internal gateway to flag this has come via public path
     internal JSONB DEFAULT jsonb_build_object('internal', false);
+    logged_in_var BOOLEAN DEFAULT FALSE;
 
 BEGIN
 
@@ -17,6 +18,10 @@ BEGIN
     --delete any user sent acl and add in api one
     parameters = parameters - 'acl' - 'id_token' || jsonb_build_object('acl',acl);
 
+    --is user logged in
+    IF jsonb_array_length(acl->'groups') > 1 OR acl->'groups'->>0 != 'PUBLIC' THEN
+        logged_in_var = TRUE;
+    END IF;
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('search','bboxsearch', 'refsearch', 'pointsearch', 'datesearch', 'filtersearch') THEN
             ret_var = search(parameters);
@@ -24,14 +29,14 @@ BEGIN
          WHEN parameters->>'method' IN ('get_item') THEN
             ret_var = get_item(parameters);
 
-         WHEN parameters->>'method' IN ('get_my_items') THEN
+         WHEN parameters->>'method' IN ('get_my_items') AND logged_in_var = TRUE THEN
              ret_var = get_my_items(parameters);
 
-         WHEN parameters->>'method' IN ('add_item') THEN
+         WHEN parameters->>'method' IN ('add_item') AND logged_in_var = TRUE THEN
             --acl is scrubbed above so _newACL cannot be injected
             ret_var = add_item(parameters || internal);
 
-         WHEN parameters ->> 'method' IN ('update_item') THEN --TODO documentation
+         WHEN parameters ->> 'method' IN ('update_item') AND logged_in_var = TRUE THEN --TODO documentation
              ret_var = update_item(parameters || internal);
 
          WHEN parameters->>'method' IN ('list_categories') THEN
@@ -61,13 +66,13 @@ BEGIN
          WHEN parameters->>'method' IN ('get_parameters') THEN
             ret_var = get_parameters(parameters);
 
-        WHEN parameters->>'method' IN ('add_asset') THEN
+        WHEN parameters->>'method' IN ('add_asset') AND logged_in_var = TRUE THEN
             ret_var = add_asset(parameters || internal);
 
         WHEN parameters->>'method' IN ('get_asset') THEN
             ret_var = get_asset(parameters || internal);
 
-        WHEN parameters->>'method' IN ('delete_asset') THEN
+        WHEN parameters->>'method' IN ('delete_asset') AND logged_in_var = TRUE THEN
             ret_var = delete_asset(parameters || internal);
 
         WHEN parameters->>'method' IN ('get_vector_tile') THEN
@@ -99,6 +104,7 @@ ELSE
                jsonb_build_object('response_code',COALESCE(ret_var->>'response_code', '200'),
                                   'parameters',   parameters ,
                                   'logpath',     'external',
+                                  'acl',          acl,
                                   'response',     CASE WHEN COALESCE(ret_var->>'error', '') = '' THEN 'ok' ELSE ret_var->>'error' END,
                                   'search_stats', COALESCE(ret_var->'options', jsonb_build_object())
                );
