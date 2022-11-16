@@ -29,12 +29,13 @@ export default function SearchProxy() {
 			let pageTotal=(json.packet.options.count+count)/displayLimit;
 
 			dispatch(setTotalPages(Math.ceil(pageTotal)));
-			let encodedPage = `/${searchParams.categories}/sp/${page}` + encodeSearchParams({
+			let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
 				location: searchParams.location,
 				subCategories: searchParams.subCategories,
 				distance: searchParams.distance,
 				tags: searchParams.tags,
-				page: searchParams.page
+				page: searchParams.page,
+				search: searchParams.search
 			})
 			if (rewrite === true)
 				window.history.replaceState(null, "New Page Title", encodedPage)
@@ -69,7 +70,8 @@ export default function SearchProxy() {
 			packetSearch.data.tags=searchParams.tags;
 
 		const displayLimit=searchParams.displayLimit||20;
-		packetSearch.data.display_limit = displayLimit;
+		//packetSearch.data.display_limit = displayLimit;
+		packetSearch.data.limit = displayLimit;
 
 		packetSearch.data.offset=((searchParams.page-1) *  packetSearch.data.display_limit);
 

@@ -52,7 +52,6 @@ window.websocket.registerQueue('bulkConfigs', (json) => {
         window.systemLang = json.systemParams.packet.parameters.langENG.data;
         window.siteMap = json.systemParams.packet.parameters.siteMap.data;
         window.systemCategories = new Channels(json.categories.packet.categories);
-        document.title = window.systemLang.siteTitle;
     }
 
     ReactDOM.render(<Main/>, document.getElementById('root'));
