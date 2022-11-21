@@ -108,7 +108,8 @@ export function categoryStyle(feature,resolution,ol) {
 	let data = feature.get('data');
 	let description = feature.get('description');
 	let label=description.title;
-	let subsColor = window.systemCategories.getChannelSubsColor(category,data.categoryLevel1,data.categoryLevel2,data.categoryLevel3);
+	let tags=feature.get('tags');
+	let subsColor = window.systemCategories.getChannelSubsColor(category,tags[0],data.categoryLevel2,data.categoryLevel3);
 	const geometry = feature.getGeometry();
 
 	let radius=10;

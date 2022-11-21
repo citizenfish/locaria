@@ -70,8 +70,8 @@ export default function SearchProxy() {
 			packetSearch.data.tags=searchParams.tags;
 
 		const displayLimit=searchParams.displayLimit||20;
-		//packetSearch.data.display_limit = displayLimit;
-		packetSearch.data.limit = displayLimit;
+		packetSearch.data.display_limit = displayLimit;
+		//packetSearch.data.limit = displayLimit;
 
 		packetSearch.data.offset=((searchParams.page-1) *  packetSearch.data.display_limit);
 

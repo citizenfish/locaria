@@ -28,22 +28,20 @@ export default function RenderPage({searchMode}) {
 	const [cookies, setCookies] = useCookies();
 
 
+	function handleResize()  {
+		dispatch(setMobile(!useMediaQuery('(min-width:600px)')));
+	}
 
+	window.addEventListener('resize', handleResize);
+
+	handleResize();
 
 
 	React.useEffect(() => {
 
-	/*	const handleResize = () => {
-			dispatch(setMobile(!useMediaQuery('(min-width:600px)')));
-		};*/
-
-
 		if (category)
 			channel.current = window.systemCategories.getChannelProperties(category);
 
-/*
-		handleResize();
-*/
 
 		let hash = window.location.hash;
 
@@ -76,9 +74,6 @@ export default function RenderPage({searchMode}) {
 
 		pageData.current=undefined;
 		getAllData();
-/*
-		window.addEventListener('resize', handleResize);
-*/
 
 		return () => {
 			pageData.current=undefined;
@@ -136,6 +131,8 @@ export default function RenderPage({searchMode}) {
 
 		window.websocket.sendBulk('pageBulkLoader', bulkPackage);
 	}
+
+
 	if(pageData.current&&pageData.current.data) {
 		return (
 			<Box sx={{

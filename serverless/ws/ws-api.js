@@ -607,7 +607,7 @@ module.exports.run = (event, context, callback) => {
 		const token = packet.data.id_token;
 		//console.log(token);
 		const url = `https://cognito-idp.eu-west-1.amazonaws.com/${process.env.pool}/.well-known/jwks.json`;
-		//console.log(url);
+		console.log(url);
 		fetch(url, {
 			method: 'GET',
 			headers: {'Content-Type': 'application/json'}
