@@ -7,7 +7,7 @@ import {useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import {objectPathExists} from "../../../libs/objectTools";
 
-export default function SlideShow({images, format = "contain", feature = false, interval,duration,sx}) {
+export default function SlideShow({images, format = "contain", feature = false, interval,duration,sx,height="450px"}) {
 	let useImages = images || [];
 	const report = useSelector((state) => state.viewDraw.report);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
@@ -21,14 +21,14 @@ export default function SlideShow({images, format = "contain", feature = false, 
 	return (
 		<Box id={"GalleryBox"} key={"GalleryBox"} sx={sx}>
 			{useImages.length > 1 &&
-				<Carousel interval={interval} duration={duration} height={!mobile ? "450px" : "320px"}>
+				<Carousel interval={interval} duration={duration} height={height}>
 					{
 						useImages.map((item, i) => <Item key={i} item={item} format={format}/>)
 					}
 				</Carousel>
 			}
 			{useImages.length === 1 &&
-				<Box height={!mobile ? "450px" : "320px"}>
+				<Box height={height}>
 					<Item key={"single"} item={useImages[0]} format={format}/>
 				</Box>
 			}

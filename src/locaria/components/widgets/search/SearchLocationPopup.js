@@ -1,5 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {Backdrop, Dialog, DialogTitle, ListItem, ListItemIcon, ListItemText, TextField} from "@mui/material";
+import {
+	Backdrop,
+	Dialog,
+	DialogTitle,
+	ListItem,
+	ListItemIcon,
+	ListItemText,
+	mobileStepperClasses,
+	TextField
+} from "@mui/material";
 import List from "@mui/material/List";
 import {useDispatch, useSelector} from "react-redux";
 import {locationPopup, setFeatures, setGeolocation, setLocation, setSearch} from "../../redux/slices/searchDrawerSlice";
@@ -20,6 +29,9 @@ export default function SearchLocationPopup({defaultPage}) {
 	const open = useSelector((state) => state.searchDraw.locationOpen);
 	const page = useSelector((state) => state.searchDraw.locationPage);
 	const geolocation = useSelector((state) => state.searchDraw.geolocation);
+	const mobile = useSelector((state) => state.mediaSlice.mobile);
+	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
+
 	const [cookies, setCookies] = useCookies([]);
 
 	const [results, setResults] = useState([]);
@@ -161,19 +173,34 @@ export default function SearchLocationPopup({defaultPage}) {
 		return <></>
 	}
 
+
+	let width=innerWidth;
+	if(width>800)
+		width=800;
+	else width=width-60;
+
+	let textSx={
+		background: "#fff",
+		width:`${width}px`
+	};
+
+	if(mobile) {
+		textSx.width=`${width}px`;
+	}
+
 	return (
 		<Box sx={{
 			position: "absolute",
-			top: "calc( 50% - 100px )",
-			left: "calc( 50% - 400px )",
-			width: "800px",
+			top: `calc( 50% - 100px )`,
+			left: `calc( 50% - ${width/2}px )`,
+			width: `${width}px`,
 		}}>
 			<Backdrop open={open} sx={{zIndex: 100}} onClick={handleClose}>
 			</Backdrop>
 
 			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "12px"}}>
 				<ListItem button>
-					<TextField value={searchText} sx={{background: "#fff",width:"800px"}} id={"locationSearchText"} onClick={() => {
+					<TextField value={searchText} sx={textSx} id={"locationSearchText"} onClick={() => {
 						dispatch(locationPopup({open: true, page: defaultPage}));
 					}}
 							   onChange={(e) => {

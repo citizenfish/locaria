@@ -28,11 +28,11 @@ const DataCard = ({feature, sx,field,clickEnabled=true}) => {
 		}}>
 
 			<Box sx={{
-				height: "200px",
+				minHeight: "200px",
 				border: "1p solid black",
 				overflow: "hidden"
 			}}>
-				<FieldView data={feature} mode={"read"} fields={field}></FieldView>
+				<FieldView data={feature} mode={"read"} fields={field} ></FieldView>
 			</Box>
 		</Box>
 	)
