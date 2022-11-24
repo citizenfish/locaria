@@ -24,7 +24,8 @@ BEGIN
       ) INTO query_var;
 
 
-EXECUTE 'CREATE OR REPLACE VIEW locaria_data.search_views_union AS '||query_var;
+    EXECUTE 'CREATE OR REPLACE VIEW locaria_data.search_views_union AS '||query_var;
+    GRANT SELECT ON locaria_data.global_search_view_live TO locaria_report_user;
 
 RETURN '';
 END;
