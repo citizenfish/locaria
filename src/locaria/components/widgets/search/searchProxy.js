@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {
-	setFeatures,
+	setCounts,
+	setFeatures, setRefreshCounts,
 	setTotalPages,
 	startLoading,
 	stopLoading
@@ -15,6 +16,7 @@ export default function SearchProxy() {
 
 	const ready = useSelector((state) => state.searchDraw.ready);
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
+	const refreshCounts = useSelector((state) => state.searchDraw.refreshCounts);
 	const rewrite = useSelector((state) => state.searchDraw.rewrite);
 
 	let {page} = useParams();
@@ -24,6 +26,8 @@ export default function SearchProxy() {
 		window.websocket.registerQueue("searchFeatures", function (json) {
 			//console.log(json.packet);
 			dispatch(setFeatures(json.packet.geojson));
+			if(json.packet.counts)
+				dispatch(setCounts(json.packet.counts));
 			const displayLimit=searchParams.displayLimit||20;
 			let count=(searchParams.page-1)* displayLimit;
 			let pageTotal=(json.packet.options.count+count)/displayLimit;
@@ -50,11 +54,19 @@ export default function SearchProxy() {
 			"queue": "searchFeatures",
 			"api": "api",
 			"data": {
-				"method": "search",
 				"category": searchParams.categories,
 				"search_text": searchParams.search
 			}
 		};
+
+		if(refreshCounts===true) {
+			packetSearch.data.method="report";
+			packetSearch.data.report_name="search_counts";
+			dispatch(setRefreshCounts(false));
+		} else {
+			packetSearch.data.method="search";
+
+		}
 
 		if(searchParams.location) {
 			packetSearch.data.location = `SRID=4326;POINT(${searchParams.location[0]} ${searchParams.location[1]})`;

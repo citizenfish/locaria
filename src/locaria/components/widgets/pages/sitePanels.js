@@ -19,6 +19,7 @@ const SitePanels = ({open,mode,panel='small'}) => {
 	const [render, forceRender] = useState(0);
 
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
+	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 
 
 	useEffect(() => {
@@ -146,6 +147,13 @@ const SitePanels = ({open,mode,panel='small'}) => {
 						{window.siteMap[p].description&&panel==='big'&&
 							<TypographyParagraph sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color,marginTop: "20px"}}>{window.siteMap[p].description}</TypographyParagraph>
 						}
+						{panel === 'big'&&currentLocation.text&&
+							<TypographyParagraph sx={{
+								color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color,
+								marginTop: "20px"
+							}}>{currentLocation.text}</TypographyParagraph>
+						}
+
 					</Box>
 					{panelItems.length > 0 &&
 						<Box sx={{

@@ -29,7 +29,7 @@ export default function RenderPage({searchMode}) {
 
 
 	function handleResize()  {
-		dispatch(setMobile(!useMediaQuery('(min-width:600px)')));
+		dispatch(setMobile(!useMediaQuery('(min-width:900px)')));
 	}
 
 	window.addEventListener('resize', handleResize);

@@ -5,39 +5,60 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {arrayToggleElement} from "../../../libs/arrayTools";
+import {objectPathExists} from "../../../libs/objectTools";
 
 
-export default function SearchSubCategory({sx,multi=true,levels=1,category}) {
+export default function SearchSubCategory({sx,multi=true,levels=1,category,noCountDisplay=false}) {
 	const dispatch = useDispatch()
 
 	//const subCategories = useSelector((state) => state.searchDraw.subCategories);
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
+	const counts = useSelector((state) => state.searchDraw.counts);
 
 
 	function handleCheck(sub,id) {
 		let catCopy=JSON.parse(JSON.stringify(searchParams.subCategories));
 		catCopy[sub]=arrayToggleElement(catCopy[sub],id);
-		dispatch(setSubCategory({sub:sub,data:catCopy[sub]}))
+		dispatch(setSubCategory({sub:sub,data:catCopy[sub]}));
+
 	}
 
 	function DisplaySubCategorySubs({sub,subArray}) {
 		let renderArray=[];
 		for(let a in subArray) {
-			renderArray.push(
-				<ListItem sx={{padding:"0px"}}>
-					<ListItemButton role={undefined} onClick={()=>{handleCheck(sub,subArray[a])}} dense>
-						<ListItemIcon>
-							<Checkbox
-								edge="start"
-								checked={searchParams.subCategories[sub].indexOf(subArray[a]) !== -1}
-								tabIndex={-1}
-								disableRipple
-							/>
-						</ListItemIcon>
-						<ListItemText primary={`${subArray[a]}`} />
-					</ListItemButton>
-				</ListItem>
-			);
+			if(objectPathExists(counts,`${sub}.${subArray[a]}`)) {
+				let count = `(${counts[sub][subArray[a]]})`;
+				renderArray.push(
+					<ListItem sx={{padding: "0px"}}>
+						<ListItemButton role={undefined} onClick={() => {
+							handleCheck(sub, subArray[a])
+						}} dense>
+							<ListItemIcon>
+								<Checkbox
+									edge="start"
+									checked={searchParams.subCategories[sub].indexOf(subArray[a]) !== -1}
+									tabIndex={-1}
+									disableRipple
+								/>
+							</ListItemIcon>
+							<ListItemText primary={`${subArray[a]}`}/>
+							<ListItemIcon edge={"end"}>
+								<ListItemText primary={`${count}`} />
+							</ListItemIcon>
+						</ListItemButton>
+					</ListItem>
+				);
+			} else {
+				if(noCountDisplay===true) {
+					renderArray.push(
+						<ListItem sx={{padding: "0px"}}>
+							<ListItemButton dense>
+								<ListItemText primary={`${subArray[a]}`}/>
+							</ListItemButton>
+						</ListItem>
+					);
+				}
+			}
 		}
 		return renderArray;
 	}

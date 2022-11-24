@@ -6,7 +6,7 @@ import {setDistance, setDistanceType} from "../../redux/slices/searchDrawerSlice
 import {FormControlLabel, ListItem, ListItemText, Radio, RadioGroup} from "@mui/material";
 import List from "@mui/material/List";
 
-export default function SearchDistance({sx,category,maxDistance=50}) {
+export default function SearchDistance({sx,category,maxDistance=20}) {
 	const dispatch = useDispatch()
 
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
@@ -56,7 +56,7 @@ export default function SearchDistance({sx,category,maxDistance=50}) {
 				</ListItem>
 				<ListItem sx={{padding:"0px"}}>
 
-					<Slider defaultValue={searchParams.distance} aria-label="Default" valueLabelDisplay="auto" onChange={handleChange} onMouseUp={handleSubmit} max={maxDistance}/>
+					<Slider defaultValue={searchParams.distance} aria-label="Default" valueLabelDisplay="auto" onChange={handleChange} onTouchEnd={handleSubmit} onMouseUp={handleSubmit} max={maxDistance}/>
 				</ListItem>
 			</List>
 		</Box>

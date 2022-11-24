@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {createSlice} from '@reduxjs/toolkit'
+import {objectPathExists} from "../../../libs/objectTools";
 
 export const searchDrawerSlice = createSlice({
 	name: 'searchDraw',
@@ -18,7 +19,11 @@ export const searchDrawerSlice = createSlice({
 
 		},
 
+		refreshCounts: true,
 
+		// Counts of possible results
+
+		counts:{},
 
 		loading: false,
 		ready: false,
@@ -39,10 +44,43 @@ export const searchDrawerSlice = createSlice({
 		locationOpen: false,
 		locationPage: undefined,
 		geolocation: undefined,
+		currentLocation: {},
 
 		rewrite: true
 	},
 	reducers: {
+
+		setRefreshCounts:(state,action) => {
+			state.refreshCounts=action.payload;
+		},
+		setCounts:(state,action) => {
+			state.counts=action.payload;
+			if(state.searchParams.tags) {
+				if(state.counts&&state.counts.tags&&typeof state.counts.tags === 'object') {
+					for (let t in state.searchParams.tags) {
+						if (!objectPathExists(state.counts.tags,state.searchParams.tags[t])) {
+							state.searchParams.tags.splice(state.searchParams.tags.indexOf(state.searchParams.tags[t]), 1);
+						}
+					}
+				} else {
+					state.searchParams.tags=[];
+				}
+			}
+			let subs=["subCategory1","subCategory2"];
+			for(let s in subs) {
+				if (state.searchParams.subCategories[subs[s]]) {
+					if (state.counts && state.counts[subs[s]] && typeof state.counts[subs[s]] === 'object') {
+						for (let t in state.searchParams.subCategories[subs[s]]) {
+							if (!objectPathExists(state.counts[subs[s]],state.searchParams.subCategories[subs[s]][t])) {
+								state.searchParams.subCategories[subs[s]].splice(state.searchParams.subCategories[subs[s]].indexOf(state.searchParams.subCategories[subs[s]][t]), 1);
+							}
+						}
+					} else {
+						state.searchParams.subCategories[subs[s]] = [];
+					}
+				}
+			}
+		},
 
 		setFeatures: (state,action) => {
 			state.features=action.payload;
@@ -115,6 +153,7 @@ export const searchDrawerSlice = createSlice({
 			if(action.payload.rewrite!==undefined) {
 				state.rewrite=action.payload.rewrite;
 			}
+			state.refreshCounts=true;
 			state.ready=true;
 		},
 
@@ -149,25 +188,33 @@ export const searchDrawerSlice = createSlice({
 			state.locationShow = !state.locationShow;
 		},
 		setDistance: (state,action) => {
+			state.refreshCounts=true;
 			state.searchParams.distance = action.payload;
 			state.page=1;
 			state.totalPages=0;
+
 		},
 		setDistanceType: (state,action) => {
 			state.distanceType = action.payload;
 		},
 		setLocation: (state,action) => {
 			state.location = action.payload;
+
 		},
 
 		setTags: (state, action) => {
 			state.searchParams.tags = action.payload;
+			// Hardcoded hax TODO this needs to be config
+			state.searchParams.subCategories["subCategory1"]=[];
+			state.searchParams.subCategories["subCategory2"]=[];
 			state.page=1;
 			state.totalPages=0;
 
 		},
 		setSubCategory: (state, action) => {
 			state.searchParams.subCategories[action.payload.sub]=action.payload.data;
+			// Hardcoded hax TODO this needs to be config
+			state.searchParams.tags=[];
 			state.searchParams.page=1;
 			state.totalPages=0;
 
@@ -213,6 +260,9 @@ export const searchDrawerSlice = createSlice({
 		setGeolocation: (state,action) => {
 			state.geolocation=action.payload;
 		},
+		setCurrentLocation: (state,action) => {
+			state.currentLocation=action.payload;
+		},
 		startLoading: (state,action) => {
 			state.loading=true;
 		},
@@ -253,7 +303,10 @@ export const {
 	setSubCategory,
 	startLoading,
 	stopLoading,
-	setDisplayLimit
+	setDisplayLimit,
+	setCounts,
+	setRefreshCounts,
+	setCurrentLocation
 
 } = searchDrawerSlice.actions
 

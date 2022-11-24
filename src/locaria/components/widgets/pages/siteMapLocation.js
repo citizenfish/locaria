@@ -6,7 +6,7 @@ import SearchLocationPopup from "../search/SearchLocationPopup";
 import SitePanels from "./sitePanels";
 import {useSelector} from "react-redux";
 
-const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage = "",open,panel="small"}) {
+const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage,open,panel="small"}) {
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
