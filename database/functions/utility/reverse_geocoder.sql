@@ -46,8 +46,11 @@ BEGIN
             LIMIT  default_limit
 		) SUB;
 
+        IF COALESCE(search_parameters->>'mode','') = 'populated_place' THEN
+            RETURN jsonb_build_object('populated_place',COALESCE(results_var->'features'->0->'properties'->>'populated_place', ''));
+        END IF;
 
-		RETURN results_var;
+        RETURN results_var;
 
 END;
 $$ LANGUAGE PLPGSQL;
