@@ -11,7 +11,14 @@ import {
 } from "@mui/material";
 import List from "@mui/material/List";
 import {useDispatch, useSelector} from "react-redux";
-import {locationPopup, setFeatures, setGeolocation, setLocation, setSearch} from "../../redux/slices/searchDrawerSlice";
+import {
+	locationPopup,
+	setCurrentLocation,
+	setFeatures,
+	setGeolocation,
+	setLocation,
+	setSearch
+} from "../../redux/slices/searchDrawerSlice";
 import {useHistory} from "react-router-dom";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -27,7 +34,8 @@ export default function SearchLocationPopup({defaultPage}) {
 	const history = useHistory();
 
 	const open = useSelector((state) => state.searchDraw.locationOpen);
-	const page = useSelector((state) => state.searchDraw.locationPage);
+	const locationPage = useSelector((state) => state.searchDraw.locationPage);
+	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 	const geolocation = useSelector((state) => state.searchDraw.geolocation);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
@@ -38,21 +46,26 @@ export default function SearchLocationPopup({defaultPage}) {
 	const [searchText, setSearchText] = useState("");
 
 	function handleClose() {
-		dispatch(locationPopup({open: false, page: page}));
+		dispatch(locationPopup({open: false, page: locationPage}));
 	}
 
 	function handleListItemClick(fid,name,location,store) {
+		let locationPacket={text: name, fid: fid, location: location};
 		if(store!==false) {
 			let newRecent=cookies['recentLocations']||[];
 			if(newRecent.length>5)
 				newRecent.shift();
-			newRecent.push({text: name, fid: fid, location: location});
+			newRecent.push(locationPacket);
 			setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
 		}
-		let encodedPage=page+encodeSearchParams({
-			location:location
-		})
-		history.push(encodedPage);
+		// Did we send a default page? If not it may be undefined and we let the site Panels update
+		if(locationPage!==undefined) {
+			let encodedPage = locationPage + encodeSearchParams({
+				location: location
+			})
+			history.push(encodedPage);
+		}
+		dispatch(setCurrentLocation(locationPacket));
 		dispatch(locationPopup({open: false}));
 	}
 
@@ -72,6 +85,13 @@ export default function SearchLocationPopup({defaultPage}) {
 		});
 
 	}, []);
+
+	useEffect(() => {
+		if(open===true&&currentLocation.text) {
+			handleListItemClick(currentLocation.fid,currentLocation.text,currentLocation.location,false);
+			dispatch(setCurrentLocation({}));
+		}
+	}, [open]);
 
 	useEffect(() => {
 		if(searchText!="") {

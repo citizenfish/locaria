@@ -29,6 +29,8 @@ import DataItemImage from "./dataItemsRead/dataItemImage";
 import DataItemH1 from "./dataItemsRead/dataItemH1";
 import DataItemLinkButton from "./dataItemsRead/dataItemLinkButton";
 import DataItemDistance from "./dataItemsRead/dataItemDistance";
+import DataItemPhoneButton from "./dataItemsRead/dataItemPhoneButton";
+import DataItemMinMedMax from "./dataItemsRead/dataItemMinMedMax";
 
 const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 
@@ -39,12 +41,8 @@ const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 
 		if (fieldsObj) {
 			return (
-				<Box sx={{
-					p: 2
-				}}>
-					<Grid container>
+					<Grid container spacing={2}>
 						<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
-
 							{fieldsObj[fields] ?
 								<FormatFields fields={fieldsObj[fields]}
 											  data={data}
@@ -53,7 +51,6 @@ const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 											  category={data.properties.category}/> : null}
 						</LocalizationProvider>
 					</Grid>
-				</Box>
 			)
 		} else {
 			return (
@@ -83,16 +80,13 @@ const FormatFields = ({fields, data, mode, category,moderation}) => {
 					if (value.children) {
 						let md = value.md || 12;
 						let sm = value.sm || 12;
+						let spacing = value.spacing || 0;
 						if (value.container) {
 							return (
-								<Grid >
-
-									<Grid container spacing={2}>
+									<Grid container spacing={spacing}>
 										<FormatFields fields={value.children} mode={mode}
 													  data={data} moderation={moderation} category={category}/>
 									</Grid>
-								</Grid>
-
 							)
 						} else {
 							return (
@@ -168,6 +162,8 @@ const FormatField = ({field, data, mode, category,moderation}) => {
 		'instagram': {"element": DataItemSocialInstagram},
 		'social': {"element": DataItemSocialGeneric},
 		'linkButton': {"element": DataItemLinkButton},
+		'phoneButton': {"element": DataItemPhoneButton},
+		'minMedMax': {"element": DataItemMinMedMax},
 		'distance': {"element": DataItemDistance},
 	}
 

@@ -21,6 +21,7 @@ import NavTypeFull from "../navs/navTypeFull";
 import SiteMapLocation from "../pages/siteMapLocation";
 import SearchLocationFilters from "../search/searchLocationFilters";
 import FeatureManager from "../moderation/featureManager";
+import SearchLocationFiltersMap from "../search/searchLocationFiltersMap";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -130,6 +131,11 @@ const pluginsDefs = {
 	},
 	"SearchLocationFilters": {
 		"obj": SearchLocationFilters,
+		"description": "Display simple input form",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SearchLocationFiltersMap": {
+		"obj": SearchLocationFiltersMap,
 		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	},

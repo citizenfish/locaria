@@ -9,10 +9,12 @@ import SearchTags from "./searchTags";
 import SearchPagination from "./searchPagination";
 import {Accordion, AccordionDetails, AccordionSummary, LinearProgress} from "@mui/material";
 import Button from "@mui/material/Button";
-import SimpleMap from "../maps/simpleMap";
-import {setDisplayLimit} from "../../redux/slices/searchDrawerSlice";
 import TypographyHeader from "../typography/typographyHeader";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MapIcon from '@mui/icons-material/Map';
+import {encodeSearchParams} from "../../../libs/searchParams";
+import {useHistory} from "react-router-dom";
+import SearchCheckboxFilter from "./searchCheckboxFilter";
 
 const SearchLocationFilters = ({
 								   category,
@@ -23,133 +25,126 @@ const SearchLocationFilters = ({
 								   field,
 								   mode = 'full',
 								   clickEnabled,
-								   urlMode = true
+								   urlMode = true,
+								   page
 							   }) => {
 	const dispatch = useDispatch()
+	const searchParams = useSelector((state) => state.searchDraw.searchParams);
+	const history = useHistory();
 
 	const features = useSelector((state) => state.searchDraw.features);
 	const loading = useSelector((state) => state.searchDraw.loading);
-	const [mapView, setMapView] = useState(false);
+	const [expanded, setExpanded] = useState(false);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
 	function toggleMap() {
-		setMapView(!mapView);
-		if (mapView === true) {
-			dispatch(setDisplayLimit(20))
-		} else {
-			dispatch(setDisplayLimit(1000))
-		}
+		let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
+			location: searchParams.location,
+			subCategories: searchParams.subCategories,
+			distance: searchParams.distance,
+			tags: searchParams.tags,
+			page: searchParams.page,
+			search: searchParams.search
+		});
+		history.push(encodedPage);
+	}
 
+	function handleChange() {
+		setExpanded(!expanded);
 	}
 
 
 	function ResultItems() {
-
-		if (mapView === true) {
+		if (loading === true) {
 			return (
-				<SimpleMap></SimpleMap>
+				<LinearProgress/>
 			)
 		} else {
-			if (loading === true) {
+			if (features && features.features && features.features.length > 0) {
 				return (
-					<LinearProgress/>
-				)
-			} else {
-				if (features && features.features && features.features.length > 0) {
-					return (
-						features.features.map((result) => {
-								return (
-									<DataCard feature={result} field={field} clickEnabled={clickEnabled} sx={{
-										border: "1px solid #AAA",
-										margin: "5px"
-									}}></DataCard>
-								)
-							}
-						)
+					features.features.map((result) => {
+							return (
+								<DataCard feature={result} field={field} clickEnabled={clickEnabled} sx={{
+									border: "1px solid #AAA",
+									margin: "5px"
+								}}></DataCard>
+							)
+						}
 					)
+				)
 
-				} else {
-					return <p>No results</p>
-				}
+			} else {
+				return <p>No results</p>
 			}
 		}
 	}
 
-	if (mode === 'full') {
-		if (mobile === true) {
-			return (
-				<Box sx={sx ? sx : {}} key={"SearchLocationFilters"}>
-					<Grid container spacing={2} sx={{
-						flexGrow: 1
-					}}>
-						<Grid item md={3} sx={{width: "100%"}}>
-
-							<Accordion>
-								<AccordionSummary
-									expandIcon={<ExpandMoreIcon/>}
-									aria-controls="panel1a-content"
-									id="panel1a-header"
-								>
-									<TypographyHeader element={"h1"}>Filters</TypographyHeader>
-								</AccordionSummary>
-								<AccordionDetails>
-
-									{mapView === true &&
-										<Button onClick={toggleMap}>Close Map</Button>
-									}
-									{mapView === false &&
-										<Button onClick={toggleMap}>Map</Button>
-									}
-									<SearchDistance category={category}></SearchDistance>
-									<SearchSubCategory category={category}></SearchSubCategory>
-									<SearchTags category={category}></SearchTags>
-
-								</AccordionDetails>
-							</Accordion>
-
-						</Grid>
-						<Grid item md={9} sx={{width: "100%"}}>
-							<ResultItems></ResultItems>
-							<SearchPagination></SearchPagination>
-						</Grid>
-
-					</Grid>
-				</Box>
-			);
-		} else {
-			return (
-				<Box sx={sx ? sx : {}} key={"SearchLocationFilters"}>
-					<Grid container spacing={2} sx={{
-						flexGrow: 1
-					}}>
-						<Grid item md={3} sx={{width: "100%"}}>
-							{mapView === true &&
-								<Button onClick={toggleMap}>Close Map</Button>
-							}
-							{mapView === false &&
-								<Button onClick={toggleMap}>Map</Button>
-							}
-							<SearchDistance category={category}></SearchDistance>
-							<SearchSubCategory category={category}></SearchSubCategory>
-							<SearchTags category={category}></SearchTags>
-						</Grid>
-						<Grid item md={9} sx={{width: "100%"}}>
-							<ResultItems></ResultItems>
-							<SearchPagination></SearchPagination>
-						</Grid>
-
-					</Grid>
-				</Box>
-			);
-		}
-	} else {
+	function FiltersInner() {
 		return (
-			<Box id={"locationSearchTopLevel"} sx={sx ? sx : {}} key={"SearchLocationFilters"}>
+			<>
+				<Box textAlign='center'>
+					<Button variant={"outlined"} onClick={() => {
+						toggleMap();
+						handleChange();
+					}} startIcon={<MapIcon/>}>Map</Button>
+				</Box>
+				<SearchDistance category={category}></SearchDistance>
+				<SearchSubCategory category={category}></SearchSubCategory>
+				<SearchTags category={category}></SearchTags>
+				<SearchCheckboxFilter title={"Paid"} values={[{name: "Free", filter: true, path: "data.free"}]}/>
+				<SearchCheckboxFilter title={"Days"} values={[{name: "Monday", filter: true, path: "data.days.Monday"}, {name: "Tuesday", filter: true, path: "data.days.Tuesday"},{name: "Wednesday", filter: true, path: "data.days.Wednesday"},{name: "Thursday", filter: true, path: "data.days.Thursday"},{name: "Friday", filter: true, path: "data.days.Friday"},{name: "Saturday", filter: true, path: "data.days.Saturday"},{name: "Sunday", filter: true, path: "data.days.Sunday"}]}/>
+			</>
+		)
+	}
+
+	let actualSx = {
+		...{
+			marginTop: "10px"
+
+		}, ...sx ? sx : {}
+	};
+	if (mobile === true) {
+		return (
+			<Box sx={actualSx} key={"SearchLocationFilters"}>
 				<Grid container spacing={2} sx={{
 					flexGrow: 1
 				}}>
-					<Grid item md={12} sx={{width: "100%"}}>
+					<Grid item md={3} sx={{width: "100%"}}>
+
+						<Accordion expanded={expanded} onChange={handleChange}>
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon/>}
+								aria-controls="panel1a-content"
+								id="panel1a-header"
+							>
+								<TypographyHeader element={"h1"}>Filters</TypographyHeader>
+							</AccordionSummary>
+							<AccordionDetails>
+								<FiltersInner/>
+							</AccordionDetails>
+						</Accordion>
+
+					</Grid>
+					<Grid item md={9} sx={{width: "100%"}}>
 						<ResultItems></ResultItems>
+						<SearchPagination></SearchPagination>
+					</Grid>
+
+				</Grid>
+			</Box>
+		);
+	} else {
+		return (
+			<Box sx={actualSx} key={"SearchLocationFilters"}>
+				<Grid container spacing={2} sx={{
+					flexGrow: 1
+				}}>
+					<Grid item md={3} sx={{width: "100%"}}>
+						<FiltersInner/>
+					</Grid>
+					<Grid item md={9} sx={{width: "100%"}}>
+						<ResultItems></ResultItems>
+						<SearchPagination></SearchPagination>
 					</Grid>
 				</Grid>
 			</Box>

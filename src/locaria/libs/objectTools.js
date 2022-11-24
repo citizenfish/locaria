@@ -11,6 +11,18 @@ function setObjectWithPath(obj,path,value) {
 	ptr[pathArray[pathArray.length-1]]=value;
 }
 
+function delObjectWithPath(obj,path) {
+	let ptr=obj;
+	let pathArray=path.split(".");
+	for(let i=0;i<pathArray.length-1;i++) {
+		if(ptr[pathArray[i]]===undefined) {
+			ptr[pathArray[i]]={};
+		}
+		ptr=ptr[pathArray[i]];
+	}
+	delete ptr[pathArray[pathArray.length-1]];
+}
+
 function objectPathExists(obj,path) {
 	path=`obj.${path}`;
 	let result=undefined;
@@ -33,4 +45,4 @@ function objectPathGet(obj, path) {
 }
 
 
-export {setObjectWithPath,objectPathExists,objectPathGet};
+export {setObjectWithPath,objectPathExists,objectPathGet,delObjectWithPath};

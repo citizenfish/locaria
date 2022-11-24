@@ -1,5 +1,6 @@
 import React from 'react';
 import UrlCoder from "../../../../libs/urlCoder";
+import Box from "@mui/material/Box";
 
 const DataItemImage = ({name, data, sx,category}) => {
 
@@ -9,19 +10,27 @@ const DataItemImage = ({name, data, sx,category}) => {
 	if((!data||data.length===0)&&channel&&channel.image) {
 		imagesActual=[channel.image];
 	}
+	const url = new UrlCoder();
+	let urlActual = url.decode(imagesActual[0], true);
 
 	let sxActual = {
 		...{
-			width: "250px",
-			height: "250px",
+			alignItems: "center",
+			background: `url(${urlActual})`,
+			maxWidth: "100%",
+			maxHeight: "100%",
+			display: "block",
+			width: "calc( 100vw - 55px )",
+			height: "calc( 20vh ) ",
+			backgroundPosition: "center",
+			backgroundRepeat: "no-repeat",
+			backgroundSize: "cover"
 		}, ...sx
 	}
 
-	const url = new UrlCoder();
 	if (imagesActual && imagesActual[0]) {
-		let urlActual = url.decode(imagesActual[0], true);
 		return (
-			<img src={urlActual} style={sxActual}></img>
+			<Box sx={sxActual}/>
 		)
 	} else {
 		return (<></>)

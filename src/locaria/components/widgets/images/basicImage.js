@@ -12,6 +12,8 @@ export default function BasicImage ({src, sx,clickUrl,openNew=false})  {
 		...{
 			backgroundImage: `url(${decodedUrl})`,
 			width: "100%",
+			//maxWidth: "100%",
+			//maxHeight: "100%",
 			pointerEvents: "all"
 		}, ...sx? sx:{}
 	};
