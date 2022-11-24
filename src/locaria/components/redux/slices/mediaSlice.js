@@ -3,11 +3,14 @@ import { createSlice } from '@reduxjs/toolkit'
 export const mediaSlice = createSlice({
 	name: 'mediaSlice',
 	initialState: {
-		mobile: false
+		mobile: false,
+		innerWidth: 0
 	},
 	reducers: {
 		setMobile: (state,action) => {
 			state.mobile=action.payload;
+			state.innerWidth=window.innerWidth;
+			state.innerHeight=window.innerHeight;
 		}
 	},
 })

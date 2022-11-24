@@ -33,7 +33,6 @@ import DataItemDistance from "./dataItemsRead/dataItemDistance";
 const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 
 	if (data && data.properties && data.properties.category) {
-
 		let channel = window.systemCategories.getChannelProperties(data.properties.category);
 
 		let fieldsObj = channel.fields;
@@ -83,22 +82,23 @@ const FormatFields = ({fields, data, mode, category,moderation}) => {
 			{fields.map(value => {
 					if (value.children) {
 						let md = value.md || 12;
+						let sm = value.sm || 12;
 						if (value.container) {
 							return (
-								<Grid item md={md}>
+								<Grid >
 
 									<Grid container spacing={2}>
 										<FormatFields fields={value.children} mode={mode}
-													  data={data} moderation={moderation}> category={category}</FormatFields>
+													  data={data} moderation={moderation} category={category}/>
 									</Grid>
 								</Grid>
 
 							)
 						} else {
 							return (
-								<Grid item md={md}>
+								<Grid item item md={md} sd={sm}>
 									<FormatFields fields={value.children} mode={mode}
-												  data={data} moderation={moderation}> category={category}</FormatFields>
+												  data={data} moderation={moderation} category={category}/>
 								</Grid>
 							)
 						}
@@ -133,7 +133,6 @@ const FormatFields = ({fields, data, mode, category,moderation}) => {
 }
 
 const FormatField = ({field, data, mode, category,moderation}) => {
-
 	let dataActual = getData(data, field.key, field.dataFunction);
 	let dataModeration=[];
 

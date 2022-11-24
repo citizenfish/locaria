@@ -111,7 +111,7 @@ export default function AdminModerationDataView() {
 
 		for(let m in featureData.properties['_moderations']) {
 			if(featureData.properties['_moderations'][m].properties['mq_type']=="add") {
-				packet.data.acl={view:["Admin','Moderators"]};
+				packet.data.acl={view:["Admins","Moderators"]};
 				break;
 			}
 		}
