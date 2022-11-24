@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {createSlice} from '@reduxjs/toolkit'
-import {objectPathExists} from "../../../libs/objectTools";
+import {delObjectWithPath, objectPathExists, setObjectWithPath} from "../../../libs/objectTools";
 
 export const searchDrawerSlice = createSlice({
 	name: 'searchDraw',
@@ -16,6 +16,7 @@ export const searchDrawerSlice = createSlice({
 			search: '',
 			distance: 0,
 			page: 1,
+			filters:{}
 
 		},
 
@@ -273,7 +274,16 @@ export const searchDrawerSlice = createSlice({
 			state.searchParams.displayLimit=action.payload;
 			state.loading=false;
 		},
-
+		setFilterItem: (state,action) => {
+			setObjectWithPath(state.searchParams.filters,action.payload.path,action.payload.value);
+			state.page=1;
+			state.totalPages=0;
+		},
+		clearFilterItem: (state,action) => {
+			delObjectWithPath(state.searchParams.filters,action.payload.path);
+			state.page=1;
+			state.totalPages=0;
+		}
 
 	},
 })
@@ -306,7 +316,9 @@ export const {
 	setDisplayLimit,
 	setCounts,
 	setRefreshCounts,
-	setCurrentLocation
+	setCurrentLocation,
+	setFilterItem,
+	clearFilterItem
 
 } = searchDrawerSlice.actions
 

@@ -14,6 +14,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
 import {encodeSearchParams} from "../../../libs/searchParams";
 import {useHistory} from "react-router-dom";
+import SearchCheckboxFilter from "./searchCheckboxFilter";
 
 const SearchLocationFilters = ({
 								   category,
@@ -90,6 +91,8 @@ const SearchLocationFilters = ({
 				<SearchDistance category={category}></SearchDistance>
 				<SearchSubCategory category={category}></SearchSubCategory>
 				<SearchTags category={category}></SearchTags>
+				<SearchCheckboxFilter title={"Paid"} values={[{name: "Free", filter: true, path: "data.free"}]}/>
+				<SearchCheckboxFilter title={"Days"} values={[{name: "Monday", filter: true, path: "data.days.Monday"}, {name: "Tuesday", filter: true, path: "data.days.Tuesday"},{name: "Wednesday", filter: true, path: "data.days.Wednesday"},{name: "Thursday", filter: true, path: "data.days.Thursday"},{name: "Friday", filter: true, path: "data.days.Friday"},{name: "Saturday", filter: true, path: "data.days.Saturday"},{name: "Sunday", filter: true, path: "data.days.Sunday"}]}/>
 			</>
 		)
 	}

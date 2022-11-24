@@ -68,6 +68,10 @@ export default function SearchProxy() {
 
 		}
 
+		if(searchParams.filters) {
+			packetSearch.data.filter=searchParams.filters;
+		}
+
 		if(searchParams.location) {
 			packetSearch.data.location = `SRID=4326;POINT(${searchParams.location[0]} ${searchParams.location[1]})`;
 			if(searchParams.distance>0) {
