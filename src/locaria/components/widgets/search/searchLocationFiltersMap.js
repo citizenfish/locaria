@@ -17,6 +17,7 @@ import MapIcon from '@mui/icons-material/Map';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import {useHistory} from "react-router-dom";
 import {encodeSearchParams} from "../../../libs/searchParams";
+import MaplibreGL from "../maps/maplibreGL";
 
 const SearchLocationFiltersMap = ({
 								   category,
@@ -116,7 +117,7 @@ const SearchLocationFiltersMap = ({
 							<FiltersInner/>
 						</Grid>
 						<Grid item md={9} sx={{width: "100%"}}>
-							<SimpleMap/>
+							<MaplibreGL/>
 						</Grid>
 					</Grid>
 				</Box>

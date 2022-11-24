@@ -68,7 +68,8 @@
 		"use-mailchimp-form": "^3.0.1",
 		"react-cookie-consent": "^7.5.0",
 		"formik": "^2.2.9",
-		"yup": "^0.32.11"
+		"yup": "^0.32.11",
+		"maplibre-gl": "^2.4.0"
 	},
 	"devDependencies": {
 		"@nautoguide/grunt-pgsql": "^0.1.4",
