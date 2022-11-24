@@ -112,6 +112,7 @@ BEGIN
 
     --Permissions
     GRANT SELECT ON locaria_data.global_search_view TO PUBLIC;
+    GRANT SELECT ON locaria_data.global_search_view_live TO locaria_report_user;
 
 	RETURN jsonb_build_object('success', 'locaria search materialised view created');
 

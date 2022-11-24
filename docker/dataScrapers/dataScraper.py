@@ -18,9 +18,10 @@ if not db.connection:
 
 parameters = db.getParameter(DATA_SCRAPER_PARAMETER)
 print(parameters)
+
 # process sites that require link scraping
 if LINK_SITES:
-    for site in parameters.get('link_sites_ignore', []):
+    for site in parameters.get('link_sites', []):
         site['urls']= getLinks(site)
         proc = classSelectors[site['class']](site, DEBUG)
         res = proc.processUrls(db)

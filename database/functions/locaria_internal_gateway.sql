@@ -39,6 +39,7 @@ BEGIN
         WHEN parameters ->> 'method' IN ('refresh_search_view') THEN
             ret_var = update_history(jsonb_build_object('refresh_view', true));
             PERFORM locaria_core.views_union();
+
             REFRESH MATERIALIZED VIEW CONCURRENTLY global_search_view WITH data;
             RETURN jsonb_build_object('message', 'view refreshed', 'refresh', ret_var);
 
@@ -117,7 +118,7 @@ BEGIN
                         WHERE parameter_name = 'log_configuration'), log_var);
 
     IF log_var THEN
-        PERFORM log(parameters || jsonb_build_object('ret', ret_var, 'logpath', 'internal'),
+        PERFORM log(parameters || jsonb_build_object('ret', ret_var, 'logpath', 'internal', 'acl', acl),
                     CASE WHEN COALESCE(ret_var ->> 'error', '') = ''
                                THEN 'ok'
                            ELSE ret_var ->> 'error' END);

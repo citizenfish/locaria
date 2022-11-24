@@ -22,11 +22,14 @@
         "database/functions/utility/uk_gridref_parse.sql",
         "database/functions/utility/geocoder.sql",
         "database/functions/locaria_gateway.sql",
+        "database/functions/locaria_internal_gateway.sql",
         "database/functions/internal/data/update_item.sql",
         "database/functions/search/get_my_items.sql",
         "database/functions/search/search.sql",
         "database/functions/search/get_item.sql",
-        "database/functions/internal/data/get_moderation_items.sql"
+        "database/functions/internal/data/get_moderation_items.sql",
+        "database/functions/view_creation/views_union.sql",
+        "database/functions/utility/reverse_geocoder.sql"
       ],
       "substitutions": "../tests.json"
     }

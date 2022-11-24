@@ -125,6 +125,7 @@ BEGIN
     owned_var = COALESCE(search_parameters->>'owned','FALSE')::BOOLEAN;
     live_flag = COALESCE(search_parameters->>'live','FALSE')::BOOLEAN;
 
+    RAISE NOTICE 'DEBUG % : %', live_flag, search_parameters;
     RETURN QUERY
 
 
@@ -156,7 +157,7 @@ BEGIN
                    --Free text on JSONB attributes search
                    AND (search_ts_query = '_IGNORE' OR jsonb_to_tsvector('English'::regconfig, attributes->'description', '["string", "numeric"]'::jsonb) @@ search_ts_query)
                    --jsonpath search
-                   AND (jsonpath_var IS NULL OR jsonb_path_match(attributes->'data', jsonpath_var::JSONPATH))
+                   AND (jsonpath_var IS NULL OR attributes @@ jsonpath_var::JSONPATH)--jsonb_path_match(attributes->'data', jsonpath_var::JSONPATH))
                    --Bounding box search
                    AND (bbox_var IS NULL OR wkb_geometry && bbox_var)
                    --distance search

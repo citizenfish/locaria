@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 sys.path[0:0] = ['../modules']
 from locaria_api_utils import *
 
-INSERT_SCHEMA = 'locaria_uploads'
+INSERT_SCHEMA = 'locaria_data'
 
 #TODO split classes into own files
 
@@ -20,12 +20,12 @@ class sustainablefoodplaces:
         self.params.pop('urls', None)
         self.table = site.get('table', 'sustainablefoodplaces')
 
-        self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(url TEXT PRIMARY KEY, attributes JSONB)"
+        #self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(url TEXT PRIMARY KEY, attributes JSONB)"
         self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (url, attributes) VALUES %s ON CONFLICT(url) DO UPDATE SET attributes=EXCLUDED.attributes"
 
     def processUrls(self, db):
 
-        db.query(self.table_create)
+        #db.query(self.table_create)
 
         if self.debug: print(f"Processing sustainablefoodplaces: {len(self.urls)}")
         features = []
@@ -40,6 +40,8 @@ class sustainablefoodplaces:
             feature = getLocariaInfo(url, self.params)
             point = l[1].replace(' ','').split(',')
             feature['geometry'] = f"SRID=4326;POINT({point[1]} {point[0]})"
+            feature['lon'] = point[1]
+            feature['lat'] = point[0]
             feature['description']['title'] = t[1]
             features.append((url, json.dumps(feature)))
 
@@ -56,11 +58,11 @@ class mindlocations:
         self.params = params
         self.table = params.get('table', 'mindlocations')
 
-        self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(location TEXT PRIMARY KEY, attributes JSONB)"
+        #self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(location TEXT PRIMARY KEY, attributes JSONB) INHERITS({INSERT_SCHEMA}.base_table)"
         self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (location, attributes) VALUES %s ON CONFLICT(location) DO UPDATE SET attributes=EXCLUDED.attributes"
 
     def processJson(self, db):
-        db.query(self.table_create)
+        #db.query(self.table_create)
         if self.debug: print(f"Processing mindlocations: {self.params['uri']}")
         features = []
         f = open(self.params['uri'])
@@ -75,34 +77,47 @@ class datathistle:
         self.url = parameters.get('url','https://api.list.co.uk/v1/events')
         self.debug = debug
         self.table = parameters.get('table', 'datathistle')
-        self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(event_id TEXT PRIMARY KEY, attributes JSONB)"
+        self.insert_places = f"INSERT INTO {INSERT_SCHEMA}.{self.table}_places (place_id, attributes) VALUES %s ON CONFLICT(place_id) DO UPDATE SET attributes=EXCLUDED.attributes"
         self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (event_id, attributes) VALUES %s ON CONFLICT(event_id) DO UPDATE SET attributes=EXCLUDED.attributes"
         self.api_key = parameters.get('apikey','')
         self.lon = parameters.get('lon', None)
         self.lat = parameters.get('lat', None)
         self.distance = parameters.get('distance', None)
+        self.direct = parameters.get('direct', False)
 
     def processAPI(self,db):
-        db.query(self.table_create)
         if self.debug: print(f"Processing datathistle: {self.url}")
         if not self.lon or not self.lat or not self.distance:
             return {'error' : 'missing parameters'}
 
+        if not self.direct:
+            url = f"{self.url}?near={self.lat},{self.lon}/{self.distance}"
+        else:
+            url = self.url
 
-        url = f"{self.url}?near={self.lat},{self.lon}/{self.distance}"
         count = 0
         while True:
             events = []
+            places = []
             res = requests.get(url, headers={'Authorization': f"Bearer {self.api_key}"})
-            for e in res.json():
+
+            for p in res.json()['places']:
+                places.append((p['place_id'], json.dumps(p)))
+
+            for e in res.json()['events']:
                 events.append((e['event_id'], json.dumps(e)))
+
+            print(f"Inserting {len(places)} place records)")
+            db_res = db.bulkInserter(self.insert_places, places)
+
+            print(f"Inserting {len(events)} event records)")
             db_res = db.bulkInserter(self.insert, events)
+
             url = res.links.get('next', '')
             count += len(events)
             if url == '':
                 break
             url = url['url']
-
 
         return {'inserts' : count}
 
