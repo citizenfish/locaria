@@ -67,19 +67,27 @@ const MaplibreGL = forwardRef(({sx,zoom,center,style='/mapbox/styles.json',bboxU
 				type: 'geojson',
 				data: {features:[],type:"FeatureCollection"}
 				});
+			/*
+			Note that this won't work for some reason with certain fonts
+			You will get an error "Unimplemented type: 3"
+			I fixed it by chnaging the font to one from https://developers.arcgis.com/javascript/latest/labeling/
+			After reading: https://github.com/maplibre/maplibre-gl-js/issues/197 final comment
+			 */
+
+			/*
+			 To get nested properties you have to next the expression and retrieve from 'properties' object
+			 */
+
 			map.current.addLayer({
-				'id': 'data',
-				'type': 'symbol',
-				'source': 'data',
-				'layout': {
-					'icon-image': 'custom-marker',
-					'text-field': ['get', 'title'],
-					'text-font': [
-						'Open Sans Semibold',
-						'Arial Unicode MS Bold'
-					],
-					'text-offset': [0, 1.25],
-					'text-anchor': 'top'
+				id: 'data',
+				type: 'symbol',
+				source: 'data',
+				layout: {
+					"icon-image": 'custom-marker',
+					"text-field": ['get', 'title', ['get','description', ['properties']]],
+					   "text-font": ['Arial Bold'],
+					"text-offset": [0, 1.25],
+					"text-anchor": 'top'
 				}
 			});
 		});
