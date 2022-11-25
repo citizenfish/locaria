@@ -21,7 +21,7 @@ import Channels from "libs/Channels";
 import store from "./components/redux/store";
 import {Provider} from "react-redux";
 let tries = 0;
-
+let rendered=false;
 window.websocket = new Websockets();
 
 let cookieUUID=getCookie('uuid');
@@ -36,7 +36,6 @@ setCookie('uuid', cookieUUID, {path: '/', sameSite: true});
 window.websocket.init({"url": resources.websocket, "uuid":cookieUUID}, connected, closed, errored);
 
 window.websocket.registerQueue('bulkConfigs', (json) => {
-
 
     window.systemMain = {};
     window.systemPages = {};
@@ -53,7 +52,7 @@ window.websocket.registerQueue('bulkConfigs', (json) => {
         window.siteMap = json.systemParams.packet.parameters.siteMap.data;
         window.systemCategories = new Channels(json.categories.packet.categories);
     }
-
+    rendered=true;
     ReactDOM.render(<Main/>, document.getElementById('root'));
 });
 
@@ -79,34 +78,37 @@ function getCookie(name) {
 }
 
 function connected() {
-    window.websocket.sendBulk('bulkConfigs', [
-        {
-            "queue": "systemParams",
-            "api": "api",
-            "data": {
-                "method": "get_parameters",
-                "usage":"Config"
-            }
-        },
-        {
-            "queue": "systemPages",
-            "api": "api",
-            "data": {
-                "method": "get_parameters",
-                "usage":"Page",
-                "delete_key":"data"
-            }
-        },
-        {
-            "queue": "categories",
-            "api": "api",
-            "data": {
-                "method": "list_categories",
-                "attributes" : "true"
-            }
-        }
-        ]
-    );
+    if(rendered===false) {
+
+        window.websocket.sendBulk('bulkConfigs', [
+                {
+                    "queue": "systemParams",
+                    "api": "api",
+                    "data": {
+                        "method": "get_parameters",
+                        "usage": "Config"
+                    }
+                },
+                {
+                    "queue": "systemPages",
+                    "api": "api",
+                    "data": {
+                        "method": "get_parameters",
+                        "usage": "Page",
+                        "delete_key": "data"
+                    }
+                },
+                {
+                    "queue": "categories",
+                    "api": "api",
+                    "data": {
+                        "method": "list_categories",
+                        "attributes": "true"
+                    }
+                }
+            ]
+        );
+    }
 }
 
 function closed(event) {

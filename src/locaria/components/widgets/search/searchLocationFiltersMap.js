@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -33,12 +33,19 @@ const SearchLocationFiltersMap = ({
 							   }) => {
 	const dispatch = useDispatch()
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
+	const mapRef = useRef();
 
 	const features = useSelector((state) => state.searchDraw.features);
 	const loading = useSelector((state) => state.searchDraw.loading);
 	const [expanded, setExpanded] = useState(false);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const history = useHistory();
+
+
+	useEffect(() => {
+		if(features&&features.type)
+			mapRef.current.addGeojson(features,'data');
+	},[features]);
 
 	function toggleMap() {
 		let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
@@ -117,7 +124,7 @@ const SearchLocationFiltersMap = ({
 							<FiltersInner/>
 						</Grid>
 						<Grid item md={9} sx={{width: "100%"}}>
-							<MaplibreGL/>
+							<MaplibreGL  ref={mapRef}/>
 						</Grid>
 					</Grid>
 				</Box>
