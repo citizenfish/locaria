@@ -31,8 +31,11 @@ class openActiveDB(locariaDB):
         # We have to convert to tuples to use execute_values in psycopg2 we also have to split items into types
         for i in data:
             kind = i.get('kind','errors')
-            kind = kind.lower() # to cope with Event, event etc...
-            kind = re.split(r'[^a-zA-Z]', kind)[0] # to cope with scheduledsession.sessionseries or facilityuse/slot etc...
+            try:
+                kind = kind.lower() # to cope with Event, event etc...
+                kind = re.split(r'[^a-zA-Z]', kind)[0] # to cope with scheduledsession.sessionseries or facilityuse/slot etc...
+            except Exception as error:
+                kind = 'errors'
 
             if kind in types:
                 items[kind].append((org, i.get('id'), i.get('modified'), json.dumps(i)))

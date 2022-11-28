@@ -12,7 +12,6 @@ from openActiveDB import *
 from locaria_file_utils import get_local_config
 from feedFunctions import loadRPDE
 
-
 stats = {}
 
 config = get_local_config('config.json')
@@ -33,10 +32,10 @@ feeds = db.getParameter(FEEDS_PARAMETER)
 errorCount = 0
 urlCount = 0
 jobs = []
+
 for id in feedsToProcess['feeds']:
     if DEBUG: print(f"Loading {id}")
     jobs.append((id, feedsToProcess, feeds, config, DEBUG))
-
 
 if __name__ == '__main__': # Important as multiprocess respawns
     start = time.perf_counter()
