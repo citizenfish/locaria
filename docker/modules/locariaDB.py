@@ -41,7 +41,6 @@ class locariaDB:
 
     def query(self, query, parameters = None,  query_type = 'standard',):
 
-
         cursor = self.conn.cursor()
 
         try:
@@ -66,13 +65,14 @@ class locariaDB:
             try:
                 cursor.close()
             except Exception as close_error:
-                self.setError(close_error)
+                self.setError(str(close_error))
 
             if self.conn.closed == 1:
                 print(f"Query Error {str(error)} attempting reconnection")
                 self.__init__(self.config,self.debug)
             else:
-                e = self.setError(error)
+                ##TODO trap psycopg2 errors properly
+                e = self.setError('Query Error')
                 return [{"error" : e, "query" : query}]
 
     def internalGateway(self, method, parameters, public = 'internal_'):
@@ -85,7 +85,7 @@ class locariaDB:
             return res[0]
 
         except Exception as error:
-            e = self.setError(error)
+            e = self.setError(str(error))
             print(f"{public}Gateway Error {e}")
             return {"error" : e}
 

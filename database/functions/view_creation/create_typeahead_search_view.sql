@@ -26,7 +26,7 @@ BEGIN
            'Location' AS category,
            'l' AS feature_type,
            jsonb_build_array(ST_X(wkb_geometry), ST_Y(wkb_geometry)) AS location,
-           attributes->>'region' AS region
+           concat_ws(' ', attributes ->> 'county_unitary'::text, Concat('(',attributes ->> 'region'::text,')'))  AS region
     FROM locaria_data.location_search_view;
 
     CREATE INDEX IF NOT EXISTS gsv_typeahead_idx ON locaria_data.global_search_view (LOWER(attributes#>>'{description,title}') text_pattern_ops);

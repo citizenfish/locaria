@@ -100,7 +100,7 @@ BEGIN
     CREATE INDEX locaria_data_global_range_idx ON locaria_data.global_search_view (range_min, range_max DESC);
 
     --tags
-    CREATE INDEX locaria_data_global_search_view_tags_idx ON locaria_data.global_search_view USING GIN((attributes#>'{tags}'));
+    CREATE INDEX locaria_data_global_search_view_tags_idx ON locaria_data.global_search_view USING GIN((attributes->'tags'));
 
     --jsonb_path operations
     CREATE INDEX locaria_data_global_search_view_jsonb_path_ops_idx ON locaria_data.global_search_view USING GIN(attributes jsonb_path_ops);
