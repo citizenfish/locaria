@@ -42,7 +42,7 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 					</Box>
 					<SlideShow sx={{marginTop: "50px"}} height={height} interval={interval} duration={duration} feature={feature}
 							   format={format} images={images}/>
-					<SearchLocationPopup isOpen={true} defaultPage={defaultPage}  panel={panel}></SearchLocationPopup>
+					<SearchLocationPopup  defaultPage={defaultPage}  panel={panel}></SearchLocationPopup>
 				</Box>
 			)
 			break;
@@ -59,7 +59,7 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 				}} key={"siteMap"}>
 					<SlideShow sx={{marginTop: "10px"}} interval={interval} duration={duration} feature={feature}
 							   format={format} images={images} height={height}/>
-					<SearchLocationPopup isOpen={true} defaultPage={defaultPage}></SearchLocationPopup>
+					<SearchLocationPopup  defaultPage={defaultPage}></SearchLocationPopup>
 					<Box sx={{
 						width: "100%",
 						maxWidth: "1100px",
@@ -87,6 +87,8 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 					maxWidth: "1100px",
 				}} key={"siteMap"}>
 					<SitePanels open={open} mode={mode}  panel={panel}></SitePanels>
+					<SearchLocationPopup display={false} defaultPage={defaultPage}  panel={panel}></SearchLocationPopup>
+
 				</Box>
 			)
 			break;

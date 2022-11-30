@@ -10,7 +10,7 @@ import SearchPagination from "./searchPagination";
 import {Accordion, AccordionDetails, AccordionSummary, LinearProgress} from "@mui/material";
 import Button from "@mui/material/Button";
 import SimpleMap from "../maps/simpleMap";
-import {setDisplayLimit} from "../../redux/slices/searchDrawerSlice";
+import {setBbox, setDisplayLimit} from "../../redux/slices/searchDrawerSlice";
 import TypographyHeader from "../typography/typographyHeader";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
@@ -41,6 +41,10 @@ const SearchLocationFiltersMap = ({
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const history = useHistory();
 
+
+	function bboxUpdate(bbox) {
+		dispatch(setBbox(bbox));
+	}
 
 	useEffect(() => {
 		if(features&&features.type)
@@ -124,7 +128,7 @@ const SearchLocationFiltersMap = ({
 							<FiltersInner/>
 						</Grid>
 						<Grid item md={9} sx={{width: "100%"}}>
-							<MaplibreGL  ref={mapRef}/>
+							<MaplibreGL  ref={mapRef} bboxUpdate={bboxUpdate}/>
 						</Grid>
 					</Grid>
 				</Box>
