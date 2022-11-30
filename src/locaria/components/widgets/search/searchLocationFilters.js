@@ -15,6 +15,7 @@ import MapIcon from '@mui/icons-material/Map';
 import {encodeSearchParams} from "../../../libs/searchParams";
 import {useHistory} from "react-router-dom";
 import SearchCheckboxFilter from "./searchCheckboxFilter";
+import SearchLocationFiltersNoResults from "./searchLocationFiltersNoResults";
 
 const SearchLocationFilters = ({
 								   category,
@@ -74,7 +75,7 @@ const SearchLocationFilters = ({
 				)
 
 			} else {
-				return <p>No results</p>
+				return (<SearchLocationFiltersNoResults/>)
 			}
 		}
 	}
