@@ -1,10 +1,11 @@
 --The main search query engine
-CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 10000) RETURNS TABLE (
-                                                                                                                                           _fid TEXT,
-                                                                                                                                           _search_rank DOUBLE PRECISION,
-                                                                                                                                           _wkb_geometry GEOMETRY,
-                                                                                                                                           _attributes JSONB
-                                                                                                                                       ) AS $$
+CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 10000)
+    RETURNS TABLE (
+                   _fid TEXT,
+                   _search_rank DOUBLE PRECISION,
+                   _wkb_geometry GEOMETRY,
+                   _attributes JSONB
+                  ) AS $$
 DECLARE
     default_offset INTEGER DEFAULT 0;
     json_filter JSONB DEFAULT json_build_object();
@@ -120,18 +121,15 @@ BEGIN
         ranking_attribute_var = string_to_array(search_parameters->>'ranking_attributes',',');
     END IF;
 
-    --We support jsonpath but need to be concious that this is not currently indexed
+    --We support jsonpath indexed using the @? operator and only on equality or IN operators
     jsonpath_var = NULLIF(search_parameters->>'jsonpath', '');
 
+    --Cast category to a TEXT array for ?| operator
     category_var = json2text(search_parameters->'category');
-    --This is the core search query
-
     owned_var = COALESCE(search_parameters->>'owned','FALSE')::BOOLEAN;
     live_flag = COALESCE(search_parameters->>'live','FALSE')::BOOLEAN;
 
-    RAISE NOTICE 'DEBUG % : %', live_flag, search_parameters;
     RETURN QUERY
-
 
         SELECT fid,
                search_rank::DOUBLE PRECISION,
@@ -184,7 +182,7 @@ BEGIN
                        )
 
                  LIMIT default_limit
-                     OFFSET default_offset
+                 OFFSET default_offset
              ) INNER_SUB
         ORDER by distance ASC, attribute_rank ASC, search_rank DESC;
 
