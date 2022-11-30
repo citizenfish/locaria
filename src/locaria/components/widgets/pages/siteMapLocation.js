@@ -19,7 +19,6 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 					background: window.systemMain.themePanels,
 					flexGrow: 1,
 					textAlign: 'center',
-					height: height ,
 					backgroundSize: "cover",
 					backgroundPositionY: "50%",
 					position: "relative"
@@ -52,10 +51,10 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 					background: window.systemMain.themePanels,
 					flexGrow: 1,
 					textAlign: 'center',
-					height: height ,
 					backgroundSize: "cover",
 					backgroundPositionY: "50%",
-					position: "relative"
+					position: "relative",
+					display: "block"
 				}} key={"siteMap"}>
 					<SlideShow sx={{marginTop: "10px"}} interval={interval} duration={duration} feature={feature}
 							   format={format} images={images} height={height}/>
@@ -66,7 +65,8 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 						marginTop: "20px",
 						zIndex: 10,
 						paddingLeft: "5px",
-						paddingRight: "5px"
+						paddingRight: "5px",
+						display:"block"
 					}}>
 						<SitePanels open={open} mode={mode} panel={panel}></SitePanels>
 					</Box>

@@ -48,11 +48,23 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	function handleListItemClick(fid,name,location,store) {
 		let locationPacket={text: name, fid: fid, location: location};
 		if(store!==false) {
+			// dedupe
+
 			let newRecent=cookies['recentLocations']||[];
-			if(newRecent.length>5)
-				newRecent.shift();
-			newRecent.push(locationPacket);
-			setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
+			let dupe=false;
+			for(let l in newRecent) {
+				if(newRecent[l].fid===fid) {
+					dupe = true;
+					break;
+				}
+			}
+
+			if(!dupe) {
+				if (newRecent.length > 5)
+					newRecent.shift();
+				newRecent.push(locationPacket);
+				setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
+			}
 		}
 
 		setCookies('currentLocation', locationPacket, {path: '/', sameSite: true});
@@ -209,16 +221,19 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		width:`${width}px`
 	};
 
-	if(mobile) {
-		textSx.width=`${width}px`;
-	}
 
 	let boxSx={
 		position: "absolute",
-		top: `calc( 50% - 100px )`,
+		top: "150px",
 		left: `calc( 50% - ${width/2}px )`,
 		width: `${width}px`
 	}
+
+	if(mobile) {
+		textSx.width=`${width}px`;
+		boxSx.top="30px";
+	}
+
 
 	if(!visible) {
 		boxSx.display='none';

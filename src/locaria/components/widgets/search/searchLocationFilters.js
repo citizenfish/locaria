@@ -99,17 +99,16 @@ const SearchLocationFilters = ({
 
 	let actualSx = {
 		...{
-			marginTop: "10px"
+			marginTop: "10px",
+			flexGrow: 1
 
 		}, ...sx ? sx : {}
 	};
 	if (mobile === true) {
 		return (
-			<Box sx={actualSx} key={"SearchLocationFilters"}>
-				<Grid container spacing={2} sx={{
-					flexGrow: 1
-				}}>
-					<Grid item md={3} sx={{width: "100%"}}>
+				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx} key={"SearchLocationFilters"}>
+
+				<Grid item md={3} sx={{width: "100%"}}>
 
 						<Accordion expanded={expanded} onChange={handleChange}>
 							<AccordionSummary
@@ -131,14 +130,10 @@ const SearchLocationFilters = ({
 					</Grid>
 
 				</Grid>
-			</Box>
 		);
 	} else {
 		return (
-			<Box sx={actualSx} key={"SearchLocationFilters"}>
-				<Grid container spacing={2} sx={{
-					flexGrow: 1
-				}}>
+				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx} >
 					<Grid item md={3} sx={{width: "100%"}}>
 						<FiltersInner/>
 					</Grid>
@@ -147,7 +142,6 @@ const SearchLocationFilters = ({
 						<SearchPagination></SearchPagination>
 					</Grid>
 				</Grid>
-			</Box>
 		);
 	}
 }

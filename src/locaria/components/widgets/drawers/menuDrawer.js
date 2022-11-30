@@ -108,31 +108,7 @@ function DrawSiteMap() {
 		)
 	}
 
-	if(userValid===false) {
-			topMenuArray.push(
-				<ListItem button key={"SignIn"} onClick={() => {
-					window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 
-				}}>
-					<ListItemIcon>
-						<AccountCircleIcon sx={{color: window.systemMain.defaultIconColor}}/>
-					</ListItemIcon>
-					<ListItemText primary={"Sign in"}/>
-				</ListItem>
-			)
-	} else {
-		topMenuArray.push(
-			<ListItem button key={"Logout"} onClick={() => {
-				setCookies('id_token', "null", {path: '/', sameSite: true});
-				window.location = `/`;
-			}}>
-				<ListItemIcon>
-					<LogoutIcon sx={{color: window.systemMain.defaultIconColor}}/>
-				</ListItemIcon>
-				<ListItemText primary={"Logout"}/>
-			</ListItem>
-		)
-	}
 
 	for (let p in window.siteMap) {
 		let subMenuArray=[];
@@ -188,6 +164,32 @@ function DrawSiteMap() {
 		}
 
 
+	}
+
+	if(userValid===false) {
+		topMenuArray.push(
+			<ListItem button key={"SignIn"} onClick={() => {
+				window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
+
+			}}>
+				<ListItemIcon>
+					<AccountCircleIcon sx={{color: window.systemMain.defaultIconColor}}/>
+				</ListItemIcon>
+				<ListItemText primary={"Sign in"}/>
+			</ListItem>
+		)
+	} else {
+		topMenuArray.push(
+			<ListItem button key={"Logout"} onClick={() => {
+				setCookies('id_token', "null", {path: '/', sameSite: true});
+				window.location = `/`;
+			}}>
+				<ListItemIcon>
+					<LogoutIcon sx={{color: window.systemMain.defaultIconColor}}/>
+				</ListItemIcon>
+				<ListItemText primary={"Logout"}/>
+			</ListItem>
+		)
 	}
 
 	return (<Box sx={{color: window.systemMain.menuColor}}>{topMenuArray}</Box>);

@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 const DataItemImage = ({name, data, sx,category}) => {
 
 	let channel = window.systemCategories.getChannelProperties(category);
-
 	let imagesActual=data;
 	if((!data||data.length===0)&&channel&&channel.image) {
 		imagesActual=[channel.image];
