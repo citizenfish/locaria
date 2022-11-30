@@ -61,9 +61,9 @@ class openActiveDB(locariaDB):
         return ret
 
     def insertLog(self, session, type, log):
-        query = f"INSERT INTO {INSERT_SCHEMA}.openActiveLogs(session,type, log) VALUES(%s,%s,%s)"
+        #TODO query in config
+        query = LOG_QUERY
         res = self.query(query, (str(session), type, json.dumps(log)))
-
         return res
 
     def getURLs(self, session):
@@ -78,5 +78,6 @@ class openActiveDB(locariaDB):
 
     def countRecords(self,table):
         query =  COUNT_QUERY.replace('**TABLE**', table)
+        if self.debug: print(f"Counting {table}")
         res = self.query(query)
         return res[0]
