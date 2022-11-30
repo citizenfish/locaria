@@ -68,14 +68,18 @@ export default function SearchProxy() {
 
 		}
 
-		if(searchParams.filters) {
+		if(searchParams.filters&&Object.keys(searchParams.filters)>0) {
 			packetSearch.data.filter=searchParams.filters;
 		}
 
-		if(searchParams.location) {
-			packetSearch.data.location = `SRID=4326;POINT(${searchParams.location[0]} ${searchParams.location[1]})`;
-			if(searchParams.distance>0) {
-				packetSearch.data.location_distance=searchParams.distance*1000;
+		if(searchParams.bbox.length>0) {
+			packetSearch.data.bbox=`${searchParams.bbox[0]} ${searchParams.bbox[1]}, ${searchParams.bbox[2]} ${searchParams.bbox[3]}`;
+		} else {
+			if (searchParams.location) {
+				packetSearch.data.location = `SRID=4326;POINT(${searchParams.location[0]} ${searchParams.location[1]})`;
+				if (searchParams.distance > 0) {
+					packetSearch.data.location_distance = searchParams.distance * 1000;
+				}
 			}
 		}
 		if(searchParams.limit) {
@@ -101,7 +105,7 @@ export default function SearchProxy() {
 
 				for (let sub in searchParams.subCategories['subCategory1']) {
 					i++;
-					jsonPath += `$.subCategory1 == \"${searchParams.subCategories['subCategory1'][sub]}\" `;
+					jsonPath += `$.data.subCategory1 == \"${searchParams.subCategories['subCategory1'][sub]}\" `;
 					if (i < searchParams.subCategories['subCategory1'].length)
 						jsonPath += ' || ';
 				}
@@ -118,7 +122,7 @@ export default function SearchProxy() {
 				jsonPath+= '(';
 				for (let sub in searchParams.subCategories['subCategory2']) {
 					i++;
-					jsonPath += `$.subCategory2 == \"${searchParams.subCategories['subCategory2'][sub]}\"`;
+					jsonPath += `$.data.subCategory2 == \"${searchParams.subCategories['subCategory2'][sub]}\"`;
 					if (i < searchParams.subCategories['subCategory2'].length)
 						jsonPath += ' || ';
 				}

@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import MenuDrawer from "../drawers/menuDrawer";
 import {setMobile} from "../../redux/slices/mediaSlice";
 import {useCookies} from "react-cookie";
-import {newSearch} from "../../redux/slices/searchDrawerSlice";
+import {newSearch, setCurrentLocation} from "../../redux/slices/searchDrawerSlice";
 import SearchProxy from "../search/searchProxy";
 import {decodeSearchParams} from "../../../libs/searchParams";
 
@@ -26,6 +26,7 @@ export default function RenderPage({searchMode}) {
 	const pageActual = React.useRef(undefined);
 	const channel = React.useRef(undefined);
 	const [cookies, setCookies] = useCookies();
+	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 
 
 	function handleResize()  {
@@ -75,9 +76,15 @@ export default function RenderPage({searchMode}) {
 		pageData.current=undefined;
 		getAllData();
 
+		if(cookies['currentLocation']&&currentLocation===undefined) {
+			dispatch(setCurrentLocation(cookies['currentLocation']));
+		}
+
 		return () => {
 			pageData.current=undefined;
 		}
+
+
 
 	},[page]);
 

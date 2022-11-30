@@ -9,7 +9,8 @@ import {locationPopup} from "../../redux/slices/searchDrawerSlice";
 import ClickAway from "../utils/clickAway";
 import TypographyParagraph from "../typography/typographyParagraph";
 import {encodeSearchParams} from "../../../libs/searchParams";
-
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import {Stack} from "@mui/material";
 const SitePanels = ({open,mode,panel='small'}) => {
 	const history = useHistory();
 	const dispatch = useDispatch();
@@ -18,7 +19,6 @@ const SitePanels = ({open,mode,panel='small'}) => {
 	const [collapseOpen, setCollapseOpen] = useState({});
 	const [render, forceRender] = useState(0);
 
-	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 
 
@@ -102,7 +102,9 @@ const SitePanels = ({open,mode,panel='small'}) => {
 			panelSx.height="200px";
 			panelSx.borderRadius= "5px";
 			panelSx.padding="10px";
-
+			if(!currentLocation&&window.siteMap[p].needsLocation) {
+				panelSx.opacity="0.5";
+			}
 
 		} else {
 			panelSx.borderRadius="12px";
@@ -118,7 +120,8 @@ const SitePanels = ({open,mode,panel='small'}) => {
 					<Box sx={panelSx} onClick={() => {
 						toggleCollapseOpen(p);
 
-						if(window.siteMap[p].needsLocation&&(mode==='full'||mode==='bottom')) {
+						//if(window.siteMap[p].needsLocation&&(mode==='full'||mode==='bottom')&&currentLocation===undefined) {
+						if(window.siteMap[p].needsLocation&&currentLocation===undefined) {
 							dispatch(locationPopup({open:true,page:window.siteMap[p].link}));
 						} else {
 							if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
@@ -128,7 +131,7 @@ const SitePanels = ({open,mode,panel='small'}) => {
 									// Ok lets take our current location with us because we shouldn't be here without it
 									let link=window.siteMap[p].link;
 									if(window.siteMap[p].needsLocation===true) {
-										link=`${window.siteMap[p].link}${encodeSearchParams({location: searchParams.location})}`;
+										link=`${window.siteMap[p].link}${encodeSearchParams({location: currentLocation.location})}`;
 									}
 									history.push(link);
 								}
@@ -147,12 +150,7 @@ const SitePanels = ({open,mode,panel='small'}) => {
 						{window.siteMap[p].description&&panel==='big'&&
 							<TypographyParagraph sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color,marginTop: "20px"}}>{window.siteMap[p].description}</TypographyParagraph>
 						}
-						{panel === 'big'&&currentLocation.text&&
-							<TypographyParagraph sx={{
-								color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color,
-								marginTop: "20px"
-							}}>{currentLocation.text}</TypographyParagraph>
-						}
+						<BigPannelLocation panel={panel} location={window.siteMap[p].needsLocation} p={p}/>
 
 					</Box>
 					{panelItems.length > 0 &&
@@ -174,6 +172,47 @@ const SitePanels = ({open,mode,panel='small'}) => {
 
 			</Grid>
 		)
+	}
+
+	function BigPannelLocation({panel,location,p}) {
+		if(panel!=='big') {
+			return (<></>);
+		}
+		if(currentLocation&&currentLocation.text&&location) {
+			return (
+				<Stack direction="row" spacing={2} sx={{marginTop: "20px"}}>
+					<TravelExploreIcon sx={{
+						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+					}}/>
+					<TypographyParagraph sx={{
+						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+					}}>{currentLocation.text}</TypographyParagraph>
+				</Stack>
+			)
+		}
+		if(!location) {
+			return (
+				<Stack direction="row" spacing={2} sx={{marginTop: "20px"}}>
+					<TravelExploreIcon sx={{
+						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+					}}/>
+					<TypographyParagraph sx={{
+						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+					}}>Search</TypographyParagraph>
+				</Stack>
+			)
+		}
+		return (
+			<Stack direction="row" spacing={2} sx={{marginTop: "20px"}}>
+				<TravelExploreIcon sx={{
+					color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+				}}/>
+				<TypographyParagraph sx={{
+					color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+				}}>Set your location</TypographyParagraph>
+			</Stack>
+		)
+
 	}
 
 	return (

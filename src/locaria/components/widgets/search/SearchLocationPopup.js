@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {
 	Backdrop,
-	Dialog,
-	DialogTitle,
 	ListItem,
 	ListItemIcon,
 	ListItemText,
-	mobileStepperClasses,
 	TextField
 } from "@mui/material";
 import List from "@mui/material/List";
@@ -14,22 +11,20 @@ import {useDispatch, useSelector} from "react-redux";
 import {
 	locationPopup,
 	setCurrentLocation,
-	setFeatures,
 	setGeolocation,
-	setLocation,
-	setSearch
+
 } from "../../redux/slices/searchDrawerSlice";
 import {useHistory} from "react-router-dom";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PlaceIcon from '@mui/icons-material/Place';
-import {setupField} from "../../redux/slices/formSlice";
 import {getLocation} from "../../../libs/geolocation";
 import {useCookies} from "react-cookie";
 import {encodeSearchParams} from "../../../libs/searchParams";
+import IconButton from "@mui/material/IconButton";
 
-export default function SearchLocationPopup({defaultPage}) {
+export default function SearchLocationPopup({defaultPage,maxLocations=8,display = true}) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 
@@ -43,6 +38,7 @@ export default function SearchLocationPopup({defaultPage}) {
 	const [cookies, setCookies] = useCookies([]);
 
 	const [results, setResults] = useState([]);
+	const [visible, setVisible] = useState(display);
 	const [searchText, setSearchText] = useState("");
 
 	function handleClose() {
@@ -58,6 +54,8 @@ export default function SearchLocationPopup({defaultPage}) {
 			newRecent.push(locationPacket);
 			setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
 		}
+
+		setCookies('currentLocation', locationPacket, {path: '/', sameSite: true});
 		// Did we send a default page? If not it may be undefined and we let the site Panels update
 		if(locationPage!==undefined) {
 			let encodedPage = locationPage + encodeSearchParams({
@@ -72,7 +70,7 @@ export default function SearchLocationPopup({defaultPage}) {
 
 	function handleGeoSuccess(location) {
 		dispatch(setGeolocation(location));
-		handleListItemClick("geo","gelocation",location,false);
+		handleListItemClick("geo","Nearby",location,false);
 	}
 
 	function handleGeoError(location) {
@@ -87,9 +85,11 @@ export default function SearchLocationPopup({defaultPage}) {
 	}, []);
 
 	useEffect(() => {
-		if(open===true&&currentLocation.text) {
-			handleListItemClick(currentLocation.fid,currentLocation.text,currentLocation.location,false);
-			dispatch(setCurrentLocation({}));
+		if(open===true&&visible===false) {
+			setVisible(true);
+		}
+		if(open===false&&display===false) {
+			setVisible(false);
 		}
 	}, [open]);
 
@@ -102,7 +102,7 @@ export default function SearchLocationPopup({defaultPage}) {
 					"method": "search",
 					"typeahead":"true",
 					"search_text": searchText,
-					"display_limit": 10
+					"display_limit": maxLocations
 				}
 			};
 			window.websocket.send(packetSearch);
@@ -150,43 +150,48 @@ export default function SearchLocationPopup({defaultPage}) {
 	}
 
 	function ResultItems() {
-		if(results&&results[0]&&results[0].jsonb_agg) {
-			return (
-				results[0].jsonb_agg.map((feature) => (
+		if(results&&results[0]&&results[0]['jsonb_agg']) {
+			let returnArray=[]
+			for(let i=0;i<maxLocations&&i<results[0]['jsonb_agg'].length;i++) {
+				returnArray.push(
 					<>
 						<Divider variant="inset" component="li" />
 						<ListItem button
-								  onClick={() => handleListItemClick(feature.fid,feature.text,feature.location)}
-								  key={feature.fid}>
+								  onClick={() => handleListItemClick(results[0]['jsonb_agg'][i].fid,results[0]['jsonb_agg'][i].text,results[0]['jsonb_agg'][i].location)}
+								  key={`riKey${i}`}>
 							<ListItemIcon>
 								<PlaceIcon/>
 							</ListItemIcon>
-							<ListItemText primary={feature.text}/>
+							<ListItemText primary={results[0]['jsonb_agg'][i].text}/>
 						</ListItem>
 					</>
-				))
-			)
+				)
+			}
+			return  returnArray;
 		}
 		return <></>
 	}
 
 	function RecentItems() {
-		if(cookies&&cookies['recentLocations']&&cookies['recentLocations'].length>0&& ( results===undefined || results.length===0)) {
+		if(cookies&&cookies['recentLocations']&&cookies['recentLocations'].length>0&& ( results===null || results===undefined || results.length===0)) {
+			let recentItemsArray=[];
+			for(let i in cookies['recentLocations']) {
+				recentItemsArray.push(
+					<ListItem button
+							  onClick={() => handleListItemClick(cookies['recentLocations'][i].fid,cookies['recentLocations'][i].text,cookies['recentLocations'][i].location)}
+							  key={`ri2Key${i}`}>
+						<ListItemIcon>
+							<PlaceIcon/>
+						</ListItemIcon>
+						<ListItemText primary={cookies['recentLocations'][i].text}/>
+					</ListItem>
+				)
+			}
 			return (
 				<>
 					<ListItem><ListItemText primary={"Recent items"}></ListItemText></ListItem>
 					<Divider variant="inset" component="li" />
-
-					{cookies['recentLocations'].map((feature) => (
-					<ListItem button
-							  onClick={() => handleListItemClick(feature.fid,feature.text,feature.location)}
-							  key={feature.fid}>
-						<ListItemIcon>
-							<PlaceIcon/>
-						</ListItemIcon>
-						<ListItemText primary={feature.text}/>
-					</ListItem>
-				))}
+					{recentItemsArray}
 				</>
 			)
 		}
@@ -208,20 +213,33 @@ export default function SearchLocationPopup({defaultPage}) {
 		textSx.width=`${width}px`;
 	}
 
+	let boxSx={
+		position: "absolute",
+		top: `calc( 50% - 100px )`,
+		left: `calc( 50% - ${width/2}px )`,
+		width: `${width}px`
+	}
+
+	if(!visible) {
+		boxSx.display='none';
+	}
+
+	if(display===false) {
+		boxSx.top="50px";
+	}
+
 	return (
-		<Box sx={{
-			position: "absolute",
-			top: `calc( 50% - 100px )`,
-			left: `calc( 50% - ${width/2}px )`,
-			width: `${width}px`,
-		}}>
+		<Box sx={boxSx}>
 			<Backdrop open={open} sx={{zIndex: 100}} onClick={handleClose}>
 			</Backdrop>
 
+
 			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "12px"}}>
 				<ListItem button>
-					<TextField value={searchText} sx={textSx} id={"locationSearchText"} onClick={() => {
-						dispatch(locationPopup({open: true, page: defaultPage}));
+					<TextField value={searchText||open? searchText:(currentLocation? currentLocation.text:'Set a location')} sx={textSx} id={"locationSearchText"} onClick={() => {
+						if(open===false) {
+							dispatch(locationPopup({open: true, page: defaultPage}));
+						}
 					}}
 							   onChange={(e) => {
 								   setSearchText(e.target.value);

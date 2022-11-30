@@ -47,6 +47,7 @@ window.websocket.registerQueue('bulkConfigs', (json) => {
 
     if(json.systemParams&&json.systemParams.packet&&json.systemParams.packet.parameters) {
         window.systemMain = json.systemParams.packet.parameters.systemMain.data;
+        window.mapStyles = json.mapStyles.packet.parameters;
         window.systemPages = json.systemPages.packet.parameters;
         window.systemLang = json.systemParams.packet.parameters.langENG.data;
         window.siteMap = json.systemParams.packet.parameters.siteMap.data;
@@ -87,6 +88,14 @@ function connected() {
                     "data": {
                         "method": "get_parameters",
                         "usage": "Config"
+                    }
+                },
+                {
+                    "queue": "mapStyles",
+                    "api": "api",
+                    "data": {
+                        "method": "get_parameters",
+                        "usage": "MapStyle"
                     }
                 },
                 {

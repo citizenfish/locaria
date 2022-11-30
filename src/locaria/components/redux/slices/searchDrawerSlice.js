@@ -16,7 +16,8 @@ export const searchDrawerSlice = createSlice({
 			search: '',
 			distance: 0,
 			page: 1,
-			filters:{}
+			filters:{},
+			bbox:[]
 
 		},
 
@@ -45,7 +46,7 @@ export const searchDrawerSlice = createSlice({
 		locationOpen: false,
 		locationPage: undefined,
 		geolocation: undefined,
-		currentLocation: {},
+		currentLocation: undefined,
 
 		rewrite: true
 	},
@@ -283,6 +284,13 @@ export const searchDrawerSlice = createSlice({
 			delObjectWithPath(state.searchParams.filters,action.payload.path);
 			state.page=1;
 			state.totalPages=0;
+		},
+		setBbox: (state, action) => {
+			state.searchParams.bbox=action.payload;
+			state.page=1;
+			state.totalPages=0;
+			state.searchParams.limit=1000;
+			state.searchParams.displayLimit=1000;
 		}
 
 	},
@@ -318,7 +326,8 @@ export const {
 	setRefreshCounts,
 	setCurrentLocation,
 	setFilterItem,
-	clearFilterItem
+	clearFilterItem,
+	setBbox
 
 } = searchDrawerSlice.actions
 

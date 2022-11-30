@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} fro
 import maplibregl from 'maplibre-gl';
 import Box from "@mui/material/Box";
 
-const MaplibreGL = forwardRef(({sx,zoom,center,style='/mapbox/styles.json',bboxUpdate}, ref) => {
+const MaplibreGL = forwardRef(({sx,zoom=17,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=26,layout="mapStyleDefault"}, ref) => {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
@@ -19,7 +19,8 @@ const MaplibreGL = forwardRef(({sx,zoom,center,style='/mapbox/styles.json',bboxU
 	function updateBBOC() {
 		if(bboxUpdate) {
 			let bounds=map.current.getBounds();
-			bboxUpdate(bounds);
+			let bboxArray=[bounds._ne.lng,bounds._ne.lat,bounds._sw.lng,bounds._sw.lat];
+			bboxUpdate(bboxArray);
 		}
 	}
 
@@ -45,8 +46,8 @@ const MaplibreGL = forwardRef(({sx,zoom,center,style='/mapbox/styles.json',bboxU
 			container: mapContainer.current,
 			style: style,
 			center: center||window.systemMain.defaultLocation.location,
-			zoom: zoom||10,
-			maxZoom: 26,
+			zoom: zoom,
+			maxZoom: maxZoom,
 			/*transformRequest: url => {
 				url += '&srs=3857';
 				return {
@@ -56,6 +57,7 @@ const MaplibreGL = forwardRef(({sx,zoom,center,style='/mapbox/styles.json',bboxU
 		});
 
 		map.current.on('load', function() {
+			updateBBOC();
 			map.current.loadImage(
 				'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
 				(error, image) => {
@@ -82,13 +84,7 @@ const MaplibreGL = forwardRef(({sx,zoom,center,style='/mapbox/styles.json',bboxU
 				id: 'data',
 				type: 'symbol',
 				source: 'data',
-				layout: {
-					"icon-image": 'custom-marker',
-					"text-field": ['get', 'title', ['get','description', ['properties']]],
-					   "text-font": ['Arial Bold'],
-					"text-offset": [0, 1.25],
-					"text-anchor": 'top'
-				}
+				layout: window.mapStyles[layout].data
 			});
 		});
 
