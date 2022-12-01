@@ -4,7 +4,7 @@ import viewDrawSlice from './slices/viewDrawerSlice'
 import multiSelectSlice from './slices/multiSelectSlice'
 import menuDrawSlice from './slices/menuDrawerSlice'
 import pageDialog from './slices/pageDialogSlice'
-import layoutSlice from './slices/layoutSlice'
+import layoutSlice from '../../../../deprecated/layoutSlice'
 import typeAhead from "./slices/typeAheadSlice";
 
 import mediaSlice from "./slices/mediaSlice";

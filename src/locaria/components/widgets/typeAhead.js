@@ -5,7 +5,7 @@ import {closeTypeAhead} from "../redux/slices/typeAheadSlice";
 import {useStyles} from "stylesLocaria";
 import {openSearchDrawer} from "../redux/slices/searchDrawerSlice";
 import AdjustIcon from '@mui/icons-material/Adjust';
-import {setLocation} from "../redux/slices/layoutSlice";
+import {setLocation} from "../../../../deprecated/layoutSlice";
 import {configs} from "themeLocaria";
 
 function TypeAhead({anchorId}) {
