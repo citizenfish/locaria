@@ -22,6 +22,8 @@ import SiteMapLocation from "../pages/siteMapLocation";
 import SearchLocationFilters from "../search/searchLocationFilters";
 import FeatureManager from "../moderation/featureManager";
 import SearchLocationFiltersMap from "../search/searchLocationFiltersMap";
+import FooterTypeActive from "../footers/footerTypeActive";
+import NavTypeActive from "../navs/navTypeActive";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -54,6 +56,11 @@ const pluginsDefs = {
 		"description": "Show a panel of features",
 		"params": [{param: "category", default: "News"}]
 	},
+	"FooterTypeActive": {
+		"obj": FooterTypeActive,
+		"description": "Show a panel of features",
+		"params": [{param: "category", default: "News"}]
+	},
 	"NavTypeSimple": {
 		"obj": NavTypeSimple,
 		"description": "Show a panel of features",
@@ -61,6 +68,11 @@ const pluginsDefs = {
 	},
 	"NavTypeFull": {
 		"obj": NavTypeFull,
+		"description": "Show a panel of features",
+		"params": [{param: "category", default: "News"}]
+	},
+	"NavTypeActive": {
+		"obj": NavTypeActive,
 		"description": "Show a panel of features",
 		"params": [{param: "category", default: "News"}]
 	},

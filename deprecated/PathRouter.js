@@ -1,5 +1,5 @@
 import {openHomeDrawer} from "./homeDrawerSlice";
-import {openLayout} from "../src/locaria/components/redux/slices/layoutSlice";
+import {openLayout} from "./layoutSlice";
 import {openSearchDrawer} from "../src/locaria/components/redux/slices/searchDrawerSlice";
 
 const PathRouter=(location) => {

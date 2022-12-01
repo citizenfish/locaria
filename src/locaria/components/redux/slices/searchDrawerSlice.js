@@ -17,7 +17,8 @@ export const searchDrawerSlice = createSlice({
 			distance: 0,
 			page: 1,
 			filters:{},
-			bbox:[]
+			bbox:[],
+			distanceType: 'km',
 
 		},
 
@@ -31,7 +32,6 @@ export const searchDrawerSlice = createSlice({
 		ready: false,
 
 		locationShow: false,
-		distanceType: 'km',
 		tags: [],
 		resolutionUpdate: false,
 		tagList: [],
@@ -197,11 +197,14 @@ export const searchDrawerSlice = createSlice({
 
 		},
 		setDistanceType: (state,action) => {
-			state.distanceType = action.payload;
+			state.searchParams.distanceType = action.payload;
+			state.page=1;
+			state.totalPages=0;
 		},
 		setLocation: (state,action) => {
-			state.location = action.payload;
-
+			state.searchParams.location = action.payload;
+			state.page=1;
+			state.totalPages=0;
 		},
 
 		setTags: (state, action) => {

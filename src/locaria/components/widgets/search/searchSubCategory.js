@@ -25,6 +25,9 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 
 	function DisplaySubCategorySubs({sub,subArray}) {
 		let renderArray=[];
+
+
+
 		for(let a in subArray) {
 			if(objectPathExists(counts,`${sub}.${subArray[a]}`)) {
 				let count = `(${counts[sub][subArray[a]]})`;

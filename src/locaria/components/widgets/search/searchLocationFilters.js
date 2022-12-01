@@ -7,7 +7,7 @@ import SearchSubCategory from "./searchSubCategory";
 import SearchDistance from "./searchDistance";
 import SearchTags from "./searchTags";
 import SearchPagination from "./searchPagination";
-import {Accordion, AccordionDetails, AccordionSummary, LinearProgress} from "@mui/material";
+import {Accordion, AccordionDetails, AccordionSummary, LinearProgress, Stack} from "@mui/material";
 import Button from "@mui/material/Button";
 import TypographyHeader from "../typography/typographyHeader";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -15,6 +15,15 @@ import MapIcon from '@mui/icons-material/Map';
 import {encodeSearchParams} from "../../../libs/searchParams";
 import {useHistory} from "react-router-dom";
 import SearchCheckboxFilter from "./searchCheckboxFilter";
+import SearchLocationFiltersNoResults from "./searchLocationFiltersNoResults";
+import {locationPopup} from "../../redux/slices/searchDrawerSlice";
+import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
+import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AddCardIcon from '@mui/icons-material/AddCard';
+import CreditCardOffIcon from '@mui/icons-material/CreditCardOff';
+import TodayIcon from '@mui/icons-material/Today';
 
 const SearchLocationFilters = ({
 								   category,
@@ -36,6 +45,8 @@ const SearchLocationFilters = ({
 	const loading = useSelector((state) => state.searchDraw.loading);
 	const [expanded, setExpanded] = useState(false);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
+
+	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 
 	function toggleMap() {
 		let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
@@ -74,7 +85,7 @@ const SearchLocationFilters = ({
 				)
 
 			} else {
-				return <p>No results</p>
+				return (<SearchLocationFiltersNoResults/>)
 			}
 		}
 	}
@@ -82,17 +93,77 @@ const SearchLocationFilters = ({
 	function FiltersInner() {
 		return (
 			<>
-				<Box textAlign='center'>
+				<Stack direction="row" spacing={2}>
+					<Button variant={"outlined"} sx={{
+						width: "70%"
+					}} onClick={() => {
+						dispatch(locationPopup({open: true}));
+					}} startIcon={
+						<EditLocationAltIcon/>}>{currentLocation ? currentLocation.text.substring(0, 10) + (currentLocation.text.length > 10 ? '...' : '') : 'No location'}</Button>
 					<Button variant={"outlined"} onClick={() => {
 						toggleMap();
 						handleChange();
-					}} startIcon={<MapIcon/>}>Map</Button>
-				</Box>
+					}} startIcon={<MapIcon/>}></Button>
+
+				</Stack>
 				<SearchDistance category={category}></SearchDistance>
+				<SearchCheckboxFilter values={[{
+					filter: true,
+					path: "data.free",
+					icon: <AddCardIcon/>,
+					checkedIcon: <CreditCardOffIcon/>,
+					counts: "free"
+				}]}/>
+
+				<SearchCheckboxFilter title={"Days"} values={[{
+					icon: <TodayIcon/>,
+					checkedIcon: <TodayIcon/>,
+					name: "Monday",
+					filter: true,
+					path: "data.days.Monday",
+					counts:"days.Monday"
+				}, {
+					icon: <TodayIcon/>,
+					checkedIcon: <TodayIcon/>, name: "Tuesday", filter: true, path: "data.days.Tuesday",
+					counts:"days.Tuesday"
+
+				}, {
+					icon: <TodayIcon/>,
+					checkedIcon: <TodayIcon/>,
+					name: "Wednesday",
+					filter: true,
+					path: "data.days.Wednesday",
+					counts:"days.Wednesday"
+
+				}, {
+					icon: <TodayIcon/>,
+					checkedIcon: <TodayIcon/>, name: "Thursday", filter: true, path: "data.days.Thursday",
+					counts:"days.Thursday"
+
+				}, {icon: <TodayIcon/>,
+					checkedIcon: <TodayIcon/>,
+					name: "Friday",
+					filter: true,
+					path: "data.days.Friday",
+					counts:"days.Friday"
+
+				}, {
+					icon: <TodayIcon/>,
+					checkedIcon: <TodayIcon/>, name: "Saturday", filter: true, path: "data.days.Saturday",
+					counts:"days.Saturday"
+
+				}, {icon: <TodayIcon/>,
+					checkedIcon: <TodayIcon/>,
+					name: "Sunday",
+					filter: true,
+					path: "data.days.Sunday",
+					counts:"days.Sunday"
+
+				}]}/>
+
 				<SearchSubCategory category={category}></SearchSubCategory>
 				<SearchTags category={category}></SearchTags>
-				<SearchCheckboxFilter title={"Paid"} values={[{name: "Free", filter: true, path: "data.free"}]}/>
-				<SearchCheckboxFilter title={"Days"} values={[{name: "Monday", filter: true, path: "data.days.Monday"}, {name: "Tuesday", filter: true, path: "data.days.Tuesday"},{name: "Wednesday", filter: true, path: "data.days.Wednesday"},{name: "Thursday", filter: true, path: "data.days.Thursday"},{name: "Friday", filter: true, path: "data.days.Friday"},{name: "Saturday", filter: true, path: "data.days.Saturday"},{name: "Sunday", filter: true, path: "data.days.Sunday"}]}/>
+
 			</>
 		)
 	}
@@ -106,42 +177,42 @@ const SearchLocationFilters = ({
 	};
 	if (mobile === true) {
 		return (
-				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx} key={"SearchLocationFilters"}>
+			<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx} key={"SearchLocationFilters"}>
 
 				<Grid item md={3} sx={{width: "100%"}}>
 
-						<Accordion expanded={expanded} onChange={handleChange}>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon/>}
-								aria-controls="panel1a-content"
-								id="panel1a-header"
-							>
-								<TypographyHeader element={"h1"}>Filters</TypographyHeader>
-							</AccordionSummary>
-							<AccordionDetails>
-								<FiltersInner/>
-							</AccordionDetails>
-						</Accordion>
-
-					</Grid>
-					<Grid item md={9} sx={{width: "100%"}}>
-						<ResultItems></ResultItems>
-						<SearchPagination></SearchPagination>
-					</Grid>
+					<Accordion expanded={expanded} onChange={handleChange}>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon/>}
+							aria-controls="panel1a-content"
+							id="panel1a-header"
+						>
+							<TypographyHeader element={"h1"}>Filters</TypographyHeader>
+						</AccordionSummary>
+						<AccordionDetails>
+							<FiltersInner/>
+						</AccordionDetails>
+					</Accordion>
 
 				</Grid>
+				<Grid item md={9} sx={{width: "100%"}}>
+					<ResultItems></ResultItems>
+					<SearchPagination></SearchPagination>
+				</Grid>
+
+			</Grid>
 		);
 	} else {
 		return (
-				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx} >
-					<Grid item md={3} sx={{width: "100%"}}>
-						<FiltersInner/>
-					</Grid>
-					<Grid item md={9} sx={{width: "100%"}}>
-						<ResultItems></ResultItems>
-						<SearchPagination></SearchPagination>
-					</Grid>
+			<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
+				<Grid item md={3} sx={{width: "100%"}}>
+					<FiltersInner/>
 				</Grid>
+				<Grid item md={9} sx={{width: "100%"}}>
+					<ResultItems></ResultItems>
+					<SearchPagination></SearchPagination>
+				</Grid>
+			</Grid>
 		);
 	}
 }

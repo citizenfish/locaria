@@ -12,6 +12,7 @@ import {
 	locationPopup,
 	setCurrentLocation,
 	setGeolocation,
+	setLocation
 
 } from "../../redux/slices/searchDrawerSlice";
 import {useHistory} from "react-router-dom";
@@ -74,6 +75,9 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 				location: location
 			})
 			history.push(encodedPage);
+		} else {
+			if(display===false)
+				dispatch(setLocation(locationPacket.location));
 		}
 		dispatch(setCurrentLocation(locationPacket));
 		dispatch(locationPopup({open: false}));
@@ -251,7 +255,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "12px"}}>
 				<ListItem button>
-					<TextField value={searchText||open? searchText:(currentLocation? currentLocation.text:'Set a location')} sx={textSx} id={"locationSearchText"} onClick={() => {
+					<TextField autoComplete={false} value={searchText||open? searchText:(currentLocation? currentLocation.text:'Set a location')} sx={textSx} id={"locationSearchText"} onClick={() => {
 						if(open===false) {
 							dispatch(locationPopup({open: true, page: defaultPage}));
 						}
