@@ -43,9 +43,9 @@ class openActiveDB(locariaDB):
                 if kind == 'errors':
                     i['org'] = org
                     ret['errors'].append({"missing_kind" : kind, "data" : i})
-                else:
-                    print(f"ignored {kind}")
-                    ret['errors'].append({"unconfigured_kind" : kind})
+                #else:
+                    #print(f"ignored {kind}")
+                    #ret['errors'].append({"unconfigured_kind" : kind})
 
         for table in items:
 

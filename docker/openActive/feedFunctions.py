@@ -63,8 +63,6 @@ def loadRPDE(id, feedsToProcess, feeds, config, debug=False):
 
             inserts = []
 
-
-
     # we store these in database each function call as the calls are made multiprocess, they are retrieved at end of load process
     if urls: funcDB.insertLog(feedsToProcess['session'], 'urls', urls)
     if errors: funcDB.insertLog(feedsToProcess['session'], 'errors', errors)

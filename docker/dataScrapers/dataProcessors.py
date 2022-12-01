@@ -99,6 +99,8 @@ class datathistle:
         while True:
             events = []
             places = []
+            print(f"Fetching from {url}")
+
             res = requests.get(url, headers={'Authorization': f"Bearer {self.api_key}"})
 
             for p in res.json()['places']:
@@ -107,10 +109,10 @@ class datathistle:
             for e in res.json()['events']:
                 events.append((e['event_id'], json.dumps(e)))
 
-            print(f"Inserting {len(places)} place records)")
+            print(f"Inserting {len(places)} place records")
             db_res = db.bulkInserter(self.insert_places, places)
 
-            print(f"Inserting {len(events)} event records)")
+            print(f"Inserting {len(events)} event records")
             db_res = db.bulkInserter(self.insert, events)
 
             url = res.links.get('next', '')
