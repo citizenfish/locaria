@@ -13,7 +13,7 @@ BEGIN
 
     category_limit = COALESCE(search_parameters->>'limit', category_limit::TEXT)::INTEGER;
 
-    SELECT jsonb_build_object('results',jsonb_agg(R.* ORDER BY COALESCE(array_position(array['Location'], category),2) ASC))
+    SELECT jsonb_build_object('results',COALESCE(jsonb_agg(R.* ORDER BY COALESCE(array_position(array['Location'], category),2) ASC), jsonb_build_array()) )
     INTO results_var
     FROM (
            SELECT distinct ON (category) category,

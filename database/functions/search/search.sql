@@ -94,7 +94,7 @@ BEGIN
                                SELECT *
                                FROM SEARCH_RESULTS
                            ) UN
-             ORDER BY COALESCE(_attributes#>>'{data, _order}', '999999999')::INTEGER ASC
+             ORDER BY COALESCE(_attributes#>>'{data, _order}', _attributes->>'distance', '999999999')::FLOAT ASC
              LIMIT display_limit_var
          ) ALL_RESULTS;
 

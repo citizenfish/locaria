@@ -31,8 +31,11 @@ class openActiveDB(locariaDB):
         # We have to convert to tuples to use execute_values in psycopg2 we also have to split items into types
         for i in data:
             kind = i.get('kind','errors')
-            kind = kind.lower() # to cope with Event, event etc...
-            kind = re.split(r'[^a-zA-Z]', kind)[0] # to cope with scheduledsession.sessionseries or facilityuse/slot etc...
+            try:
+                kind = kind.lower() # to cope with Event, event etc...
+                kind = re.split(r'[^a-zA-Z]', kind)[0] # to cope with scheduledsession.sessionseries or facilityuse/slot etc...
+            except Exception as error:
+                kind = 'errors'
 
             if kind in types:
                 items[kind].append((org, i.get('id'), i.get('modified'), json.dumps(i)))
@@ -40,9 +43,9 @@ class openActiveDB(locariaDB):
                 if kind == 'errors':
                     i['org'] = org
                     ret['errors'].append({"missing_kind" : kind, "data" : i})
-                else:
-                    print(f"ignored {kind}")
-                    ret['errors'].append({"unconfigured_kind" : kind})
+                #else:
+                    #print(f"ignored {kind}")
+                    #ret['errors'].append({"unconfigured_kind" : kind})
 
         for table in items:
 
@@ -58,9 +61,9 @@ class openActiveDB(locariaDB):
         return ret
 
     def insertLog(self, session, type, log):
-        query = f"INSERT INTO {INSERT_SCHEMA}.openActiveLogs(session,type, log) VALUES(%s,%s,%s)"
+        #TODO query in config
+        query = LOG_QUERY
         res = self.query(query, (str(session), type, json.dumps(log)))
-
         return res
 
     def getURLs(self, session):
@@ -75,5 +78,6 @@ class openActiveDB(locariaDB):
 
     def countRecords(self,table):
         query =  COUNT_QUERY.replace('**TABLE**', table)
+        if self.debug: print(f"Counting {table}")
         res = self.query(query)
         return res[0]

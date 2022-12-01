@@ -34,6 +34,7 @@ def loadRPDE(id, feedsToProcess, feeds, config, debug=False):
 
         url = feedsToProcess['urls'].get(urlID, rpde.get('contentUrl'))
 
+
         while True and url:
             # Store the last url so we don't iterate the entire list again
             if url != "" : urls[urlID] = url
@@ -62,9 +63,7 @@ def loadRPDE(id, feedsToProcess, feeds, config, debug=False):
 
             inserts = []
 
-
-
-    # we store these in database each function call as the calls are made multiprocess
+    # we store these in database each function call as the calls are made multiprocess, they are retrieved at end of load process
     if urls: funcDB.insertLog(feedsToProcess['session'], 'urls', urls)
     if errors: funcDB.insertLog(feedsToProcess['session'], 'errors', errors)
 

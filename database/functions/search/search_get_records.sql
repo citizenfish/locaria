@@ -1,10 +1,11 @@
 --The main search query engine
-CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 10000) RETURNS TABLE (
-                                                                                                                                           _fid TEXT,
-                                                                                                                                           _search_rank DOUBLE PRECISION,
-                                                                                                                                           _wkb_geometry GEOMETRY,
-                                                                                                                                           _attributes JSONB
-                                                                                                                                       ) AS $$
+CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 10000)
+    RETURNS TABLE (
+                   _fid TEXT,
+                   _search_rank DOUBLE PRECISION,
+                   _wkb_geometry GEOMETRY,
+                   _attributes JSONB
+                  ) AS $$
 DECLARE
     default_offset INTEGER DEFAULT 0;
     json_filter JSONB DEFAULT json_build_object();
@@ -12,7 +13,7 @@ DECLARE
     search_ts_query tsquery;
     bbox_var GEOMETRY DEFAULT NULL;
     location_geometry GEOMETRY DEFAULT NULL;
-    location_distance NUMERIC DEFAULT 1000;
+    location_distance NUMERIC DEFAULT 10000;
     start_date_var TIMESTAMP ;
     end_date_var TIMESTAMP;
     metadata_var BOOLEAN DEFAULT TRUE;
@@ -54,7 +55,7 @@ BEGIN
         filter_var = TRUE;
     END IF;
 
-    IF COALESCE(search_parameters->>'filter', '') != '' THEN
+    IF COALESCE(search_parameters->>'filter', '') NOT IN('', '{}') THEN
         json_filter = json_filter || (search_parameters->'filter');
         filter_var = TRUE;
     END IF;
@@ -70,6 +71,10 @@ BEGIN
     --Requires BBOX as 'xmax ymax, xmin ymin'
     IF COALESCE(search_parameters->>'bbox','') ~ '^[0-9 ,\-.%C]+$' THEN
         bbox_var := ST_SETSRID(('BOX('|| REPLACE(search_parameters->>'bbox', '%2C', ',') ||')')::BOX2D,4326);
+    END IF;
+
+    IF COALESCE(search_parameters->>'bbox_3857','') ~ '^[0-9 ,\-.%C]+$' THEN
+        bbox_var := ST_TRANSFORM(ST_SETSRID(('BOX('|| REPLACE(search_parameters->>'bbox_3857', '%2C', ',') ||')')::BOX2D,3857),4326);
     END IF;
 
     --We only need one date to do a search if only one present use both for range
@@ -116,18 +121,15 @@ BEGIN
         ranking_attribute_var = string_to_array(search_parameters->>'ranking_attributes',',');
     END IF;
 
-    --We support jsonpath but need to be concious that this is not currently indexed
+    --We support jsonpath indexed using the @? operator and only on equality or IN operators
     jsonpath_var = NULLIF(search_parameters->>'jsonpath', '');
 
+    --Cast category to a TEXT array for ?| operator
     category_var = json2text(search_parameters->'category');
-    --This is the core search query
-
     owned_var = COALESCE(search_parameters->>'owned','FALSE')::BOOLEAN;
     live_flag = COALESCE(search_parameters->>'live','FALSE')::BOOLEAN;
 
-    RAISE NOTICE 'DEBUG % : %', live_flag, search_parameters;
     RETURN QUERY
-
 
         SELECT fid,
                search_rank::DOUBLE PRECISION,
@@ -180,7 +182,7 @@ BEGIN
                        )
 
                  LIMIT default_limit
-                     OFFSET default_offset
+                 OFFSET default_offset
              ) INNER_SUB
         ORDER by distance ASC, attribute_rank ASC, search_rank DESC;
 

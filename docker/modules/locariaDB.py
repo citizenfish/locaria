@@ -34,13 +34,12 @@ class locariaDB:
         self.connection = False
         return None
 
-    def setError(error):
+    def setError(self, error):
         e = str(error)
         self.lastError.append(e)
         return e
 
     def query(self, query, parameters = None,  query_type = 'standard',):
-
 
         cursor = self.conn.cursor()
 
@@ -64,9 +63,11 @@ class locariaDB:
 
         except Exception as error:
             try:
-                cursor.close()
+                cursor.execute("ROLLBACK")
+                self.conn.commit()
+                #cursor.close()
             except Exception as close_error:
-                self.setError(close_error)
+                self.setError(str(close_error))
 
             if self.conn.closed == 1:
                 print(f"Query Error {str(error)} attempting reconnection")
@@ -85,8 +86,8 @@ class locariaDB:
             return res[0]
 
         except Exception as error:
-            e = self.setError(error)
             print(f"{public}Gateway Error {e}")
+            e = self.setError(str(error))
             return {"error" : e}
 
     def publicGateway(self, method, parameters):
