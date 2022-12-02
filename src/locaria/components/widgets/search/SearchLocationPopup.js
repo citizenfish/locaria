@@ -166,26 +166,32 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	}
 
 	function ResultItems() {
-		if(results&&results[0]&&results[0]['jsonb_agg']) {
-			let returnArray=[]
-			for(let i=0;i<maxLocations&&i<results[0]['jsonb_agg'].length;i++) {
-				returnArray.push(
-					<>
-						<Divider variant="inset" component="li" />
-						<ListItem button
-								  onClick={() => handleListItemClick(results[0]['jsonb_agg'][i].fid,results[0]['jsonb_agg'][i].text,results[0]['jsonb_agg'][i].location)}
-								  key={`riKey${i}`}>
-							<ListItemIcon>
-								<PlaceIcon/>
-							</ListItemIcon>
-							<ListItemText primary={results[0]['jsonb_agg'][i].text}/>
-						</ListItem>
-					</>
-				)
+		let returnArray=[];
+
+		// Locate results category that is Location
+		for(let r in results) {
+			// is results category Location?
+			if(results[r].category==="Location") {
+				// Push Locations to the returnArray
+				for(let i=0;i<maxLocations&&i<results[0]['jsonb_agg'].length;i++) {
+					returnArray.push(
+						<>
+							<Divider variant="inset" component="li"/>
+							<ListItem
+									  onClick={() => handleListItemClick(results[r]['jsonb_agg'][r].fid, results[r]['jsonb_agg'][i].text, results[r]['jsonb_agg'][i].location)}
+									  key={`riKey${i}`}>
+								<ListItemIcon>
+									<PlaceIcon/>
+								</ListItemIcon>
+								<ListItemText primary={results[0]['jsonb_agg'][i].text}/>
+							</ListItem>
+						</>
+					)
+				}
 			}
-			return  returnArray;
 		}
-		return <></>
+
+		return returnArray;
 	}
 
 	function RecentItems() {
@@ -222,7 +228,8 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 	let textSx={
 		background: "#fff",
-		width:`${width}px`
+		width:`${width}px`,
+		marginTop: "6px"
 	};
 
 
@@ -254,8 +261,8 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 
 			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "12px"}}>
-				<ListItem button>
-					<TextField autoComplete={false} value={searchText||open? searchText:(currentLocation? currentLocation.text:'Set a location')} sx={textSx} id={"locationSearchText"} onClick={() => {
+				<ListItem>
+					<TextField autoComplete={"off"} value={searchText||open? searchText:(currentLocation? currentLocation.text:'Set a location')} sx={textSx} id={"locationSearchText"} onClick={() => {
 						if(open===false) {
 							dispatch(locationPopup({open: true, page: defaultPage}));
 						}
