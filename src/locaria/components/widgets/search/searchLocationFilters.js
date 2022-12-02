@@ -115,49 +115,51 @@ const SearchLocationFilters = ({
 					counts: "free"
 				}]}/>
 
-				<SearchCheckboxFilter title={"Days"} values={[{
+				<SearchCheckboxFilter formatter={"stack"} values={[
+					{icon: <TodayIcon/>,
+						checkedIcon: <TodayIcon/>,
+						name: "Su",
+						filter: "true",
+						path: "data.days.Sunday",
+						counts:"days.Sunday"
+
+					},
+					{
 					icon: <TodayIcon/>,
 					checkedIcon: <TodayIcon/>,
-					name: "Monday",
-					filter: true,
+					name: "M",
+					filter: "true",
 					path: "data.days.Monday",
 					counts:"days.Monday"
 				}, {
 					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>, name: "Tuesday", filter: true, path: "data.days.Tuesday",
+					checkedIcon: <TodayIcon/>, name: "T", filter: "true", path: "data.days.Tuesday",
 					counts:"days.Tuesday"
 
 				}, {
 					icon: <TodayIcon/>,
 					checkedIcon: <TodayIcon/>,
-					name: "Wednesday",
-					filter: true,
+					name: "W",
+					filter: "true",
 					path: "data.days.Wednesday",
 					counts:"days.Wednesday"
 
 				}, {
 					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>, name: "Thursday", filter: true, path: "data.days.Thursday",
+					checkedIcon: <TodayIcon/>, name: "Th", filter: "true", path: "data.days.Thursday",
 					counts:"days.Thursday"
 
 				}, {icon: <TodayIcon/>,
 					checkedIcon: <TodayIcon/>,
-					name: "Friday",
-					filter: true,
+					name: "F",
+					filter: "true",
 					path: "data.days.Friday",
 					counts:"days.Friday"
 
 				}, {
 					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>, name: "Saturday", filter: true, path: "data.days.Saturday",
+					checkedIcon: <TodayIcon/>, name: "Sa", filter: "true", path: "data.days.Saturday",
 					counts:"days.Saturday"
-
-				}, {icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>,
-					name: "Sunday",
-					filter: true,
-					path: "data.days.Sunday",
-					counts:"days.Sunday"
 
 				}]}/>
 
