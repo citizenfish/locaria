@@ -338,7 +338,7 @@ export const searchDrawerSlice = createSlice({
 		},
 		setBbox: (state, action) => {
 			//debugger;
-
+			state.refreshCounts=true;
 			state.searchParams.bbox=action.payload;
 			state.page=1;
 			state.totalPages=0;

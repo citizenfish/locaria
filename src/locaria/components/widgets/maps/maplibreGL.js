@@ -2,13 +2,18 @@ import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} fro
 import maplibregl from 'maplibre-gl';
 import Box from "@mui/material/Box";
 
-const MaplibreGL = forwardRef(({sx,zoom=17,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=26,layout="mapStyleDefault",precision=5}, ref) => {
+const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=26,layout="mapStyleDefault",precision=5}, ref) => {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 	const [mapActive,setMapActive] = useState(false);
 	const [queue,setQueue] = useState([]);
 
+	useEffect(() => {
+		return () => {
+			map.current.remove();
+		}
+	},[]);
 
 	let actualSx = {
 		...{
