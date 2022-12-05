@@ -4,19 +4,12 @@ import SearchSubCategory from "widgets/search/searchSubCategory";
 import SearchTags from "widgets/search/searchTags";
 import TodayIcon from "@mui/icons-material/Today";
 import SearchCheckboxFilter from "widgets/search/searchCheckboxFilter";
-import AddCardIcon from "@mui/icons-material/AddCard";
-import CreditCardOffIcon from "@mui/icons-material/CreditCardOff";
+
 
 export default function FilterLayoutSubCats({category}) {
 	return (
 		<>
-			<SearchCheckboxFilter values={[{
-				filter: true,
-				path: "data.free",
-				icon: <AddCardIcon/>,
-				checkedIcon: <CreditCardOffIcon/>,
-				counts: "free"
-			}]}/>
+
 			<SearchCheckboxFilter formatter={"stack"} values={[
 				{
 					icon: <TodayIcon/>,
@@ -66,6 +59,14 @@ export default function FilterLayoutSubCats({category}) {
 					counts: "days.Saturday"
 
 				}]}/>
+
+			<SearchCheckboxFilter values={[{
+				filter: true,
+				path: "data.free",
+				name: "Free",
+				counts: "free"
+			}]}/>
+
 			<SearchSubCategory category={category}/>
 			<SearchTags category={category}/>
 		</>
