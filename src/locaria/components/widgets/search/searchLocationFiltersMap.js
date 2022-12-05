@@ -70,7 +70,9 @@ const SearchLocationFiltersMap = ({
 		return (
 			<>
 				<Box textAlign='center'>
-					<Button variant={"outlined"} onClick={()=>{toggleMap();handleChange();}} startIcon={<FormatAlignJustifyIcon/>}>Close Map</Button>
+					{page&&
+						<Button variant={"outlined"} onClick={()=>{toggleMap();handleChange();}} startIcon={<FormatAlignJustifyIcon/>}>Close Map</Button>
+					}
 				</Box>
 				<FilterLayoutSubCats category={category}/>
 			</>
