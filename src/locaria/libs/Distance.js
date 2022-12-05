@@ -26,26 +26,14 @@ function distanceFormatNice(distance,unit,meterSwitch) {
 	return `${niceDistance} ${units[unit].lang}`;
 }
 
-export {distanceFormatNice}
-/*
+function distanceActual(distance,unit) {
+	distance=parseFloat(distance);
+	return distance*units[unit].value;
+}
 
-export default class Distance {
+function distanceLang(unit) {
+	return units[unit].lang;
+}
 
-	distanceLang(unit) {
-		return units[unit].lang;
-	}
-	distanceActual(distance,unit) {
-		distance=parseFloat(distance);
-		return distance*units[unit].value;
-	}
+export {distanceFormatNice,distanceActual,distanceLang}
 
-	distanceFormatNice(distance,unit,meterSwitch) {
-		meterSwitch=meterSwitch||0;
-		let niceDistance = parseFloat(distance / units[unit].value).toFixed(1);
-		if (niceDistance <= meterSwitch)
-			return `< 0.1 ${units[unit].lang}`;
-		return `${niceDistance} ${units[unit].lang}`;
-	}
-
-
-}*/

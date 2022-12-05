@@ -2,11 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import DataCard from "../featureCards/dataCard";
-import SearchSubCategory from "./searchSubCategory";
-import SearchDistance from "./searchDistance";
-import SearchTags from "./searchTags";
-import SearchPagination from "./searchPagination";
+
 import {Accordion, AccordionDetails, AccordionSummary, LinearProgress} from "@mui/material";
 import Button from "@mui/material/Button";
 import SimpleMap from "../maps/simpleMap";
@@ -43,8 +39,9 @@ const SearchLocationFiltersMap = ({
 	const history = useHistory();
 
 
+
 	function bboxUpdate(bbox) {
-		dispatch(setBbox(bbox));
+			dispatch(setBbox(bbox));
 	}
 
 	useEffect(() => {
@@ -112,7 +109,7 @@ const SearchLocationFiltersMap = ({
 
 						</Grid>
 						<Grid item md={9} sx={{width: "100%"}}>
-							<SimpleMap/>
+							<MaplibreGL  ref={mapRef} bboxUpdate={bboxUpdate}/>
 						</Grid>
 
 					</Grid>

@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {encodeSearchParams} from "../../../libs/searchParams";
 import {objectPathGet, setObjectWithPath} from "../../../libs/objectTools";
+import {distanceActual} from "libs/Distance";
 
 export default function SearchProxy() {
 
@@ -127,7 +128,7 @@ export default function SearchProxy() {
 			if (searchParams.location) {
 				packetSearch.data.location = `SRID=4326;POINT(${searchParams.location[0]} ${searchParams.location[1]})`;
 				if (searchParams.distance > 0) {
-					packetSearch.data.location_distance = searchParams.distance * 1000;
+					packetSearch.data.location_distance = distanceActual(searchParams.distance,searchParams.distanceType);
 				}
 			}
 		}
