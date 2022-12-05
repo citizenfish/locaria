@@ -18,6 +18,7 @@ import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import {useHistory} from "react-router-dom";
 import {encodeSearchParams} from "../../../libs/searchParams";
 import MaplibreGL from "../maps/maplibreGL";
+import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
 
 const SearchLocationFiltersMap = ({
 								   category,
@@ -74,8 +75,7 @@ const SearchLocationFiltersMap = ({
 				<Box textAlign='center'>
 					<Button variant={"outlined"} onClick={()=>{toggleMap();handleChange();}} startIcon={<FormatAlignJustifyIcon/>}>Close Map</Button>
 				</Box>
-				<SearchSubCategory category={category}></SearchSubCategory>
-				<SearchTags category={category}></SearchTags>
+				<FilterLayoutSubCats category={category}/>
 			</>
 		)
 	}
