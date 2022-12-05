@@ -103,10 +103,12 @@ const SearchLocationFilters = ({
 						dispatch(locationPopup({open: true}));
 					}} startIcon={
 						<EditLocationAltIcon/>}>{currentLocation ? currentLocation.text.substring(0, 10) + (currentLocation.text.length > 10 ? '...' : '') : 'No location'}</Button>
-					<Button variant={"outlined"} onClick={() => {
-						toggleMap();
-						handleChange();
-					}} startIcon={<MapIcon/>}></Button>
+					{page&&
+						<Button variant={"outlined"} onClick={() => {
+							toggleMap();
+							handleChange();
+						}} startIcon={<MapIcon/>}></Button>
+					}
 
 				</Stack>
 				<SearchDistance category={category}></SearchDistance>
