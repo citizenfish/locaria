@@ -1,11 +1,8 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import DataCard from "../featureCards/dataCard";
-import SearchSubCategory from "./searchSubCategory";
 import SearchDistance from "./searchDistance";
-import SearchTags from "./searchTags";
 import SearchPagination from "./searchPagination";
 import {Accordion, AccordionDetails, AccordionSummary, LinearProgress, Stack} from "@mui/material";
 import Button from "@mui/material/Button";
@@ -14,16 +11,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
 import {encodeSearchParams} from "../../../libs/searchParams";
 import {useHistory} from "react-router-dom";
-import SearchCheckboxFilter from "./searchCheckboxFilter";
 import SearchLocationFiltersNoResults from "./searchLocationFiltersNoResults";
 import {locationPopup} from "../../redux/slices/searchDrawerSlice";
-import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AddCardIcon from '@mui/icons-material/AddCard';
-import CreditCardOffIcon from '@mui/icons-material/CreditCardOff';
-import TodayIcon from '@mui/icons-material/Today';
+
+import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
 
 const SearchLocationFilters = ({
 								   category,
@@ -90,6 +82,15 @@ const SearchLocationFilters = ({
 		}
 	}
 
+	function ResultsInner() {
+		return (
+			<>
+				<ResultItems></ResultItems>
+				<SearchPagination></SearchPagination>
+			</>
+		)
+	}
+
 	function FiltersInner() {
 		return (
 			<>
@@ -107,65 +108,7 @@ const SearchLocationFilters = ({
 
 				</Stack>
 				<SearchDistance category={category}></SearchDistance>
-				<SearchCheckboxFilter values={[{
-					filter: true,
-					path: "data.free",
-					icon: <AddCardIcon/>,
-					checkedIcon: <CreditCardOffIcon/>,
-					counts: "free"
-				}]}/>
-
-				<SearchCheckboxFilter formatter={"stack"} values={[
-					{icon: <TodayIcon/>,
-						checkedIcon: <TodayIcon/>,
-						name: "Su",
-						filter: "true",
-						path: "data.days.Sunday",
-						counts:"days.Sunday"
-
-					},
-					{
-					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>,
-					name: "M",
-					filter: "true",
-					path: "data.days.Monday",
-					counts:"days.Monday"
-				}, {
-					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>, name: "T", filter: "true", path: "data.days.Tuesday",
-					counts:"days.Tuesday"
-
-				}, {
-					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>,
-					name: "W",
-					filter: "true",
-					path: "data.days.Wednesday",
-					counts:"days.Wednesday"
-
-				}, {
-					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>, name: "Th", filter: "true", path: "data.days.Thursday",
-					counts:"days.Thursday"
-
-				}, {icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>,
-					name: "F",
-					filter: "true",
-					path: "data.days.Friday",
-					counts:"days.Friday"
-
-				}, {
-					icon: <TodayIcon/>,
-					checkedIcon: <TodayIcon/>, name: "Sa", filter: "true", path: "data.days.Saturday",
-					counts:"days.Saturday"
-
-				}]}/>
-
-				<SearchSubCategory category={category}></SearchSubCategory>
-				<SearchTags category={category}></SearchTags>
-
+				<FilterLayoutSubCats category={category}/>
 			</>
 		)
 	}
@@ -198,8 +141,7 @@ const SearchLocationFilters = ({
 
 				</Grid>
 				<Grid item md={9} sx={{width: "100%"}}>
-					<ResultItems></ResultItems>
-					<SearchPagination></SearchPagination>
+					<ResultsInner/>
 				</Grid>
 
 			</Grid>
@@ -211,8 +153,7 @@ const SearchLocationFilters = ({
 					<FiltersInner/>
 				</Grid>
 				<Grid item md={9} sx={{width: "100%"}}>
-					<ResultItems></ResultItems>
-					<SearchPagination></SearchPagination>
+					<ResultsInner/>
 				</Grid>
 			</Grid>
 		);

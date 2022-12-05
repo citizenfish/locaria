@@ -89,7 +89,7 @@ export default function SearchProxy() {
 			// json path
 			if (schema[s].type === 'jsonpath') {
 				let value = objectPathGet(searchParams.filters, schema[s].path);
-				if (value && typeof value === 'object') {
+				if (value && typeof value === 'object' && Object.keys(value).length > 0) {
 					if (jsonPath === undefined) {
 						jsonPath = 'lax (';
 					} else {
@@ -138,59 +138,9 @@ export default function SearchProxy() {
 
 		const displayLimit = searchParams.displayLimit || 20;
 		packetSearch.data.display_limit = displayLimit;
-		//packetSearch.data.limit = displayLimit;
 
 		packetSearch.data.offset = ((searchParams.page - 1) * packetSearch.data.display_limit);
 
-
-		/*if ((searchParams.subCategories['subCategory1'] && searchParams.subCategories['subCategory1'].length > 0) || (searchParams.subCategories['subCategory2'] && searchParams.subCategories['subCategory2'].length > 0)) {
-			jsonPath = "lax ";
-			let i = 0;
-
-			if (searchParams.subCategories['subCategory1'] && searchParams.subCategories['subCategory1'].length > 0) {
-				jsonPath += '(';
-
-				for (let sub in searchParams.subCategories['subCategory1']) {
-					i++;
-					jsonPath += `$.data.subCategory1 == \"${searchParams.subCategories['subCategory1'][sub]}\" `;
-					if (i < searchParams.subCategories['subCategory1'].length)
-						jsonPath += ' || ';
-				}
-
-				jsonPath += ') ';
-
-			}
-
-			i = 0;
-
-			if (searchParams.subCategories['subCategory2'] && searchParams.subCategories['subCategory2'].length > 0) {
-				if (searchParams.subCategories['subCategory1'] && searchParams.subCategories['subCategory1'].length > 0)
-					jsonPath += ' && ';
-				jsonPath += '(';
-				for (let sub in searchParams.subCategories['subCategory2']) {
-					i++;
-					jsonPath += `$.data.subCategory2 == \"${searchParams.subCategories['subCategory2'][sub]}\"`;
-					if (i < searchParams.subCategories['subCategory2'].length)
-						jsonPath += ' || ';
-				}
-				jsonPath += ') ';
-
-			}
-			packetSearch.data.jsonpath = jsonPath;
-
-		}
-*/
-		/*if(subCategories && subCategories.length > 0) {
-			let jsonPath="lax ";
-			let i=0;
-			for(let sub in subCategories) {
-				i++;
-				jsonPath+=`$.categoryLevel1 == \"${subCategories[sub]}\"`;
-				if(i<subCategories.length)
-					jsonPath+=' || ';
-			}
-			packetSearch.data.jsonpath=jsonPath;
-		}*/
 		window.websocket.send(packetSearch);
 	}
 
