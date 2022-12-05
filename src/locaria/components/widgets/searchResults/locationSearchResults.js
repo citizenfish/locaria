@@ -10,7 +10,7 @@ import {useStyles} from "stylesLocaria";
 
 import SearchDrawerCard from "../drawers/cards/searchDrawerCard";
 import {useCookies} from "react-cookie";
-import {setLocation} from "../../redux/slices/layoutSlice";
+import {setLocation} from "../../../../../deprecated/layoutSlice";
 import {useDispatch} from "react-redux";
 
 export default function LocationSearchResults(props) {

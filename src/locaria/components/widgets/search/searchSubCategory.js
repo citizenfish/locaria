@@ -1,5 +1,5 @@
 import React from 'react';
-import {setSubCategory} from "../../redux/slices/searchDrawerSlice";
+import {clearFilterItem, setFilterItem, setSubCategory} from "../../redux/slices/searchDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -10,21 +10,26 @@ import {objectPathExists} from "../../../libs/objectTools";
 
 export default function SearchSubCategory({sx,multi=true,levels=1,category,noCountDisplay=false}) {
 	const dispatch = useDispatch()
-
-	//const subCategories = useSelector((state) => state.searchDraw.subCategories);
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const counts = useSelector((state) => state.searchDraw.counts);
 
 
 	function handleCheck(sub,id) {
-		let catCopy=JSON.parse(JSON.stringify(searchParams.subCategories));
-		catCopy[sub]=arrayToggleElement(catCopy[sub],id);
-		dispatch(setSubCategory({sub:sub,data:catCopy[sub]}));
+		let path=`data.${sub}.${id}`;
+		if(objectPathExists(searchParams.filters,path)) {
+			dispatch(clearFilterItem({path: path}));
+		} else {
+			dispatch(setFilterItem({path: path, value: "true"}));
+
+		}
 
 	}
 
 	function DisplaySubCategorySubs({sub,subArray}) {
 		let renderArray=[];
+
+
+
 		for(let a in subArray) {
 			if(objectPathExists(counts,`${sub}.${subArray[a]}`)) {
 				let count = `(${counts[sub][subArray[a]]})`;
@@ -36,7 +41,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 							<ListItemIcon>
 								<Checkbox
 									edge="start"
-									checked={searchParams.subCategories[sub].indexOf(subArray[a]) !== -1}
+									checked={objectPathExists(searchParams.filters ,`data.${sub}.${subArray[a]}`)}
 									tabIndex={-1}
 									disableRipple
 								/>
@@ -65,6 +70,15 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 
 	function DisplaySubCategory({sub}) {
 		let categorySubs=window.systemCategories.getChannelProperties(category);
+		let subs=categorySubs[sub].items;
+		for(let i in subs) {
+			// Move Other to the end
+			if(subs[i]==="Other") {
+				subs.splice(i,1);
+				subs.push("Other");
+			}
+
+		}
 
 		return (
 			<List sx={{ width: '100%' }} >

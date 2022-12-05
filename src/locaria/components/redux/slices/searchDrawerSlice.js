@@ -2,6 +2,7 @@ import React from 'react';
 
 import {createSlice} from '@reduxjs/toolkit'
 import {delObjectWithPath, objectPathExists, setObjectWithPath} from "../../../libs/objectTools";
+import { current } from '@reduxjs/toolkit'
 
 export const searchDrawerSlice = createSlice({
 	name: 'searchDraw',
@@ -17,9 +18,36 @@ export const searchDrawerSlice = createSlice({
 			distance: 0,
 			page: 1,
 			filters:{},
-			bbox:[]
+			bbox:[],
+			distanceType: 'km',
 
 		},
+
+		// HARD CODE WARNING TODO This needs to be built by the filters
+		schema: [
+			{
+				"type":"filter",
+				"path":"data.free"
+			},
+			{
+				"type":"jsonpath",
+				"path":"data.days",
+				"logic":"||"
+			},
+			{
+				"type":"jsonpath",
+				"path":"data.subCategory1",
+				"logic":"||",
+				"unique":true
+			},
+			{
+				"type":"jsonpath",
+				"path":"data.subCategory2",
+				"logic":"||",
+				"unique":true
+
+			}
+		],
 
 		refreshCounts: true,
 
@@ -31,7 +59,6 @@ export const searchDrawerSlice = createSlice({
 		ready: false,
 
 		locationShow: false,
-		distanceType: 'km',
 		tags: [],
 		resolutionUpdate: false,
 		tagList: [],
@@ -197,11 +224,14 @@ export const searchDrawerSlice = createSlice({
 
 		},
 		setDistanceType: (state,action) => {
-			state.distanceType = action.payload;
+			state.searchParams.distanceType = action.payload;
+			state.page=1;
+			state.totalPages=0;
 		},
 		setLocation: (state,action) => {
-			state.location = action.payload;
-
+			state.searchParams.location = action.payload;
+			state.page=1;
+			state.totalPages=0;
 		},
 
 		setTags: (state, action) => {
@@ -276,7 +306,11 @@ export const searchDrawerSlice = createSlice({
 			state.loading=false;
 		},
 		setFilterItem: (state,action) => {
+
 			setObjectWithPath(state.searchParams.filters,action.payload.path,action.payload.value);
+			// Browser can't cope well displaying proxy, use current to debug
+			//console.log(current(state));
+
 			state.page=1;
 			state.totalPages=0;
 		},

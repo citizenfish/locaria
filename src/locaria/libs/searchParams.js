@@ -13,11 +13,13 @@ function decodeSearchParams(search) {
 	}
 	match=aSearch.match(/\/1(.*?)\//);
 	if(match) {
-		params.subCategories['subCategory1']=match[1].split(',');
+		// TODO now in filter which dont encode
+		//params.subCategories['subCategory1']=match[1].split(',');
 	}
 	match=aSearch.match(/\/2(.*?)\//);
 	if(match) {
-		params.subCategories['subCategory2']=match[1].split(',');
+		// TODO now in filter which dont encode
+		//params.subCategories['subCategory2']=match[1].split(',');
 	}
 	match=aSearch.match(/\/d(.*?)\//);
 	if(match) {
