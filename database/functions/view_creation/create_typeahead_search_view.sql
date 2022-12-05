@@ -32,6 +32,7 @@ BEGIN
     CREATE INDEX IF NOT EXISTS gsv_typeahead_idx ON locaria_data.global_search_view (LOWER(attributes#>>'{description,title}') text_pattern_ops);
 
     CREATE INDEX IF NOT EXISTS lsv_typeahead_idx ON locaria_data.location_search_view (LOWER(attributes->>'name1')  text_pattern_ops);
+
     --Permissions
     GRANT SELECT ON locaria_data.typeahead_search_view TO PUBLIC;
 
