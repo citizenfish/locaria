@@ -7,10 +7,19 @@ function decodeSearchParams(search) {
 	if(match) {
 		params.search=match[1];
 	}
+
+	// Location
 	match=aSearch.match(/\/l(.*?)\//);
 	if(match) {
 		params.location=match[1].split(',');
 	}
+
+	// bbox
+	match=aSearch.match(/\/b(.*?)\//);
+	if(match) {
+		params.bbox=match[1].split(',');
+	}
+
 	match=aSearch.match(/\/1(.*?)\//);
 	if(match) {
 		// TODO now in filter which dont encode
@@ -33,6 +42,13 @@ function decodeSearchParams(search) {
 	if(match) {
 		params.tags=match[1].split(',');
 	}
+
+	// Wait mode?
+	match=aSearch.match(/\/w\//);
+	if(match) {
+		params.wait=true;
+	}
+
 	return params;
 }
 
@@ -42,9 +58,17 @@ function encodeSearchParams(params) {
 	if(params.search) {
 		search+=`/s${params.search}`;
 	}
-	if(params.location) {
-		search+=`/l${params.location[0]},${params.location[1]}`;
+
+	// Add a location array
+	if(params.location&&Array.isArray(params.location)&&params.location.length===2) {
+		search+=`/l${parseFloat(params.location[0]).toFixed(5)},${parseFloat(params.location[1]).toFixed(5)}`;
 	}
+
+	// Add a bbox array
+	if(params.bbox&&Array.isArray(params.bbox)&&params.bbox.length===4) {
+		search+=`/b${parseFloat(params.bbox[0]).toFixed(5)},${parseFloat(params.bbox[1]).toFixed(5)},${parseFloat(params.bbox[2]).toFixed(5)},${parseFloat(params.bbox[3]).toFixed(5)}`;
+	}
+
 	if(params.subCategories&&params.subCategories['subCategory1']&&params.subCategories['subCategory1'].length>0) {
 		search+=`/1${params.subCategories['subCategory1'].join(',')}`;
 	}
@@ -59,6 +83,10 @@ function encodeSearchParams(params) {
 	}
 	if(params.page) {
 		search+=`/p${params.page}`;
+	}
+
+	if(params.wait) {
+		search+=`/w`;
 	}
 	return `${search}/`;
 }

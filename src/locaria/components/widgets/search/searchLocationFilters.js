@@ -16,6 +16,7 @@ import {locationPopup} from "../../redux/slices/searchDrawerSlice";
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 
 import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
+import {v4 as uuidv4} from "uuid";
 
 const SearchLocationFilters = ({
 								   category,
@@ -47,7 +48,8 @@ const SearchLocationFilters = ({
 			distance: searchParams.distance,
 			tags: searchParams.tags,
 			page: searchParams.page,
-			search: searchParams.search
+			search: searchParams.search,
+			wait: true
 		});
 		history.push(encodedPage);
 	}
@@ -67,7 +69,7 @@ const SearchLocationFilters = ({
 				return (
 					features.features.map((result) => {
 							return (
-								<DataCard feature={result} field={field} clickEnabled={clickEnabled} sx={{
+								<DataCard key={uuidv4()} feature={result} field={field} clickEnabled={clickEnabled} sx={{
 									border: "1px solid #AAA",
 									margin: "5px"
 								}}></DataCard>

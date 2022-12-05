@@ -31,6 +31,7 @@ import DataItemLinkButton from "./dataItemsRead/dataItemLinkButton";
 import DataItemDistance from "./dataItemsRead/dataItemDistance";
 import DataItemPhoneButton from "./dataItemsRead/dataItemPhoneButton";
 import DataItemMinMedMax from "./dataItemsRead/dataItemMinMedMax";
+import {v4 as uuidv4} from "uuid";
 
 const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 
@@ -77,20 +78,21 @@ const FormatFields = ({fields, data, mode, category,moderation}) => {
 	if (fields && fields.length > 0) {
 		return (<>
 			{fields.map(value => {
+					const uuid=uuidv4();
 					if (value.children) {
 						let md = value.md || 12;
 						let sm = value.sm || 12;
 						let spacing = value.spacing || 0;
 						if (value.container) {
 							return (
-									<Grid container spacing={spacing}>
+									<Grid container spacing={spacing} key={uuid}>
 										<FormatFields fields={value.children} mode={mode}
 													  data={data} moderation={moderation} category={category}/>
 									</Grid>
 							)
 						} else {
 							return (
-								<Grid item item md={md} sd={sm}>
+								<Grid item item md={md} sd={sm} key={uuid}>
 									<FormatFields fields={value.children} mode={mode}
 												  data={data} moderation={moderation} category={category}/>
 								</Grid>
@@ -99,12 +101,12 @@ const FormatFields = ({fields, data, mode, category,moderation}) => {
 					} else {
 						switch (value.type) {
 							case 'hr':
-								return <Divider sx={{margin: "10px"}}/>
+								return <Divider sx={{margin: "10px"}} key={uuid}/>
 							default:
 								if (value.visible !== false || mode === "write") {
 									let md = value.md || 12;
 									return (
-										<Grid item md={md}>
+										<Grid item md={md} key={uuid}>
 
 											<FormatField field={value}
 														 data={data}

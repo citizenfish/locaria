@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {clearFilterItem, setFilterItem, setSubCategory} from "../../redux/slices/searchDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
@@ -13,6 +13,13 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const counts = useSelector((state) => state.searchDraw.counts);
 
+
+	// Add unique key using a ref
+	const key=useRef(0);
+
+	useEffect(() => {
+		key.current++;
+	},[]);
 
 	function handleCheck(sub,id) {
 		let path=`data.${sub}.${id}`;
@@ -34,7 +41,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 			if(objectPathExists(counts,`${sub}.${subArray[a]}`)) {
 				let count = `(${counts[sub][subArray[a]]})`;
 				renderArray.push(
-					<ListItem sx={{padding: "0px"}}>
+					<ListItem sx={{padding: "0px"}} key={sub+'subcheckboxes_'+key.current+a}>
 						<ListItemButton role={undefined} onClick={() => {
 							handleCheck(sub, subArray[a])
 						}} dense>
@@ -56,7 +63,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 			} else {
 				if(noCountDisplay===true) {
 					renderArray.push(
-						<ListItem sx={{padding: "0px"}}>
+						<ListItem sx={{padding: "0px"}} key={sub+'subcheckboxes_'+key.current+a}>
 							<ListItemButton dense>
 								<ListItemText primary={`${subArray[a]}`}/>
 							</ListItemButton>
@@ -82,7 +89,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 
 		return (
 			<List sx={{ width: '100%' }} >
-				<ListItem sx={{padding:"0px"}}>
+				<ListItem sx={{padding:"0px"}} key={sub+'subcheckboxes_'+key.current}>
 					<ListItemText primary={categorySubs[sub].title} />
 				</ListItem>
 				<DisplaySubCategorySubs sub={sub} subArray={categorySubs[sub].items}></DisplaySubCategorySubs>

@@ -1,5 +1,5 @@
 import {Badge, Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack} from "@mui/material";
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import List from "@mui/material/List";
 import {useDispatch, useSelector} from "react-redux";
 import {objectPathExists, objectPathGet} from "../../../libs/objectTools";
@@ -13,8 +13,13 @@ export default function SearchCheckboxFilter({sx,values,title,formatter="list"})
 	const dispatch = useDispatch();
 	const counts = useSelector((state) => state.searchDraw.counts);
 
+	const key=useRef(0);
 
-	function handleCheck(item) {
+	useEffect(() => {
+		key.current++;
+	},[]);
+
+		function handleCheck(item) {
 		if(objectPathExists(searchParams.filters,item.path)) {
 			dispatch(clearFilterItem({path: item.path}));
 		} else {
@@ -28,7 +33,7 @@ export default function SearchCheckboxFilter({sx,values,title,formatter="list"})
 		for(let v in values) {
 			let count=objectPathGet(counts,values[v].counts)||0;
 			stackItems.push(
-				<Badge badgeContent={count} color="secondary" showZero={true}>
+				<Badge badgeContent={count} color="secondary" showZero={true} key={'checkboxes_'+key.current+v}>
 					<Button sx={{minWidth: "30px","padding":"2px",borderRadius:"0px",fontSize:"0.5rem"}} size={"small"} variant={objectPathExists(searchParams.filters,values[v].path)? "contained":"outlined"} onClick={()=>{handleCheck(values[v])}}>{values[v].name}</Button>
 				</Badge>
 			)
@@ -45,7 +50,7 @@ export default function SearchCheckboxFilter({sx,values,title,formatter="list"})
 		for(let v in values) {
 			let count=objectPathGet(counts,values[v].counts)
 			listItems.push(
-				<ListItem sx={{padding:"0px"}}>
+				<ListItem sx={{padding:"0px"}} key={'checkboxes_'+key.current+v}>
 					<ListItemButton onClick={()=>{handleCheck(values[v])}} dense>
 						<ListItemIcon>
 
@@ -76,7 +81,7 @@ export default function SearchCheckboxFilter({sx,values,title,formatter="list"})
 	return (
 		<List sx={{ width: '100%' }} >
 			{title &&
-				<ListItem sx={{padding: "0px"}}>
+				<ListItem sx={{padding: "0px"}} key={'checkboxes_'+key.current}>
 					<ListItemText primary={title}/>
 				</ListItem>
 			}
