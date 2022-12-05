@@ -11,12 +11,11 @@ $SQL$
         AS
         SELECT
             ogc_fid AS id,
-            row_to_json(N.*)::JSONB || jsonb_build_object('address', name1) -'wkb_geometry' AS attributes,
+             ROW_TO_JSON(n.*)::jsonb || (JSONB_BUILD_OBJECT('address', n.name1, 'postcode_district', CASE WHEN local_type = 'Postcode' THEN SPLIT_PART(name1, ' ',1) ELSE '' END ) - 'wkb_geometry'::text) AS attributes,
             wkb_geometry
         FROM locaria_uploads.opennames N
-        --TODO pick authority if chosen previously
-        --INNER JOIN locaria_data.local_authority_boundary LAB ON LAB.attributes @> jsonb_build_object('name', 'Swindon (B)') AND ST_INTERSECTS(LAB.wkb_geometry, n.wkb_geometry)
-        WHERE  local_type IN ('City','Town','Other Settlement','Village','Hamlet','Suburban Area','Named Road','Postcode');
+        --NOTE named roads excluded
+        WHERE  local_type IN ('City','Town','Other Settlement','Village','Hamlet','Suburban Area','Postcode');
 
         CREATE UNIQUE INDEX IF NOT EXISTS opennames_id
             ON locaria_data.location_search_view

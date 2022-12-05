@@ -16,6 +16,7 @@ BEGIN
                                                       UPPER(SUBSTRING(parameters::TEXT FROM postcode_regex_var)));
     END IF;
 
+
     --postcode geocoder is default
     IF COALESCE(parameters ->> '_geocoder_type', 'postcode') = 'postcode' THEN
         --Use an alternative postcode field
@@ -25,19 +26,47 @@ BEGIN
         END IF;
 
         --get the postcode into standard format for opennames check
-        postcode = REPLACE(UPPER(parameters ->> 'postcode'), ' ', '');
-        postcode = CONCAT_WS(' ', LEFT(postcode, LENGTH(postcode) - 3), RIGHT(postcode, 3));
 
+        postcode = REPLACE(UPPER(parameters ->> 'postcode'), ' ', '');
+        IF (LENGTH(postcode) > 4) THEN
+            --full postcode search
+            postcode = CONCAT_WS(' ', LEFT(postcode, LENGTH(postcode) - 3), RIGHT(postcode, 3));
+            SELECT COALESCE(JSONB_AGG(P.*), JSONB_BUILD_ARRAY())
+            INTO ret_var
+            FROM (SELECT wkb_geometry::TEXT     AS wkb_geometry,
+                         attributes ->> 'name1' AS postcode,
+                         postcode               AS lookup
+                  FROM locaria_data.location_search_view
+                  WHERE attributes @> JSONB_BUILD_OBJECT('local_type', 'Postcode',
+                                                         'name1', COALESCE(NULLIF(postcode, ''), 'FAIL'))
+                  ) P;
+        ELSE
+            --outward search
+            postcode = lower(postcode);
+
+            SELECT COALESCE(JSONB_AGG(P.*), JSONB_BUILD_ARRAY())
+            INTO ret_var
+            FROM (SELECT wkb_geometry::TEXT     AS wkb_geometry,
+                         attributes ->> 'name1' AS postcode,
+                         postcode               AS lookup
+                  FROM locaria_data.location_search_view
+                  WHERE LOWER(attributes->>'name1') ~ postcode
+                  LIMIT 1
+                 ) P;
+        END IF;
+    END IF;
+
+    IF parameters ->> '_geocoder_type' = 'locality' THEN
 
         SELECT COALESCE(JSONB_AGG(P.*), JSONB_BUILD_ARRAY())
         INTO ret_var
         FROM (SELECT wkb_geometry::TEXT     AS wkb_geometry,
-                     attributes ->> 'name1' AS postcode,
-                     postcode               AS lookup
+                     attributes ->> 'name1' AS locality
               FROM locaria_data.location_search_view
-              WHERE attributes @> JSONB_BUILD_OBJECT('local_type', 'Postcode',
-                                                     'name1', COALESCE(NULLIF(postcode, ''), 'FAIL'))) P;
+              WHERE attributes @> JSONB_BUILD_OBJECT('name1', COALESCE(parameters->>'locality', 'FAIL'))) P;
+
     END IF;
+
 
     --WGS84
     IF parameters ->> '_geocoder_type' = 'lonlat' THEN
