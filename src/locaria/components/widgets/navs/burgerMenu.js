@@ -12,7 +12,7 @@ export default function BurgerMenu({}) {
                     onClick={() => {
                         dispatch(openMenuDraw());
                     }}>
-            <MenuIcon color="icons" fontSize="default" sx={{color: window.systemMain.defaultIconColor}}/>
+            <MenuIcon color="icons" fontSize="default" sx={{color: "#FFF"}}/>
         </IconButton>
     )
 }
