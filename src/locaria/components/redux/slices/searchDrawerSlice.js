@@ -233,6 +233,7 @@ export const searchDrawerSlice = createSlice({
 		toggleLocationShow: (state) => {
 			state.locationShow = !state.locationShow;
 		},
+
 		setDistance: (state,action) => {
 			state.refreshCounts=true;
 			state.searchParams.distance = action.payload;
