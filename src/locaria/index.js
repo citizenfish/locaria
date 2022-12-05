@@ -20,6 +20,10 @@ import cssOL from './components/css/ol.css';
 import Channels from "libs/Channels";
 import store from "./components/redux/store";
 import {Provider} from "react-redux";
+
+// Display version and github reference in the console
+console.log(`Locaria https://github.com/nautoguide/locaria`);
+
 let tries = 0;
 let rendered=false;
 window.websocket = new Websockets();
@@ -79,6 +83,8 @@ function getCookie(name) {
 }
 
 function connected() {
+    // We are connected alert the console
+    console.info('Websocket connected');
     if(rendered===false) {
 
         window.websocket.sendBulk('bulkConfigs', [

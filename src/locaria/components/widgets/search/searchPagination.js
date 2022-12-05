@@ -1,8 +1,7 @@
 import React from 'react';
-import {Pagination} from "@mui/lab";
 import {useDispatch, useSelector} from "react-redux";
 import {setPage} from "../../redux/slices/searchDrawerSlice";
-
+import { Pagination } from '@mui/material'
 export default function SearchPagination({sx, category}) {
 	const totalPages = useSelector((state) => state.searchDraw.totalPages);
 	const loading = useSelector((state) => state.searchDraw.loading);

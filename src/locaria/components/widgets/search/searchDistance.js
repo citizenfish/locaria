@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
 import {useDispatch, useSelector} from "react-redux";
@@ -39,7 +39,7 @@ export default function SearchDistance({sx,category,maxDistance=20,minDistance=1
 	]
 	return (
 			<Stack direction="row" spacing={2} sx={{marginTop:"20px"}}>
-				<Slider marks={marks} defaultValue={searchParams.distance} valueLabelDisplay="auto" aria-label="Default"  onChange={handleChange} onTouchEnd={handleSubmit} onMouseUp={handleSubmit} min={minDistance} max={maxDistance}/>
+				<Slider marks={marks} defaultValue={searchParams.distance? parseInt(searchParams.distance):1} valueLabelDisplay="auto" aria-label="Default"  onChange={handleChange} onTouchEnd={handleSubmit} onMouseUp={handleSubmit} min={minDistance} max={maxDistance}/>
 				<Button variant={"outlined"} onClick={()=>{
 					toggleDistanceType();
 				}}>{searchParams.distanceType}</Button>

@@ -1,7 +1,6 @@
 import React from 'react';
 
-import {Skeleton} from "@mui/lab";
-import {Stack} from "@mui/material";
+import {Stack,Skeleton} from "@mui/material";
 const DataItemMinMedMax = ({name,data,sx,min=1000,max=10000}) => {
     let sxActual={...{
             color: window.systemMain.fontMain,

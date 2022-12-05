@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import Box from "@mui/material/Box";
 import {useDispatch, useSelector} from "react-redux";
 import {setTags} from "../../redux/slices/searchDrawerSlice";
@@ -6,12 +6,14 @@ import List from "@mui/material/List";
 import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {arrayToggleElement} from "../../../libs/arrayTools";
 import {objectPathExists} from "../../../libs/objectTools";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function SearchTags({sx,category,noCountDisplay=false}) {
 	const dispatch = useDispatch()
 
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const counts = useSelector((state) => state.searchDraw.counts);
+
 
 	function handleCheck(id) {
 		let tagCopy=JSON.parse(JSON.stringify(searchParams.tags));
@@ -27,14 +29,14 @@ export default function SearchTags({sx,category,noCountDisplay=false}) {
 		return (
 			<List sx={{ width: '100%' }} dense={true}>
 				<ListItem sx={{padding:"0px"}}>
-					<ListItemText primary={tags.tags.title} />
+					<ListItemText primary={tags.tags.title} key={uuidv4()}/>
 				</ListItem>
 				{tags.tags.items.map((item)=> {
 					let count='';
 					if(objectPathExists(counts,`tags.${item}`)) {
 						count=`(${counts.tags[item]})`;
 						return (
-							<ListItem sx={{padding:"0px"}}>
+							<ListItem sx={{padding:"0px"}}  key={uuidv4()}>
 								<ListItemButton role={undefined} onClick={()=>{handleCheck(item)}} dense>
 									<ListItemIcon>
 										<Checkbox
@@ -54,7 +56,7 @@ export default function SearchTags({sx,category,noCountDisplay=false}) {
 					} else {
 						if(noCountDisplay===true) {
 							return (
-								<ListItem sx={{padding: "0px"}}>
+								<ListItem sx={{padding: "0px"}} key={uuidv4()}>
 									<ListItemButton role={undefined} onClick={() => {
 										handleCheck(item)
 									}} dense>

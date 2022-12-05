@@ -23,6 +23,9 @@ export const searchDrawerSlice = createSlice({
 
 		},
 
+		wait: false,
+
+
 		// HARD CODE WARNING TODO This needs to be built by the filters
 		schema: [
 			{
@@ -167,10 +170,18 @@ export const searchDrawerSlice = createSlice({
 				state.searchParams.displayLimit=undefined;
 			}
 
+			// Location set
+
 			if (action.payload && action.payload.location){
 				state.searchParams.location = action.payload.location;
 			} else {
 				state.searchParams.location= undefined;
+			}
+
+			if(action.payload && action.payload.bbox&&Array.isArray(action.payload.bbox)&&action.payload.bbox.length===4) {
+				state.searchParams.bbox = action.payload.bbox;
+			} else {
+				state.searchParams.bbox=[];
 			}
 
 			if (action.payload && action.payload.subCategories){
@@ -184,6 +195,12 @@ export const searchDrawerSlice = createSlice({
 			}
 			state.refreshCounts=true;
 			state.ready=true;
+			if(action.payload.wait)
+				state.wait=action.payload;
+		},
+
+		clearWait:(state) => {
+			state.wait=false;
 		},
 
 
@@ -320,6 +337,8 @@ export const searchDrawerSlice = createSlice({
 			state.totalPages=0;
 		},
 		setBbox: (state, action) => {
+			//debugger;
+
 			state.searchParams.bbox=action.payload;
 			state.page=1;
 			state.totalPages=0;
@@ -361,7 +380,8 @@ export const {
 	setCurrentLocation,
 	setFilterItem,
 	clearFilterItem,
-	setBbox
+	setBbox,
+	clearWait
 
 } = searchDrawerSlice.actions
 

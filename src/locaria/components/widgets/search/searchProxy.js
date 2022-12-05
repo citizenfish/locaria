@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {
+	clearWait,
 	setCounts,
 	setFeatures, setRefreshCounts,
 	setTotalPages,
@@ -17,6 +18,7 @@ export default function SearchProxy() {
 
 	const ready = useSelector((state) => state.searchDraw.ready);
 	const schema = useSelector((state) => state.searchDraw.schema);
+	const wait = useSelector((state) => state.searchDraw.wait);
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const refreshCounts = useSelector((state) => state.searchDraw.refreshCounts);
 	const rewrite = useSelector((state) => state.searchDraw.rewrite);
@@ -35,13 +37,15 @@ export default function SearchProxy() {
 			let pageTotal = (json.packet.options.count + count) / displayLimit;
 
 			dispatch(setTotalPages(Math.ceil(pageTotal)));
+			//debugger;
 			let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
 				location: searchParams.location,
 				subCategories: searchParams.subCategories,
 				distance: searchParams.distance,
 				tags: searchParams.tags,
 				page: searchParams.page,
-				search: searchParams.search
+				search: searchParams.search,
+				bbox: searchParams.bbox
 			})
 			if (rewrite === true)
 				window.history.replaceState(null, "New Page Title", encodedPage)
@@ -112,8 +116,6 @@ export default function SearchProxy() {
 			}
 		}
 
-		console.log(searchParams.filters);
-
 		if(jsonPath!==undefined) {
 			packetSearch.data.jsonpath = jsonPath;
 		}
@@ -145,8 +147,13 @@ export default function SearchProxy() {
 	}
 
 	useEffect(() => {
-		if (ready === true)
-			doSearch();
+		if (ready === true) {
+			if( wait ) {
+				dispatch(clearWait());
+			} else {
+				doSearch();
+			}
+		}
 	}, [searchParams]);
 
 	return (<></>)
