@@ -139,15 +139,18 @@ export default function RenderPage({searchMode}) {
 		window.websocket.sendBulk('pageBulkLoader', bulkPackage);
 	}
 
+	// Setup the default sx object
+	const sx = {...{
+			display: "flex",
+			alignItems: "center",
+			width: "100%"
+		},...window.systemMain['defaultSX']
+
+	}
 
 	if(pageData.current&&pageData.current.data) {
 		return (
-			<Box sx={{
-				display: "flex",
-				alignItems: "center",
-				width: "100%"
-
-			}}>
+			<Box sx={sx}>
 				<Box sx={{
 					padding: "10px",
 					maxWidth: "1100px",

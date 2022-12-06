@@ -67,12 +67,15 @@ const SearchLocationFilters = ({
 			)
 		} else {
 			if (features && features.features && features.features.length > 0) {
+
+				let mobileHeight=(mobile? '500px':'300px');
 				return (
 					features.features.map((result) => {
 							return (
 								<DataCard key={uuidv4()} feature={result} field={field} clickEnabled={clickEnabled} sx={{
 									border: "1px solid #AAA",
-									margin: "5px"
+									margin: "5px",
+									height: mobileHeight
 								}}></DataCard>
 							)
 						}
