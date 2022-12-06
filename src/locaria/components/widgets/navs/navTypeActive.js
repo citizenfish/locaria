@@ -42,13 +42,6 @@ const NavTypeActive = function ({}) {
                 }}>
                     <Typography sx={{fontFamily: "Montserrat", color: "#FFF", fontWeight:800, letterSpacing:"0.1em"}}>Your Active Prescription</Typography>
                 </Grid>
-                {/*<Grid onClick={()=>{history.push('/')}} item md={6} sx={{*/}
-                {/*    display: {*/}
-                {/*        md: "block",*/}
-                {/*        xs: "none"*/}
-                {/*    },*/}
-                {/*}}>*/}
-                {/*</Grid>*/}
             </Grid>
         </Box>
     )
