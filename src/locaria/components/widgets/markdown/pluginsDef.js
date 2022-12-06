@@ -24,6 +24,7 @@ import FeatureManager from "../moderation/featureManager";
 import SearchLocationFiltersMap from "../search/searchLocationFiltersMap";
 import FooterTypeActive from "../footers/footerTypeActive";
 import NavTypeActive from "../navs/navTypeActive";
+import SearchFilters from "widgets/search/searchFilters";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -143,6 +144,11 @@ const pluginsDefs = {
 	},
 	"SearchLocationFilters": {
 		"obj": SearchLocationFilters,
+		"description": "Display simple input form",
+		"params": [{param: "category", default: "News"}]
+	},
+	"SearchFilters": {
+		"obj": SearchFilters,
 		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	},
