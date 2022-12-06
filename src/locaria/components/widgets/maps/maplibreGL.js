@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} fro
 import maplibregl from 'maplibre-gl';
 import Box from "@mui/material/Box";
 
-const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=26,layout="mapStyleDefault",precision=5}, ref) => {
+const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=20,layout="mapStyleDefault",precision=5}, ref) => {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
@@ -47,12 +47,14 @@ const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bb
 
 	useEffect(() => {
 		if (map.current) return; //stops map from intializing more than once
+
 		map.current = new maplibregl.Map({
 			container: mapContainer.current,
 			style: style,
 			center: center||window.systemMain.defaultLocation.location,
 			zoom: zoom,
 			maxZoom: maxZoom,
+			pitch: 60, //TODO make parameter
 			/*transformRequest: url => {
 				url += '&srs=3857';
 				return {
@@ -60,6 +62,9 @@ const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bb
 				}
 			}*/
 		});
+
+		//TODO needs CSS stylesheet for control https://maplibre.org/maplibre-gl-js-docs/example/navigation/
+		map.current.addControl(new maplibregl.NavigationControl());
 
 		map.current.on('load', function() {
 			updateBBOC();
