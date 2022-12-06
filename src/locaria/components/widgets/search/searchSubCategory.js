@@ -22,7 +22,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 	},[]);
 
 	function handleCheck(sub,id) {
-		let path=`data.${sub}.${id}`;
+		let path=`data.${sub}['${id}']`;
 		if(objectPathExists(searchParams.filters,path)) {
 			dispatch(clearFilterItem({path: path}));
 		} else {
@@ -45,7 +45,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 							<ListItemIcon>
 								<Checkbox
 									edge="start"
-									checked={objectPathExists(searchParams.filters ,`data.${sub}.${subArray[a]}`)}
+									checked={objectPathExists(searchParams.filters ,`data.${sub}['${subArray[a]}']`)}
 									tabIndex={-1}
 									disableRipple
 								/>

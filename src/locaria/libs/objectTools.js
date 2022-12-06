@@ -1,6 +1,7 @@
 
 function setObjectWithPath(obj,path,value) {
 	let ptr=obj;
+	path=path.replace(/\[\'(.*?)\'\]/g, '.$1');
 	let pathArray=path.split(".");
 	for(let i=0;i<pathArray.length-1;i++) {
 		if(ptr[pathArray[i]]===undefined) {
@@ -13,6 +14,7 @@ function setObjectWithPath(obj,path,value) {
 
 function delObjectWithPath(obj,path) {
 	let ptr=obj;
+	path=path.replace(/\[\'(.*?)\'\]/g, '.$1');
 	let pathArray=path.split(".");
 	for(let i=0;i<pathArray.length-1;i++) {
 		if(ptr[pathArray[i]]===undefined) {
