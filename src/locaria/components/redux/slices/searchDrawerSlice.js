@@ -211,15 +211,15 @@ export const searchDrawerSlice = createSlice({
 			}
 		},
 		clearSearchCategory: (state) => {
-			state.categories = [];
-			state.tags = [];
-			state.page=1;
+			state.searchParams.categories = [];
+			state.searchParams.tags = [];
+			state.searchParams.page=1;
 			state.totalPages=0;
 
 		},
 		setSearch: (state,action) => {
 			state.searchParams.search = action.payload.search;
-			state.page=1;
+			state.searchParams.page=1;
 			state.totalPages=0;
 
 		},
@@ -237,18 +237,18 @@ export const searchDrawerSlice = createSlice({
 		setDistance: (state,action) => {
 			state.refreshCounts=true;
 			state.searchParams.distance = action.payload;
-			state.page=1;
+			state.searchParams.page=1;
 			state.totalPages=0;
 
 		},
 		setDistanceType: (state,action) => {
 			state.searchParams.distanceType = action.payload;
-			state.page=1;
+			state.searchParams.page=1;
 			state.totalPages=0;
 		},
 		setLocation: (state,action) => {
 			state.searchParams.location = action.payload;
-			state.page=1;
+			state.searchParams.page=1;
 			state.totalPages=0;
 		},
 
@@ -257,7 +257,7 @@ export const searchDrawerSlice = createSlice({
 			// Hardcoded hax TODO this needs to be config
 			state.searchParams.subCategories["subCategory1"]=[];
 			state.searchParams.subCategories["subCategory2"]=[];
-			state.page=1;
+			state.searchParams.page=1;
 			state.totalPages=0;
 
 		},
@@ -271,13 +271,13 @@ export const searchDrawerSlice = createSlice({
 		},
 		deleteTag: (state,action) => {
 			state.tags.splice(state.tags.indexOf(action.payload),1);
-			state.page=1;
-			state.totalPages=0;
+			state.searchParams.page=1;
+			state.searchParams.totalPages=0;
 
 		},
 		resetTags: (state,action) => {
-			state.tags = [];
-			state.page=1;
+			state.searchParams.tags = [];
+			state.searchParams.page=1;
 			state.totalPages=0;
 
 		},
@@ -288,7 +288,7 @@ export const searchDrawerSlice = createSlice({
 				if (state.tags.indexOf(action.payload) === -1)
 					state.tags.push(action.payload);
 			}
-			state.page=1;
+			state.searchParams.page=1;
 			state.totalPages=0;
 
 		},
@@ -329,7 +329,7 @@ export const searchDrawerSlice = createSlice({
 			// Browser can't cope well displaying proxy, use current to debug
 			//console.log(current(state));
 
-			state.page=1;
+			state.searchParams.page=1;
 			state.totalPages=0;
 		},
 		clearFilterItem: (state,action) => {
