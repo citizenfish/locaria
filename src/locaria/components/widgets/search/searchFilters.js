@@ -17,9 +17,8 @@ import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 
 import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
 import {v4 as uuidv4} from "uuid";
-import TextSearchSimple from "widgets/search/TextSearchSimple";
 
-const SearchLocationFilters = ({
+const SearchFilters = ({
 								   category,
 								   limit,
 								   displayLimit,
@@ -39,21 +38,6 @@ const SearchLocationFilters = ({
 	const loading = useSelector((state) => state.searchDraw.loading);
 	const [expanded, setExpanded] = useState(false);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
-
-	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
-
-	function toggleMap() {
-		let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
-			location: searchParams.location,
-			subCategories: searchParams.subCategories,
-			distance: searchParams.distance,
-			tags: searchParams.tags,
-			page: searchParams.page,
-			search: searchParams.search,
-			wait: true
-		});
-		history.push(encodedPage);
-	}
 
 	function handleChange() {
 		setExpanded(!expanded);
@@ -97,23 +81,6 @@ const SearchLocationFilters = ({
 	function FiltersInner() {
 		return (
 			<>
-				<Stack direction="row" spacing={2}>
-					<Button variant={"outlined"} sx={{
-						width: "70%"
-					}} onClick={() => {
-						dispatch(locationPopup({open: true}));
-					}} startIcon={
-						<EditLocationAltIcon/>}>{currentLocation ? currentLocation.text.substring(0, 10) + (currentLocation.text.length > 10 ? '...' : '') : 'No location'}</Button>
-					{page&&
-						<Button variant={"outlined"} onClick={() => {
-							toggleMap();
-							handleChange();
-						}} startIcon={<MapIcon/>}></Button>
-					}
-
-				</Stack>
-				<SearchDistance category={category}></SearchDistance>
-				<TextSearchSimple/>
 				<FilterLayoutSubCats category={category}/>
 			</>
 		)
@@ -166,4 +133,4 @@ const SearchLocationFilters = ({
 	}
 }
 
-export default SearchLocationFilters;
+export default SearchFilters;
