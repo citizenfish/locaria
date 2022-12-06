@@ -17,6 +17,8 @@ import UrlCoder from "../../../libs/urlCoder"
 import List from "@mui/material/List";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import {useCookies} from "react-cookie";
+import {locationPopup} from "components/redux/slices/searchDrawerSlice";
+import {encodeSearchParams} from "libs/searchParams";
 
 
 const MenuDrawer = function () {
@@ -53,6 +55,7 @@ function DrawSiteMap() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [cookies, setCookies] = useCookies();
+	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 
 	const userValid = useSelector((state) => state.userSlice.userValid);
 	const groups = useSelector((state) => state.userSlice.groups);
@@ -135,6 +138,29 @@ function DrawSiteMap() {
 
 			<ListItem button key={window.siteMap[p].key} onClick={(e) => {
 				e.preventDefault();
+
+
+				if(window.siteMap[p].needsLocation&&currentLocation===undefined) {
+					dispatch(closeMenuDraw());
+
+					dispatch(locationPopup({open:true,page:window.siteMap[p].link}));
+				} else {
+					if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
+						let route = url.route(window.siteMap[p].link);
+						if (route === true) {
+							// Are we in location mode but the selector isn't open?
+							// Ok lets take our current location with us because we shouldn't be here without it
+							let link=window.siteMap[p].link;
+							if(window.siteMap[p].needsLocation===true) {
+								link=`${window.siteMap[p].link}${encodeSearchParams({location: currentLocation.location})}`;
+							}
+							history.push(link);
+							dispatch(closeMenuDraw());
+
+						}
+					}
+				}
+/* old
 				if(window.siteMap[p].items) {
 					toggleCollapseOpen(p);
 				} else {
@@ -143,7 +169,7 @@ function DrawSiteMap() {
 						history.push(window.siteMap[p].link);
 						dispatch(closeMenuDraw());
 					}
-				}
+				}*/
 			}}>
 
 				<ListItemText primary={window.siteMap[p].name}/>
