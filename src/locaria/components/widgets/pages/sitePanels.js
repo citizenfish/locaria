@@ -90,12 +90,21 @@ const SitePanels = ({open,mode,panel='small'}) => {
 			background=window.siteMap[p].backgroundColorHover;
 
 
+		/*let panelSx={...{
+				backgroundColor: background,
+				fontSize: "0.8rem",
+				border: `1px solid ${window.siteMap[p].color}`,
+				width: '100%',
+				cursor: "pointer"
+			},...window.siteMap[p].defaultSX
+		};*/
+
 		let panelSx={
-			backgroundColor: background,
-			fontSize: "0.8rem",
-			border: `1px solid ${window.siteMap[p].color}`,
-			width: '100%',
-			cursor: "pointer"
+				backgroundColor: background,
+				fontSize: "0.8rem",
+				border: `1px solid ${window.siteMap[p].color}`,
+				width: '100%',
+				cursor: "pointer"
 		};
 
 		if(panel==='big') {
@@ -146,7 +155,7 @@ const SitePanels = ({open,mode,panel='small'}) => {
 						 }}
 					>
 						<TypographyHeader sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color}}
-										  element={"h3"}>{window.siteMap[p].name}</TypographyHeader>
+										  element={"h3"}>{window.siteMap[p].key===open&&'['}{window.siteMap[p].name}{window.siteMap[p].key===open&&']'}</TypographyHeader>
 						{window.siteMap[p].description&&panel==='big'&&
 							<TypographyParagraph sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color,marginTop: "20px"}}>{window.siteMap[p].description}</TypographyParagraph>
 						}

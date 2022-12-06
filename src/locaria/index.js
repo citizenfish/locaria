@@ -143,8 +143,7 @@ function errored(event) {
 function Main() {
     return (
         <Provider store={store}>
-
-        <CssBaseline/>
+            <CssBaseline/>
             <App/>
         </Provider>
     )
