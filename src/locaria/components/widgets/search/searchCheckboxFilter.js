@@ -7,7 +7,7 @@ import {clearFilterItem, setFilterItem} from "../../redux/slices/searchDrawerSli
 import Button from "@mui/material/Button";
 
 
-export default function SearchCheckboxFilter({sx,values,title,formatter="list"}) {
+export default function SearchCheckboxFilter({sx,values,title,formatter="list",showNoCount=false}) {
 
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const dispatch = useDispatch();
@@ -33,61 +33,76 @@ export default function SearchCheckboxFilter({sx,values,title,formatter="list"})
 		for(let v in values) {
 			let count=objectPathGet(counts,values[v].counts)||0;
 
-			stackItems.push(
-				<Badge badgeContent={count}
-					   showZero={true}
-					   max = {999}
-					   color ={count > 100 ? "success" : "warning"}
-					   overlap = "rectangular"
-					   anchorOrigin={{vertical : 'bottom', horizontal: 'right'}}
-					   style={{  transform: 'translate(-20px, 0px)'}}
-					   key={'checkboxes_'+key.current+v}>
-					<Button sx={{minWidth: "30px",padding:"2px",borderRadius:"0px",fontSize:"0.5rem"}}
-							style={{  transform: 'translate(15px, -20px)'}}
-							size={"small"}
-							variant={objectPathExists(searchParams.filters,values[v].path)? "contained":"outlined"}
-							onClick={()=>{handleCheck(values[v])}}>{values[v].name}</Button>
-				</Badge>
+			if(showNoCount===true||count>0) {
+				stackItems.push(
+					<Badge badgeContent={count}
+						   showZero={true}
+						   max={999}
+						   color={count > 100 ? "success" : "warning"}
+						   overlap="rectangular"
+						   anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+						   style={{transform: 'translate(-20px, 0px)'}}
+						   key={'checkboxes_' + key.current + v}>
+						<Button sx={{minWidth: "30px", padding: "2px", borderRadius: "0px", fontSize: "0.5rem"}}
+								style={{transform: 'translate(15px, -20px)'}}
+								size={"small"}
+								variant={objectPathExists(searchParams.filters, values[v].path) ? "contained" : "outlined"}
+								onClick={() => {
+									handleCheck(values[v])
+								}}>{values[v].name}</Button>
+					</Badge>
+				)
+			}
+		}
+
+		if(stackItems.length>0) {
+			return (
+				<Stack direction="row" spacing={1} sx={{mt: 4}}>
+					{stackItems}
+				</Stack>
 			)
 		}
-		return (
-			<Stack direction="row" spacing={1} sx ={{mt: 4}}>
-				{stackItems}
-			</Stack>
-		)
+		return (<></>)
 	}
 
 	function MakeListItems() {
 		let listItems=[];
 		for(let v in values) {
-			let count=objectPathGet(counts,values[v].counts)
-			listItems.push(
-				<ListItem sx={{padding:"0px"}} key={'checkboxes_'+key.current+v}>
-					<ListItemButton onClick={()=>{handleCheck(values[v])}} dense>
-						<ListItemIcon>
+			let count=objectPathGet(counts,values[v].counts);
+			if(showNoCount===true||count>0) {
+				listItems.push(
+					<ListItem sx={{padding: "0px"}} key={'checkboxes_' + key.current + v}>
+						<ListItemButton onClick={() => {
+							handleCheck(values[v])
+						}} dense>
+							<ListItemIcon>
 
-							<Checkbox
-								edge="start"
-								checked={objectPathExists(searchParams.filters,values[v].path)}
-								tabIndex={-1}
-								disableRipple
-								icon={values[v].icon}
-								checkedIcon={values[v].checkedIcon}
-							/>
-						</ListItemIcon>
-						{values[v].name &&
-							<ListItemText primary={values[v].name}/>
-						}
-						{count &&
-							<ListItemIcon edge={"end"}>
-								<ListItemText primary={`${count}`}/>
+								<Checkbox
+									edge="start"
+									checked={objectPathExists(searchParams.filters, values[v].path)}
+									tabIndex={-1}
+									disableRipple
+									icon={values[v].icon}
+									checkedIcon={values[v].checkedIcon}
+								/>
 							</ListItemIcon>
-						}
-					</ListItemButton>
-				</ListItem>
-			)
+							{values[v].name &&
+								<ListItemText primary={values[v].name}/>
+							}
+							{count &&
+								<ListItemIcon edge={"end"}>
+									<ListItemText primary={`${count}`}/>
+								</ListItemIcon>
+							}
+						</ListItemButton>
+					</ListItem>
+				)
+			}
 		}
-		return listItems;
+		if(listItems.length>0) {
+			return listItems;
+		}
+		return (<></>);
 	}
 
 	return (

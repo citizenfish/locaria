@@ -32,13 +32,10 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 
 	}
 
-	function DisplaySubCategorySubs({sub,subArray}) {
+	function DisplaySubCategorySubs({sub,subArray,categorySubs}) {
 		let renderArray=[];
-
-
-
 		for(let a in subArray) {
-			if(objectPathExists(counts,`${sub}.${subArray[a]}`)) {
+			if(objectPathExists(counts,`${sub}['${subArray[a]}']`)) {
 				let count = `(${counts[sub][subArray[a]]})`;
 				renderArray.push(
 					<ListItem sx={{padding: "0px"}} key={sub+'subcheckboxes_'+key.current+a}>
@@ -72,7 +69,17 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 				}
 			}
 		}
-		return renderArray;
+		if(renderArray.length>0) {
+			return (
+				<List sx={{ width: '100%' }} >
+					<ListItem sx={{padding:"0px"}} key={sub+'subcheckboxes_'+key.current}>
+						<ListItemText primary={categorySubs[sub].title} />
+					</ListItem>
+					{renderArray}
+				</List>
+			)
+		}
+		return (<></>);
 	}
 
 	function DisplaySubCategory({sub}) {
@@ -88,12 +95,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 		}
 
 		return (
-			<List sx={{ width: '100%' }} >
-				<ListItem sx={{padding:"0px"}} key={sub+'subcheckboxes_'+key.current}>
-					<ListItemText primary={categorySubs[sub].title} />
-				</ListItem>
-				<DisplaySubCategorySubs sub={sub} subArray={categorySubs[sub].items}></DisplaySubCategorySubs>
-			</List>
+				<DisplaySubCategorySubs sub={sub} subArray={categorySubs[sub].items} categorySubs={categorySubs}></DisplaySubCategorySubs>
 		)
 
 	}
