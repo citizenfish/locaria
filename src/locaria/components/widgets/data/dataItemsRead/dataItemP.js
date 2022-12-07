@@ -6,11 +6,15 @@ const DataItemP = ({name,data,sx}) => {
             color: window.systemMain.fontMain,
             fontSize: "1rem"
         },...sx}
-    let dataActual=data;
-    if(typeof dataActual !=='string')
-        dataActual=JSON.stringify(dataActual);
+
+    let dataActual = data;
+
+    if(typeof dataActual !=='string') {
+        dataActual = JSON.stringify(dataActual)
+    }
+
     return (
-        <Typography gutterBottom variant="p" sx={sxActual}>{dataActual} </Typography>
+        <Typography gutterBottom variant="p" sx={sxActual}>{dataActual}</Typography>
     )
 }
 

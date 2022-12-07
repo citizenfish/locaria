@@ -68,7 +68,7 @@ const SearchLocationFilters = ({
 		} else {
 			if (features && features.features && features.features.length > 0) {
 
-				let mobileHeight=(mobile? '500px':'235px');
+				let mobileHeight=(mobile? '500px':'210px');
 				return (
 					features.features.map((result) => {
 							return (

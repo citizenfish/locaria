@@ -85,7 +85,7 @@ const FormatFields = ({fields, data, mode, category,moderation}) => {
 						let spacing = value.spacing || 0;
 						if (value.container) {
 							return (
-									<Grid container spacing={spacing} key={uuid}>
+									<Grid container spacing={spacing} key={uuid} sx={{mt:1}}>
 										<FormatFields fields={value.children} mode={mode}
 													  data={data} moderation={moderation} category={category}/>
 									</Grid>
