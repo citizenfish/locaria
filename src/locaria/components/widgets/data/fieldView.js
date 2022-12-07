@@ -85,23 +85,21 @@ const FormatFields = ({fields, data, mode, category,moderation}) => {
 						let spacing = value.spacing || 0;
 						if (value.container) {
 							return (
-									<Grid container spacing={spacing} key={uuid} sx={{mt:1}}>
-										<FormatFields fields={value.children} mode={mode}
-													  data={data} moderation={moderation} category={category}/>
+									<Grid container spacing={spacing} key={uuid} sx={value.sx}>
+										<FormatFields fields={value.children} mode={mode} data={data} moderation={moderation} category={category}/>
 									</Grid>
 							)
 						} else {
 							return (
-								<Grid item item md={md} sd={sm} key={uuid}>
-									<FormatFields fields={value.children} mode={mode}
-												  data={data} moderation={moderation} category={category}/>
+								<Grid item item md={md} sd={sm} key={uuid} sx={value.sx}>
+									<FormatFields fields={value.children} mode={mode} data={data} moderation={moderation} category={category}/>
 								</Grid>
 							)
 						}
 					} else {
 						switch (value.type) {
 							case 'hr':
-								return <Divider sx={{margin: "10px"}} key={uuid}/>
+								return (<Divider sx={{margin: "10px"}} key={uuid}/>);
 							default:
 								if (value.visible !== false || mode === "write") {
 									let md = value.md || 12;
