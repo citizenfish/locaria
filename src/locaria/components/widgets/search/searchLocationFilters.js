@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import TypographyHeader from "../typography/typographyHeader";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
-import {encodeSearchParams} from "../../../libs/searchParams";
+import {encodeSearchParams} from "libs/searchParams";
 import {useHistory} from "react-router-dom";
 import SearchLocationFiltersNoResults from "./searchLocationFiltersNoResults";
 import {locationPopup} from "../../redux/slices/searchDrawerSlice";
@@ -21,18 +21,14 @@ import TextSearchSimple from "widgets/search/TextSearchSimple";
 
 const SearchLocationFilters = ({
 								   category,
-								   limit,
-								   displayLimit,
-								   tags,
 								   sx,
 								   field,
-								   mode = 'full',
 								   clickEnabled,
-								   urlMode = true,
 								   page
 							   }) => {
 	const dispatch = useDispatch()
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
+	const resultBbox = useSelector((state) => state.searchDraw.resultBbox);
 	const history = useHistory();
 
 	const features = useSelector((state) => state.searchDraw.features);
@@ -50,6 +46,7 @@ const SearchLocationFilters = ({
 			tags: searchParams.tags,
 			page: searchParams.page,
 			search: searchParams.search,
+			bbox: resultBbox,
 			wait: true
 		});
 		history.push(encodedPage);
@@ -131,7 +128,7 @@ const SearchLocationFilters = ({
 	};
 	if (mobile === true) {
 		return (
-			<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx} key={"SearchLocationFilters"}>
+			<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
 
 				<Grid item md={3} sx={{width: "100%"}}>
 

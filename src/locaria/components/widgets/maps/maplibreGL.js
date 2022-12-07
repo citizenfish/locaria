@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} fro
 import maplibregl from 'maplibre-gl';
 import Box from "@mui/material/Box";
 
-const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=20,layout="mapStyleDefault",precision=5}, ref) => {
+const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=20,layout="mapStyleDefault",precision=5,bbox, pitch = 0}, ref) => {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
@@ -48,20 +48,23 @@ const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bb
 	useEffect(() => {
 		if (map.current) return; //stops map from intializing more than once
 
-		map.current = new maplibregl.Map({
+		// default params for the map
+		let options = {
 			container: mapContainer.current,
 			style: style,
-			center: center||window.systemMain.defaultLocation.location,
 			zoom: zoom,
 			maxZoom: maxZoom,
-			pitch: 60, //TODO make parameter
-			/*transformRequest: url => {
-				url += '&srs=3857';
-				return {
-					url: url
-				}
-			}*/
-		});
+			pitch: pitch,
+		}
+
+		if(bbox) {
+			// Mapbox uses array of point bbox format
+			options.bounds=[[bbox[0],bbox[1]],[bbox[2],bbox[3]]];
+		} else {
+				options.center = center || window.systemMain.defaultLocation.location;
+		}
+
+		map.current = new maplibregl.Map(options);
 
 		//TODO needs CSS stylesheet for control https://maplibre.org/maplibre-gl-js-docs/example/navigation/
 		map.current.addControl(new maplibregl.NavigationControl());
@@ -96,13 +99,14 @@ const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bb
 				source: 'data',
 				layout: window.mapStyles[layout].data
 			});
+
 		});
 
-		map.current.on('zoomend', (e) => {
+		map.current.on('zoomend', () => {
 			updateBBOC();
 		});
 
-		map.current.on('moveend', (e) => {
+		map.current.on('moveend', () => {
 			updateBBOC();
 		});
 
@@ -114,6 +118,9 @@ const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bb
 			addGeojson(geojson,id) {
 				setQueue([{"type":"addGeojson","geojson":geojson,id:id}])
 
+			},
+			getLocation() {
+				return map.current.getCenter();
 			}
 		})
 	);
