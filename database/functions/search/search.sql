@@ -80,7 +80,7 @@ BEGIN
                                                                    ), jsonb_build_array())
                            ),
                         --TODO better solution then array agg and picking first entry
-                        'options', jsonb_build_object('count', COALESCE(json_agg(_attributes->>'c')->>0,'0')::INTEGER, 'feature_count', count(*))
+                        'options', jsonb_build_object('count', COALESCE(json_agg(_attributes->>'c')->>0,'0')::INTEGER, 'feature_count', count(*), 'bbox', ST_EXTENT(ST_TRANSFORM(_wkb_geometry,COALESCE(search_parameters->>'bbox_srid','3857')::INTEGER) ))
                    )
            END
 
