@@ -2,15 +2,15 @@ import React, {useEffect} from 'react';
 import {
 	clearWait,
 	setCounts,
-	setFeatures, setRefreshCounts,
+	setFeatures, setRefreshCounts, setResultBbox,
 	setTotalPages,
 	startLoading,
 	stopLoading
 } from "../../redux/slices/searchDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {encodeSearchParams} from "../../../libs/searchParams";
-import {objectPathGet, setObjectWithPath} from "../../../libs/objectTools";
+import {encodeSearchParams} from "libs/searchParams";
+import {objectPathGet, setObjectWithPath} from "libs/objectTools";
 import {distanceActual} from "libs/Distance";
 
 export default function SearchProxy() {
@@ -38,6 +38,7 @@ export default function SearchProxy() {
 			let pageTotal = (json.packet.options.count + count) / displayLimit;
 
 			dispatch(setTotalPages(Math.ceil(pageTotal)));
+			dispatch(setResultBbox(json.packet.options.bbox));
 			//debugger;
 			let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
 				location: searchParams.location,
@@ -62,7 +63,8 @@ export default function SearchProxy() {
 			"api": "api",
 			"data": {
 				"category": searchParams.categories,
-				"search_text": searchParams.search
+				"search_text": searchParams.search,
+				"bbox_srid":"4326"
 			}
 		};
 
@@ -139,8 +141,7 @@ export default function SearchProxy() {
 		if (searchParams.tags && searchParams.tags.length > 0)
 			packetSearch.data.tags = searchParams.tags;
 
-		const displayLimit = searchParams.displayLimit || 20;
-		packetSearch.data.display_limit = displayLimit;
+		packetSearch.data.display_limit = searchParams.displayLimit || 20;
 
 		packetSearch.data.offset = ((searchParams.page - 1) * packetSearch.data.display_limit);
 

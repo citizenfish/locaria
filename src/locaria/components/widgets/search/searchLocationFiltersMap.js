@@ -3,29 +3,20 @@ import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
-import {Accordion, AccordionDetails, AccordionSummary, LinearProgress} from "@mui/material";
+import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
 import Button from "@mui/material/Button";
-import SimpleMap from "../maps/simpleMap";
-import {setBbox, setDisplayLimit} from "../../redux/slices/searchDrawerSlice";
+import {setBbox} from "../../redux/slices/searchDrawerSlice";
 import TypographyHeader from "../typography/typographyHeader";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MapIcon from '@mui/icons-material/Map';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import {useHistory} from "react-router-dom";
-import {encodeSearchParams} from "../../../libs/searchParams";
+import {encodeSearchParams} from "libs/searchParams";
 import MaplibreGL from "../maps/maplibreGL";
 import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
 
 const SearchLocationFiltersMap = ({
 								   category,
-								   limit,
-								   displayLimit,
-								   tags,
 								   sx,
-								   field,
-								   mode = 'full',
-								   clickEnabled,
-								   urlMode = true,
 									page
 							   }) => {
 	const dispatch = useDispatch()
@@ -33,7 +24,6 @@ const SearchLocationFiltersMap = ({
 	const mapRef = useRef();
 
 	const features = useSelector((state) => state.searchDraw.features);
-	const loading = useSelector((state) => state.searchDraw.loading);
 	const [expanded, setExpanded] = useState(false);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const history = useHistory();
@@ -50,8 +40,15 @@ const SearchLocationFiltersMap = ({
 	},[features]);
 
 	function toggleMap() {
+
+		// Get current map location
+		let mapLocation=mapRef.current.getLocation();
+
 		let encodedPage = `/${page}/sp/${searchParams.categories}` + encodeSearchParams({
-			location: searchParams.location,
+
+			// Reset our search location to current map location
+
+			location: [mapLocation.lng,mapLocation.lat],
 			subCategories: searchParams.subCategories,
 			distance: searchParams.distance,
 			tags: searchParams.tags,
@@ -127,7 +124,7 @@ const SearchLocationFiltersMap = ({
 							<FiltersInner/>
 						</Grid>
 						<Grid item md={9} sx={{width: "100%"}}>
-							<MaplibreGL  ref={mapRef} bboxUpdate={bboxUpdate}/>
+							<MaplibreGL  ref={mapRef} bboxUpdate={bboxUpdate} bbox={searchParams.bbox} maxZoom={17}/>
 						</Grid>
 					</Grid>
 				</Box>
