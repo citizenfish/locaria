@@ -3,11 +3,11 @@ import Grid from "@mui/material/Grid";
 
 import DataItemTitle from "./dataItemsRead/dataItemTitle";
 import DataItemDescription from "./dataItemsRead/dataItemDescription";
+import DataItemDescriptionSummary from "./dataItemsRead/dataItemDescriptionSummary"
 import DataItemH2 from "./dataItemsRead/dataItemH2";
 import dataItemMarkdown from "./dataItemsRead/dataItemMarkdown";
 import DataItemTextInput from "./dataItemsWrite/dataItemTextInput";
 import dataItemEditMarkdown from "./dataItemsWrite/dataItemEditMarkdown";
-import Box from "@mui/material/Box";
 import DataItemP from "./dataItemsRead/dataItemP";
 import DataItemSelect from "./dataItemsWrite/dataItemSelect";
 import DataItemSubCategory from "./dataItemsWrite/dataItemSubCategory";
@@ -152,6 +152,7 @@ const FormatField = ({field, data, mode, category,moderation}) => {
 	const dataReadItems = {
 		'title': {"element": DataItemTitle},
 		'description': {"element": DataItemDescription},
+		'description_summary': {"element": DataItemDescriptionSummary},
 		'p': {"element": DataItemP},
 		'grid': {"element": DataItemGrid},
 		'h1': {"element": DataItemH1},
