@@ -209,6 +209,7 @@ const FormatField = ({field, data, mode, category,moderation}) => {
 				 sx={field.sx}
 				 category={category}
 				 dataModeration={dataModeration}
+				 allData = {field.needsAll  ? data : {}}
 				 {...options}
 		/>
 	)
