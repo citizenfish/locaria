@@ -3,11 +3,13 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import {useHistory} from "react-router-dom";
 const head_sx = {fontFamily: "Montserrat", color: "#FFF", fontWeight:700}
 const divider_sx ={m:2, borderColor: "#FFF"}
 const typ_sx = {fontFamily: "Montserrat", color: "#FFF", fontWeight:300, mt:1}
 
 const FooterTypeActive = function () {
+	const history = useHistory();
 
 
 	return (
@@ -38,9 +40,10 @@ const FooterTypeActive = function () {
 					<Typography sx = {typ_sx} >Locaria</Typography>
 					<Typography sx = {typ_sx} >Get in touch</Typography>
 				</Grid>
-				<Grid item md={4} sx={{
+				<Grid item md={4} onClick={()=>{history.push('/ProviderForm/')}} sx={{
 					textAlign: "center",
-					padding: "10px"
+					padding: "10px",
+					cursor: "pointer"
 				}}>
 					<Typography sx={head_sx}>Submit Your Event</Typography>
 					<Divider sx = {divider_sx}/>
