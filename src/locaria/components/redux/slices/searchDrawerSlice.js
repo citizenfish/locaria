@@ -1,8 +1,7 @@
 import React from 'react';
 
 import {createSlice} from '@reduxjs/toolkit'
-import {delObjectWithPath, objectPathExists, setObjectWithPath} from "../../../libs/objectTools";
-import { current } from '@reduxjs/toolkit'
+import {delObjectWithPath, objectPathExists, setObjectWithPath} from "libs/objectTools";
 
 export const searchDrawerSlice = createSlice({
 	name: 'searchDraw',
@@ -25,6 +24,7 @@ export const searchDrawerSlice = createSlice({
 
 		wait: false,
 
+		resultBbox: undefined,
 
 		// HARD CODE WARNING TODO This needs to be built by the filters
 		schema: [
@@ -82,6 +82,11 @@ export const searchDrawerSlice = createSlice({
 	},
 	reducers: {
 
+		setResultBbox:(state,actions) => {
+			//Convert string EG BOX(-199488.83556583992 6719078.999316478,-198111.19452835835 6721045.020766511)  into actions.payload into an array
+			const arr = actions.payload.replace(/BOX\(/,'').replace(/\)/g,'').split(/[ ,]+/);
+			state.resultBbox=arr.map((item) => Number(item));
+		},
 		setRefreshCounts:(state,action) => {
 			state.refreshCounts=action.payload;
 		},
@@ -275,7 +280,7 @@ export const searchDrawerSlice = createSlice({
 			state.searchParams.totalPages=0;
 
 		},
-		resetTags: (state,action) => {
+		resetTags: (state) => {
 			state.searchParams.tags = [];
 			state.searchParams.page=1;
 			state.totalPages=0;
@@ -313,10 +318,10 @@ export const searchDrawerSlice = createSlice({
 		setCurrentLocation: (state,action) => {
 			state.currentLocation=action.payload;
 		},
-		startLoading: (state,action) => {
+		startLoading: (state) => {
 			state.loading=true;
 		},
-		stopLoading: (state,action) => {
+		stopLoading: (state) => {
 			state.loading=false;
 		},
 		setDisplayLimit: (state,action)=> {
@@ -382,7 +387,8 @@ export const {
 	setFilterItem,
 	clearFilterItem,
 	setBbox,
-	clearWait
+	clearWait,
+	setResultBbox
 
 } = searchDrawerSlice.actions
 
