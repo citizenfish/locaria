@@ -22,6 +22,8 @@
 
 * 500 - SQL Exception
 * 501 - Report Exception
+* 502 - Missing _userID in call to add_user_store_entry
+* 503 - Missing _userID in call to get_user_store_entry
 
 ### Internal API
 

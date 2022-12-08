@@ -75,6 +75,12 @@ BEGIN
         WHEN parameters->>'method' IN ('delete_asset') AND logged_in_var = TRUE THEN
             ret_var = delete_asset(parameters || internal);
 
+        WHEN parameters->>'method' IN ('add_user_store')  THEN
+             ret_var = add_user_store(parameters,acl);
+
+        WHEN parameters->>'method' IN ('get_user_store')  THEN
+             ret_var = get_user_store(parameters,acl);
+
         WHEN parameters->>'method' IN ('get_vector_tile') THEN
             ret_var = get_parameters(parameters || jsonb_build_object('parameter_name', parameters->>'tileset', 'usage', 'VECTOR_TILES'));
             ret_var = jsonb_build_object('vt',
