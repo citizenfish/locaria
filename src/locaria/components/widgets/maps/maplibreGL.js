@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} fro
 import maplibregl from 'maplibre-gl';
 import Box from "@mui/material/Box";
 
-const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=20,layout="mapStyleDefault",precision=5,bbox, pitch = 0}, ref) => {
+const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bboxUpdate,maxZoom=20,minZoom=0,layout="mapStyleDefault",precision=5,bbox, pitch = 0}, ref) => {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
@@ -54,6 +54,7 @@ const MaplibreGL = forwardRef(({sx,zoom=15,center,style='/mapbox/styles.json',bb
 			style: style,
 			zoom: zoom,
 			maxZoom: maxZoom,
+			minZoom: minZoom,
 			pitch: pitch,
 		}
 

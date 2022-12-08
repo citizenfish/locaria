@@ -83,9 +83,11 @@ export const searchDrawerSlice = createSlice({
 	reducers: {
 
 		setResultBbox:(state,actions) => {
-			//Convert string EG BOX(-199488.83556583992 6719078.999316478,-198111.19452835835 6721045.020766511)  into actions.payload into an array
-			const arr = actions.payload.replace(/BOX\(/,'').replace(/\)/g,'').split(/[ ,]+/);
-			state.resultBbox=arr.map((item) => Number(item));
+			if(actions.payload&&typeof actions.payload === 'string') {
+				//Convert string EG BOX(-199488.83556583992 6719078.999316478,-198111.19452835835 6721045.020766511)  into actions.payload into an array
+				const arr = actions.payload.replace(/BOX\(/, '').replace(/\)/g, '').split(/[ ,]+/);
+				state.resultBbox = arr.map((item) => Number(item));
+			}
 		},
 		setRefreshCounts:(state,action) => {
 			state.refreshCounts=action.payload;
