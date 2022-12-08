@@ -22,11 +22,11 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,options={}}) => {
 
     let sxActual={...{
 
-            maxHeight: "150px"
+            maxHeight: "165px"
 
         },...sx}
 
-    let textLength = options.length || 100;
+    let textLength = options.length || 80;
     let summaryText = data.length > textLength ? `${data.substring(0, textLength)}...` : data
 
 
@@ -37,8 +37,8 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,options={}}) => {
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         {summaryText}
                     </Typography>
-                    <CardActions>
-                        <Button size="small" sx ={{color: "rgb(116, 116, 116)"}}onClick={handleOpen}>Details</Button>
+                    <CardActions >
+                        <Button size="small" sx = {{color: "rgb(116, 116, 116)"}}onClick={handleOpen}>Details</Button>
                     </CardActions>
                 </CardContent>
             </Card>
