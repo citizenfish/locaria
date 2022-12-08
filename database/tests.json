@@ -7,7 +7,9 @@
         "addItem":["tests/unit_tests/moderation/add_item.sql"],
         "search_acl": ["tests/unit_tests/search/search_test_with_acl.sql"],
         "reset_acl_test_data" : ["tests/unit_tests/internal/data/acl_tests/acl_test_data.sql"],
-        "add_item": ["tests/unit_tests/internal/data/acl_tests/add_item_with_acl.sql"]
+        "add_item": ["tests/unit_tests/internal/data/acl_tests/add_item_with_acl.sql"],
+        "add_user_store" : ["tests/unit_tests/user/add_user_store.sql"],
+        "get_user_store" :["tests/unit_tests/user/get_user_store.sql"]
       },
       "substitutions": "../tests.json"
     }

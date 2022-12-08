@@ -33,6 +33,8 @@ The parameters object must contain the name of the **method** that is to be call
 - get_asset
 - delete_asset
 - get_vector_tile
+- add_user_store
+- get_user_store
 
 ### ACL
 
@@ -131,6 +133,14 @@ The [get_asset](get_asset.md) method retrieves the details relating to a previou
 ## delete_asset
 
 The [delete_asset](delete_asset.md) method deletes asset details from the database
+
+## add_user_store
+
+The [add_user_store](add_user_store.md) method adds an entry to the user_store table
+
+## get_user_store
+
+The [get_user_store](get_user_store.md) method gets an entry from the user_store table
 
 ## get_vector_tile
 
