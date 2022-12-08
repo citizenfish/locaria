@@ -40,6 +40,8 @@ The parameters object must contain the name of the **method** that is to be call
 - add_asset
 - get_asset
 - delete_asset
+- add_user_store
+- get_user_store
 
 ## Internal Gateway Methods
 
@@ -95,6 +97,13 @@ The [report](../public_gateway/report.md) method operates in exactly the same wa
 
 The view_report method returns the status of the global_search_view with regard to which items from the global_search_live view are yet to become visible within this view.
 
+## add_user_store
+
+The [add_user_store](../internal_gateway/add_user_store.md) method adds an entry to the user_store table
+
+## get_user_store
+
+The [get_user_store](../internal_gateway/get_user_store.md) method gets an entry from the user_store table
 
 ### add_group
 ### get_group
