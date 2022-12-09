@@ -32,8 +32,11 @@ import DataItemDistance from "./dataItemsRead/dataItemDistance";
 import DataItemPhoneButton from "./dataItemsRead/dataItemPhoneButton";
 import DataItemMinMedMax from "./dataItemsRead/dataItemMinMedMax";
 import {v4 as uuidv4} from "uuid";
+import {useDispatch, useSelector} from "react-redux";
+import {Stack} from "@mui/material";
+import {setFormMode} from "components/redux/slices/formSlice";
 
-const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
+const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) => {
 
 	if (data && data.properties && data.properties.category) {
 		let channel = window.systemCategories.getChannelProperties(data.properties.category);
@@ -42,16 +45,16 @@ const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 
 		if (fieldsObj) {
 			return (
-					<Grid container spacing={2}>
-						<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
-							{fieldsObj[fields] ?
-								<FormatFields fields={fieldsObj[fields]}
-											  data={data}
-											  mode={mode}
-											  moderation={moderation}
-											  category={data.properties.category}/> : null}
-						</LocalizationProvider>
-					</Grid>
+				<Grid container spacing={2}>
+					<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
+						{fieldsObj[fields] ?
+							<FormatFields fields={fieldsObj[fields]}
+										  data={data}
+										  mode={mode}
+										  moderation={moderation}
+										  category={data.properties.category}/> : null}
+					</LocalizationProvider>
+				</Grid>
 			)
 		} else {
 			return (
@@ -74,73 +77,103 @@ const FieldView = ({data, mode = 'read', fields = "main",moderation=false}) => {
 
 }
 
-const FormatFields = ({fields, data, mode, category,moderation}) => {
+const FormatFields = ({fields, data, mode, category, moderation}) => {
+	const dispatch = useDispatch();
+	const formPage = useSelector((state) => state.formSlice.formPage);
+
 	if (fields && fields.length > 0) {
-		return (<>
-			{fields.map(value => {
-					const uuid=uuidv4();
-					if (value.children) {
-						let md = value.md || 12;
-						let sm = value.sm || 12;
-						let spacing = value.spacing || 0;
-						if (value.container) {
-							return (
-									<Grid container spacing={spacing} key={uuid} sx={value.sx}>
-										<FormatFields fields={value.children} mode={mode} data={data} moderation={moderation} category={category}/>
-									</Grid>
-							)
-						} else {
-							return (
-								<Grid item item md={md} sd={sm} key={uuid} sx={value.sx}>
-									<FormatFields fields={value.children} mode={mode} data={data} moderation={moderation} category={category}/>
-								</Grid>
-							)
-						}
-					} else {
-						switch (value.type) {
-							case 'hr':
-								return (<Divider sx={{margin: "10px"}} key={uuid}/>);
-							default:
-								if (value.visible !== false || mode === "write") {
-									let md = value.md || 12;
-									return (
-										<Grid item md={md} key={uuid}>
 
-											<FormatField field={value}
-														 data={data}
-														 key={value.key}
-														 mode={mode}
-														 moderation={moderation}
-														 category={category}/>
-										</Grid>)
-								}
-								break;
-						}
+		let formattedArray = [];
+		// Loop each field item
+		for (let f in fields) {
+			const uuid = uuidv4();
+
+			// Check for pages and page elements
+
+			if (fields[f].pages&&fields[f].pages[formPage]) {
+				dispatch(setFormMode(true));
+				let md = fields[f].md || 12;
+
+				formattedArray.push(
+					<Grid item md={md} key={uuid}>
+						<DataItemTitle title={fields[f].pages[formPage].title}/>
+						<FormatFields fields={fields[f].pages[formPage].page} mode={mode} data={data} moderation={moderation}
+								  category={category}/>
+					</Grid>
+				)
+				continue;
+			}
 
 
-					}
+			// Children = grids
+
+			if (fields[f].children) {
+				let md = fields[f].md || 12;
+				let sm = fields[f].sm || 12;
+				let spacing = fields[f].spacing || 0;
+				if (fields[f].container) {
+					formattedArray.push(
+						<Grid container spacing={spacing} key={uuid} sx={fields[f].sx}>
+							<FormatFields fields={fields[f].children} mode={mode} data={data} moderation={moderation}
+										  category={category}/>
+						</Grid>
+					)
+				} else {
+					formattedArray.push(
+						<Grid item md={md} sd={sm} key={uuid} sx={fields[f].sx}>
+							<FormatFields fields={fields[f].children} mode={mode} data={data} moderation={moderation}
+										  category={category}/>
+						</Grid>
+					)
 				}
-			)}
-		</>);
+				continue;
+
+			}
+
+			// Standard field elements
+
+			switch (fields[f].type) {
+				case 'hr':
+					formattedArray.push(<Divider sx={{margin: "10px"}} key={uuid}/>);
+				default:
+					if (fields[f].visible !== false || mode === "write") {
+						let md = fields[f].md || 12;
+						formattedArray.push(
+							<Grid item md={md} key={uuid}>
+								<FormatField field={fields[f]}
+											 data={data}
+											 key={fields[f].key}
+											 mode={mode}
+											 moderation={moderation}
+											 category={category}/>
+							</Grid>)
+					}
+					break;
+			}
+
+
+		}
+
+		return formattedArray;
 	}
-	return null;
+	return <></>;
 }
 
-const FormatField = ({field, data, mode, category,moderation}) => {
+const FormatField = ({field, data, mode, category, moderation}) => {
 	let dataActual = getData(data, field.key, field.dataFunction);
-	let dataModeration=[];
+	let dataModeration = [];
 
-	if(moderation===true) {
-		for(let i in data.properties['_moderations']) {
-			let moditem=getData(data.properties['_moderations'][i], field.key, field.dataFunction);
-			if(moditem&&moditem!==dataActual) {
-				if(dataModeration.length===0)
+	if (moderation === true) {
+		for (let i in data.properties['_moderations']) {
+			let moditem = getData(data.properties['_moderations'][i], field.key, field.dataFunction);
+			if (moditem && moditem !== dataActual) {
+				if (dataModeration.length === 0)
 					dataModeration.push(dataActual);
 				dataModeration.push(moditem);
 			}
 		}
-		if(dataModeration.length>0)
-			dataActual=dataModeration[dataModeration.length-1];
+		if (dataModeration.length > 0)
+			dataActual = dataModeration[dataModeration.length - 1];
 		//debugger;
 	}
 	if (mode === 'read' && (dataActual === undefined || dataActual === "" || dataActual === null)) {
@@ -209,7 +242,7 @@ const FormatField = ({field, data, mode, category,moderation}) => {
 				 sx={field.sx}
 				 category={category}
 				 dataModeration={dataModeration}
-				 allData = {field.needsAll  ? data : {}}
+				 allData={field.needsAll ? data : {}}
 				 {...options}
 		/>
 	)

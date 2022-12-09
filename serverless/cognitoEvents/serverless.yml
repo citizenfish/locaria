@@ -21,6 +21,12 @@ provider:
         - lambda:InvokeFunction
       Resource:
         - "*"
+  environment:
+    postgresHost: ${file(../outputs/${self:custom.stage}-outputs.json):postgresHost}
+    postgresPort: ${file(../outputs/${self:custom.stage}-outputs.json):postgresPort}
+    auroraDatabaseName: locaria${env:theme}${env:environment}
+    auroraMasterUser: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterUser}
+    auroraMasterPass: ${file(../../../locaria.json):${self:custom.stage}.auroraMasterPass}
 
 custom:
   stage: "${opt:stage, self:provider.stage}"
