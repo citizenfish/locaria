@@ -66,7 +66,7 @@ function encodeSearchParams(params) {
 
 	// Add a bbox array
 	if(params.bbox&&Array.isArray(params.bbox)&&params.bbox.length===4) {
-		search+=`/b${parseFloat(params.bbox[0]).toFixed(5)},${parseFloat(params.bbox[1]).toFixed(5)},${parseFloat(params.bbox[2]).toFixed(5)},${parseFloat(params.bbox[3]).toFixed(5)}`;
+		search+=`/b${parseFloat(params.bbox[0]).toFixed(7)},${parseFloat(params.bbox[1]).toFixed(7)},${parseFloat(params.bbox[2]).toFixed(7)},${parseFloat(params.bbox[3]).toFixed(7)}`;
 	}
 
 	if(params.subCategories&&params.subCategories['subCategory1']&&params.subCategories['subCategory1'].length>0) {

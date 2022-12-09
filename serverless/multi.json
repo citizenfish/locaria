@@ -44,7 +44,8 @@
       "outputs": {
       },
       "functions": [
-        "postConfirmationTrigger.js"
+        "postConfirmationTrigger.js",
+        "database.js"
       ]
     },
     {
