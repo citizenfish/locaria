@@ -19,7 +19,7 @@ BEGIN
     parameters = parameters - 'acl' - 'id_token' || jsonb_build_object('acl',acl);
 
     --is user logged in
-    IF jsonb_array_length(acl->'groups') > 1 OR acl->'groups'->>0 != 'PUBLIC' THEN
+    IF jsonb_array_length(acl->'_groups') > 1 OR acl->'_groups'->0 != 'PUBLIC' THEN
         logged_in_var = TRUE;
     END IF;
     --From the incoming JSON select the method and run it
@@ -83,7 +83,7 @@ BEGIN
                                 (parameters->>'y')::INTEGER,
                                 (parameters->>'z')::INTEGER,
                                 COALESCE(jsonb_extract_path_text(ret_var, 'parameters', parameters->>'tileset', 'cache'), 'true')::BOOLEAN));
-ELSE
+        ELSE
             RETURN jsonb_build_object('error', 'Unsupported public method',
                                      'route', 'public_api',
                                      'response_code', 401) || locaria_core.log(parameters,'Unsupported public method');
