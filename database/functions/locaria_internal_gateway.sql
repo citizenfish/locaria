@@ -91,21 +91,22 @@ BEGIN
         WHEN parameters->>'method' IN ('update_category') THEN
             ret_var = update_category(parameters);
 
+        WHEN parameters->>'method' IN ('add_user_store')  THEN
+         ret_var = add_user_store(parameters,acl);
+
+        WHEN parameters->>'method' IN ('get_user_store')  THEN
+         ret_var = get_user_store(parameters,acl);
+
         WHEN parameters->>'method' IN ('add_asset') THEN
             ret_var = add_asset(parameters);
 
         WHEN parameters->>'method' IN ('get_asset') THEN
             ret_var = get_asset(parameters);
 
-        WHEN parameters->>'method' IN ('add_user_store')  THEN
-            ret_var = add_user_store(parameters,acl);
-
-        WHEN parameters->>'method' IN ('get_user_store')  THEN
-            ret_var = get_user_store(parameters,acl);
-
         WHEN parameters->>'method' IN ('delete_asset') THEN
             ret_var = delete_asset(parameters);
             ELSE
+
 
             RETURN jsonb_build_object('error', 'Unsupported internal method',
                                      'route', 'internal_api',
