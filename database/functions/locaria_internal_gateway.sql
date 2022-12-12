@@ -92,10 +92,10 @@ BEGIN
             ret_var = update_category(parameters);
 
         WHEN parameters->>'method' IN ('add_user_store')  THEN
-         ret_var = add_user_store(parameters,acl);
+            ret_var = add_user_store(parameters,acl);
 
         WHEN parameters->>'method' IN ('get_user_store')  THEN
-         ret_var = get_user_store(parameters,acl);
+            ret_var = get_user_store(parameters,acl);
 
         WHEN parameters->>'method' IN ('add_asset') THEN
             ret_var = add_asset(parameters);
@@ -105,12 +105,12 @@ BEGIN
 
         WHEN parameters->>'method' IN ('delete_asset') THEN
             ret_var = delete_asset(parameters);
-            ELSE
 
+        ELSE
 
-            RETURN jsonb_build_object('error', 'Unsupported internal method',
-                                     'route', 'internal_api',
-                                     'response_code', 401) || locaria_core.log(parameters,'Unsupported internal method');
+        RETURN jsonb_build_object('error', 'Unsupported internal method',
+                                 'route', 'internal_api',
+                                 'response_code', 401) || locaria_core.log(parameters,'Unsupported internal method');
 
         END CASE;
 

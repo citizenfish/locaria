@@ -3,6 +3,8 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import {Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,Typography} from "@mui/material";
+import Divider from "@mui/material/Divider";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 
 const DataItemDescriptionSummary = ({name,data,sx,allData,options={}}) => {
@@ -21,26 +23,33 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,options={}}) => {
     }
 
     let sxActual={...{
-
-            maxHeight: "165px"
-
+            display: "flex",
+            flexDirection:"column",
+            justifyContent:"space-between",
+            backgroundColor: "rgba(235,231,231,0.06)"
         },...sx}
 
-    let textLength = options.length || 80;
+    let textLength = options.length || 100;
     let summaryText = data.length > textLength ? `${data.substring(0, textLength)}...` : data
 
-
+    //TODO too much hard coded sx in here
     return (
         <div>
-            <Card sx = {sxActual}>
-                <CardContent>
+            <Card sx = {sxActual} variant="outlined">
+                <CardContent sx={{maxHeight: "100px"}}>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         {summaryText}
                     </Typography>
-                    <CardActions >
-                        <Button size="small" sx = {{color: "rgb(116, 116, 116)"}}onClick={handleOpen}>Details</Button>
-                    </CardActions>
+
                 </CardContent>
+                <CardActions disableSpacing={true} sx={{ml:1,mr:1, borderTop: "1px solid #AAA", justifyContent: "flex-end"}}>
+
+                <Button size="small"
+                        variant="text"
+                        sx = {{color : "rgb(66,66,66)", padding: 0}}
+                        onClick={handleOpen}
+                        endIcon={<LaunchIcon />}>More</Button>
+                </CardActions>
             </Card>
             <Dialog
                 open={open}

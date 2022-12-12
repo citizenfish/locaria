@@ -19,9 +19,10 @@ BEGIN
     parameters = parameters - 'acl' - 'id_token' || jsonb_build_object('acl',acl);
 
     --is user logged in
-    IF jsonb_array_length(acl->'_groups') > 1 OR acl->'_groups'->0 != 'PUBLIC' THEN
+    IF jsonb_array_length(acl->'_groups') > 1 OR acl->'_groups'->>0 != 'PUBLIC' THEN
         logged_in_var = TRUE;
     END IF;
+
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('search','bboxsearch', 'refsearch', 'pointsearch', 'datesearch', 'filtersearch') THEN
             ret_var = search(parameters);
@@ -30,7 +31,7 @@ BEGIN
             ret_var = get_item(parameters);
 
          WHEN parameters->>'method' IN ('get_my_items') AND logged_in_var = TRUE THEN
-             ret_var = get_my_items(parameters);
+            ret_var = get_my_items(parameters);
 
          WHEN parameters->>'method' IN ('add_item') AND logged_in_var = TRUE THEN
             --acl is scrubbed above so _newACL cannot be injected
@@ -84,9 +85,10 @@ BEGIN
                                 (parameters->>'z')::INTEGER,
                                 COALESCE(jsonb_extract_path_text(ret_var, 'parameters', parameters->>'tileset', 'cache'), 'true')::BOOLEAN));
         ELSE
-            RETURN jsonb_build_object('error', 'Unsupported public method',
-                                     'route', 'public_api',
-                                     'response_code', 401) || locaria_core.log(parameters,'Unsupported public method');
+
+        RETURN jsonb_build_object('error', 'Unsupported public method',
+                                 'route', 'public_api',
+                                 'response_code', 401) || locaria_core.log(parameters,'Unsupported public method');
     END CASE;
 
     --If debug_var is set then the API will return the calling parameters in a debug object. NOTE WELL this will break GeoJSON returned

@@ -12,7 +12,7 @@ const DataItemPhoneButton = ({name,data,sx,size="small"}) => {
     if(typeof dataActual !=='string')
         dataActual=JSON.stringify(dataActual);
     return (
-        <Button size={size} variant="outlined" sx={sxActual} onClick={()=>{
+        <Button size={size} variant="text" sx={sxActual} onClick={()=>{
             window.open(`tel:${dataActual}`,"_blank");
         }} endIcon={<PhoneInTalkIcon />}>{name}</Button>
     )
