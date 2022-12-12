@@ -70,8 +70,11 @@ const SearchLocationFilters = ({
 					features.features.map((result) => {
 							return (
 								<DataCard key={uuidv4()} feature={result} field={field} clickEnabled={clickEnabled} sx={{
-									border: "1px solid #AAA",
+									//TODO move into config
+									borderRadius: "5px",
+									border: "1px solid rgb(228, 230, 230)",
 									margin: "5px",
+									backgroundColor:"rgba(218, 210, 210, 0.03)",
 									height: mobileHeight
 								}}></DataCard>
 							)

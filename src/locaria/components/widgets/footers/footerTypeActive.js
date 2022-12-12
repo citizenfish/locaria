@@ -36,9 +36,9 @@ const FooterTypeActive = function () {
 					<Typography sx={head_sx}>About Active Prescription</Typography>
 					<Divider sx = {divider_sx}/>
 					<Typography sx = {typ_sx} >Our aim</Typography>
-					<Typography sx = {typ_sx} >(c) Nautoguide Ltd.</Typography>
 					<Typography sx = {typ_sx} >Locaria</Typography>
 					<Typography sx = {typ_sx} >Get in touch</Typography>
+					<Typography sx = {typ_sx} >(c) Nautoguide Ltd.</Typography>
 				</Grid>
 				<Grid item md={4} onClick={()=>{history.push('/ProviderForm/')}} sx={{
 					textAlign: "center",

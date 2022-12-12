@@ -31,9 +31,10 @@ import DataItemLinkButton from "./dataItemsRead/dataItemLinkButton";
 import DataItemDistance from "./dataItemsRead/dataItemDistance";
 import DataItemPhoneButton from "./dataItemsRead/dataItemPhoneButton";
 import DataItemMinMedMax from "./dataItemsRead/dataItemMinMedMax";
+import DataItemCost from "./dataItemsRead/dataItemCost";
+
 import {v4 as uuidv4} from "uuid";
 import {useDispatch, useSelector} from "react-redux";
-import {Stack} from "@mui/material";
 import {setFormMode} from "components/redux/slices/formSlice";
 
 const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) => {
@@ -199,6 +200,7 @@ const FormatField = ({field, data, mode, category, moderation}) => {
 		'phoneButton': {"element": DataItemPhoneButton},
 		'minMedMax': {"element": DataItemMinMedMax},
 		'distance': {"element": DataItemDistance},
+		'cost': {"element": DataItemCost},
 	}
 
 	const dataWriteItem = {

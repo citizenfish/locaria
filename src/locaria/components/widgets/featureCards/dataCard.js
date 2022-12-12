@@ -5,7 +5,7 @@ import {useHistory} from "react-router-dom";
 import {FieldView} from "../data/fieldView";
 
 
-const DataCard = ({feature, sx,field,clickEnabled=true}) => {
+const DataCard = ({feature, sx, field, clickEnabled=true}) => {
 
 	const history = useHistory();
 
@@ -14,13 +14,13 @@ const DataCard = ({feature, sx,field,clickEnabled=true}) => {
 
 	let  actualSx= {
 		...{
-			backgroundColor: channel.color,
+			//TODO move into config
+			//backgroundColor: channel.color,
 			width: "100%",
-			cursor: "pointer",
 			overflow: "hidden",
 			maxHeight: "50vh",
-			padding: "10px"
-
+			padding: "10px",
+			backgroundColor:"rgba(218, 210, 210, 0.03)"
 		}, ...sx? sx:{}
 	};
 

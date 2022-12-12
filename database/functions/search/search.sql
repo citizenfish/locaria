@@ -72,15 +72,18 @@ BEGIN
                jsonb_build_object(
                        'geojson', jsonb_build_object('type', 'FeatureCollection',
                                           'features', COALESCE(JSONB_AGG(
-                                                                       jsonb_build_object('type', 'Feature',
-                                                                                         'properties', _attributes ||
-                                                                                                       JSONB_BUILD_OBJECT('rank', _search_rank) - 'c',
-                                                                                         'geometry',
-                                                                                         ST_ASGEOJSON(ST_ReducePrecision(_wkb_geometry,precision_var))::JSON)
+                                                                       jsonb_build_object('type',       'Feature',
+                                                                                         'properties',  _attributes ||JSONB_BUILD_OBJECT('rank', _search_rank) - 'c',
+                                                                                         'geometry',    ST_ASGEOJSON(ST_ReducePrecision(_wkb_geometry,precision_var))::JSON)
                                                                    ), jsonb_build_array())
                            ),
                         --TODO better solution then array agg and picking first entry
-                        'options', jsonb_build_object('count', COALESCE(json_agg(_attributes->>'c')->>0,'0')::INTEGER, 'feature_count', count(*), 'bbox', ST_EXTENT(ST_TRANSFORM(_wkb_geometry,COALESCE(search_parameters->>'bbox_srid','3857')::INTEGER) ))
+                        'options', jsonb_build_object(
+                                    'count',        COALESCE(json_agg(_attributes->>'c')->>0,'0')::INTEGER,
+                                    'feature_count', count(*),
+                                    --TODO include cluster BBOX currently only operates on search results
+                                    'bbox', (SELECT ST_EXTENT(ST_TRANSFORM(_wkb_geometry,COALESCE(search_parameters->>'bbox_srid','3857')::INTEGER)) FROM SEARCH_RESULTS)
+                                    )
                    )
            END
 

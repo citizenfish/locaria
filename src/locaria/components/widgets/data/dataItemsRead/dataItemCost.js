@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from "@mui/material/Typography";
 import Box  from "@mui/material/Box"
 
-const DataItemP = ({name,data,sx}) => {
+const DataItemCost = ({name,data,sx}) => {
     let sxActual={...{
             color: window.systemMain.fontMain,
             fontSize: "1rem"
@@ -16,9 +16,9 @@ const DataItemP = ({name,data,sx}) => {
 
     return (
         <Box sx = {sxActual}>
-            <Typography gutterBottom variant="p">{dataActual}</Typography>
+            <Typography gutterBottom variant="subtitle1">£ {dataActual}</Typography>
         </Box>
     )
 }
 
-export default DataItemP;
+export default DataItemCost;
