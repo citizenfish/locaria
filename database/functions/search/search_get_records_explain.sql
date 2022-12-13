@@ -1,11 +1,7 @@
 --The main search query engine
-CREATE OR REPLACE FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER DEFAULT 10000)
-    RETURNS TABLE (
-                   _fid TEXT,
-                   _search_rank DOUBLE PRECISION,
-                   _wkb_geometry GEOMETRY,
-                   _attributes JSONB
-                  ) AS $$
+DROP FUNCTION IF EXISTS locaria_core.search_get_records_explain(JSONB, INTEGER);
+CREATE OR REPLACE FUNCTION locaria_core.search_get_records_explain(search_parameters JSONB, default_limit INTEGER DEFAULT 10000)
+    RETURNS SETOF JSON AS $$
 DECLARE
     default_offset INTEGER DEFAULT 0;
     json_filter JSONB DEFAULT json_build_object();
@@ -129,9 +125,21 @@ BEGIN
     owned_var = COALESCE(search_parameters->>'owned','FALSE')::BOOLEAN;
     live_flag = COALESCE(search_parameters->>'live','FALSE')::BOOLEAN;
 
+    RAISE NOTICE 'DEBUG filter_var %',filter_var;
+    RAISE NOTICE 'DEBUG search_ts_query %',search_ts_query;
+    RAISE NOTICE 'DEBUG json_path_var %',jsonpath_var;
+    RAISE NOTICE 'DEBUG bbox_var %', bbox_var;
+    RAISE NOTICE 'DEBUG location_distance %', location_distance;
+    RAISE NOTICE 'DEBUG location_geometry %',location_geometry;
+    RAISE NOTICE 'DEBUG start_data_var %', start_date_var;
+    RAISE NOTICE 'DEBUG tags %',search_parameters->'tags';
+    RAISE NOTICE 'DEBUG min_range_var %',min_range_var;
+    RAISE NOTICE 'DEBUG owned_var %',owned_var;
+    RAISE NOTICE 'DEBUG category_var %',category_var;
+
     RETURN QUERY
 
-        SELECT fid,
+        EXPLAIN (FORMAT JSON, ANALYZE,VERBOSE) SELECT fid,
                search_rank::DOUBLE PRECISION,
                wkb_geometry,
                attributes || CASE WHEN distance >= 0 THEN jsonb_build_object('distance', distance) ELSE jsonb_build_object() END
@@ -143,18 +151,18 @@ BEGIN
                    as attributes
 
         FROM (
-                 SELECT  --distinct ON(fid) fid,
-                         fid,
-                          CASE WHEN search_ts_query = '_IGNORE' THEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
-                          wkb_geometry,
-                          (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
-                          COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance,
-                          jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max, 'acl', attributes->'acl')) AS metadata,
-                          --used to further rank results against a specific attribute
-                          levenshtein(lower(jsonb_extract_path_text(attributes,VARIADIC ranking_attribute_var)), lower(search_parameters->>'search_text')) AS attribute_rank
+                 SELECT  fid,
+                      CASE WHEN search_ts_query = '_IGNORE' THEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
+                      wkb_geometry,
+                      (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
+                      COALESCE(ROUND(ST_DISTANCE(location_geometry::GEOGRAPHY, wkb_geometry::GEOGRAPHY)::NUMERIC,1), -1) AS distance,
+                      jsonb_build_object('metadata', jsonb_build_object('edit', edit, 'sd', start_date, 'ed', end_date, 'rm', range_min, 'rma', range_max, 'acl', attributes->'acl')) AS metadata,
+                      --used to further rank results against a specific attribute
+                      levenshtein(lower(jsonb_extract_path_text(attributes,VARIADIC ranking_attribute_var)), lower(search_parameters->>'search_text')) AS attribute_rank
 
-                 --FROM (SELECT * FROM global_search_view WHERE live_flag = FALSE UNION SELECT * FROM global_search_view_live WHERE live_flag = TRUE) VW
-                 global_search_view
+                -- TODO reinstate live view
+                -- FROM (SELECT * FROM global_search_view WHERE live_flag = FALSE UNION SELECT * FROM global_search_view_live WHERE live_flag = TRUE) VW
+                 FROM global_search_view
                  WHERE wkb_geometry IS NOT NULL
                    --Category, refs and general filters
                    AND (NOT filter_var OR attributes @> json_filter)
@@ -173,7 +181,7 @@ BEGIN
                    --for tags
                    AND ( (search_parameters->'tags') IS NULL OR attributes->'tags' ?| json2text(search_parameters->'tags') )
                    --for categories
-                   AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| category_var )
+                   AND ( (search_parameters->'category') IS NULL OR attributes->'category' ?| category_var )
                    --range query
                    AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
                    AND (
@@ -191,5 +199,3 @@ BEGIN
 END;
 $$
     LANGUAGE PLPGSQL;
-
-GRANT EXECUTE ON FUNCTION locaria_core.search_get_records(search_parameters JSONB, default_limit INTEGER) TO locaria_report_user;
