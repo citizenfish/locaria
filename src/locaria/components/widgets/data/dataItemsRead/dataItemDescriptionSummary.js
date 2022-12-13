@@ -53,7 +53,7 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
         <>
             <Card sx={sxActual} variant="outlined">
                 <CardContent>
-                    <Typography sx={{ fontSize: 14,maxHeight: "90px" }} color="text.secondary" gutterBottom>
+                    <Typography sx={{ fontSize: 14,maxHeight: "90px" , overflow: "hidden"}} color="text.secondary" gutterBottom>
                         {summaryText}
                     </Typography>
 
