@@ -14,9 +14,17 @@ const DataItemCost = ({name,data,sx}) => {
         dataActual = JSON.stringify(dataActual)
     }
 
+    //TODO format
+    const regex = new RegExp('£')
+    if(!regex.test(dataActual)){
+        dataActual = `£ ${dataActual}`
+    }
+
+    dataActual = dataActual.replace(/(\.[0-9]{1})$/, "$&0")
+
     return (
         <Box sx = {sxActual}>
-            <Typography gutterBottom variant="subtitle1">£ {dataActual}</Typography>
+            <Typography gutterBottom variant="subtitle1">{dataActual}</Typography>
         </Box>
     )
 }
