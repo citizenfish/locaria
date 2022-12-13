@@ -11,6 +11,7 @@ import TypographyParagraph from "../typography/typographyParagraph";
 import {encodeSearchParams} from "../../../libs/searchParams";
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import {Stack} from "@mui/material";
+
 const SitePanels = ({open,mode,panel='small'}) => {
 	const history = useHistory();
 	const dispatch = useDispatch();
@@ -157,14 +158,27 @@ const SitePanels = ({open,mode,panel='small'}) => {
 						 }}
 						 onMouseLeave={() => {
 							 collapseAll();
-						 }}
-					>
-						<TypographyHeader sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color}}
-										  element={"h3"}>{window.siteMap[p].key===open&&'['}{window.siteMap[p].name}{window.siteMap[p].key===open&&']'}</TypographyHeader>
-						{window.siteMap[p].description&&panel==='big'&&
-							<TypographyParagraph sx={{color: collapseOpen[p] ? window.siteMap[p].colorHover:window.siteMap[p].color,marginTop: "20px"}}>{window.siteMap[p].description}</TypographyParagraph>
-						}
-						<BigPannelLocation panel={panel} location={window.siteMap[p].needsLocation} p={p}/>
+						 }}>
+						<TypographyHeader sx={{
+												...{
+													color: window.siteMap[p].color
+												}, ...window.siteMap[p].descriptionHeaderSX || {}}}
+										  element={"h2"}>{
+							window.siteMap[p].key===open&&'['}{window.siteMap[p].name}{window.siteMap[p].key===open&&']'}
+						</TypographyHeader>
+							{window.siteMap[p].description && panel==='big' &&
+								<TypographyParagraph variant={"h4"}
+													 sx={{
+														 ...{
+															 color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color,
+															 marginTop: "20px",
+
+														 }, ...window.siteMap[p].descriptionSX || {}
+													 }}>
+									{window.siteMap[p].description}
+								</TypographyParagraph>
+							}
+						<BigPanelLocation panel={panel} location={window.siteMap[p].needsLocation} p={p}/>
 
 					</Box>
 					{panelItems.length > 0 &&
@@ -188,30 +202,47 @@ const SitePanels = ({open,mode,panel='small'}) => {
 		)
 	}
 
-	function BigPannelLocation({panel,location,p}) {
+	function BigPanelLocation({panel,location,p}) {
 		if(panel!=='big') {
 			return (<></>);
 		}
 		if(currentLocation&&currentLocation.text&&location) {
 			return (
-				<Stack direction="row" spacing={2} sx={{marginTop: "20px"}}>
+				<Stack direction="column" spacing={2} sx={{
+					marginTop: "10px",
+					display:"flex",
+					justifyContent:"center",
+					alignItems:"center"}}>
 					<TravelExploreIcon sx={{
 						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+
 					}}/>
 					<TypographyParagraph sx={{
-						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+						...{
+							color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+
+						}, ...window.siteMap[p].descriptionSX || {}
 					}}>{currentLocation.text}</TypographyParagraph>
 				</Stack>
 			)
 		}
 		if(!location) {
 			return (
-				<Stack direction="row" spacing={2} sx={{marginTop: "20px"}}>
+				<Stack direction="column" spacing={2} sx={{
+					marginTop: "10px",
+					display:"flex",
+					justifyContent:"center",
+					alignItems:"center"}}>
 					<TravelExploreIcon sx={{
+
 						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
 					}}/>
 					<TypographyParagraph sx={{
-						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+						...{
+							color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color,
+							//marginTop: "20px",
+
+						}, ...window.siteMap[p].descriptionSX || {}
 					}}>Search</TypographyParagraph>
 				</Stack>
 			)

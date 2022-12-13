@@ -40,7 +40,7 @@ const NavTypeActive = function ({}) {
                     textAlign: "center",
                     verticalAlign: "middle",
                 }}>
-                    <Typography sx={{fontFamily: "Montserrat", color: "#FFF", fontWeight:800, letterSpacing:"0.1em"}}>Your Active Prescription</Typography>
+                    <Typography sx={{fontFamily: "Montserrat", color: "#FFF", fontWeight:800, letterSpacing:"0.1em", textShadow: "0 1px 0 rgb(139, 122, 122)"}}>Your Active Prescription</Typography>
                 </Grid>
             </Grid>
         </Box>
