@@ -10,6 +10,7 @@ import ClickAway from "../utils/clickAway";
 import TypographyParagraph from "../typography/typographyParagraph";
 import {encodeSearchParams} from "../../../libs/searchParams";
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import Divider from "@mui/material/Divider";
 import {Stack} from "@mui/material";
 
 const SitePanels = ({open,mode,panel='small'}) => {
@@ -213,10 +214,12 @@ const SitePanels = ({open,mode,panel='small'}) => {
 					display:"flex",
 					justifyContent:"center",
 					alignItems:"center"}}>
-					<TravelExploreIcon sx={{
-						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
+					{/*<TravelExploreIcon sx={{*/}
+					{/*	color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color*/}
 
-					}}/>
+					{/*}}/>*/}
+					<Divider sx={{borderColor : "#FFF", width: "60%"}} variant={"middle"} />
+
 					<TypographyParagraph sx={{
 						...{
 							color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
@@ -233,17 +236,18 @@ const SitePanels = ({open,mode,panel='small'}) => {
 					display:"flex",
 					justifyContent:"center",
 					alignItems:"center"}}>
-					<TravelExploreIcon sx={{
+					{/*<TravelExploreIcon sx={{*/}
 
-						color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color
-					}}/>
+					{/*	color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color*/}
+					{/*}}/>*/}
+					<Divider sx={{borderColor : "#FFF", width: "60%"}} variant={"middle"} />
 					<TypographyParagraph sx={{
 						...{
 							color: collapseOpen[p] ? window.siteMap[p].colorHover : window.siteMap[p].color,
 							//marginTop: "20px",
 
 						}, ...window.siteMap[p].descriptionSX || {}
-					}}>Search</TypographyParagraph>
+					}}>View</TypographyParagraph>
 				</Stack>
 			)
 		}
