@@ -67,6 +67,8 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
             </Card>
             <Dialog
                 open={open}
+                fullWidth={true}
+                maxWidth={"xl"}
                 onClose={handleClose}
                 scroll = "paper"
                 aria-labelledby="description-dialog-title"
