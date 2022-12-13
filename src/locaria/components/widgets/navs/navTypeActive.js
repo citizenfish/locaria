@@ -22,7 +22,7 @@ const NavTypeActive = function ({}) {
                 width: "100%",
                 zIndex: '150',
                 // backgroundColor: window.systemMain.headerBackground,
-                backgroundImage: "linear-gradient(5deg, #fa8080, #ffdf62 87.14%, #f7ec94 91.18%)",
+                backgroundImage: "linear-gradient(5deg, #66cc99, #8dcbcc 87.14%)",
                 marginTop: "5px",
                 display: "flex",
                 alignItems: "center",

@@ -102,7 +102,7 @@ const SitePanels = ({open,mode,panel='small'}) => {
 		let panelSx={
 				backgroundColor: background,
 				fontSize: "0.8rem",
-				border: `1px solid ${window.siteMap[p].color}`,
+				border: `1px solid ${window.siteMap[p].borderColor? window.siteMap[p].borderColor:window.siteMap[p].color}`,
 				width: '100%',
 				cursor: "pointer"
 		};
@@ -113,6 +113,11 @@ const SitePanels = ({open,mode,panel='small'}) => {
 			panelSx.padding="10px";
 			if(!currentLocation&&window.siteMap[p].needsLocation) {
 				panelSx.opacity="0.5";
+			}
+			if(window.siteMap[p].backgroundImage) {
+				const url = new UrlCoder();
+				let urlActual = url.decode(window.siteMap[p].backgroundImage,true);
+				panelSx.backgroundImage = `url(${urlActual})`;
 			}
 
 		} else {
