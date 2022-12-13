@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from "@mui/material/Typography";
 import Box  from "@mui/material/Box"
 
-const DataItemP = ({name,data,sx}) => {
+const DataItemP = ({name,data,sx,variant="p"}) => {
     let sxActual={...{
             color: window.systemMain.fontMain,
             fontSize: "1rem"
@@ -15,9 +15,7 @@ const DataItemP = ({name,data,sx}) => {
     }
 
     return (
-        <Box sx = {sxActual}>
-            <Typography gutterBottom variant="p">{dataActual}</Typography>
-        </Box>
+            <Typography gutterBottom variant={variant} sx={sxActual}>{dataActual}</Typography>
     )
 }
 
