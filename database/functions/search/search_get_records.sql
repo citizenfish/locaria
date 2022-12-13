@@ -154,7 +154,7 @@ BEGIN
                           levenshtein(lower(jsonb_extract_path_text(attributes,VARIADIC ranking_attribute_var)), lower(search_parameters->>'search_text')) AS attribute_rank
 
                  --FROM (SELECT * FROM global_search_view WHERE live_flag = FALSE UNION SELECT * FROM global_search_view_live WHERE live_flag = TRUE) VW
-                 global_search_view
+                 FROM global_search_view
                  WHERE wkb_geometry IS NOT NULL
                    --Category, refs and general filters
                    AND (NOT filter_var OR attributes @> json_filter)
@@ -173,7 +173,7 @@ BEGIN
                    --for tags
                    AND ( (search_parameters->'tags') IS NULL OR attributes->'tags' ?| json2text(search_parameters->'tags') )
                    --for categories
-                   AND ( (search_parameters->'category') IS NULL OR attributes->>'category' = '*' OR attributes->'category' ?| category_var )
+                   AND ( (search_parameters->'category') IS NULL OR attributes->'category' ?| category_var )
                    --range query
                    AND (min_range_var IS NULL OR (range_min >= min_range_var AND range_max <= max_range_var))
                    AND (
