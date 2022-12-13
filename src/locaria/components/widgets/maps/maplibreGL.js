@@ -17,14 +17,14 @@ const MaplibreGL = forwardRef(({
 								   precision = 7,
 								   bboxSet,
 								   bboxBuffer=100,
-								   pitch = 60
+								   pitch = 0,
+									geojson
 							   }, ref) => {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 	const [mapActive, setMapActive] = useState(false);
 	const [queue, setQueue] = useState([]);
-
 	useEffect(() => {
 		return () => {
 			map.current.remove();
@@ -104,10 +104,17 @@ const MaplibreGL = forwardRef(({
 					map.current.addImage('custom-marker', image);
 					setMapActive(true);
 				});
+
 			map.current.addSource('data', {
 				type: 'geojson',
 				data: {features: [], type: "FeatureCollection"}
 			});
+
+			if(geojson){
+				setQueue([{"type": "addGeojson", "geojson": geojson, id: 'data'}])
+			}
+
+
 			/*
 			Note that this won't work for some reason with certain fonts
 			You will get an error "Unimplemented type: 3"
