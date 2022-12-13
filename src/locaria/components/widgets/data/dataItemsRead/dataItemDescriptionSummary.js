@@ -1,17 +1,18 @@
-import React,{useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import {Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,Typography} from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
+import MaplibreGL from "widgets/maps/maplibreGL";
 
 
 const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
 
+    const mapRef = useRef();
 
 
     const [open,setOpen] = useState(false)
-
 
     const handleClose = () =>{
         setOpen(false)
@@ -31,6 +32,21 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
 
     let textLength = length;
     let summaryText = data.length > textLength ? `${data.substring(0, textLength)}...` : data
+
+    let geojson={
+        type: 'FeatureCollection',
+        features: [
+            {
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: allData.geometry.coordinates
+                },
+                properties: allData.properties
+
+            }
+        ]
+    };
 
     //TODO too much hard coded sx in here
     return (
@@ -59,9 +75,10 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
             >
                 <DialogTitle id="description-dialog-title" sx = {{textAlign: "center", backgroundColor: "rgba(204,212,212,0.2)"}}>{allData.properties.description.title}</DialogTitle>
                 <DialogContent dividers>
-                    <DialogContentText id="description-dialog-description">
+                    <DialogContentText id="description-dialog-description" sx={{marginBottom: "10px"}}>
                         {data}
                     </DialogContentText>
+                    <MaplibreGL  ref={mapRef}  maxZoom={17} minZoom={12} pitch={60} geojson={geojson} center={allData.geometry.coordinates}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
