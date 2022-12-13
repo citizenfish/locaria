@@ -17,7 +17,7 @@ const MaplibreGL = forwardRef(({
 								   precision = 7,
 								   bboxSet,
 								   bboxBuffer=100,
-								   pitch = 0
+								   pitch = 60
 							   }, ref) => {
 
 	const mapContainer = useRef(null);

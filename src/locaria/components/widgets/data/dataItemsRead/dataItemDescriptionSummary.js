@@ -18,7 +18,6 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
     }
 
     const handleOpen = () => {
-        console.log(allData)
         setOpen(true)
     }
 
