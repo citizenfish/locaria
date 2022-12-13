@@ -94,9 +94,11 @@ const FormatFields = ({fields, data, mode, category, moderation}) => {
 			if (fields[f].pages&&fields[f].pages[formPage]) {
 				dispatch(setFormMode(true));
 				let md = fields[f].md || 12;
+				let xs = fields[f].xs || 12;
+
 
 				formattedArray.push(
-					<Grid item md={md} key={uuid}>
+					<Grid item md={md}  xs={xs} key={uuid}>
 						<DataItemTitle title={fields[f].pages[formPage].title}/>
 						<FormatFields fields={fields[f].pages[formPage].page} mode={mode} data={data} moderation={moderation}
 								  category={category}/>
@@ -110,7 +112,7 @@ const FormatFields = ({fields, data, mode, category, moderation}) => {
 
 			if (fields[f].children) {
 				let md = fields[f].md || 12;
-				let sm = fields[f].sm || 12;
+				let xs = fields[f].xs || 12;
 				let spacing = fields[f].spacing || 0;
 				if (fields[f].container) {
 					formattedArray.push(
@@ -121,7 +123,7 @@ const FormatFields = ({fields, data, mode, category, moderation}) => {
 					)
 				} else {
 					formattedArray.push(
-						<Grid item md={md} sd={sm} key={uuid} sx={fields[f].sx}>
+						<Grid item md={md} xs={xs} key={uuid} sx={fields[f].sx}>
 							<FormatFields fields={fields[f].children} mode={mode} data={data} moderation={moderation}
 										  category={category}/>
 						</Grid>
@@ -136,6 +138,7 @@ const FormatFields = ({fields, data, mode, category, moderation}) => {
 			switch (fields[f].type) {
 				case 'hr':
 					formattedArray.push(<Divider sx={{margin: "10px"}} key={uuid}/>);
+					break
 				default:
 					if (fields[f].visible !== false || mode === "write") {
 						let md = fields[f].md || 12;
@@ -184,7 +187,7 @@ const FormatField = ({field, data, mode, category, moderation}) => {
 	const dataReadItems = {
 		'title': {"element": DataItemTitle},
 		'description': {"element": DataItemDescription},
-		'description_summary': {"element": DataItemDescriptionSummary},
+		'descriptionSummary': {"element": DataItemDescriptionSummary},
 		'p': {"element": DataItemP},
 		'grid': {"element": DataItemGrid},
 		'h1': {"element": DataItemH1},
@@ -216,14 +219,18 @@ const FormatField = ({field, data, mode, category, moderation}) => {
 		'upload': {"element": DataItemUpload},
 	}
 
-	let options = {};
+	let options = field.options;
 	let Element = (<></>);
 
-	options = field.options;
+	if (mode === 'read') {
+		if(dataReadItems[field.read]) {
+			Element = dataReadItems[field.read].element;
+			options = {...dataReadItems[field.read].options, ...field.options};
+		} else {
+			Element = DataItemP;
+			options = {...dataReadItems["p"].options, ...field.options};
 
-	if (mode === 'read' && dataReadItems[field.read]) {
-		Element = dataReadItems[field.read].element;
-		options = {...dataReadItems[field.read].options, ...field.options};
+		}
 	}
 
 	if (mode === 'write') {

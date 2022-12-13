@@ -1,6 +1,5 @@
 import React from 'react';
 import Box from "@mui/material/Box";
-import UrlCoder from "../../../libs/urlCoder"
 import {useHistory} from "react-router-dom";
 import {FieldView} from "../data/fieldView";
 
@@ -18,7 +17,6 @@ const DataCard = ({feature, sx, field, clickEnabled=true}) => {
 			//backgroundColor: channel.color,
 			width: "100%",
 			overflow: "hidden",
-			maxHeight: "50vh",
 			padding: "10px",
 			backgroundColor:"rgba(218, 210, 210, 0.03)"
 		}, ...sx? sx:{}
