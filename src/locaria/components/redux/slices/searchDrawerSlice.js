@@ -253,6 +253,7 @@ export const searchDrawerSlice = createSlice({
 
 		},
 		setDistanceType: (state,action) => {
+			state.refreshCounts=true;
 			state.searchParams.distanceType = action.payload;
 			state.searchParams.page=1;
 			state.totalPages=0;
