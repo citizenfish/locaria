@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Box from "@mui/material/Box";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
-import {useHistory, useParams} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import TokenCheck from "../components/utils/tokenCheck";
 import {useCookies} from "react-cookie";
 import {setFeature, setOverview} from "../redux/slices/adminPagesSlice";
@@ -20,7 +20,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 export default function AdminContentData() {
 
 	const [offset, setOffset] = useState(0)
-	const [limit, setLimit] = useState(1000)
+	const [limit, setLimit] = useState(100)
 	const [features, setFeatures] = useState([])
 	const [searchText, setSearchText] = useState('')
 	const category = useSelector((state) => state.categorySelect.currentSelected);
@@ -151,7 +151,7 @@ export default function AdminContentData() {
 					<Grid item md={2}>
 						<Button onClick={()=>{setOpenAdd(true)}}
 								variant={"outlined"}
-								disabled={category==='*'? true:false}>
+								disabled={category === '*'}>
 							{category !== '*' ? `Add ${category}` : 'Select a category'}
 						</Button>
 					</Grid>
