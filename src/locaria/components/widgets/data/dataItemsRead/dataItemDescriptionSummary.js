@@ -3,11 +3,11 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import {Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,Typography} from "@mui/material";
-import Divider from "@mui/material/Divider";
 import LaunchIcon from "@mui/icons-material/Launch";
 
 
-const DataItemDescriptionSummary = ({name,data,sx,allData,options={}}) => {
+const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
+
 
 
     const [open,setOpen] = useState(false)
@@ -29,21 +29,20 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,options={}}) => {
             backgroundColor: "rgba(235,231,231,0.06)"
         },...sx}
 
-    let textLength = options.length || 100;
+    let textLength = length;
     let summaryText = data.length > textLength ? `${data.substring(0, textLength)}...` : data
 
     //TODO too much hard coded sx in here
     return (
-        <div>
-            <Card sx = {sxActual} variant="outlined">
-                <CardContent sx={{maxHeight: "100px"}}>
+        <>
+            <Card sx={sxActual} variant="outlined">
+                <CardContent>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         {summaryText}
                     </Typography>
 
                 </CardContent>
-                <CardActions disableSpacing={true} sx={{ml:1,mr:1, borderTop: "1px solid #AAA", justifyContent: "flex-end"}}>
-
+                <CardActions disableSpacing={true} sx={{ borderTop: "1px solid #AAA", justifyContent: "flex-end"}}>
                 <Button size="small"
                         variant="text"
                         sx = {{color : "rgb(66,66,66)", padding: 0}}
@@ -70,7 +69,7 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,options={}}) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     )
 }
 

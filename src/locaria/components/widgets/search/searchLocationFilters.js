@@ -65,7 +65,7 @@ const SearchLocationFilters = ({
 		} else {
 			if (features && features.features && features.features.length > 0) {
 
-				let mobileHeight=(mobile? '500px':'210px');
+				let mobileHeight=(mobile? '600px':'210px');
 				return (
 					features.features.map((result) => {
 							return (
@@ -75,7 +75,7 @@ const SearchLocationFilters = ({
 									border: "1px solid rgb(228, 230, 230)",
 									margin: "5px",
 									backgroundColor:"rgba(218, 210, 210, 0.03)",
-									height: mobileHeight
+									maxHeight: mobileHeight
 								}}></DataCard>
 							)
 						}
