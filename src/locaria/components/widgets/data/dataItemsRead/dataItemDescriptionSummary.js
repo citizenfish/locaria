@@ -42,7 +42,7 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
                     </Typography>
 
                 </CardContent>
-                <CardActions disableSpacing={true} sx={{ borderTop: "1px solid #AAA", justifyContent: "flex-end"}}>
+                <CardActions disableSpacing={true} sx={{ borderTop: "1px solid #AAA", justifyContent: "flex-end", backgroundColor: "rgba(204,212,212,0.2)"}}>
                 <Button size="small"
                         variant="text"
                         sx = {{color : "rgb(66,66,66)", padding: 0}}
@@ -57,7 +57,7 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
                 aria-labelledby="description-dialog-title"
                 aria-describedby="description-dialog-description"
             >
-                <DialogTitle id="description-dialog-title" sx = {{textAlign: "center"}}>{allData.properties.description.title}</DialogTitle>
+                <DialogTitle id="description-dialog-title" sx = {{textAlign: "center", backgroundColor: "rgba(204,212,212,0.2)"}}>{allData.properties.description.title}</DialogTitle>
                 <DialogContent dividers>
                     <DialogContentText id="description-dialog-description">
                         {data}
