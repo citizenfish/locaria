@@ -23,7 +23,7 @@ const FooterTypeActive = function () {
 				  sx={{
 					  width: "100%",
 					  height: "200px",
-					  backgroundImage: "linear-gradient(5deg, #fa8080, #ffdf62 87.14%, #f7ec94 91.18%)",
+					  backgroundImage: "linear-gradient(5deg, #66cc99, #8dcbcc 87.14%)",
 					  marginTop: "5px",
 					  display: "flex",
 					  justifyContent: "center"
