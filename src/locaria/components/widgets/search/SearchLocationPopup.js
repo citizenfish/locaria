@@ -222,8 +222,8 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 
 	let width=innerWidth;
-	if(width>800)
-		width=800;
+	if(width>700)
+		width=700;
 	else width=width-60;
 
 	let textSx={
@@ -235,7 +235,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 	let boxSx={
 		position: "absolute",
-		top: "150px",
+		top: "85px",
 		left: `calc( 50% - ${width/2}px )`,
 		width: `${width}px`,
 		boxShadow: 3
@@ -263,7 +263,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "5px"}}>
 				<ListItem>
-					<TextField autoComplete={"off"} value={searchText||open? searchText:(currentLocation? currentLocation.text:'Set a location')} sx={textSx} id={"locationSearchText"} onClick={() => {
+					<TextField autoComplete={"off"} value={searchText||open? searchText:(currentLocation? currentLocation.text:'Where are you?')} sx={textSx} id={"locationSearchText"} onClick={() => {
 						if(open===false) {
 							dispatch(locationPopup({open: true, page: defaultPage}));
 						}
@@ -273,8 +273,10 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 							   }}
 					></TextField>
 				</ListItem>
+
 				<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
-					<Divider variant="inset" component="li" />
+
+					<Divider component="li" />
 
 					<GeolocationItem></GeolocationItem>
 
