@@ -154,7 +154,11 @@ export const searchDrawerSlice = createSlice({
 				state.searchParams.tags=action.payload.tags;
 			}
 
-
+			if(action.payload && action.payload.filters) {
+				state.searchParams.filters=action.payload.filters;
+			} else {
+				state.searchParams.filters={};
+			}
 
 			if(action.payload && action.payload.distance) {
 				state.searchParams.distance=action.payload.distance;
