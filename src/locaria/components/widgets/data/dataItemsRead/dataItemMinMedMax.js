@@ -25,10 +25,10 @@ const DataItemMinMedMax = ({name,data, sx, min= 1000, max=10000, textPrompts = f
         return(
             <Box sx = {sxActual}>
                 <Grid container>
-                    <Grid item md={12}>
+                    <Grid item md={12} xs={12}>
                         <Typography gutterBottom variant="p">{prompt}</Typography>
                     </Grid>
-                    <Grid item md={12}>
+                    <Grid item md={12} xs={12}>
                         <Typography gutterBottom variant="body2">{distanceFormatNice(dataActual, searchParams.distanceType,1)}</Typography>
                     </Grid>
                 </Grid>

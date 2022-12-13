@@ -124,7 +124,7 @@ const SearchLocationFiltersMap = ({
 							<FiltersInner/>
 						</Grid>
 						<Grid item md={9} sx={{width: "100%"}}>
-							<MaplibreGL  ref={mapRef} bboxUpdate={bboxUpdate} bboxSet={searchParams.bbox} maxZoom={17} minZoom={12} pitch={60}/>
+							<MaplibreGL  ref={mapRef} bboxUpdate={bboxUpdate} bboxSet={searchParams.bbox} maxZoom={17} minZoom={12} pitch={60} style={"/mapbox/styles3d.json"}/>
 						</Grid>
 					</Grid>
 				</Box>
