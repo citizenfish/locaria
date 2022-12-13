@@ -23,7 +23,7 @@ import PlaceIcon from '@mui/icons-material/Place';
 import {getLocation} from "../../../libs/geolocation";
 import {useCookies} from "react-cookie";
 import {encodeSearchParams} from "../../../libs/searchParams";
-import IconButton from "@mui/material/IconButton";
+import {shadows} from "@mui/system"
 
 export default function SearchLocationPopup({defaultPage,maxLocations=8,display = true}) {
 	const dispatch = useDispatch();
@@ -237,7 +237,8 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		position: "absolute",
 		top: "150px",
 		left: `calc( 50% - ${width/2}px )`,
-		width: `${width}px`
+		width: `${width}px`,
+		boxShadow: 3
 	}
 
 	if(mobile) {
@@ -260,7 +261,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 			</Backdrop>
 
 
-			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "12px"}}>
+			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "5px"}}>
 				<ListItem>
 					<TextField autoComplete={"off"} value={searchText||open? searchText:(currentLocation? currentLocation.text:'Set a location')} sx={textSx} id={"locationSearchText"} onClick={() => {
 						if(open===false) {
