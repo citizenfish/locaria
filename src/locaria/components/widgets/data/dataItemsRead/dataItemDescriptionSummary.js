@@ -11,7 +11,7 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
 
     const mapRef = useRef();
 
-
+    console.log(allData)
     const [open,setOpen] = useState(false)
 
     const handleClose = () =>{
@@ -41,7 +41,8 @@ const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
                     type: 'Point',
                     coordinates: allData.geometry.coordinates
                 },
-                properties: allData.properties
+                //TODO go back to allData.properties this is in for demo purposes
+                properties: {description: {title: `${allData.properties.description.title} at ${allData.properties.data.event_location}`}}
 
             }
         ]
