@@ -235,7 +235,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 	let boxSx={
 		position: "absolute",
-		top: "85px",
+		top: "35px",
 		left: `calc( 50% - ${width/2}px )`,
 		width: `${width}px`,
 		boxShadow: 3

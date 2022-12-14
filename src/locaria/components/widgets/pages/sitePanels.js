@@ -115,6 +115,8 @@ const SitePanels = ({open,panel='small'}) => {
 			if(!currentLocation&&window.siteMap[p].needsLocation) {
 				panelSx.opacity="0.5";
 			}
+			panelSx.backgroundPositionX="center";
+			panelSx.backgroundPositionY="center";
 			if(window.siteMap[p].backgroundImage) {
 				const url = new UrlCoder();
 				let urlActual = url.decode(window.siteMap[p].backgroundImage,true);
