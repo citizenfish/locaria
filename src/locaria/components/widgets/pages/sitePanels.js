@@ -8,12 +8,12 @@ import Grid from "@mui/material/Grid";
 import {locationPopup} from "../../redux/slices/searchDrawerSlice";
 import ClickAway from "../utils/clickAway";
 import TypographyParagraph from "../typography/typographyParagraph";
-import {encodeSearchParams} from "../../../libs/searchParams";
+import {encodeSearchParams} from "libs/searchParams";
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import Divider from "@mui/material/Divider";
 import {Stack} from "@mui/material";
 
-const SitePanels = ({open,mode,panel='small'}) => {
+const SitePanels = ({open,panel='small'}) => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 
@@ -39,9 +39,7 @@ const SitePanels = ({open,mode,panel='small'}) => {
 	function toggleCollapseOpen(id) {
 		let state = collapseOpen;
 		for (let p in window.siteMap) {
-			if (p === id)
-				state[p] = true;
-			else state[p] = false;
+			state[p] = p === id;
 		}
 		setCollapseOpen(state);
 		forceRender(render + 1);
@@ -110,9 +108,10 @@ const SitePanels = ({open,mode,panel='small'}) => {
 		};
 
 		if(panel==='big') {
-			panelSx.height="200px";
+			panelSx.height="250px";
 			panelSx.borderRadius= "5px";
 			panelSx.padding="10px";
+			panelSx.backgroundSize="cover";
 			if(!currentLocation&&window.siteMap[p].needsLocation) {
 				panelSx.opacity="0.5";
 			}

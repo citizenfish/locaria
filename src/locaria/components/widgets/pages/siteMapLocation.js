@@ -6,11 +6,11 @@ import SearchLocationPopup from "../search/SearchLocationPopup";
 import SitePanels from "./sitePanels";
 import {useSelector} from "react-redux";
 
-const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage,open,panel="small"}) {
+const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage,open,panel="small",heights=["250px","550px"]}) {
 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
-	let height=mobile? "250px":"550px";
+	let height=mobile? heights[0]:heights[1];
 
 	switch (mode) {
 		case "full":
@@ -44,7 +44,6 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 					<SearchLocationPopup  defaultPage={defaultPage}  panel={panel}></SearchLocationPopup>
 				</Box>
 			)
-			break;
 		case "bottom":
 			return (
 				<Box sx={{
@@ -73,7 +72,6 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 
 				</Box>
 			)
-			break;
 		default:
 			return (
 				<Box sx={{
@@ -91,7 +89,6 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 
 				</Box>
 			)
-			break;
 
 	}
 
