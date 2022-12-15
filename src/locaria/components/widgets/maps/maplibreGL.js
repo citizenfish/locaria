@@ -18,7 +18,9 @@ const MaplibreGL = forwardRef(({
 								   bboxSet,
 								   bboxBuffer=100,
 								   pitch = 0,
-									geojson
+									geojson,
+								   boundsGeojson,
+								   handleMapClick
 							   }, ref) => {
 
 	const mapContainer = useRef(null);
@@ -54,6 +56,10 @@ const MaplibreGL = forwardRef(({
 				switch (item.type) {
 					case 'addGeojson':
 						map.current.getSource(item.id).setData(item.geojson);
+						if(item.fit===true) {
+							let bounds = bbox(geojson);
+							map.current.fitBounds(bounds,{padding:20});
+						}
 						break;
 				}
 				setQueue(localQueue);
@@ -110,8 +116,17 @@ const MaplibreGL = forwardRef(({
 				data: {features: [], type: "FeatureCollection"}
 			});
 
+			map.current.addSource('boundary', {
+				type: 'geojson',
+				data: {features: [], type: "FeatureCollection"}
+			});
+
+
 			if(geojson){
-				setQueue([{"type": "addGeojson", "geojson": geojson, id: 'data'}])
+				setQueue([{"type": "addGeojson", "geojson": geojson, id: 'data'}]);
+			}
+			if(boundsGeojson){
+				setQueue([{"type": "addGeojson", "geojson": boundsGeojson, id: 'boundary',fit:true}]);
 			}
 
 
@@ -133,12 +148,27 @@ const MaplibreGL = forwardRef(({
 				layout: window.mapStyles[layout].data
 			});
 
+			map.current.addLayer({
+				id: 'boundary',
+				type: 'line',
+				source: 'boundary',
+				paint: {
+					'line-color': '#0080ff', // blue color fill
+				}
+			});
+
 			map.current.on('zoomend', () => {
 				updateBBOC();
 			});
 
 			map.current.on('moveend', () => {
 				updateBBOC();
+			});
+
+			map.current.on('click', (e) => {
+				if(handleMapClick) {
+					handleMapClick([e.lngLat.lng, e.lngLat.lat]);
+				}
 			});
 
 		});
