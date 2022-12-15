@@ -68,7 +68,10 @@ export default function SearchProxy() {
 			}
 		};
 
-		if (refreshCounts === true) {
+		let category=window.systemCategories.getChannelProperties(searchParams.categories);
+
+
+		if (refreshCounts === true&&category.useCounts===true) {
 			packetSearch.data.method = "report";
 			packetSearch.data.report_name = "search_counts";
 			dispatch(setRefreshCounts(false));
