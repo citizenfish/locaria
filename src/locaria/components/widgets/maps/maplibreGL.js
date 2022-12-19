@@ -26,7 +26,9 @@ const MaplibreGL = forwardRef(({
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 	const [mapActive, setMapActive] = useState(false);
-	const [queue, setQueue] = useState([]);
+	const queue = useRef([]);
+
+
 	useEffect(() => {
 		return () => {
 			map.current.remove();
@@ -47,25 +49,36 @@ const MaplibreGL = forwardRef(({
 		}
 	}
 
-	useEffect(() => {
-		let localQueue = [...queue];
+	function addQueueItem(type,geojson,id,fit) {
+		let localQueue=[...queue.current,...[{"type": type, "geojson": geojson, id: id,fit:fit}]];
+		queue.current=localQueue;
+		processQueue();
+
+	}
+
+	function processQueue() {
 		if (mapActive === true) {
-			if (localQueue.length > 0) {
-				let item = localQueue.shift();
-				// proccess stuff
-				switch (item.type) {
-					case 'addGeojson':
-						map.current.getSource(item.id).setData(item.geojson);
-						if(item.fit===true) {
-							let bounds = bbox(geojson);
-							map.current.fitBounds(bounds,{padding:20});
-						}
-						break;
+			if (queue.current.length > 0) {
+				for(let i in queue.current) {
+
+					switch (queue.current[i].type) {
+						case 'addGeojson':
+							map.current.getSource(queue.current[i].id).setData(queue.current[i].geojson);
+							if (queue.current[i].fit === true) {
+								let bounds = bbox(queue.current[i].geojson);
+								map.current.fitBounds(bounds, {padding: 20});
+							}
+							break;
+					}
 				}
-				setQueue(localQueue);
+				queue.current = [];
 			}
 		}
-	}, [queue, mapActive]);
+	}
+
+	useEffect(() => {
+		processQueue();
+	}, [mapActive]);
 
 	useEffect(() => {
 		if (map.current) return; //stops map from intializing more than once
@@ -123,10 +136,11 @@ const MaplibreGL = forwardRef(({
 
 
 			if(geojson){
-				setQueue([{"type": "addGeojson", "geojson": geojson, id: 'data'}]);
+				addQueueItem("addGeojson",geojson,"data");
+
 			}
 			if(boundsGeojson){
-				setQueue([{"type": "addGeojson", "geojson": boundsGeojson, id: 'boundary',fit:true}]);
+				addQueueItem("addGeojson",boundsGeojson,"boundary",true);
 			}
 
 
@@ -181,8 +195,7 @@ const MaplibreGL = forwardRef(({
 		ref,
 		() => ({
 			addGeojson(geojson, id) {
-				setQueue([{"type": "addGeojson", "geojson": geojson, id: id}])
-
+				addQueueItem("addGeojson",geojson,id);
 			},
 			getLocation() {
 				return map.current.getCenter();

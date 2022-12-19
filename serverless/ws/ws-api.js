@@ -175,7 +175,7 @@ module.exports.run = (event, context, callback) => {
 					switch (packet.data.method) {
 						case "add_asset":
 							if (tokenPacket.valid === true) {
-								add_asset(packet);
+								add_asset(packet,aclPayload);
 							} else {
 								payload.packet['response_code'] = 300;
 								payload.packet = tokenPacket;
@@ -497,20 +497,20 @@ module.exports.run = (event, context, callback) => {
 
 	}
 
-	function add_asset(packet) {
+	function add_asset(packet,aclPayload) {
 		let payload = {"queue": packet.queue, "packet": {"response_code": 200}};
 
 		let uuid = uuidv4();
 		let filePath = `${process.env.theme}${process.env.environment}/assets/${uuid}.${packet.data.attributes.ext}`;
 		let urlPath = `assets/${uuid}.${packet.data.attributes.ext}`;
 		client = database.getClient();
-		let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB)';
+		let querysql = 'SELECT locaria_core.locaria_gateway($1::JSONB,$2::JSONB)';
 		packet.data.attributes.s3_bucket = process.env.importBucket;
 		packet.data.attributes.s3_region = process.env.region;
 		packet.data.attributes.s3_path = filePath;
 		packet.data.attributes.url = urlPath;
 		packet.data.uuid = uuid;
-		let qarguments = [packet.data];
+		let qarguments = [packet.data,aclPayload];
 		//console.log(querysql);
 		//console.log(qarguments);
 		client.query(querysql, qarguments, function (err, result) {

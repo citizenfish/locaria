@@ -13,27 +13,27 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import {FormFieldsToData} from "../../widgets/data/formFieldsToData";
 import {LinearProgress} from "@mui/material";
+import {submitForm} from "components/redux/slices/formSlice";
 
 
 export default function AdminModerationDataView() {
 
+	const [queueName, setQueueName] = useState(undefined);
 
 	const [cookies, setCookies] = useCookies(['location']);
 	//TODO feature does not really belong in pages state? move into own state
 	const feature = useSelector((state) => state.adminPages.feature);
-	const formData = useSelector((state) => state.formSlice.formData);
+	//const formData = useSelector((state) => state.formSlice.formData);
+	const formSubmitted = useSelector((state) => state.formSlice.formSubmitted);
 
 	const [featureData, setFeatureData] = useState(undefined);
-	const [images, setImages] = useState([]);
 	const category = useSelector((state) => state.categorySelect.currentSelected);
-	const mapRef = useRef();
 
 	const dispatch = useDispatch();
 
 	let {fid} = useParams();
 
 	const history = useHistory();
-	const [point, setPoint] = useState(undefined);
 
 
 	useEffect(() => {
@@ -95,54 +95,66 @@ export default function AdminModerationDataView() {
 		history.push(`/Admin/Content/Moderation`);
 	}
 
-	function rejectFeature() {
 
-		// Add we must junk the feature with Admin ACL
-		// But rejecting update we maintain the ACL
-		let packet = {
-			queue: "saveFeature",
-			api: "sapi",
-			data: {
-				id_token: cookies['id_token'],
-				acl: {view:["PUBLIC"]},
-				status: "REJECTED"
-			}
-		};
 
-		for(let m in featureData.properties['_moderations']) {
-			if(featureData.properties['_moderations'][m].properties['mq_type']=="add") {
-				packet.data.acl={view:["Admins","Moderators"]};
-				break;
+	function saveFeature(queueName) {
+		setQueueName(queueName);
+
+		dispatch(submitForm());
+	}
+
+	useEffect(() => {
+		if(formSubmitted!==undefined) {
+			//let data = FormFieldsToData(featureData.properties.category,formData);
+			let channel = window.systemCategories.getChannelProperties(featureData.properties.category);
+
+			let fieldsData = channel.fields["main"];
+			let data = FormFieldsToData(featureData.properties.category, formSubmitted, fieldsData);
+			if(!data.data)
+				data.data={};
+
+			let packet={};
+			if(queueName==='saveFeature') {
+				packet = {
+					queue: "saveFeature",
+					api: "sapi",
+					data: {
+						attributes: data.properties,
+						id_token: cookies['id_token'],
+						category: featureData.properties.category,
+						acl: {view: ['PUBLIC']}
+
+					}
+				};
+				packet.data.method = "update_item";
+				packet.data.fid = feature;
+				if (data.geometry)
+					packet.data.geometry = data.geometry;
+			} else {
+				// reject
+				packet = {
+					queue: "saveFeature",
+					api: "sapi",
+					data: {
+						id_token: cookies['id_token'],
+						acl: {view:["PUBLIC"]},
+						status: "REJECTED"
+					}
+				};
+
+				for(let m in featureData.properties['_moderations']) {
+					if(featureData.properties['_moderations'][m].properties['mq_type']=="add") {
+						packet.data.acl={view:["Admins","Moderators"]};
+						break;
+					}
+				}
+				packet.data.method = "update_item";
+				packet.data.fid = feature;
 			}
+			window.websocket.send(packet);
 		}
-		packet.data.method = "update_item";
-		packet.data.fid = feature;
-		window.websocket.send(packet);
-	}
 
-
-	function saveFeature() {
-		let data = FormFieldsToData(featureData.properties.category,formData);
-
-		if(!data.data)
-			data.data={};
-		let packet = {
-			queue: "saveFeature",
-			api: "sapi",
-			data: {
-				attributes: data.properties,
-				id_token: cookies['id_token'],
-				category: featureData.properties.category,
-				acl: {view:['PUBLIC']}
-
-			}
-		};
-		packet.data.method = "update_item";
-		packet.data.fid = feature;
-		if (data.geometry)
-			packet.data.geometry = data.geometry;
-		window.websocket.send(packet);
-	}
+	},[formSubmitted]);
 
 
 
@@ -160,20 +172,16 @@ export default function AdminModerationDataView() {
 						<Button color="warning"
 								onClick={cancelFeature}
 								variant="outlined" sx={{margin:"5px"}}>Cancel</Button>
-					{featureData&&
-						<>
 								<Button color="success"
-										onClick={saveFeature}
+										onClick={(e)=>{saveFeature('saveFeature')}}
 										variant="outlined"
 										sx={{margin:"5px"}}
-										disabled={feature === -1 && point === undefined ? true : false}>Publish</Button>
+										>Publish</Button>
 								<Button color="error"
-										onClick={rejectFeature}
+										onClick={(e)=>{saveFeature('rejectFeature')}}
 										variant="outlined"
 										sx={{margin:"5px"}}
-										disabled={feature === -1 ? true : false}>Reject</Button>
-						</>
-					}
+										>Reject</Button>
 					</Grid>
 
 					<Grid item md={4}>
