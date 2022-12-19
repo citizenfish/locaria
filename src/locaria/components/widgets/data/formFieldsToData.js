@@ -25,7 +25,7 @@ function FormFieldsToData(category,updates,fields) {
 	for(let field in fields) {
 		switch(fields[field].write) {
 			default:
-				if(updates[fields[field].key])
+				if(updates&&updates[fields[field].key])
 					setObjectWithPath(attribute,fields[field].key,updates[fields[field].key].value);
 				else {
 					console.log(`Could not get element with key ${fields[field].key}`);

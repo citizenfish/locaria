@@ -34,7 +34,7 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 					}
 				], type: "FeatureCollection"
 			};
-			mapRef.current.addGeojson(geojson, "data");
+			mapRef.current.addGeojson(geojson, "data",true);
 			dispatch(setupField({index: id, value: `SRID=4326;POINT(${data.coordinates[0]} ${data.coordinates[1]})`,required:required}))
 
  		} else {
@@ -51,7 +51,7 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 				{
 					type: "Feature",
 					geometry: {type: "Point", coordinates: e},
-					properties: {}
+					properties: {"POINTER":true}
 				}
 			], type: "FeatureCollection"
 		};
@@ -72,7 +72,7 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 				<DataItemsTypography name={name} prompt={prompt} required={required}/>
 			</Grid>
 			<Grid item md={8} xs={12}>
-				<MaplibreGL ref={mapRef} geojson={boundsGeojson}  boundsGeojson={boundsGeojson} handleMapClick={mapClick}/>
+				<MaplibreGL ref={mapRef}  boundsGeojson={boundsGeojson} handleMapClick={mapClick}/>
 			{/*	<Map id={"dropMap"}
 					 speedDial={true}
 					 sx={actualSx}

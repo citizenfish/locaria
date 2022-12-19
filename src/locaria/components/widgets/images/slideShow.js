@@ -37,30 +37,35 @@ export default function SlideShow({images, format = "contain", feature = false, 
 }
 
 function Item({item, format}) {
-	const url = new UrlCoder();
-	let urlActual=item.url||item;
-	if(item.type==="video") {
+
+	if(item!==undefined) {
+
+		const url = new UrlCoder();
+		let urlActual = item.url || item;
+		if (item.type === "video") {
+			return (
+				<video width="100%" height="100%" autoPlay="autoplay" muted loop>
+					<source src={url.decode(urlActual, true)} type="video/mp4"/>
+				</video>
+			)
+		}
+		let sx = {
+			backgroundImage: `url(${url.decode(urlActual, true)})`,
+			height: "100%",
+			backgroundSize: "cover",
+			boxShadow: "none"
+		}
+
+		if (format === 'contain') {
+			sx.backgroundSize = "contain";
+			sx.backgroundRepeat = "no-repeat";
+			sx.backgroundPositionX = "center";
+			sx.backgroundPositionY = "center";
+		}
+
 		return (
-			<video width="100%" height="100%" autoPlay="autoplay" muted loop>
-				<source src={url.decode(urlActual, true)} type="video/mp4"/>
-			</video>
+			<Paper sx={sx}/>
 		)
 	}
-	let sx={
-		backgroundImage: `url(${url.decode(urlActual, true)})`,
-		height: "100%",
-		backgroundSize: "cover",
-		boxShadow: "none"
-	}
-
-	if(format==='contain') {
-		sx.backgroundSize="contain";
-		sx.backgroundRepeat="no-repeat";
-		sx.backgroundPositionX="center";
-		sx.backgroundPositionY="center";
-	}
-
-	return (
-		<Paper sx={sx}/>
-	)
+	return (<></>);
 }

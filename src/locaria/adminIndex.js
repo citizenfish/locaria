@@ -41,6 +41,8 @@ window.websocket.registerQueue('bulkConfigs', (json) => {
     window.systemLang=json.systemParams.packet.parameters.langENG.data || {};
     window.siteMap=json.systemParams.packet.parameters.siteMap.data || [];
     window.systemCategories=new Channels(json.categories.packet.categories || {});
+    window.mapStyles = json.mapStyles.packet.parameters;
+
     ReactDOM.render(<Main/>, document.getElementById('root'));
 });
 
@@ -90,6 +92,14 @@ function connected() {
             "data": {
                 "method": "list_categories",
                 "attributes" : "true"
+            }
+        },
+        {
+            "queue": "mapStyles",
+            "api": "api",
+            "data": {
+                "method": "get_parameters",
+                "usage": "MapStyle"
             }
         }
         ]

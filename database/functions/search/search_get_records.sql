@@ -143,8 +143,8 @@ BEGIN
                    as attributes
 
         FROM (
-                 SELECT  --distinct ON(fid) fid,
-                         fid,
+                 SELECT  distinct ON(fid) fid,
+                         --fid,
                           CASE WHEN search_ts_query = '_IGNORE' THEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
                           wkb_geometry,
                           (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
@@ -153,8 +153,8 @@ BEGIN
                           --used to further rank results against a specific attribute
                           levenshtein(lower(jsonb_extract_path_text(attributes,VARIADIC ranking_attribute_var)), lower(search_parameters->>'search_text')) AS attribute_rank
 
-                 --FROM (SELECT * FROM global_search_view WHERE live_flag = FALSE UNION SELECT * FROM global_search_view_live WHERE live_flag = TRUE) VW
-                 FROM global_search_view
+                 FROM (SELECT * FROM global_search_view WHERE live_flag = FALSE UNION SELECT * FROM global_search_view_live WHERE live_flag = TRUE) VW
+                 --FROM global_search_view
                  WHERE wkb_geometry IS NOT NULL
                    --Category, refs and general filters
                    AND (NOT filter_var OR attributes @> json_filter)

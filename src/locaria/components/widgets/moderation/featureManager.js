@@ -4,10 +4,11 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {useCookies} from "react-cookie";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {FieldView} from "../data/fieldView";
 import {FormFieldsToData} from "../data/formFieldsToData";
 import Typography from "@mui/material/Typography";
+import {submitForm} from "components/redux/slices/formSlice";
 
 
 const FeatureManager = function ({category}) {
@@ -15,7 +16,9 @@ const FeatureManager = function ({category}) {
 	const [feature, setFeature] = useState(undefined);
 	const [featureData, setFeatureData] = useState(undefined);
 	const [cookies, setCookies] = useCookies();
-	const formData = useSelector((state) => state.formSlice.formData);
+	//const formData = useSelector((state) => state.formSlice.formData);
+	const formSubmitted = useSelector((state) => state.formSlice.formSubmitted);
+	const dispatch = useDispatch();
 
 
 
@@ -85,27 +88,33 @@ const FeatureManager = function ({category}) {
 		refresh();
 	}
 
-	function saveFeature() {
-		let data = FormFieldsToData(featureData.properties.category,formData);
+	useEffect(() => {
+			if(formSubmitted!==undefined) {
+				let channel = window.systemCategories.getChannelProperties(featureData.properties.category);
 
-		let packet = {
-			queue: "saveMyFeature",
-			api: "api",
-			data: {
-				attributes: data.properties,
-				id_token: cookies['id_token'],
-				category: featureData.properties.category,
+				let fieldsData = channel.fields["main"];
+				let data = FormFieldsToData(featureData.properties.category, formSubmitted, fieldsData);
+
+				//let data = FormFieldsToData(featureData.properties.category,formData);
+
+				let packet = {
+					queue: "saveMyFeature",
+					api: "api",
+					data: {
+						attributes: data.properties,
+						id_token: cookies['id_token'],
+						category: featureData.properties.category,
+					}
+				};
+
+
+				packet.data.method = "update_item";
+				packet.data.fid = feature;
+				if (data.geometry)
+					packet.data.geometry = data.geometry;
+				window.websocket.send(packet);
 			}
-		};
-
-
-		packet.data.method = "update_item";
-		packet.data.fid = feature;
-		if (data.geometry)
-			packet.data.geometry = data.geometry;
-		window.websocket.send(packet);
-
-	}
+	},[formSubmitted]);
 
 
 	const columns = [
@@ -143,7 +152,7 @@ const FeatureManager = function ({category}) {
 								onClick={cancelFeature}
 								variant="outlined" sx={{margin:"5px"}}>Cancel</Button>
 								<Button color="success"
-										onClick={(e)=>saveFeature()}
+										onClick={(e)=>{dispatch(submitForm())}}
 										variant="outlined"
 										sx={{margin:"5px"}}
 										>Save</Button>
@@ -154,7 +163,7 @@ const FeatureManager = function ({category}) {
 						<Typography>The data editor allows you to edit data.</Typography>
 					</Grid>
 				</Grid>
-				<FieldView data={featureData} mode={"write"}/>
+				<FieldView data={featureData} mode={"write"} fields={"main"}/>
 			</Box>
 		)
 	} else {
