@@ -12,7 +12,7 @@ BEGIN
 
     --This creates a view live view which we then materialize and index to get the performance
 
-    PERFORM locaria_core.views_union();
+    --PERFORM locaria_core.views_union();
 
     CREATE OR REPLACE VIEW locaria_data.global_search_view_live AS
 
@@ -53,18 +53,19 @@ BEGIN
         FROM locaria_data.base_table B
         INNER JOIN locaria_core.categories C ON (category_id = C.id)
 
-       UNION ALL
-
-        SELECT  B.id,
-                wkb_geometry,
-                category,
-                COALESCE(B.attributes->>'table', B.attributes->>'table', 'locaria_data.search_views_union') AS table_location,
-                B.attributes,
-                search_date,
-                FALSE AS edit,
-                FALSE AS moderated_update
-        FROM locaria_data.search_views_union B
-        INNER JOIN locaria_core.categories C ON (category_id = C.id)
+        -- Remove views and focus upon indexable tables
+--        UNION ALL
+--
+--         SELECT  B.id,
+--                 wkb_geometry,
+--                 category,
+--                 COALESCE(B.attributes->>'table', B.attributes->>'table', 'locaria_data.search_views_union') AS table_location,
+--                 B.attributes,
+--                 search_date,
+--                 FALSE AS edit,
+--                 FALSE AS moderated_update
+--         FROM locaria_data.search_views_union B
+--         INNER JOIN locaria_core.categories C ON (category_id = C.id)
 
     ) SEARCH_TABLES;
 
@@ -122,3 +123,5 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$
 LANGUAGE PLPGSQL;
+
+--SELECT locaria_core.create_materialised_view();

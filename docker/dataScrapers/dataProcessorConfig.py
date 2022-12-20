@@ -1,5 +1,5 @@
 DEBUG = True
 DATA_SCRAPER_PARAMETER = 'data_scraper'
-LINK_SITES = True
+LINK_SITES = False
 JSON_FILES = True
 APIS = True
