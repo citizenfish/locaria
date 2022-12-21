@@ -1,7 +1,8 @@
 --The materialized view global_search_view is used for the majority of search operations
 CREATE OR REPLACE FUNCTION locaria_core.create_materialised_view() RETURNS JSONB AS
 $$
-
+DECLARE
+    ret_var JSONB;
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -115,7 +116,10 @@ BEGIN
     GRANT SELECT ON locaria_data.global_search_view TO PUBLIC;
     GRANT SELECT ON locaria_data.global_search_view_live TO locaria_report_user;
 
-	RETURN jsonb_build_object('success', 'locaria search materialised view created');
+    --Typeahead search is dependent on this view so we must recreate
+    SELECT locaria_core.create_typeahead_search_view() INTO ret_var;
+
+	RETURN jsonb_build_object('success', 'locaria search materialised view created', 'typeahead', ret_var);
 
 EXCEPTION WHEN OTHERS THEN
     RAISE NOTICE '%',SQLERRM;
@@ -124,4 +128,4 @@ END;
 $$
 LANGUAGE PLPGSQL;
 
---SELECT locaria_core.create_materialised_view();
+SELECT locaria_core.create_materialised_view();

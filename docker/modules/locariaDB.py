@@ -62,6 +62,9 @@ class locariaDB:
             return ret
 
         except Exception as error:
+            print("ERROR")
+            print(str(error))
+
             try:
                 cursor.execute("ROLLBACK")
                 self.conn.commit()

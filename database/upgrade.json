@@ -3,8 +3,8 @@
     {
       "stopOnError": true,
       "tables": [
-        "database/schema_and_tables/create_base_search_table.sql",
-        "database/functions/view_creation/create_materialised_view.sql"
+        "database/functions/search/search_get_records.sql",
+        "database/functions/search/typeahead_search.sql"
       ],
       "substitutions": "../tests.json"
     }

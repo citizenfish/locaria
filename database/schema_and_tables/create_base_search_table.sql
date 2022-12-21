@@ -4,7 +4,7 @@ BEGIN
 
     RAISE NOTICE 'Creating locaria base_table ** DESTRUCTIVE UPGRADE ***';
 
-    --DROP TABLE IF EXISTS locaria_data.base_table CASCADE;
+    DROP TABLE IF EXISTS locaria_data.base_table CASCADE;
     CREATE TABLE IF NOT EXISTS locaria_data.base_table  (
         id BIGSERIAL,
         category_id INTEGER,

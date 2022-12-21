@@ -11,6 +11,46 @@ INSERT_SCHEMA = 'locaria_data'
 
 #TODO split classes into own files
 
+class openfoodnetwork:
+
+    def __init__(self, site, debug=True):
+        self.url = site.get('url','https://openfoodnetwork.org.uk/producers#/')
+        self.debug = debug
+        self.params = site
+        self.params.pop('urls', None)
+        self.table = site.get('table', 'sustainablefoodplaces')
+        self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (url, attributes) VALUES %s ON CONFLICT(url) DO UPDATE SET attributes=EXCLUDED.attributes"
+
+    def processUrls(self, db):
+        if self.debug: print(f"Processing openfoodnetwork: {self.url}")
+        features = []
+        scripts = getScripts(self.url)
+        js = re.findall('["]enterprises[", ]+(.*)\)',scripts)
+        js_json = json.loads(js[0])
+        for j in js_json:
+            feature = j
+            feature['description'] = {'title' : j['name'], 'text' : j['description']}
+            feature['images'] = [j['promo_image']]
+            feature['tags'] = [j['category']]
+            feature['location'] = f"{j['address']['address1']} {j['address']['address2']}"
+            feature['type'] = 'openfoodnetwork'
+            if j['longitude'] != None and j['latitude'] != None:
+                feature['geometry'] = f"SRID=4326;POINT({j['longitude']} {j['latitude']})"
+            url = j['website']
+
+            if url == None or url == '':
+                url = f"https://openfoodnetwork.org.uk/producers#{j['path']}"
+            else:
+                url = f"http://{url}".lower()
+
+            feature['url'] = url
+
+            features.append((j['id'], json.dumps(feature)))
+
+        res = db.bulkInserter(self.insert, features)
+
+        return res
+
 class sustainablefoodplaces:
 
     def __init__(self, site, debug = True):
@@ -19,8 +59,6 @@ class sustainablefoodplaces:
         self.params = site
         self.params.pop('urls', None)
         self.table = site.get('table', 'sustainablefoodplaces')
-
-        #self.table_create = f"CREATE TABLE IF NOT EXISTS {INSERT_SCHEMA}.{self.table}(url TEXT PRIMARY KEY, attributes JSONB)"
         self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (url, attributes) VALUES %s ON CONFLICT(url) DO UPDATE SET attributes=EXCLUDED.attributes"
 
     def processUrls(self, db):
@@ -123,4 +161,4 @@ class datathistle:
 
         return {'inserts' : count}
 
-classSelectors = {'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle}
+classSelectors = {'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle, 'openfoodnetwork' :openfoodnetwork}
