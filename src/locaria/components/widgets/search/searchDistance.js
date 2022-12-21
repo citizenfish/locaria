@@ -37,8 +37,8 @@ export default function SearchDistance({sx,maxDistance=20,minDistance=1}) {
 	]
 	return (
 			<Stack direction="row" spacing={2} sx={{...{marginTop:"20px"},...sx}}>
-				<Slider marks={marks} defaultValue={searchParams.distance? parseInt(searchParams.distance):1} valueLabelDisplay="auto" aria-label="Default"  onChange={handleChange} onTouchEnd={handleSubmit} onMouseUp={handleSubmit} min={minDistance} max={maxDistance}/>
-				<Button variant={"outlined"} onClick={()=>{
+				<Slider sx={{Width:"100%", marginRight: "10px"}} marks={marks} defaultValue={searchParams.distance? parseInt(searchParams.distance):1} valueLabelDisplay="auto" aria-label="Default"  onChange={handleChange} onTouchEnd={handleSubmit} onMouseUp={handleSubmit} min={minDistance} max={maxDistance}/>
+				<Button variant={"outlined"} sx={{width:"80px"}} onClick={()=>{
 					toggleDistanceType();
 				}}>{searchParams.distanceType}</Button>
 			</Stack>

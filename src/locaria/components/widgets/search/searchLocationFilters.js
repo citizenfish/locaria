@@ -18,6 +18,7 @@ import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
 import {v4 as uuidv4} from "uuid";
 import TextSearchSimple from "widgets/search/TextSearchSimple";
+import FooterBackToTop from "widgets/footers/footerBackToTop";
 
 const SearchLocationFilters = ({
 								   category,
@@ -65,7 +66,7 @@ const SearchLocationFilters = ({
 		} else {
 			if (features && features.features && features.features.length > 0) {
 
-				let mobileHeight=(mobile? '600px':'220px');
+				let mobileHeight = (mobile ? '600px' : '220px');
 				return (
 					features.features.map((result) => {
 							return (
@@ -74,7 +75,7 @@ const SearchLocationFilters = ({
 									borderRadius: "5px",
 									border: "1px solid rgb(228, 230, 230)",
 									margin: "5px",
-									backgroundColor:"rgba(218, 210, 210, 0.03)",
+									backgroundColor: "rgba(218, 210, 210, 0.03)",
 									maxHeight: mobileHeight
 								}}></DataCard>
 							)
@@ -99,26 +100,26 @@ const SearchLocationFilters = ({
 
 	function FiltersInner() {
 		return (
-			<>
+			<Stack direction="column" spacing={2}>
 				<Stack direction="row" spacing={2}>
 					<Button variant={"outlined"} sx={{
-						width: "70%"
+						width: "100%"
 					}} onClick={() => {
 						dispatch(locationPopup({open: true}));
 					}} startIcon={
 						<EditLocationAltIcon/>}>{currentLocation ? currentLocation.text.substring(0, 10) + (currentLocation.text.length > 10 ? '...' : '') : 'No location'}</Button>
-					{page&&
-						<Button variant={"outlined"} onClick={() => {
+					{page &&
+						<Button variant={"outlined"} sx={{width: "80px"}} onClick={() => {
 							toggleMap();
 							handleChange();
-						}} startIcon={<MapIcon/>}></Button>
+						}} startIcon={<MapIcon sx={{marginLeft: "12px"}}/>}></Button>
 					}
 
 				</Stack>
 				<SearchDistance category={category}></SearchDistance>
 				<TextSearchSimple/>
 				<FilterLayoutSubCats category={category}/>
-			</>
+			</Stack>
 		)
 	}
 
@@ -131,40 +132,46 @@ const SearchLocationFilters = ({
 	};
 	if (mobile === true) {
 		return (
-			<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
+			<>
+				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
 
-				<Grid item md={3} sx={{width: "100%"}}>
+					<Grid item md={3} sx={{width: "100%"}}>
 
-					<Accordion expanded={expanded} onChange={handleChange}>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon/>}
-							aria-controls="panel1a-content"
-							id="panel1a-header"
-						>
-							<TypographyHeader element={"h1"}>Filters</TypographyHeader>
-						</AccordionSummary>
-						<AccordionDetails>
-							<FiltersInner/>
-						</AccordionDetails>
-					</Accordion>
+						<Accordion expanded={expanded} onChange={handleChange}>
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon/>}
+								aria-controls="panel1a-content"
+								id="panel1a-header"
+							>
+								<TypographyHeader element={"h1"}>Filters</TypographyHeader>
+							</AccordionSummary>
+							<AccordionDetails>
+								<FiltersInner/>
+							</AccordionDetails>
+						</Accordion>
+
+					</Grid>
+					<Grid item md={9} xs={12} sx={{width: "100%", paddingLeft: "7px !important"}}>
+						<ResultsInner/>
+					</Grid>
 
 				</Grid>
-				<Grid item md={9} sx={{width: "100%"}}>
-					<ResultsInner/>
-				</Grid>
-
-			</Grid>
+				<FooterBackToTop/>
+			</>
 		);
 	} else {
 		return (
-			<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
-				<Grid item md={3} sx={{width: "100%"}}>
-					<FiltersInner/>
+			<>
+				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
+					<Grid item md={3} sx={{width: "100%"}}>
+						<FiltersInner/>
+					</Grid>
+					<Grid item md={9} sx={{width: "100%"}}>
+						<ResultsInner/>
+					</Grid>
 				</Grid>
-				<Grid item md={9} sx={{width: "100%"}}>
-					<ResultsInner/>
-				</Grid>
-			</Grid>
+				<FooterBackToTop/>
+			</>
 		);
 	}
 }
