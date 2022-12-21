@@ -18,3 +18,9 @@ Type: Integer
 
 A limit which applies PER CATEGORY for the search results. ie the maximum number of results per individual category to be returned.
 
+### location_only
+
+Default: null
+Type: string
+
+If not null then features will be searched and returned as well as locations

@@ -221,6 +221,14 @@ A jsonpath search query string conforming to https://www.postgresql.org/docs/12/
 
 This operates on the data object of the items attributes
 
+### fids
+
+Default: null
+Type: JSON Array
+
+An array of fids to be returned, only features matching these fids will be selected
+
+
 ## Returns
 
 ### Datagrid format

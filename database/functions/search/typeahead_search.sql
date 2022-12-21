@@ -4,12 +4,15 @@ DECLARE
 
     results_var JSONB;
     category_limit INTEGER DEFAULT 30;
+    location_only BOOLEAN DEFAULT FALSE;
 BEGIN
 
 
     IF length(search_parameters->>'search_text') < 3 THEN
         RETURN jsonb_build_object('results', jsonb_build_array());
     END IF;
+
+    location_only = COALESCE(search_parameters->>'location_only', 'false')::BOOLEAN;
 
     category_limit = COALESCE(search_parameters->>'limit', category_limit::TEXT)::INTEGER;
 
@@ -28,6 +31,7 @@ BEGIN
                     SELECT row_number() OVER (PARTITION BY category) AS rn,
                            * FROM locaria_data.typeahead_search_view
                     WHERE LOWER(search_text) LIKE LOWER(search_parameters->>'search_text'||'%')
+                    AND (location_only IS FALSE OR feature_type = 'l')
                 ) F
            WHERE rn < category_limit
        ) R;

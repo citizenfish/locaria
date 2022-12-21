@@ -24,6 +24,7 @@ DECLARE
     category_var TEXT[];
     owned_var BOOLEAN;
     live_flag BOOLEAN DEFAULT FALSE;
+    fids_var TEXT [] DEFAULT NULL;
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -129,6 +130,11 @@ BEGIN
     owned_var = COALESCE(search_parameters->>'owned','FALSE')::BOOLEAN;
     live_flag = COALESCE(search_parameters->>'live','FALSE')::BOOLEAN;
 
+    --fids list
+    IF jsonb_array_length(search_parameters->'fids') > 0 THEN
+        fids_var = json2text(search_parameters->'fids');
+    END IF;
+
     RETURN QUERY
 
         SELECT fid,
@@ -143,8 +149,8 @@ BEGIN
                    as attributes
 
         FROM (
-                 SELECT  distinct ON(fid) fid,
-                         --fid,
+                 SELECT  --distinct ON(fid) fid, --TODO triple check this is not needed now, are they duplicated in live view?
+                          fid,
                           CASE WHEN search_ts_query = '_IGNORE' THEN 1 ELSE ts_rank(jsonb_to_tsvector('English'::regconfig, attributes, '["string", "numeric"]'::jsonb),search_ts_query) END  as search_rank,
                           wkb_geometry,
                           (attributes::JSONB - 'table') || jsonb_build_object('fid', fid) as attributes,
@@ -156,6 +162,8 @@ BEGIN
                  FROM (SELECT * FROM global_search_view WHERE live_flag = FALSE UNION SELECT * FROM global_search_view_live WHERE live_flag = TRUE) VW
                  --FROM global_search_view
                  WHERE wkb_geometry IS NOT NULL
+                   --fids list
+                   AND (fids_var IS NULL OR fid = ANY(fids_var))
                    --Category, refs and general filters
                    AND (NOT filter_var OR attributes @> json_filter)
                    --Free text on JSONB attributes search

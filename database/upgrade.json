@@ -3,36 +3,8 @@
     {
       "stopOnError": true,
       "tables": [
-        "database/system_parameters/lambda_config_parameters.sql",
-        "database/functions/triggers/files_trigger.sql",
-        "database/functions/internal/file_upload/load_preview_file_data.sql",
-        "database/functions/internal/file_upload/load_preview_file_data_cron.sql",
-        "database/functions/view_creation/create_materialised_view.sql",
-        "database/functions/view_creation/create_typeahead_search_view.sql",
         "database/functions/search/search_get_records.sql",
-        "database/functions/search/typeahead_search.sql",
-        "database/functions/internal/view_report.sql",
-        "database/schema_and_tables/create_statistics_view.sql",
-        "database/reports/statistics_dashboard/statistics_dashboard_pie_charts.sql",
-        "database/reports/statistics_dashboard/statistics_dashboard_bar_charts.sql",
-        "database/functions/utility/asset_url_maker.sql",
-        "database/functions/internal/data/add_item.sql",
-        "database/functions/utility/make_timestamp.sql",
-        "database/functions/utility/tag_maker.sql",
-        "database/functions/utility/uk_gridref_parse.sql",
-        "database/functions/utility/geocoder.sql",
-        "database/functions/locaria_gateway.sql",
-        "database/functions/locaria_internal_gateway.sql",
-        "database/functions/internal/data/update_item.sql",
-        "database/functions/search/get_my_items.sql",
-        "database/functions/search/search.sql",
-        "database/functions/search/get_item.sql",
-        "database/functions/internal/data/get_moderation_items.sql",
-        "database/functions/view_creation/views_union.sql",
-        "database/functions/utility/reverse_geocoder.sql",
-        "database/schema_and_tables/create_user_store_table.sql",
-        "database/functions/user/add_user_store.sql",
-        "database/functions/user/get_user_store.sql"
+        "database/functions/search/typeahead_search.sql"
       ],
       "substitutions": "../tests.json"
     }
