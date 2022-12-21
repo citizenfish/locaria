@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
 import {setDistance} from "../../redux/slices/searchDrawerSlice";
-import {distanceFormatNice} from "../../../libs/Distance";
+import {distanceFormatNice} from "libs/Distance";
 import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid";
 
@@ -23,7 +23,7 @@ const SearchLocationFiltersNoResults = () => {
 				<Box
 					component={"img"}
 					sx = {{
-						height: 400, width: 800
+						width: "100%"
 					}}
 					src = "http://activeprescriptiondev.myactiveprescription.com/assets/bfa57a48-4c35-4eb2-9fcc-e42bd2b940df.jpg"
 				/>

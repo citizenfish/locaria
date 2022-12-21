@@ -50,8 +50,7 @@ const MaplibreGL = forwardRef(({
 	}
 
 	function addQueueItem(type,geojson,id,fit) {
-		let localQueue=[...queue.current,...[{"type": type, "geojson": geojson, id: id,fit:fit}]];
-		queue.current=localQueue;
+		queue.current=[...queue.current,...[{"type": type, "geojson": geojson, id: id,fit:fit}]];
 		processQueue();
 
 	}
@@ -92,14 +91,11 @@ const MaplibreGL = forwardRef(({
 			pitch: pitch,
 		}
 
-		if (bboxSet) {
-			let bboxBuffered=bboxSet;
-
-			if(bboxBuffer){
+		if (bboxSet&&Array.isArray(bboxSet)&&bboxSet.length===4) {
+			let bboxBuffered;
 				const bboxPolly=bboxPolygon(bboxSet);
 				const tmpBuffered=buffer(bboxPolly, bboxBuffer,{units:"meters"});
 				bboxBuffered = bbox(tmpBuffered);
-			}
 			// Mapbox uses array of point bbox format
 			options.bounds = [[bboxBuffered[0], bboxBuffered[1]], [bboxBuffered[2], bboxBuffered[3]]];
 			console.log(options.bounds);
