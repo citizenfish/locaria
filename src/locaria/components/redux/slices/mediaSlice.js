@@ -4,7 +4,8 @@ export const mediaSlice = createSlice({
 	name: 'mediaSlice',
 	initialState: {
 		mobile: false,
-		innerWidth: 0
+		innerWidth: 0,
+		innerHeight: 0
 	},
 	reducers: {
 		setMobile: (state,action) => {

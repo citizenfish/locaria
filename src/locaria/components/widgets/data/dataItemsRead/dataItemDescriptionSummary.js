@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useRef, useState} from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -7,11 +7,10 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import MaplibreGL from "widgets/maps/maplibreGL";
 
 
-const DataItemDescriptionSummary = ({name,data,sx,allData,length=100}) => {
+const DataItemDescriptionSummary = ({data,sx,allData,length=100}) => {
 
     const mapRef = useRef();
 
-    console.log(allData)
     const [open,setOpen] = useState(false)
 
     const handleClose = () =>{
