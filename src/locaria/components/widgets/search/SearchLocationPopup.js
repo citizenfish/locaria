@@ -20,10 +20,9 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PlaceIcon from '@mui/icons-material/Place';
-import {getLocation} from "../../../libs/geolocation";
+import {getLocation} from "libs/geolocation";
 import {useCookies} from "react-cookie";
-import {encodeSearchParams} from "../../../libs/searchParams";
-import {shadows} from "@mui/system"
+import {encodeSearchParams} from "libs/searchParams";
 
 export default function SearchLocationPopup({defaultPage,maxLocations=8,display = true}) {
 	const dispatch = useDispatch();
@@ -89,7 +88,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		handleListItemClick("geo","Nearby",location,false);
 	}
 
-	function handleGeoError(location) {
+	function handleGeoError() {
 		dispatch(setGeolocation(false));
 	}
 
@@ -110,7 +109,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	}, [open]);
 
 	useEffect(() => {
-		if(searchText!="") {
+		if(searchText!=="") {
 			let packetSearch = {
 				"queue": "locationSearch",
 				"api": "api",
@@ -129,7 +128,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	function GeolocationItem() {
 		if (geolocation === false) {
 			return (
-				<ListItem button disabled={true}
+				<ListItem disabled={true}
 						  key={"Nearby"}>
 					<ListItemIcon>
 						<NearMeIcon/>
@@ -141,7 +140,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 		if (geolocation === undefined) {
 			return (
-				<ListItem button onClick={() => {
+				<ListItem onClick={() => {
 					getLocation(handleGeoSuccess,handleGeoError)
 				}}
 						  key={"Nearby"}>
@@ -154,12 +153,12 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		}
 
 		return (
-			<ListItem button onClick={() => handleListItemClick("fid","nearby",geolocation,false)}
+			<ListItem onClick={() => handleListItemClick("fid","nearby",geolocation,false)}
 					  key={"Nearby"}>
 				<ListItemIcon>
 					<NearMeIcon/>
 				</ListItemIcon>
-				<ListItemText primary={`Nearby ${geolocation[0]},${geolocation[1]}`}/>
+				<ListItemText primary={`Nearby`}/>
 			</ListItem>
 		)
 
@@ -199,7 +198,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 			let recentItemsArray=[];
 			for(let i in cookies['recentLocations']) {
 				recentItemsArray.push(
-					<ListItem button
+					<ListItem
 							  onClick={() => handleListItemClick(cookies['recentLocations'][i].fid,cookies['recentLocations'][i].text,cookies['recentLocations'][i].location)}
 							  key={`ri2Key${i}`}>
 						<ListItemIcon>
