@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 
-export default function TypographyHeader({children,element,sx})  {
+export default function TypographyHeader({children,element="h1",sx})  {
     //TODO why is fontSize hardcoded?
     const elements = {
         "h1":{
