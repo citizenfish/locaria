@@ -19,13 +19,13 @@ const DataItemTextInput = ({id, name, data, prompt,dataModeration, multiline=fal
 	},[]);
 
 	return (
-		<Grid container spacing={2} sx={{
-			marginBottom: "10px"
+		<Grid container alignItems="stretch" spacing={2} sx={{
+			marginBottom: "10px",
 		}}>
-			<Grid item md={4}>
+			<Grid item md={4} xs={12}>
 				<DataItemsTypography name={name} prompt={prompt} required={required}/>
 			</Grid>
-			<Grid item md={8}>
+			<Grid item md={8} xs={12}>
 				<DataItemModeration dataModeration={dataModeration} id={id} update={setDataLocal}></DataItemModeration>
 				<TextField
 					error={formData[id]? !formData[id].complete:false}
@@ -33,7 +33,6 @@ const DataItemTextInput = ({id, name, data, prompt,dataModeration, multiline=fal
 					id={id}
 					//label={name}
 					type="text"
-					fullWidth
 					variant="outlined"
 					inputProps={{
 						style: {
@@ -42,7 +41,8 @@ const DataItemTextInput = ({id, name, data, prompt,dataModeration, multiline=fal
 					}}
 					value={dataLocal}
 					sx={{
-						color: "black"
+						color: "black",
+						width: "100%"
 					}}
 					multiline={multiline}
 					onChange={(e) => {

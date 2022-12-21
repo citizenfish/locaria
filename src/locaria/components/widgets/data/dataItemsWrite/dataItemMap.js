@@ -6,6 +6,7 @@ import {setFieldValue, setupField} from "../../../redux/slices/formSlice";
 import Map from "../../maps/map";
 import Typography from "@mui/material/Typography";
 import DataItemsTypography from "./dataItemsTypography";
+import MaplibreGL from "widgets/maps/maplibreGL";
 
 const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,maxZoom,zoom,boundsGeojson,buffer,sx}) => {
 
@@ -33,7 +34,7 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 					}
 				], type: "FeatureCollection"
 			};
-			mapRef.current.addGeojson(geojson, "data", true);
+			mapRef.current.addGeojson(geojson, "data",true);
 			dispatch(setupField({index: id, value: `SRID=4326;POINT(${data.coordinates[0]} ${data.coordinates[1]})`,required:required}))
 
  		} else {
@@ -49,14 +50,15 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 			"features": [
 				{
 					type: "Feature",
-					geometry: {type: "Point", coordinates: e.coordinate4326},
-					properties: {}
+					geometry: {type: "Point", coordinates: e},
+					properties: {"POINTER":true}
 				}
 			], type: "FeatureCollection"
 		};
 		mapRef.current.addGeojson(geojson, "data", true);
-		dispatch(setFieldValue({index: 'geometry', value: e.ewkt}))
-		console.log(e.ewkt);
+		let ewkt=`SRID=4326;POINT(${e[0]} ${e[1]})`;
+		dispatch(setFieldValue({index: 'geometry', value: ewkt}))
+		console.log(ewkt);
 		//setPoint(e.ewkt);
 
 	}
@@ -66,11 +68,12 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 
 	return (
 		<Grid container spacing={2} sx={{marginBottom: "10px"}}>
-			<Grid item md={4}>
+			<Grid item md={4} xs={12}>
 				<DataItemsTypography name={name} prompt={prompt} required={required}/>
 			</Grid>
-			<Grid item md={8}>
-				<Map id={"dropMap"}
+			<Grid item md={8} xs={12}>
+				<MaplibreGL ref={mapRef}  boundsGeojson={boundsGeojson} handleMapClick={mapClick}/>
+			{/*	<Map id={"dropMap"}
 					 speedDial={true}
 					 sx={actualSx}
 					 ref={mapRef}
@@ -82,7 +85,7 @@ const DataItemMap = ({id, name, data,prompt,required,mapSource,mapType,mapStyle,
 					 zoom={zoom}
 					 boundsGeojson={boundsGeojson}
 					 buffer={buffer}
-					 />
+					 />*/}
 			</Grid>
 
 		</Grid>

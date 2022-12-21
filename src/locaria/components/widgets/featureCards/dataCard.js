@@ -18,7 +18,8 @@ const DataCard = ({feature, sx, field, clickEnabled=true}) => {
 			width: "100%",
 			overflow: "hidden",
 			padding: "10px",
-			backgroundColor:"rgba(218, 210, 210, 0.03)"
+			backgroundColor:"rgba(218, 210, 210, 0.03)",
+			marginTop:"0px !important"
 		}, ...sx? sx:{}
 	};
 

@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import {Checkbox, Collapse, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
-import {setupField} from "../../redux/slices/formSlice";
 import {arrayToggleElement, findArrayObject} from "../../../libs/arrayTools";
+import {v4 as uuidv4} from "uuid";
 
 export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,selected}) {
 
@@ -17,28 +17,6 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 
 		if(Array.isArray(selected)) {
 			setTags(selected);
-			/*let newOpens={};
-			let tree;
-			if (selected[0]) {
-				tree=findArrayObject(treeData,"name",selected[0]);
-				if(tree&&tree.subs)
-					newOpens[selected[0].replace(/[^a-zA-Z]/g, '')] = true;
-				else
-					setTree([selected[0].replace(/[^a-zA-Z]/g,'')]);
-			}
-			if (selected[1]) {
-				tree=findArrayObject(tree.subs,"name",selected[1]);
-
-				if (tree&&tree.subs)
-					newOpens[selected[0].replace(/[^a-zA-Z]/g, '') + '.' + selected[1].replace(/[^a-zA-Z]/g, '')] = true;
-				else
-					setTree([selected[0].replace(/[^a-zA-Z]/g,'')+'.'+selected[1].replace(/[^a-zA-Z]/g,'')]);
-			}
-			if (selected[2]) {
-				setTree([selected[0].replace(/[^a-zA-Z]/g,'')+'.'+selected[1].replace(/[^a-zA-Z]/g,'')+'.'+selected[2].replace(/[^a-zA-Z]/g,'')]);
-			}
-			setOpens(newOpens);*/
-
 		}
 
 	},[]);
@@ -61,16 +39,9 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 			treecopy.push(nodeIds);
 		}
 
-		/*let selectedArray={};
-		for(let t in treecopy) {
-			selectedArray=
-		}*/
-
 		if(multi===true) {
-			//setTree(treecopy);
 			setFunction(tagsCopy);
 		} else {
-			//setTree([nodeIds]);
 			setFunction(name);
 		}
 	};
@@ -79,6 +50,8 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 		let treeLevel=[];
 		level++;
 		for(let p in ptr) {
+			const uuid = uuidv4();
+
 			let newPath=`${idPath? idPath+'.':''}${ptr[p].name.replace(/[^a-zA-Z]/g,'')}`;
 			let newArrayPath=[...path];
 			newArrayPath.push(ptr[p].name);
@@ -89,7 +62,7 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 
 
 			treeLevel.push(
-				<ListItem sx={{padding:"0px",background: color}}>
+				<ListItem sx={{padding:"0px",background: color}} key={uuid}>
 					<ListItemButton role={undefined} onClick={()=>{handleCheck(newPath,ptr[p].name);}} dense>
 						<ListItemIcon>
 							<Checkbox
@@ -106,9 +79,10 @@ export default function Treeview({sx,multi=true,levels=1,treeData,setFunction,se
 			);
 
 			if(ptr[p].subs&&level<maxLevel) {
+				const uuid = uuidv4();
 				treeLevel.push(
 					<Collapse in={tags.indexOf(ptr[p].name) !== -1} timeout="auto" unmountOnExit>
-						<List sx={{padding: "0px", background: color, paddingLeft: `${level*5}px`}}>
+						<List sx={{padding: "0px", background: color, paddingLeft: `${level*5}px`}} key={uuid}>
 							<SearchCategoryRecursive ptr={ptr[p].subs} color={color} idPath={newPath} path={newArrayPath} level={level} maxLevel={maxLevel}/>
 						</List>
 					</Collapse>

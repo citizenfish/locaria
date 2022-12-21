@@ -8,7 +8,6 @@ const DataItemsTypography = ({name, prompt, required}) => {
 	return (
 		<>
 			{required&& <Typography sx={{color: "red", display:"inline-block", paddingRight: "5px"}}>*</Typography>}
-
 				<Typography sx={{
 					fontWeight: "600",
 					display:"inline-block"

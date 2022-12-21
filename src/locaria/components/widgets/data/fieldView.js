@@ -142,8 +142,9 @@ const FormatFields = ({fields, data, mode, category, moderation}) => {
 				default:
 					if (fields[f].visible !== false || mode === "write") {
 						let md = fields[f].md || 12;
+						let xs = fields[f].xs || 12;
 						formattedArray.push(
-							<Grid item md={md} key={uuid}>
+							<Grid item md={md} xs={xs} key={uuid}>
 								<FormatField field={fields[f]}
 											 data={data}
 											 key={fields[f].key}

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Collapse, Divider, Drawer, ListItem, ListItemIcon, ListItemText} from "@mui/material";
+import {Collapse, Drawer, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import Box from "@mui/material/Box";
 import {useHistory} from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
@@ -86,7 +86,7 @@ function DrawSiteMap() {
 	let topMenuArray=[];
 
 	topMenuArray.push(
-		<ListItem button key={"InitialHome"} onClick={() => {
+		<ListItem key={"InitialHome"} onClick={() => {
 			history.push('/');
 			dispatch(closeMenuDraw());
 
@@ -100,7 +100,7 @@ function DrawSiteMap() {
 
 	if(userValid&&groups&&groups.indexOf('Admins')!==-1) {
 		topMenuArray.push(
-			<ListItem button key={"AdminHome"} onClick={() => {
+			<ListItem key={"AdminHome"} onClick={() => {
 				window.location='/Admin/';
 			}}>
 				<ListItemIcon>
@@ -119,7 +119,7 @@ function DrawSiteMap() {
 			// Does the menu item have a group set? if so check they have it
 			if(!window.siteMap[p].items[i].group||groups.indexOf(window.siteMap[p].items[i].group)!==-1) {
 				subMenuArray.push(
-					<ListItem sx={{pl: 4}} button key={i} onClick={() => {
+					<ListItem sx={{pl: 4}} key={i} onClick={() => {
 
 						let route = url.route(window.siteMap[p].items[i].link);
 						if (route === true) {
@@ -133,16 +133,14 @@ function DrawSiteMap() {
 			}
 		}
 
-
 		topMenuArray.push(
 
-			<ListItem button key={window.siteMap[p].key} onClick={(e) => {
+			<ListItem key={window.siteMap[p].key} onClick={(e) => {
 				e.preventDefault();
 
 
 				if(window.siteMap[p].needsLocation&&currentLocation===undefined) {
 					dispatch(closeMenuDraw());
-
 					dispatch(locationPopup({open:true,page:window.siteMap[p].link}));
 				} else {
 					if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
@@ -158,18 +156,19 @@ function DrawSiteMap() {
 							dispatch(closeMenuDraw());
 
 						}
+					} else {
+						if(window.siteMap[p].items) {
+							toggleCollapseOpen(p);
+						} else {
+							let route = url.route(window.siteMap[p].link);
+							if (route === true) {
+								history.push(window.siteMap[p].link);
+								dispatch(closeMenuDraw());
+							}
+						}
 					}
 				}
-/* old
-				if(window.siteMap[p].items) {
-					toggleCollapseOpen(p);
-				} else {
-					let route = url.route(window.siteMap[p].link);
-					if (route === true) {
-						history.push(window.siteMap[p].link);
-						dispatch(closeMenuDraw());
-					}
-				}*/
+
 			}}>
 
 				<ListItemText primary={window.siteMap[p].name}/>
@@ -194,7 +193,7 @@ function DrawSiteMap() {
 
 	if(userValid===false) {
 		topMenuArray.push(
-			<ListItem button key={"SignIn"} onClick={() => {
+			<ListItem key={"SignIn"} onClick={() => {
 				window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 
 			}}>
@@ -206,7 +205,7 @@ function DrawSiteMap() {
 		)
 	} else {
 		topMenuArray.push(
-			<ListItem button key={"Logout"} onClick={() => {
+			<ListItem key={"Logout"} onClick={() => {
 				setCookies('id_token', "null", {path: '/', sameSite: true});
 				window.location = `/`;
 			}}>

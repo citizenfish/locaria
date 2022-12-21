@@ -11,8 +11,9 @@ import {FieldView} from "../../widgets/data/fieldView";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import {FormFieldsToData} from "../../widgets/data/formFieldsToData";
+import {FormFieldsCheckRequired, FormFieldsToData} from "../../widgets/data/formFieldsToData";
 import {LinearProgress} from "@mui/material";
+import {submitForm} from "components/redux/slices/formSlice";
 
 
 export default function AdminContentDataEdit() {
@@ -21,12 +22,12 @@ export default function AdminContentDataEdit() {
 	const [cookies, setCookies] = useCookies(['location']);
 	//TODO feature does not really belong in pages state? move into own state
 	const feature = useSelector((state) => state.adminPages.feature);
-	const formData = useSelector((state) => state.formSlice.formData);
+	//const formData = useSelector((state) => state.formSlice.formData);
+	const formSubmitted = useSelector((state) => state.formSlice.formSubmitted);
 
 	const [featureData, setFeatureData] = useState(undefined);
-	const [images, setImages] = useState([]);
+	const [queueName, setQueueName] = useState(undefined);
 	const category = useSelector((state) => state.categorySelect.currentSelected);
-	const mapRef = useRef();
 
 	const dispatch = useDispatch();
 
@@ -44,16 +45,12 @@ export default function AdminContentDataEdit() {
 			} else {
 				if (json.packet.features[0]) {
 					setFeatureData(json.packet.features[0]);
-					/*if(json.packet.features[0].properties.data&&json.packet.features[0].properties.data.images)
-						setImages(json.packet.features[0].properties.data.images);
-					else setImages([]);*/
+
 				}
-				/*if(json.packet) {
-					mapRef.current.addGeojson(json.packet)
-					mapRef.current.zoomToLayersExtent(["data"], 50000);
-				}*/
 			}
 		});
+
+
 
 		window.websocket.registerQueue("saveFeature", function (json) {
 			dispatch(setOverview(undefined));
@@ -117,103 +114,92 @@ export default function AdminContentDataEdit() {
 		history.push(`/Admin/Content/Data/`);
 	}
 
-	/*const mapClick = (e) => {
-
-		const geojson = {
-			"features": [
-				{
-					type: "Feature",
-					geometry: {type: "Point", coordinates: e.coordinate4326},
-					properties: featureData
-				}
-			], type: "FeatureCollection"
-		};
-		mapRef.current.addGeojson(geojson, "data", true);
-		setPoint(e.ewkt);
-
-	}
-*/
 
 	function saveFeature(queueName="saveFeature") {
-		let data = FormFieldsToData(featureData.properties.category,formData);
+		setQueueName(queueName);
+		dispatch(submitForm());
+	};
 
-		if(!data.data)
-			data.data={};
-		let packet = {
-			queue: queueName,
-			api: "sapi",
-			data: {
-				attributes: data.properties,
-				id_token: cookies['id_token'],
-				category: featureData.properties.category,
-			}
-		};
-
-		if (feature === -1) {
+	useEffect(() => {
+		if(formSubmitted!==undefined) {
+			//let data = FormFieldsToData(featureData.properties.category,formData);
 			let channel = window.systemCategories.getChannelProperties(featureData.properties.category);
 
-			packet.data.method = "add_item";
-			packet.data.table = channel.table;
-		} else {
-			packet.data.method = "update_item";
-			packet.data.fid = feature;
+			let fieldsData = channel.fields["main"];
+			let data = FormFieldsToData(featureData.properties.category, formSubmitted, fieldsData);
+			if (!data.data)
+				data.data = {};
+			let packet = {
+				queue: queueName,
+				api: "sapi",
+				data: {
+					attributes: data.properties,
+					id_token: cookies['id_token'],
+					category: featureData.properties.category,
+				}
+			};
+
+			if (feature === -1) {
+				packet.data.method = "add_item";
+				packet.data.table = channel.table;
+			} else {
+				packet.data.method = "update_item";
+				packet.data.fid = feature;
+			}
+			if (data.geometry)
+				packet.data.geometry = data.geometry;
+			window.websocket.send(packet);
 		}
-		if (data.geometry)
-			packet.data.geometry = data.geometry;
-		window.websocket.send(packet);
 
-	}
+	},[formSubmitted]);
 
-	function imageSelect(images) {
-		setImages(images);
-	}
+	if(formSubmitted===undefined) {
 
-	return (
-		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
-			<AdminAppBar title={`Content - Data`}/>
-			<LeftNav isOpenContent={true}/>
-			<Box
-				component="main"
-				sx={{marginTop: '60px',padding:"50px"}}
-			>
-				<Grid container spacing={2} sx={{mt: 1, p: 3}}>
-					<Grid item md={8}>
-						<Button color="warning"
-								onClick={cancelFeature}
-								variant="outlined" sx={{margin:"5px"}}>Cancel</Button>
-					{featureData&&
-						<>
-								<Button color="success"
-										onClick={(e)=>saveFeature()}
-										variant="outlined"
-										sx={{margin:"5px"}}
-										disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
+		return (
+			<Box sx={{display: 'flex'}}>
+				<TokenCheck></TokenCheck>
+				<AdminAppBar title={`Content - Data`}/>
+				<LeftNav isOpenContent={true}/>
+				<Box
+					component="main"
+					sx={{marginTop: '60px', padding: "50px"}}
+				>
+					<Grid container spacing={2} sx={{mt: 1, p: 3}}>
+						<Grid item md={8}>
+							<Button color="warning"
+									onClick={cancelFeature}
+									variant="outlined" sx={{margin: "5px"}}>Cancel</Button>
+								<>
+									<Button color="success"
+											onClick={(e) => saveFeature()}
+											variant="outlined"
+											sx={{margin: "5px"}}
+											disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
 
-								<Button color="success"
-										onClick={(e)=>saveFeature("saveFeaturePublish")}
-										variant="outlined"
-										sx={{margin:"5px"}}
-										disabled={feature === -1 && point === undefined ? true : false}>Save & Publish</Button>
-								<Button color="error"
-										onClick={deleteFeature}
-										variant="outlined"
-										sx={{margin:"5px"}}
-										disabled={feature === -1 ? true : false}>Delete</Button>
-						</>
-					}
+									<Button color="success"
+											onClick={(e) => saveFeature("saveFeaturePublish")}
+											variant="outlined"
+											sx={{margin: "5px"}}
+											disabled={feature === -1 && point === undefined ? true : false}>Save &
+										Publish</Button>
+									<Button color="error"
+											onClick={deleteFeature}
+											variant="outlined"
+											sx={{margin: "5px"}}
+											disabled={feature === -1 ? true : false}>Delete</Button>
+								</>
+						</Grid>
+
+						<Grid item md={4}>
+							<Typography>The data editor allows you to edit data.</Typography>
+						</Grid>
 					</Grid>
-
-					<Grid item md={4}>
-						<Typography>The data editor allows you to edit data.</Typography>
-					</Grid>
-				</Grid>
-				{featureData !== undefined ?
-						<FieldView data={featureData} mode={"write"}/>
-					: <LinearProgress/>}
-
+					<FieldView data={featureData} mode={"write"} fields={"main"}/>
+				</Box>
 			</Box>
-		</Box>
-	)
+		)
+	}else {
+		return (<></>)
+	}
 }
 

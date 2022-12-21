@@ -18,13 +18,17 @@ const MaplibreGL = forwardRef(({
 								   bboxSet,
 								   bboxBuffer=100,
 								   pitch = 0,
-									geojson
+									geojson,
+								   boundsGeojson,
+								   handleMapClick
 							   }, ref) => {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 	const [mapActive, setMapActive] = useState(false);
-	const [queue, setQueue] = useState([]);
+	const queue = useRef([]);
+
+
 	useEffect(() => {
 		return () => {
 			map.current.remove();
@@ -45,21 +49,35 @@ const MaplibreGL = forwardRef(({
 		}
 	}
 
-	useEffect(() => {
-		let localQueue = [...queue];
+	function addQueueItem(type,geojson,id,fit) {
+		queue.current=[...queue.current,...[{"type": type, "geojson": geojson, id: id,fit:fit}]];
+		processQueue();
+
+	}
+
+	function processQueue() {
 		if (mapActive === true) {
-			if (localQueue.length > 0) {
-				let item = localQueue.shift();
-				// proccess stuff
-				switch (item.type) {
-					case 'addGeojson':
-						map.current.getSource(item.id).setData(item.geojson);
-						break;
+			if (queue.current.length > 0) {
+				for(let i in queue.current) {
+
+					switch (queue.current[i].type) {
+						case 'addGeojson':
+							map.current.getSource(queue.current[i].id).setData(queue.current[i].geojson);
+							if (queue.current[i].fit === true) {
+								let bounds = bbox(queue.current[i].geojson);
+								map.current.fitBounds(bounds, {padding: 20});
+							}
+							break;
+					}
 				}
-				setQueue(localQueue);
+				queue.current = [];
 			}
 		}
-	}, [queue, mapActive]);
+	}
+
+	useEffect(() => {
+		processQueue();
+	}, [mapActive]);
 
 	useEffect(() => {
 		if (map.current) return; //stops map from intializing more than once
@@ -73,14 +91,11 @@ const MaplibreGL = forwardRef(({
 			pitch: pitch,
 		}
 
-		if (bboxSet) {
-			let bboxBuffered=bboxSet;
-
-			if(bboxBuffer){
+		if (bboxSet&&Array.isArray(bboxSet)&&bboxSet.length===4) {
+			let bboxBuffered;
 				const bboxPolly=bboxPolygon(bboxSet);
 				const tmpBuffered=buffer(bboxPolly, bboxBuffer,{units:"meters"});
 				bboxBuffered = bbox(tmpBuffered);
-			}
 			// Mapbox uses array of point bbox format
 			options.bounds = [[bboxBuffered[0], bboxBuffered[1]], [bboxBuffered[2], bboxBuffered[3]]];
 			console.log(options.bounds);
@@ -110,8 +125,18 @@ const MaplibreGL = forwardRef(({
 				data: {features: [], type: "FeatureCollection"}
 			});
 
+			map.current.addSource('boundary', {
+				type: 'geojson',
+				data: {features: [], type: "FeatureCollection"}
+			});
+
+
 			if(geojson){
-				setQueue([{"type": "addGeojson", "geojson": geojson, id: 'data'}])
+				addQueueItem("addGeojson",geojson,"data");
+
+			}
+			if(boundsGeojson){
+				addQueueItem("addGeojson",boundsGeojson,"boundary",true);
 			}
 
 
@@ -133,12 +158,27 @@ const MaplibreGL = forwardRef(({
 				layout: window.mapStyles[layout].data
 			});
 
+			map.current.addLayer({
+				id: 'boundary',
+				type: 'line',
+				source: 'boundary',
+				paint: {
+					'line-color': '#0080ff', // blue color fill
+				}
+			});
+
 			map.current.on('zoomend', () => {
 				updateBBOC();
 			});
 
 			map.current.on('moveend', () => {
 				updateBBOC();
+			});
+
+			map.current.on('click', (e) => {
+				if(handleMapClick) {
+					handleMapClick([e.lngLat.lng, e.lngLat.lat]);
+				}
 			});
 
 		});
@@ -151,8 +191,7 @@ const MaplibreGL = forwardRef(({
 		ref,
 		() => ({
 			addGeojson(geojson, id) {
-				setQueue([{"type": "addGeojson", "geojson": geojson, id: id}])
-
+				addQueueItem("addGeojson",geojson,id);
 			},
 			getLocation() {
 				return map.current.getCenter();

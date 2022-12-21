@@ -54,6 +54,11 @@ resources:
           - profile
           - aws.cognito.signin.user.admin
         AllowedOAuthFlowsUserPoolClient: true
+        AccessTokenValidity: 1
+        IdTokenValidity: 1
+        TokenValidityUnits:
+          AccessToken: days
+          IdToken: days
     CognitoUserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
