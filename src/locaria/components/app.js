@@ -1,21 +1,22 @@
 import React from 'react';
-import {Switch, BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
+import {Switch, BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Maintenance from 'components/maintenance';
 import {useCookies} from "react-cookie";
 import {configs, resources} from "themeLocaria";
-import {Provider, useDispatch, useSelector} from 'react-redux'
+import {Provider, useDispatch} from 'react-redux'
 
 import RenderPage from "./widgets/markdown/renderPage";
 import CookieConsent from "react-cookie-consent";
 import {setValidPublic, setValidUser} from "./redux/slices/userSlice";
+import { setItems } from './redux/slices/basketSlice';
 
 
 const App = () => {
 
 	const dispatch = useDispatch()
 
-	const [cookies, setCookies] = useCookies();
+	const [cookies, setCookies] = useCookies(['location','distanceSelect','distance','basket','id_token']);
 
 
 	React.useEffect(() => {
@@ -31,6 +32,10 @@ const App = () => {
 		}
 		if (cookies.distance === undefined) {
 			setCookies('distance', configs.defaultDistance, {path: '/', sameSite: true});
+		}
+		
+		if(cookies.basket) {
+			dispatch(setItems(cookies.basket));
 		}
 
 		//let {hash} = useLocation();

@@ -25,6 +25,7 @@ import SearchLocationFiltersMap from "../search/searchLocationFiltersMap";
 import FooterTypeActive from "../footers/footerTypeActive";
 import NavTypeActive from "../navs/navTypeActive";
 import SearchFilters from "widgets/search/searchFilters";
+import BasketDisplay from "widgets/basket/basketDisplay";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -159,6 +160,11 @@ const pluginsDefs = {
 	},
 	"FeatureManager": {
 		"obj": FeatureManager,
+		"description": "Display simple input form",
+		"params": [{param: "category", default: "News"}]
+	},
+	"BasketDisplay": {
+		"obj": BasketDisplay,
 		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	}

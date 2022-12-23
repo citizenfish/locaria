@@ -13,7 +13,7 @@ import {clearSubmitted, formReset, setFormPage, submitForm} from "components/red
 
 export default function SimpleForm({category, fields = "main"}) {
 
-	const [cookies, setCookies] = useCookies(['cookies']);
+	const [cookies, setCookies] = useCookies(['id_token']);
 	const [dialogOpen, setDialogOpen] = useState(false);
 	let {page} = useParams();
 	const history = useHistory();

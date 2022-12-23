@@ -54,7 +54,7 @@ function DrawSiteMap() {
 	const url = new UrlCoder();
 	const history = useHistory();
 	const dispatch = useDispatch();
-	const [cookies, setCookies] = useCookies();
+	const [cookies, setCookies] = useCookies(['id_token']);
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 
 	const userValid = useSelector((state) => state.userSlice.userValid);

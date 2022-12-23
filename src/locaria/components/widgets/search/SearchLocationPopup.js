@@ -35,7 +35,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
 
-	const [cookies, setCookies] = useCookies([]);
+	const [cookies, setCookies] = useCookies(['recentLocations','currentLocation']);
 
 	const [results, setResults] = useState([]);
 	const [visible, setVisible] = useState(display);

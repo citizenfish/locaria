@@ -19,6 +19,7 @@ export const searchDrawerSlice = createSlice({
 			filters:{},
 			bbox:[],
 			distanceType: 'km',
+			fids:[]
 
 		},
 
@@ -137,7 +138,6 @@ export const searchDrawerSlice = createSlice({
 
 		newSearch: (state, action) => {
 
-
 			if(action.payload.page)
 				state.searchParams.page=action.payload.page;
 			else
@@ -199,6 +199,12 @@ export const searchDrawerSlice = createSlice({
 				state.searchParams.subCategories = action.payload.subCategories;
 			} else {
 				state.searchParams.subCategories= {};
+			}
+
+			if (action.payload && action.payload.fids){
+				state.searchParams.fids = action.payload.fids;
+			} else {
+				state.searchParams.fids=[];
 			}
 
 			if(action.payload.rewrite!==undefined) {

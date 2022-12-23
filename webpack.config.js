@@ -99,6 +99,6 @@ module.exports = {
 				]
 		},
 		liveReload: false,
-		hot: true
+		hot: false
 	}
 };

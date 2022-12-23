@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import RenderMarkdown from "./renderMarkdown";
 import {LinearProgress, useMediaQuery} from "@mui/material";
 import {useHistory, useParams} from "react-router-dom";
@@ -10,7 +10,7 @@ import {setMobile} from "../../redux/slices/mediaSlice";
 import {useCookies} from "react-cookie";
 import {newSearch, setCurrentLocation} from "../../redux/slices/searchDrawerSlice";
 import SearchProxy from "../search/searchProxy";
-import {decodeSearchParams} from "../../../libs/searchParams";
+import {decodeSearchParams} from "libs/searchParams";
 
 export default function RenderPage({searchMode}) {
 
@@ -25,9 +25,8 @@ export default function RenderPage({searchMode}) {
 	const pageData = React.useRef(undefined);
 	const pageActual = React.useRef(undefined);
 	const channel = React.useRef(undefined);
-	const [cookies, setCookies] = useCookies();
+	const [cookies, setCookies] = useCookies(['currentLocation','last','id_token']);
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
-
 
 	function handleResize()  {
 		dispatch(setMobile(!useMediaQuery('(min-width:900px)')));
@@ -37,28 +36,17 @@ export default function RenderPage({searchMode}) {
 
 	handleResize();
 
+	React.useEffect(() => {
+		
+
+		return () => {
+			pageData.current=undefined;
+		}
+	},[]);
 
 	React.useEffect(() => {
 
-		if (category)
-			channel.current = window.systemCategories.getChannelProperties(category);
-
-
-		let hash = window.location.hash;
-
 		pageActual.current=page||'Home';
-		if (hash&&hash.match(/#preview/)) {
-			pageActual.current=`${page}-${cookies['id_token']}`;
-		}
-		if(searchMode===true) {
-			let searchParams=decodeSearchParams(search);
-			searchParams.categories=category;
-			searchParams.rewrite=true;
-			dispatch(newSearch(searchParams));
-		}
-
-		if(page!==undefined)
-			setCookies('last', page, {path: '/', sameSite: true});
 
 		window.websocket.registerQueue('pageBulkLoader', (json) => {
 			if(json.getPageData.packet.error) {
@@ -69,8 +57,34 @@ export default function RenderPage({searchMode}) {
 				dispatch(setReport(json));
 				setRender(render+1);
 				document.title = pageData.current.title;
+				
+				if(pageActual.current&&page!==cookies['last']) {
+					// This will cause re-render so we do it last
+					setCookies('last', page, {path: '/', sameSite: true});
+				}
+		
 			}
 		});
+
+		pageData.current=undefined;
+		if (category)
+			channel.current = window.systemCategories.getChannelProperties(category);
+
+
+		let hash = window.location.hash;
+
+		if (hash&&hash.match(/#preview/)) {
+			pageActual.current=`${page}-${cookies['id_token']}`;
+		}
+		if(searchMode===true) {
+			let searchParams=decodeSearchParams(search);
+			searchParams.categories=category;
+			searchParams.rewrite=true;
+			dispatch(newSearch(searchParams));
+		}
+
+		
+		
 
 
 		pageData.current=undefined;
@@ -80,13 +94,10 @@ export default function RenderPage({searchMode}) {
 			dispatch(setCurrentLocation(cookies['currentLocation']));
 		}
 
-		return () => {
-			pageData.current=undefined;
-		}
-
-
-
+		
 	},[page]);
+
+	
 
 	const getAllData = () => {
 		let bulkPackage = [];
