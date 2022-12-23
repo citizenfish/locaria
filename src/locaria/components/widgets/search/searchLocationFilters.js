@@ -19,6 +19,7 @@ import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
 import {v4 as uuidv4} from "uuid";
 import TextSearchSimple from "widgets/search/TextSearchSimple";
 import FooterBackToTop from "widgets/footers/footerBackToTop";
+import ShoppingBasket from "widgets/basket/shoppingBasket";
 
 const SearchLocationFilters = ({
 								   category,
@@ -101,6 +102,7 @@ const SearchLocationFilters = ({
 	function FiltersInner() {
 		return (
 			<Stack direction="column" spacing={2}>
+				<ShoppingBasket/>
 				<Stack direction="row" spacing={2}>
 					<Button variant={"outlined"} sx={{
 						width: "100%"

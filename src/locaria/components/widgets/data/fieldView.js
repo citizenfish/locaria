@@ -36,6 +36,7 @@ import DataItemCost from "./dataItemsRead/dataItemCost";
 import {v4 as uuidv4} from "uuid";
 import {useDispatch, useSelector} from "react-redux";
 import {setFormMode} from "components/redux/slices/formSlice";
+import DataItemBasket from "widgets/data/dataItemsRead/dataItemBasket";
 
 const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) => {
 
@@ -205,6 +206,7 @@ const FormatField = ({field, data, mode, category, moderation}) => {
 		'minMedMax': {"element": DataItemMinMedMax},
 		'distance': {"element": DataItemDistance},
 		'cost': {"element": DataItemCost},
+		'basket': {"element": DataItemBasket}
 	}
 
 	const dataWriteItem = {
@@ -252,7 +254,7 @@ const FormatField = ({field, data, mode, category, moderation}) => {
 				 sx={field.sx}
 				 category={category}
 				 dataModeration={dataModeration}
-				 allData={field.needsAll ? data : {}}
+				 allData={data}
 				 {...options}
 		/>
 	)

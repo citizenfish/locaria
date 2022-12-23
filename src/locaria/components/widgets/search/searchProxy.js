@@ -27,7 +27,6 @@ export default function SearchProxy() {
 	let {page} = useParams();
 
 	useEffect(() => {
-
 		window.websocket.registerQueue("searchFeatures", function (json) {
 			//console.log(json.packet);
 			dispatch(setFeatures(json.packet.geojson));
@@ -54,6 +53,15 @@ export default function SearchProxy() {
 			dispatch(stopLoading());
 
 		});
+
+		if (ready === true) {
+			if( wait ) {
+				dispatch(clearWait());
+			} else {
+				doSearch();
+			}
+		}
+		
 	}, [searchParams]);
 
 	function doSearch() {
@@ -71,7 +79,7 @@ export default function SearchProxy() {
 		let category=window.systemCategories.getChannelProperties(searchParams.categories);
 
 
-		if (refreshCounts === true&&category.useCounts===true) {
+		if (refreshCounts === true&&category&&category.useCounts===true) {
 			packetSearch.data.method = "report";
 			packetSearch.data.report_name = "search_counts";
 			dispatch(setRefreshCounts(false));
@@ -141,6 +149,10 @@ export default function SearchProxy() {
 			packetSearch.data.limit = searchParams.limit;
 		}
 
+		if (searchParams.fids && searchParams.fids.length > 0) {	
+      		packetSearch.data.fids = searchParams.fids;
+    	}
+
 		if (searchParams.tags && searchParams.tags.length > 0)
 			packetSearch.data.tags = searchParams.tags;
 
@@ -150,16 +162,6 @@ export default function SearchProxy() {
 
 		window.websocket.send(packetSearch);
 	}
-
-	useEffect(() => {
-		if (ready === true) {
-			if( wait ) {
-				dispatch(clearWait());
-			} else {
-				doSearch();
-			}
-		}
-	}, [searchParams]);
 
 	return (<></>)
 }

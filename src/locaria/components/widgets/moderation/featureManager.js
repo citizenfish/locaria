@@ -15,7 +15,7 @@ const FeatureManager = function ({category}) {
 	const [features, setFeatures] = useState([]);
 	const [feature, setFeature] = useState(undefined);
 	const [featureData, setFeatureData] = useState(undefined);
-	const [cookies, setCookies] = useCookies();
+	const [cookies, setCookies] = useCookies(['id_token']);
 	//const formData = useSelector((state) => state.formSlice.formData);
 	const formSubmitted = useSelector((state) => state.formSlice.formSubmitted);
 	const dispatch = useDispatch();
