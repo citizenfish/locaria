@@ -23,6 +23,7 @@ import PlaceIcon from '@mui/icons-material/Place';
 import {getLocation} from "libs/geolocation";
 import {useCookies} from "react-cookie";
 import {encodeSearchParams} from "libs/searchParams";
+import {v4} from "uuid";
 
 export default function SearchLocationPopup({defaultPage,maxLocations=8,display = true}) {
 	const dispatch = useDispatch();
@@ -173,18 +174,16 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 			if(results[r].category==="Location") {
 				// Push Locations to the returnArray
 				for(let i=0;i<maxLocations&&i<results[0]['jsonb_agg'].length;i++) {
+					returnArray.push(<Divider key={v4()} variant="inset" component="li"/>);
 					returnArray.push(
-						<>
-							<Divider variant="inset" component="li"/>
 							<ListItem
 									  onClick={() => handleListItemClick(results[r]['jsonb_agg'][r].fid, results[r]['jsonb_agg'][i].text, results[r]['jsonb_agg'][i].location)}
-									  key={`riKey${i}`}>
+									  key={v4()}>
 								<ListItemIcon>
 									<PlaceIcon/>
 								</ListItemIcon>
 								<ListItemText primary={results[0]['jsonb_agg'][i].text}/>
 							</ListItem>
-						</>
 					)
 				}
 			}
@@ -210,7 +209,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 			}
 			return (
 				<>
-					<ListItem><ListItemText primary={"Recent items"}></ListItemText></ListItem>
+					<ListItem key={"recent"}><ListItemText primary={"Recent items"}></ListItemText></ListItem>
 					<Divider variant="inset" component="li" />
 					{recentItemsArray}
 				</>
