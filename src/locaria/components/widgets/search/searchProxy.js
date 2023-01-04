@@ -46,8 +46,9 @@ export default function SearchProxy() {
 				tags: searchParams.tags,
 				page: searchParams.page,
 				search: searchParams.search,
-				bbox: searchParams.bbox
-			})
+				bbox: searchParams.bbox,
+				filters: searchParams.filters
+			},schema);
 			if (rewrite === true)
 				window.history.replaceState(null, "New Page Title", encodedPage)
 			dispatch(stopLoading());

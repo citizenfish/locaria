@@ -1,3 +1,5 @@
+import {objectPathGet, setObjectWithPath} from "libs/objectTools";
+
 function decodeSearchParams(search) {
 	let aSearch='/'+decodeURI(search)+'/';
 	let params={
@@ -43,6 +45,17 @@ function decodeSearchParams(search) {
 		params.tags=match[1].split(',');
 	}
 
+	// Decode the filters
+	match=aSearch.match(/\/f(.*?)\//);
+	if(match) {
+		params.filters={};
+		let filters=match[1].split(',');
+		for(let f in filters) {
+			let filterDef=filters[f].split('=');
+			setObjectWithPath(params.filters,filterDef[0],filterDef[1]);
+		}
+
+	}
 	// Wait mode?
 	match=aSearch.match(/\/w\//);
 	if(match) {
@@ -52,7 +65,7 @@ function decodeSearchParams(search) {
 	return params;
 }
 
-function encodeSearchParams(params) {
+function encodeSearchParams(params,schema) {
 
 	let search='';
 	if(params.search) {
@@ -83,6 +96,22 @@ function encodeSearchParams(params) {
 	}
 	if(params.page) {
 		search+=`/p${params.page}`;
+	}
+
+	if(params.filters&&schema) {
+		let filters=[];
+		for(let s in schema) {
+			let values = objectPathGet(params.filters, schema[s].path);
+			if(values) {
+				for (let v in values) {
+					filters.push(`${schema[s].path}.${v}=${values[v]}`);
+				}
+			}
+		}
+		if(filters.length>0) {
+			search += `/f${filters.join(',')}`;
+		}
+
 	}
 
 	if(params.wait) {
