@@ -78,11 +78,14 @@ export const searchDrawerSlice = createSlice({
 		locationPage: undefined,
 		geolocation: undefined,
 		currentLocation: undefined,
-
+		askQuestions: 0,
 		rewrite: true
 	},
 	reducers: {
 
+		setAskQuestions:(state,actions) => {
+			state.askQuestions = actions.payload;
+		},
 		setResultBbox:(state,actions) => {
 			if(actions.payload&&typeof actions.payload === 'string') {
 				//Convert string EG BOX(-199488.83556583992 6719078.999316478,-198111.19452835835 6721045.020766511)  into actions.payload into an array
@@ -401,7 +404,8 @@ export const {
 	clearFilterItem,
 	setBbox,
 	clearWait,
-	setResultBbox
+	setResultBbox,
+	setAskQuestions
 
 } = searchDrawerSlice.actions
 
