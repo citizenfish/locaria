@@ -147,6 +147,7 @@ class datathistle:
         self.table = parameters.get('table', 'datathistle')
         self.insert_places = f"INSERT INTO {INSERT_SCHEMA}.{self.table}_places (place_id, attributes) VALUES %s ON CONFLICT(place_id) DO UPDATE SET attributes=EXCLUDED.attributes"
         self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (event_id, attributes) VALUES %s ON CONFLICT(event_id) DO UPDATE SET attributes=EXCLUDED.attributes"
+        self.delete = "SELECT locaria_core.datathistlePostLoadProcess()"
         self.api_key = parameters.get('apikey','')
         self.lon = parameters.get('lon', None)
         self.lat = parameters.get('lat', None)
@@ -154,7 +155,6 @@ class datathistle:
         self.direct = parameters.get('direct', False)
 
     def processAPI(self,db):
-        return {} #TODO DEBUG REMOVE
         if self.debug: print(f"Processing datathistle: {self.url}")
         if not self.lon or not self.lat or not self.distance:
             return {'error' : 'missing parameters'}
@@ -189,6 +189,9 @@ class datathistle:
             if url == '':
                 break
             url = url['url']
+
+        del_res = db.query(self.delete)
+        if self.debug: print(del_res)
 
         return {'inserts' : count}
 

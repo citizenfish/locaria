@@ -9,7 +9,8 @@
         "reset_acl_test_data" : ["tests/unit_tests/internal/data/acl_tests/acl_test_data.sql"],
         "add_item": ["tests/unit_tests/internal/data/acl_tests/add_item_with_acl.sql"],
         "add_user_store" : ["tests/unit_tests/user/add_user_store.sql"],
-        "get_user_store" :["tests/unit_tests/user/get_user_store.sql"]
+        "get_user_store" :["tests/unit_tests/user/get_user_store.sql"],
+        "strip_array_blanks" : ["tests/unit_tests/utility/strip_array_blanks.sql"]
       },
       "substitutions": "../tests.json"
     }
