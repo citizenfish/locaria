@@ -9,7 +9,7 @@ import {
 import List from "@mui/material/List";
 import {useDispatch, useSelector} from "react-redux";
 import {
-	locationPopup,
+	locationPopup, setAskQuestions,
 	setCurrentLocation,
 	setGeolocation,
 	setLocation
@@ -33,20 +33,24 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	const locationPage = useSelector((state) => state.searchDraw.locationPage);
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 	const geolocation = useSelector((state) => state.searchDraw.geolocation);
+	const askQuestions = useSelector((state) => state.searchDraw.askQuestions);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
+	const schema = useSelector((state) => state.searchDraw.schema);
 
-	const [cookies, setCookies] = useCookies(['recentLocations','currentLocation']);
+	const [cookies, setCookies] = useCookies(['doNotReRender']);
 
 	const [results, setResults] = useState([]);
 	const [visible, setVisible] = useState(display);
 	const [searchText, setSearchText] = useState("");
+	const [age, setAge] = useState("Adult");
 
 	function handleClose() {
 		dispatch(locationPopup({open: false, page: locationPage}));
 	}
 
 	function handleListItemClick(fid,name,location,store) {
+
 		let locationPacket={text: name, fid: fid, location: location};
 		if(store!==false) {
 			// dedupe
@@ -67,8 +71,8 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 				setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
 			}
 		}
-
 		setCookies('currentLocation', locationPacket, {path: '/', sameSite: true});
+
 		// Did we send a default page? If not it may be undefined and we let the site Panels update
 		if(locationPage!==undefined) {
 			let encodedPage = locationPage + encodeSearchParams({
@@ -80,7 +84,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 				dispatch(setLocation(locationPacket.location));
 		}
 		dispatch(setCurrentLocation(locationPacket));
-		dispatch(locationPopup({open: false}));
+		dispatch(setAskQuestions(1));
 	}
 
 
@@ -92,6 +96,11 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	function handleGeoError() {
 		dispatch(setGeolocation(false));
 	}
+
+	useEffect(() => {
+		console.log(askQuestions);
+	},[askQuestions]);
+
 
 	useEffect(() => {
 		window.websocket.registerQueue("locationSearch", function (json) {
@@ -218,6 +227,60 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		return <></>
 	}
 
+	function question1(value) {
+		setAge(value);
+		dispatch(setAskQuestions(2));
+	}
+
+	function question2(value) {
+		dispatch(setAskQuestions(0));
+		dispatch(locationPopup({open: false}));
+		let encodedParams =  encodeSearchParams({
+			location: currentLocation.location,
+			filters: {
+				data:{"subCategory1":{"Adult":"True"}}
+			}
+		},schema);
+
+		switch(value) {
+			case 'Activities':
+				history.push('/Activities/sp/Activities/'+encodedParams);
+				break;
+		}
+
+	}
+	function Stages() {
+		switch(askQuestions) {
+			case 1:
+				return (
+					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
+						<ListItem key={v4()}><ListItemText primary={"I am a student"} onClick={() => question1("Adult")}/></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I work"} onClick={() => question1("age2")}></ListItemText></ListItem>
+					</List>
+				)
+			case 2:
+				return (
+					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
+						<ListItem key={v4()}><ListItemText primary={"I am active and want to get fitter"} onClick={() => question2("Activities")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"Questions 2.2"} onClick={() => question2("answer2")}></ListItemText></ListItem>
+					</List>
+				)
+			default:
+				return (
+					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
+						<>
+							<Divider component="li"/>
+							<GeolocationItem></GeolocationItem>
+							<RecentItems></RecentItems>
+							<ResultItems></ResultItems>
+						</>
+
+					</List>
+				)
+		}
+
+
+	}
 
 	let width=innerWidth;
 	if(width>700)
@@ -271,18 +334,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 							   }}
 					></TextField>
 				</ListItem>
-
-				<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
-
-					<Divider component="li" />
-
-					<GeolocationItem></GeolocationItem>
-
-					<RecentItems></RecentItems>
-
-					<ResultItems></ResultItems>
-
-				</List>
+				<Stages/>
 
 			</List>
 
