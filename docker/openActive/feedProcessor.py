@@ -69,6 +69,11 @@ if __name__ == '__main__': # Important as multiprocess respawns
 
     # Update our urls and stats
     db.setParameter(FEEDS_PROCESS_PARAMETER, feedsToProcess)
+
+    # Tidy up after load
+    p_res = db.query(PROCESS_QUERY)
+    print(p_res)
+
     db.close()
 
     print(f"Completed in {feedsToProcess['processTime']} seconds {stats}")
