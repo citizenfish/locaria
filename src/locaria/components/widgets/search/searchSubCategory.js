@@ -1,14 +1,14 @@
 import React, {useEffect, useRef} from 'react';
-import {clearFilterItem, setFilterItem, setSubCategory} from "../../redux/slices/searchDrawerSlice";
+import {clearFilterItem, setFilterItem} from "../../redux/slices/searchDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
-import {arrayToggleElement} from "../../../libs/arrayTools";
-import {objectPathExists} from "../../../libs/objectTools";
+import {objectPathExists} from "libs/objectTools";
+import {v4} from "uuid";
 
 
-export default function SearchSubCategory({sx,multi=true,levels=1,category,noCountDisplay=false}) {
+export default function SearchSubCategory({category,noCountDisplay=false}) {
 	const dispatch = useDispatch()
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const counts = useSelector((state) => state.searchDraw.counts);
@@ -34,25 +34,42 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 
 	function DisplaySubCategorySubs({sub,subArray,categorySubs}) {
 		let renderArray=[];
+		let mergedData=[];
+		//  Merge the count data
 		for(let a in subArray) {
-			if(objectPathExists(counts,`${sub}['${subArray[a]}']`)) {
-				let count = `(${counts[sub][subArray[a]]})`;
+			if (objectPathExists(counts, `${sub}['${subArray[a]}']`)) {
+				mergedData.push({"name":subArray[a],count:counts[sub][subArray[a]]});
+			} else {
+				mergedData.push({"name":subArray[a],count:0});
+			}
+		}
+
+		// Sort the merged data
+		mergedData.sort((a,b) => {
+			if(a.count < b.count) return 1;
+			if(a.count > b.count) return -1;
+			return 0;
+		});
+
+
+		for(let a in mergedData) {
+			if(mergedData[a].count > 0) {
 				renderArray.push(
-					<ListItem sx={{padding: "0px"}} key={sub+'subcheckboxes_'+key.current+a}>
+					<ListItem sx={{padding: "0px"}} key={v4()}>
 						<ListItemButton role={undefined} onClick={() => {
-							handleCheck(sub, subArray[a])
+							handleCheck(sub, mergedData[a].name)
 						}} dense>
 							<ListItemIcon>
 								<Checkbox
 									edge="start"
-									checked={objectPathExists(searchParams.filters ,`data.${sub}['${subArray[a]}']`)}
+									checked={objectPathExists(searchParams.filters ,`data.${sub}['${mergedData[a].name}']`)}
 									tabIndex={-1}
 									disableRipple
 								/>
 							</ListItemIcon>
-							<ListItemText primary={`${subArray[a]}`}/>
+							<ListItemText primary={`${mergedData[a].name}`}/>
 							<ListItemIcon edge={"end"}>
-								<ListItemText primary={`${count}`} />
+								<ListItemText primary={`${mergedData[a].count}`} />
 							</ListItemIcon>
 						</ListItemButton>
 					</ListItem>
@@ -60,9 +77,9 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 			} else {
 				if(noCountDisplay===true) {
 					renderArray.push(
-						<ListItem sx={{padding: "0px"}} key={sub+'subcheckboxes_'+key.current+a}>
+						<ListItem sx={{padding: "0px"}} key={v4()}>
 							<ListItemButton dense>
-								<ListItemText primary={`${subArray[a]}`}/>
+								<ListItemText primary={`${mergedData[a].name}`}/>
 							</ListItemButton>
 						</ListItem>
 					);
@@ -72,7 +89,7 @@ export default function SearchSubCategory({sx,multi=true,levels=1,category,noCou
 		if(renderArray.length>0) {
 			return (
 				<List sx={{ width: '100%' }} >
-					<ListItem sx={{padding:"0px"}} key={sub+'subcheckboxes_'+key.current}>
+					<ListItem sx={{padding:"0px"}} key={v4()}>
 						<ListItemText primary={categorySubs[sub].title} />
 					</ListItem>
 					{renderArray}
