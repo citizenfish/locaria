@@ -27,6 +27,7 @@ export default function RenderPage({searchMode}) {
 	const channel = React.useRef(undefined);
 	const [cookies, setCookies] = useCookies(['currentLocation','last','id_token']);
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
+	const items = useSelector((state) => state.basketSlice.items);
 
 	function handleResize()  {
 		dispatch(setMobile(!useMediaQuery('(min-width:900px)')));
@@ -36,8 +37,20 @@ export default function RenderPage({searchMode}) {
 
 	handleResize();
 
+	// Updates the basket cookies
+
 	React.useEffect(() => {
-		
+		//compare items and cookies
+		if(items.length > 0 && (cookies.basket === undefined || items.length !== cookies.basket.length)) {
+			//update cookies
+			setCookies('basket', items, {path: '/', sameSite: true});
+		}
+
+		//console.log(items);
+	},[items]);
+
+
+	React.useEffect(() => {
 
 		return () => {
 			pageData.current=undefined;
@@ -114,7 +127,7 @@ export default function RenderPage({searchMode}) {
 		);
 
 		if (feature) {
-			if(feature.match(/^\@/)) {
+			if(feature.match(/^@/)) {
 				bulkPackage.push(
 					{
 						"queue": "viewLoader",
