@@ -235,16 +235,25 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	function question2(value) {
 		dispatch(setAskQuestions(0));
 		dispatch(locationPopup({open: false}));
+
+		let filters={
+			data:{"subCategory1":{}}
+		}
+		filters.data.subCategory1[age]="True";
 		let encodedParams =  encodeSearchParams({
 			location: currentLocation.location,
-			filters: {
-				data:{"subCategory1":{"Adult":"True"}}
-			}
+			filters: filters
 		},schema);
 
 		switch(value) {
 			case 'Activities':
 				history.push('/Activities/sp/Activities/'+encodedParams);
+				break;
+			case 'Mental Health':
+				history.push('/MentalHealth/sp/Mental Health/'+encodedParams);
+				break;
+			case 'Healthy eating':
+				history.push('/HealthyEating/sp/Healthy Eating/'+encodedParams);
 				break;
 		}
 
@@ -254,15 +263,20 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 			case 1:
 				return (
 					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
-						<ListItem key={v4()}><ListItemText primary={"I am a student"} onClick={() => question1("Adult")}/></ListItem>
-						<ListItem key={v4()}><ListItemText primary={"I work"} onClick={() => question1("age2")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I am a student"} onClick={() => question1("Adults")}/></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I work"} onClick={() => question1("Adults")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I don’t work"} onClick={() => question1("Adults")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I’m retired"} onClick={() => question1("Adults")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I’m disabled"} onClick={() => question1("Adults")}></ListItemText></ListItem>
 					</List>
 				)
 			case 2:
 				return (
 					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
 						<ListItem key={v4()}><ListItemText primary={"I am active and want to get fitter"} onClick={() => question2("Activities")}></ListItemText></ListItem>
-						<ListItem key={v4()}><ListItemText primary={"Questions 2.2"} onClick={() => question2("answer2")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I want to become more active"} onClick={() => question2("Activities")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I’d like to improve my wellbeing"} onClick={() => question2("Mental Health")}></ListItemText></ListItem>
+						<ListItem key={v4()}><ListItemText primary={"I’m looking for ideas to eat better"} onClick={() => question2("Healthy Eating")}></ListItemText></ListItem>
 					</List>
 				)
 			default:
