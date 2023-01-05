@@ -110,6 +110,36 @@ class mindlocations:
 
         res = db.bulkInserter(self.insert, features)
 
+class activeplaces:
+    def __init__(self, parameters, debug = True):
+        self.url = parameters.get('url','https://www.activeplacespower.com/OpenData/sites.json')
+        self.debug = debug
+        self.table = parameters.get('table', 'activeplaces')
+        self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (place_id, attributes) VALUES %s ON CONFLICT(place_id) DO UPDATE SET attributes=EXCLUDED.attributes"
+        self.delete = f"DELETE FROM {INSERT_SCHEMA}.{self.table} WHERE attributes->>'state' = 'deleted'"
+
+    def processAPI(self,db):
+        if self.debug: print(f"Processing activeplaces: {self.url}")
+        if self.debug: print("Downloading all place data")
+
+        res = requests.get(self.url)
+        places = []
+        for p in res.json()['items']:
+            places.append((p['id'], json.dumps(p)))
+
+        count = len(places)
+
+        if self.debug: print(f"Inserting {count} activeplace records")
+        db_res = db.bulkInserter(self.insert, places)
+
+        if self.debug: print(db_res)
+        # remove items marked as deleted
+        del_res = db.query(self.delete)
+
+        if self.debug: print(del_res)
+
+        return {'inserts' : count}
+
 class datathistle:
     def __init__(self, parameters, debug = True):
         self.url = parameters.get('url','https://api.list.co.uk/v1/events')
@@ -117,6 +147,7 @@ class datathistle:
         self.table = parameters.get('table', 'datathistle')
         self.insert_places = f"INSERT INTO {INSERT_SCHEMA}.{self.table}_places (place_id, attributes) VALUES %s ON CONFLICT(place_id) DO UPDATE SET attributes=EXCLUDED.attributes"
         self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (event_id, attributes) VALUES %s ON CONFLICT(event_id) DO UPDATE SET attributes=EXCLUDED.attributes"
+        self.delete = "SELECT locaria_core.datathistlePostLoadProcess()"
         self.api_key = parameters.get('apikey','')
         self.lon = parameters.get('lon', None)
         self.lat = parameters.get('lat', None)
@@ -159,6 +190,9 @@ class datathistle:
                 break
             url = url['url']
 
+        del_res = db.query(self.delete)
+        if self.debug: print(del_res)
+
         return {'inserts' : count}
 
-classSelectors = {'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle, 'openfoodnetwork' :openfoodnetwork}
+classSelectors = {'activeplaces':activeplaces, 'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle, 'openfoodnetwork' :openfoodnetwork}

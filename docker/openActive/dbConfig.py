@@ -11,6 +11,8 @@ DELETE_QUERY = f"DELETE FROM {INSERT_SCHEMA}.**TABLE** WHERE attributes->>'state
 COUNT_QUERY = f"SELECT count(*) FROM {INSERT_SCHEMA}.**TABLE**"
 LOG_QUERY = f"INSERT INTO {INSERT_SCHEMA}.openActiveLogs(session, type, log) VALUES(%s,%s,%s)"
 
+PROCESS_QUERY = "SELECT locaria_core.openActivePostLoadProcess()"
+
 
 
 
