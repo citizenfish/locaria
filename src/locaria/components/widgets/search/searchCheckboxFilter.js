@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useRef } from "react";
 import List from "@mui/material/List";
 import { useDispatch, useSelector } from "react-redux";
-import { objectPathExists, objectPathGet } from "../../../libs/objectTools";
+import { objectPathExists, objectPathGet } from "libs/objectTools";
 import {
   clearFilterItem,
   setFilterItem,
@@ -23,6 +23,7 @@ export default function SearchCheckboxFilter({
   title,
   formatter = "list",
   showNoCount = false,
+    badgeMode = false
 }) {
   const searchParams = useSelector((state) => state.searchDraw.searchParams);
   const dispatch = useDispatch();
@@ -48,39 +49,66 @@ export default function SearchCheckboxFilter({
       let count = objectPathGet(counts, values[v].counts) || 0;
 
       if (showNoCount === true || count > 0) {
-        stackItems.push(
-          <Badge
-            badgeContent={count}
-            showZero={true}
-            max={999}
-            color={count > 100 ? "success" : "warning"}
-            overlap="rectangular"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            style={{ transform: "translate(-20px, 0px)" }}
-            key={"checkboxes_" + key.current + v}
-          >
-            <Button
-              sx={{
-                minWidth: "30px",
-                padding: "2px",
-                borderRadius: "0px",
-                fontSize: "0.5rem",
-              }}
-              style={{ transform: "translate(15px, -20px)" }}
-              size={"small"}
-              variant={
-                objectPathExists(searchParams.filters, values[v].path)
-                  ? "contained"
-                  : "outlined"
-              }
-              onClick={() => {
-                handleCheck(values[v]);
-              }}
-            >
-              {values[v].name}
-            </Button>
-          </Badge>
-        );
+        if(badgeMode) {
+          stackItems.push(
+              <Badge
+                  badgeContent={count}
+                  showZero={true}
+                  max={999}
+                  color={count > 100 ? "success" : "warning"}
+                  overlap="rectangular"
+                  anchorOrigin={{vertical: "bottom", horizontal: "right"}}
+                  style={{transform: "translate(-20px, 0px)"}}
+                  key={"checkboxes_" + key.current + v}
+              >
+                <Button
+                    sx={{
+                      minWidth: "30px",
+                      padding: "2px",
+                      borderRadius: "0px",
+                      fontSize: "0.5rem",
+                    }}
+                    style={{transform: "translate(15px, -20px)"}}
+                    size={"small"}
+                    variant={
+                      objectPathExists(searchParams.filters, values[v].path)
+                          ? "contained"
+                          : "outlined"
+                    }
+                    onClick={() => {
+                      handleCheck(values[v]);
+                    }}
+                >
+                  {values[v].name}
+                </Button>
+              </Badge>
+          );
+        } else {
+          stackItems.push(
+              <Button
+                  sx={{
+                    minWidth: "20px",
+                    padding: "2px",
+                    borderRadius: "0px",
+                    fontSize: "0.6rem",
+                    opacity: count > 0? 1:0.2
+                  }}
+                  disabled={count===0}
+                  style={{transform: "translate(15px, -20px)"}}
+                  size={"small"}
+                  variant={
+                    objectPathExists(searchParams.filters, values[v].path)
+                        ? "contained"
+                        : "outlined"
+                  }
+                  onClick={() => {
+                    handleCheck(values[v]);
+                  }}
+              >
+                {values[v].name}
+              </Button>
+          );
+        }
       }
     }
 

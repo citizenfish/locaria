@@ -5,6 +5,7 @@ import SlideShow from "../images/slideShow";
 import SearchLocationPopup from "../search/SearchLocationPopup";
 import SitePanels from "./sitePanels";
 import {useSelector} from "react-redux";
+import SearchQuestionsPopup from "widgets/search/searchQuestionsPopup";
 
 const SiteMapLocation = function ({mode="full", images, feature, format = "cover", duration = 500, interval = 2000,defaultPage,open,panel="small",heights=["250px","550px"]}) {
 
@@ -42,6 +43,8 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 					<SlideShow sx={{marginTop: "50px"}} height={height} interval={interval} duration={duration} feature={feature}
 							   format={format} images={images}/>
 					<SearchLocationPopup  defaultPage={defaultPage}  panel={panel}></SearchLocationPopup>
+					<SearchQuestionsPopup/>
+
 				</Box>
 			)
 		case "bottom":
@@ -57,7 +60,10 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 				}} key={"siteMap"}>
 					<SlideShow sx={{marginTop: "10px"}} interval={interval} duration={duration} feature={feature}
 							   format={format} images={images} height={height}/>
+					<SearchQuestionsPopup/>
+
 					<SearchLocationPopup  defaultPage={defaultPage}></SearchLocationPopup>
+
 					<Box sx={{
 						width: "100%",
 						maxWidth: "1100px",
@@ -86,7 +92,7 @@ const SiteMapLocation = function ({mode="full", images, feature, format = "cover
 				}} key={"siteMap"}>
 					<SitePanels open={open} mode={mode}  panel={panel}></SitePanels>
 					<SearchLocationPopup display={false} defaultPage={defaultPage}  panel={panel}></SearchLocationPopup>
-
+					<SearchQuestionsPopup/>
 				</Box>
 			)
 
