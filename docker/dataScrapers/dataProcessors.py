@@ -195,4 +195,39 @@ class datathistle:
 
         return {'inserts' : count}
 
-classSelectors = {'activeplaces':activeplaces, 'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle, 'openfoodnetwork' :openfoodnetwork}
+class openreferraluk:
+    def __init__(self, parameters, debug = True):
+        self.urls = parameters.get('urls',[])
+        self.debug = debug
+        self.table = parameters.get('table', 'openreferraluk')
+        self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (oa_org, oa_id, attributes) VALUES %s ON CONFLICT(oa_org,oa_id) DO UPDATE SET attributes=EXCLUDED.attributes"
+        self.delete = f"DELETE FROM {INSERT_SCHEMA}.{self.table} WHERE attributes->>'state' = 'deleted'"
+    def processAPI(self,db):
+        if self.debug: print(f"Processing openreferraluk")
+        count = 0
+        for url in self.urls:
+            page = url.get('page', 1)
+            _url = url.get('url')
+            while True:
+                try:
+                    if self.debug: print(f"Processing {_url} page {page}")
+                    res = requests.get(f"{_url}?include=service_at_locations,service_taxonomys&page={page}")
+                    data = res.json()
+                    records = []
+                    for p in data['content']:
+                        records.append((_url, p['id'], json.dumps(p)))
+
+                    count += len(records)
+                    print(f"Inserting {len(records)} referral records")
+                    db_res = db.bulkInserter(self.insert, records)
+                    page += 1
+                    if data['last'] == True or page > data['totalPages']:
+                        break
+                except Exception as error:
+                    print(str(error))
+                    break
+
+        return {'inserts' : count}
+
+
+classSelectors = {'activeplaces':activeplaces, 'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle, 'openfoodnetwork' :openfoodnetwork, 'openreferraluk' : openreferraluk}
