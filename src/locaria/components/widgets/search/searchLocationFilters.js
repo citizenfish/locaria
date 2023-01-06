@@ -20,6 +20,8 @@ import {v4 as uuidv4} from "uuid";
 import TextSearchSimple from "widgets/search/TextSearchSimple";
 import FooterBackToTop from "widgets/footers/footerBackToTop";
 import ShoppingBasket from "widgets/basket/shoppingBasket";
+import SearchRecommended from "widgets/search/searchRecommended";
+import FilterLayoutDays from "widgets/search/layouts/filterLayoutDays";
 
 const SearchLocationFilters = ({
 								   category,
@@ -28,7 +30,7 @@ const SearchLocationFilters = ({
 								   clickEnabled,
 								   page
 							   }) => {
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const resultBbox = useSelector((state) => state.searchDraw.resultBbox);
 	const history = useHistory();
@@ -36,6 +38,7 @@ const SearchLocationFilters = ({
 	const features = useSelector((state) => state.searchDraw.features);
 	const loading = useSelector((state) => state.searchDraw.loading);
 	const [expanded, setExpanded] = useState(false);
+	const [advanced, setAdvanced] = useState(false);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
@@ -58,6 +61,9 @@ const SearchLocationFilters = ({
 		setExpanded(!expanded);
 	}
 
+	function handleChangeAdvanced() {
+		setAdvanced(!advanced);
+	}
 
 	function ResultItems() {
 		if (loading === true) {
@@ -102,24 +108,39 @@ const SearchLocationFilters = ({
 	function FiltersInner() {
 		return (
 			<Stack direction="column" spacing={2}>
-				<ShoppingBasket/>
 				<Stack direction="row" spacing={2}>
-					<Button variant={"outlined"} sx={{
-						width: "100%"
-					}} onClick={() => {
-						dispatch(locationPopup({open: true}));
-					}} startIcon={
-						<EditLocationAltIcon/>}>{currentLocation ? currentLocation.text.substring(0, 10) + (currentLocation.text.length > 10 ? '...' : '') : 'No location'}</Button>
-					{page &&
-						<Button variant={"outlined"} sx={{width: "80px"}} onClick={() => {
-							toggleMap();
-							handleChange();
-						}} startIcon={<MapIcon sx={{marginLeft: "12px"}}/>}></Button>
-					}
-
+					<SearchRecommended/>
+					<ShoppingBasket/>
 				</Stack>
-				<SearchDistance category={category}></SearchDistance>
-				<TextSearchSimple/>
+				<Accordion expanded={advanced} onChange={handleChangeAdvanced}>
+					<AccordionSummary
+						expandIcon={<ExpandMoreIcon/>}
+						aria-controls="panel1a-content"
+						id="panel1a-header"
+					>
+						<TypographyHeader sx={{"color": "#1976d2","fontSize": "0.9rem"}} element={"h2"}>Advanced</TypographyHeader>
+					</AccordionSummary>
+					<AccordionDetails>
+						<Stack direction="row" spacing={2}>
+							<Button variant={"outlined"} sx={{
+								width: "100%"
+							}} onClick={() => {
+								dispatch(locationPopup({open: true}));
+							}} startIcon={
+								<EditLocationAltIcon/>}>{currentLocation ? currentLocation.text.substring(0, 10) + (currentLocation.text.length > 10 ? '...' : '') : 'No location'}</Button>
+							{page &&
+								<Button variant={"outlined"} sx={{width: "80px"}} onClick={() => {
+									toggleMap();
+									handleChange();
+								}} startIcon={<MapIcon sx={{marginLeft: "12px"}}/>}></Button>
+							}
+
+						</Stack>
+						<SearchDistance category={category}></SearchDistance>
+						<TextSearchSimple/>
+						<FilterLayoutDays/>
+					</AccordionDetails>
+				</Accordion>
 				<FilterLayoutSubCats category={category}/>
 			</Stack>
 		)

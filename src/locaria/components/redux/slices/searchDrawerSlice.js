@@ -19,9 +19,12 @@ export const searchDrawerSlice = createSlice({
 			filters:{},
 			bbox:[],
 			distanceType: 'km',
-			fids:[]
+			fids:[],
+			sendRecommended: false
 
 		},
+
+		categoryChosen: undefined,
 
 		wait: false,
 
@@ -75,6 +78,7 @@ export const searchDrawerSlice = createSlice({
 
 
 		locationOpen: false,
+		questionsOpen: false,
 		locationPage: undefined,
 		geolocation: undefined,
 		currentLocation: undefined,
@@ -82,7 +86,15 @@ export const searchDrawerSlice = createSlice({
 		rewrite: true
 	},
 	reducers: {
-
+		setQuestionsOpen: (state, action) => {
+			state.questionsOpen = action.payload;
+		},
+		setCategoryChosen: (state, action) => {
+			state.categoryChosen = action.payload;
+		},
+		clearCategoryChosen: (state) => {
+			state.categoryChosen = undefined;
+		},
 		setAskQuestions:(state,actions) => {
 			state.askQuestions = actions.payload;
 		},
@@ -213,6 +225,12 @@ export const searchDrawerSlice = createSlice({
 			if(action.payload.rewrite!==undefined) {
 				state.rewrite=action.payload.rewrite;
 			}
+
+			if(action.payload && action.payload.sendRecommended) {
+				state.searchParams.sendRecommended=action.payload.sendRecommended;
+			} else {
+				state.searchParams.sendRecommended=false;
+			}
 			state.refreshCounts=true;
 			state.ready=true;
 			if(action.payload.wait)
@@ -233,6 +251,12 @@ export const searchDrawerSlice = createSlice({
 		clearSearchCategory: (state) => {
 			state.searchParams.categories = [];
 			state.searchParams.tags = [];
+			state.searchParams.page=1;
+			state.totalPages=0;
+
+		},
+		setRecommended: (state,action) => {
+			state.searchParams.sendRecommended = action.payload;
 			state.searchParams.page=1;
 			state.totalPages=0;
 
@@ -405,7 +429,11 @@ export const {
 	setBbox,
 	clearWait,
 	setResultBbox,
-	setAskQuestions
+	setAskQuestions,
+	setCategoryChosen,
+	clearCategoryChosen,
+	setRecommended,
+	setQuestionsOpen
 
 } = searchDrawerSlice.actions
 

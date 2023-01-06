@@ -9,10 +9,10 @@ import {
 import List from "@mui/material/List";
 import {useDispatch, useSelector} from "react-redux";
 import {
-	locationPopup, setAskQuestions,
+	locationPopup,
 	setCurrentLocation,
 	setGeolocation,
-	setLocation
+	setLocation, setQuestionsOpen
 
 } from "../../redux/slices/searchDrawerSlice";
 import {useHistory} from "react-router-dom";
@@ -25,7 +25,7 @@ import {useCookies} from "react-cookie";
 import {encodeSearchParams} from "libs/searchParams";
 import {v4} from "uuid";
 
-export default function SearchLocationPopup({defaultPage,maxLocations=8,display = true}) {
+export default function SearchLocationPopup({defaultPage, maxLocations = 8, display = true}) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 
@@ -33,38 +33,36 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	const locationPage = useSelector((state) => state.searchDraw.locationPage);
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 	const geolocation = useSelector((state) => state.searchDraw.geolocation);
-	const askQuestions = useSelector((state) => state.searchDraw.askQuestions);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
-	const schema = useSelector((state) => state.searchDraw.schema);
 
 	const [cookies, setCookies] = useCookies(['doNotReRender']);
 
 	const [results, setResults] = useState([]);
 	const [visible, setVisible] = useState(display);
 	const [searchText, setSearchText] = useState("");
-	const [age, setAge] = useState("Adult");
+
 
 	function handleClose() {
 		dispatch(locationPopup({open: false, page: locationPage}));
 	}
 
-	function handleListItemClick(fid,name,location,store) {
+	function handleListItemClick(fid, name, location, store) {
 
-		let locationPacket={text: name, fid: fid, location: location};
-		if(store!==false) {
+		let locationPacket = {text: name, fid: fid, location: location};
+		if (store !== false) {
 			// dedupe
 
-			let newRecent=cookies['recentLocations']||[];
-			let dupe=false;
-			for(let l in newRecent) {
-				if(newRecent[l].fid===fid) {
+			let newRecent = cookies['recentLocations'] || [];
+			let dupe = false;
+			for (let l in newRecent) {
+				if (newRecent[l].fid === fid) {
 					dupe = true;
 					break;
 				}
 			}
 
-			if(!dupe) {
+			if (!dupe) {
 				if (newRecent.length > 5)
 					newRecent.shift();
 				newRecent.push(locationPacket);
@@ -74,33 +72,29 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		setCookies('currentLocation', locationPacket, {path: '/', sameSite: true});
 
 		// Did we send a default page? If not it may be undefined and we let the site Panels update
-		if(locationPage!==undefined) {
+		if (locationPage !== undefined) {
 			let encodedPage = locationPage + encodeSearchParams({
 				location: location
 			})
 			history.push(encodedPage);
 		} else {
-			if(display===false)
+			if (display === false)
 				dispatch(setLocation(locationPacket.location));
 		}
 		dispatch(setCurrentLocation(locationPacket));
-		dispatch(setAskQuestions(1));
+		dispatch(locationPopup({open: false}));
+		dispatch(setQuestionsOpen(true));
 	}
 
 
 	function handleGeoSuccess(location) {
 		dispatch(setGeolocation(location));
-		handleListItemClick("geo","Nearby",location,false);
+		handleListItemClick("geo", "Nearby", location, false);
 	}
 
 	function handleGeoError() {
 		dispatch(setGeolocation(false));
 	}
-
-	useEffect(() => {
-		console.log(askQuestions);
-	},[askQuestions]);
-
 
 	useEffect(() => {
 		window.websocket.registerQueue("locationSearch", function (json) {
@@ -110,22 +104,22 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	}, []);
 
 	useEffect(() => {
-		if(open===true&&visible===false) {
+		if (open === true && visible === false) {
 			setVisible(true);
 		}
-		if(open===false&&display===false) {
+		if (open === false && display === false) {
 			setVisible(false);
 		}
 	}, [open]);
 
 	useEffect(() => {
-		if(searchText!=="") {
+		if (searchText !== "") {
 			let packetSearch = {
 				"queue": "locationSearch",
 				"api": "api",
 				"data": {
 					"method": "search",
-					"typeahead":"true",
+					"typeahead": "true",
 					"search_text": searchText,
 					"display_limit": maxLocations
 				}
@@ -151,7 +145,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		if (geolocation === undefined) {
 			return (
 				<ListItem onClick={() => {
-					getLocation(handleGeoSuccess,handleGeoError)
+					getLocation(handleGeoSuccess, handleGeoError)
 				}}
 						  key={"Nearby"}>
 					<ListItemIcon>
@@ -163,7 +157,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		}
 
 		return (
-			<ListItem onClick={() => handleListItemClick("fid","nearby",geolocation,false)}
+			<ListItem onClick={() => handleListItemClick("fid", "nearby", geolocation, false)}
 					  key={"Nearby"}>
 				<ListItemIcon>
 					<NearMeIcon/>
@@ -175,24 +169,24 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	}
 
 	function ResultItems() {
-		let returnArray=[];
+		let returnArray = [];
 
 		// Locate results category that is Location
-		for(let r in results) {
+		for (let r in results) {
 			// is results category Location?
-			if(results[r].category==="Location") {
+			if (results[r].category === "Location") {
 				// Push Locations to the returnArray
-				for(let i=0;i<maxLocations&&i<results[0]['jsonb_agg'].length;i++) {
+				for (let i = 0; i < maxLocations && i < results[0]['jsonb_agg'].length; i++) {
 					returnArray.push(<Divider key={v4()} variant="inset" component="li"/>);
 					returnArray.push(
-							<ListItem
-									  onClick={() => handleListItemClick(results[r]['jsonb_agg'][r].fid, results[r]['jsonb_agg'][i].text, results[r]['jsonb_agg'][i].location)}
-									  key={v4()}>
-								<ListItemIcon>
-									<PlaceIcon/>
-								</ListItemIcon>
-								<ListItemText primary={results[0]['jsonb_agg'][i].text}/>
-							</ListItem>
+						<ListItem
+							onClick={() => handleListItemClick(results[r]['jsonb_agg'][r].fid, results[r]['jsonb_agg'][i].text, results[r]['jsonb_agg'][i].location)}
+							key={v4()}>
+							<ListItemIcon>
+								<PlaceIcon/>
+							</ListItemIcon>
+							<ListItemText primary={results[0]['jsonb_agg'][i].text}/>
+						</ListItem>
 					)
 				}
 			}
@@ -202,13 +196,13 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 	}
 
 	function RecentItems() {
-		if(cookies&&cookies['recentLocations']&&cookies['recentLocations'].length>0&& ( results===null || results===undefined || results.length===0)) {
-			let recentItemsArray=[];
-			for(let i in cookies['recentLocations']) {
+		if (cookies && cookies['recentLocations'] && cookies['recentLocations'].length > 0 && (results === null || results === undefined || results.length === 0)) {
+			let recentItemsArray = [];
+			for (let i in cookies['recentLocations']) {
 				recentItemsArray.push(
 					<ListItem
-							  onClick={() => handleListItemClick(cookies['recentLocations'][i].fid,cookies['recentLocations'][i].text,cookies['recentLocations'][i].location)}
-							  key={`ri2Key${i}`}>
+						onClick={() => handleListItemClick(cookies['recentLocations'][i].fid, cookies['recentLocations'][i].text, cookies['recentLocations'][i].location)}
+						key={`ri2Key${i}`}>
 						<ListItemIcon>
 							<PlaceIcon/>
 						</ListItemIcon>
@@ -219,7 +213,7 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 			return (
 				<>
 					<ListItem key={"recent"}><ListItemText primary={"Recent items"}></ListItemText></ListItem>
-					<Divider variant="inset" component="li" />
+					<Divider variant="inset" component="li"/>
 					{recentItemsArray}
 				</>
 			)
@@ -227,93 +221,46 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 		return <></>
 	}
 
-	function question1(value) {
-		setAge(value);
-		dispatch(setAskQuestions(2));
-	}
-
-	function question2(value) {
-		dispatch(setAskQuestions(0));
-		dispatch(locationPopup({open: false}));
-		let encodedParams =  encodeSearchParams({
-			location: currentLocation.location,
-			filters: {
-				data:{"subCategory1":{"Adult":"True"}}
-			}
-		},schema);
-
-		switch(value) {
-			case 'Activities':
-				history.push('/Activities/sp/Activities/'+encodedParams);
-				break;
-		}
-
-	}
-	function Stages() {
-		switch(askQuestions) {
-			case 1:
-				return (
-					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
-						<ListItem key={v4()}><ListItemText primary={"I am a student"} onClick={() => question1("Adult")}/></ListItem>
-						<ListItem key={v4()}><ListItemText primary={"I work"} onClick={() => question1("age2")}></ListItemText></ListItem>
-					</List>
-				)
-			case 2:
-				return (
-					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
-						<ListItem key={v4()}><ListItemText primary={"I am active and want to get fitter"} onClick={() => question2("Activities")}></ListItemText></ListItem>
-						<ListItem key={v4()}><ListItemText primary={"Questions 2.2"} onClick={() => question2("answer2")}></ListItemText></ListItem>
-					</List>
-				)
-			default:
-				return (
-					<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
-						<>
-							<Divider component="li"/>
-							<GeolocationItem></GeolocationItem>
-							<RecentItems></RecentItems>
-							<ResultItems></ResultItems>
-						</>
-
-					</List>
-				)
-		}
 
 
-	}
 
-	let width=innerWidth;
-	if(width>700)
-		width=700;
-	else width=width-60;
 
-	let textSx={
+
+
+
+
+	let width = innerWidth;
+	if (width > 700)
+		width = 700;
+	else width = width - 60;
+
+	let textSx = {
 		background: "#fff",
-		width:`${width}px`,
+		width: `${width}px`,
 		marginTop: "6px"
 	};
 
 
-	let boxSx={
+	let boxSx = {
 		position: "absolute",
 		top: "35px",
-		left: `calc( 50% - ${width/2}px )`,
+		left: `calc( 50% - ${width / 2}px )`,
 		width: `${width}px`,
 		boxShadow: 3
 	}
 
-	if(mobile) {
-		textSx.width=`${width}px`;
-		boxSx.top="30px";
+	if (mobile) {
+		textSx.width = `${width}px`;
+		boxSx.top = "30px";
 	}
 
 
-	if(!visible) {
-		boxSx.display='none';
+	if (!visible) {
+		boxSx.display = 'none';
 	}
 
-	if(display===false) {
-		boxSx.top="50px";
+	if (display === false) {
+		boxSx.top = "50px";
 	}
 
 	return (
@@ -324,8 +271,10 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 
 			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "5px"}}>
 				<ListItem>
-					<TextField autoComplete={"off"} value={searchText||open? searchText:(currentLocation? currentLocation.text:'Where are you?')} sx={textSx} id={"locationSearchText"} onClick={() => {
-						if(open===false) {
+					<TextField autoComplete={"off"}
+							   value={searchText || open ? searchText : (currentLocation ? currentLocation.text : 'Where are you?')}
+							   sx={textSx} id={"locationSearchText"} onClick={() => {
+						if (open === false) {
 							dispatch(locationPopup({open: true, page: defaultPage}));
 						}
 					}}
@@ -334,7 +283,15 @@ export default function SearchLocationPopup({defaultPage,maxLocations=8,display 
 							   }}
 					></TextField>
 				</ListItem>
-				<Stages/>
+				<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
+					<>
+						<Divider component="li"/>
+						<GeolocationItem></GeolocationItem>
+						<RecentItems></RecentItems>
+						<ResultItems></ResultItems>
+					</>
+
+				</List>
 
 			</List>
 
