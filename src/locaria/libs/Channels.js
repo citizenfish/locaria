@@ -38,6 +38,10 @@ export default class Channels {
 		return undefined;
 	}
 
+	getChannels() {
+		return this.channels;
+	}
+
 	getChannelProperties(channel) {
 
 		let foundChannel=this._findChannel(channel);

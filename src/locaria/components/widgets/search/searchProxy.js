@@ -23,6 +23,7 @@ export default function SearchProxy() {
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const refreshCounts = useSelector((state) => state.searchDraw.refreshCounts);
 	const rewrite = useSelector((state) => state.searchDraw.rewrite);
+	const categoryChosen = useSelector((state) => state.searchDraw.categoryChosen);
 
 	let {page} = useParams();
 
@@ -47,7 +48,8 @@ export default function SearchProxy() {
 				page: searchParams.page,
 				search: searchParams.search,
 				bbox: searchParams.bbox,
-				filters: searchParams.filters
+				filters: searchParams.filters,
+				sendRecommended: searchParams.sendRecommended,
 			},schema);
 			if (rewrite === true)
 				window.history.replaceState(null, "New Page Title", encodedPage)
@@ -156,6 +158,10 @@ export default function SearchProxy() {
 
 		if (searchParams.tags && searchParams.tags.length > 0)
 			packetSearch.data.tags = searchParams.tags;
+
+		if(categoryChosen&&searchParams.sendRecommended===true) {
+			packetSearch.data['category_chosen'] = categoryChosen;
+		}
 
 		packetSearch.data.display_limit = searchParams.displayLimit || 20;
 

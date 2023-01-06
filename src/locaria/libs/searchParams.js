@@ -62,6 +62,11 @@ function decodeSearchParams(search) {
 		params.wait=true;
 	}
 
+	match=aSearch.match(/\/c\//);
+	if(match) {
+		params.sendRecommended=true;
+	}
+
 	return params;
 }
 
@@ -116,6 +121,10 @@ function encodeSearchParams(params,schema) {
 
 	if(params.wait) {
 		search+=`/w`;
+	}
+
+	if(params.sendRecommended) {
+		search+=`/c`;
 	}
 	return `${search}/`;
 }
