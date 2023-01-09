@@ -88,6 +88,7 @@ export const searchDrawerSlice = createSlice({
 	reducers: {
 		setQuestionsOpen: (state, action) => {
 			state.questionsOpen = action.payload;
+			state.askQuestions=0;
 		},
 		setCategoryChosen: (state, action) => {
 			state.categoryChosen = action.payload;
