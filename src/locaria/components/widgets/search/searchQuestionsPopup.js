@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 import Box from "@mui/material/Box";
-import {Backdrop, ListItem, ListItemIcon, ListItemText} from "@mui/material";
+import {Backdrop, Fade, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import {
 	setAskQuestions,
 	setCategoryChosen,
@@ -40,7 +40,10 @@ export default function SearchQuestionsPopup() {
 	function handleQuestion1(newCategory, value) {
 		setGotoCategory(newCategory);
 		setQuestion1(value);
-		dispatch(setAskQuestions(2));
+		// run after a few seconds to add a visual update
+		setTimeout(() => {
+			dispatch(setAskQuestions(2));
+		},500);
 	}
 
 	function toggleQuestion2(value) {
@@ -85,13 +88,11 @@ export default function SearchQuestionsPopup() {
 			if (categories[category].questions) {
 				for (let q in categories[category].questions['category_choice']) {
 					questions.push(
-						<ListItem key={v4()} sx={{background: '#fff', borderRadius: "5px", margin:"10px",width:`${width}px`}}>
+						<ListItem key={v4()} sx={{background: '#fff', borderRadius: "10px", margin:"10px",width:`${width}px`,border: "1px solid #0000008f"}} onClick={() => handleQuestion1(categories[category].key, categories[category].questions['category_choice'][q].value)}>
 							<ListItemIcon>
-								<StarBorderIcon />
+								<RenderStarState state={question1===categories[category].questions['category_choice'][q].value}/>
 							</ListItemIcon>
-							<ListItemText
-							primary={categories[category].questions['category_choice'][q].statement}
-							onClick={() => handleQuestion1(categories[category].key, categories[category].questions['category_choice'][q].value)}/>
+							<ListItemText primary={categories[category].questions['category_choice'][q].statement}/>
 						</ListItem>
 					)
 				}
@@ -99,7 +100,7 @@ export default function SearchQuestionsPopup() {
 		}
 		return (
 			<List>
-				<ListItem key={v4()} sx={{background: '#fff', borderRadius: "5px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center"}}>
+				<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
 					<ListItemText primary={"Question 1 of 2: Which best describes your situation"}></ListItemText>
 				</ListItem>
 				{questions}
@@ -107,29 +108,38 @@ export default function SearchQuestionsPopup() {
 		)
 	}
 
+	function RenderStarState({state}) {
+		if(state) {
+			return (
+				<Fade in={true} timeout={500}><StarIcon/></Fade>
+			)
+		} else {
+			return (
+				<StarBorderIcon />
+			)
+		}
+	}
+
 	function RenderQuestions2() {
 		let questions = [];
 		let category = window.systemCategories.getChannelProperties(gotoCategory);
 		for (let q in category.questions['category_chosen']) {
 			questions.push(
-				<ListItem key={v4()} sx={{background: '#fff', borderRadius: "5px", margin:"10px",width:`${width}px`}}>
+				<ListItem onClick={() => toggleQuestion2(category.questions['category_chosen'][q].value)} key={v4()} sx={{background: '#fff', borderRadius: "10px", margin:"10px",width:`${width}px`,border: "1px solid #0000008f"}}>
 					<ListItemIcon>
-						{question2.indexOf(category.questions['category_chosen'][q].value) !== -1?
-							<StarIcon/>:<StarBorderIcon />
-						}
+						<RenderStarState state={question2.indexOf(category.questions['category_chosen'][q].value) !== -1}/>
 					</ListItemIcon>
-					<ListItemText primary={category.questions['category_chosen'][q].statement}
-												   onClick={() => toggleQuestion2(category.questions['category_chosen'][q].value)}/></ListItem>
+					<ListItemText primary={category.questions['category_chosen'][q].statement}/></ListItem>
 			)
 		}
 		return (
 			<>
 				<List>
-					<ListItem key={v4()} sx={{background: '#fff', borderRadius: "5px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center"}}>
+					<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
 						<ListItemText primary={"Question 2 of 2: Which best describes your situation"}></ListItemText>
 					</ListItem>
 					{questions}
-					<ListItem  key={v4()} sx={{background: '#fff', borderRadius: "5px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center"}}>
+					<ListItem  key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
 						<Button color={"primary"} sx={{"color":"#000"}} varient={"outlined"} onClick={() => handleQuestion2()} endIcon={<TravelExploreIcon/>}>GO!</Button>
 					</ListItem>
 				</List>
