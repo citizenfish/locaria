@@ -202,6 +202,7 @@ class openreferraluk:
         self.table = parameters.get('table', 'openreferraluk')
         self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (oa_org, oa_id, attributes) VALUES %s ON CONFLICT(oa_org,oa_id) DO UPDATE SET attributes=EXCLUDED.attributes"
         self.delete = f"DELETE FROM {INSERT_SCHEMA}.{self.table} WHERE attributes->>'state' = 'deleted'"
+
     def processAPI(self,db):
         if self.debug: print(f"Processing openreferraluk")
         count = 0
@@ -220,7 +221,7 @@ class openreferraluk:
                     count += len(records)
                     print(f"Inserting {len(records)} referral records")
                     db_res = db.bulkInserter(self.insert, records)
-                    page += 1
+                    page += 1 #TODO update pages in parameters
                     if data['last'] == True or page > data['totalPages']:
                         break
                 except Exception as error:
@@ -229,5 +230,32 @@ class openreferraluk:
 
         return {'inserts' : count}
 
+class parkrun:
+    def __init__(self, parameters, debug = True):
+        self.url = parameters.get('url','https://images.parkrun.com/events.json')
+        self.debug = debug
+        self.table = parameters.get('table', 'parkrun')
+        self.insert = f"INSERT INTO {INSERT_SCHEMA}.{self.table} (oa_id, attributes) VALUES %s ON CONFLICT(oa_id) DO UPDATE SET attributes = EXCLUDED.attributes"
 
-classSelectors = {'activeplaces':activeplaces, 'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle, 'openfoodnetwork' :openfoodnetwork, 'openreferraluk' : openreferraluk}
+    def processAPI(self,db):
+        if self.debug: print(f"Processing parkrun")
+        count = 0
+        res=requests.get(self.url)
+        data = res.json()
+        country_code = "97"
+        for f in data['countries']:
+            if data['countries'][f]['url'] == 'www.parkrun.org.uk':
+                country_code = int(f)
+                if self.debug: print(f"Found UK Parkruns {country_code}")
+
+        records = []
+        for e in data['events']['features']:
+            if e['properties']['countrycode'] == country_code:
+                records.append((e['id'], json.dumps(e)))
+
+        count += len(records)
+        print(f"Inserting {len(records)} parkrun records")
+        db_res = db.bulkInserter(self.insert, records)
+        return {'inserts' : count}
+
+classSelectors = {'parkrun': parkrun, 'activeplaces':activeplaces, 'sustainablefoodplaces' : sustainablefoodplaces, 'mindlocations' : mindlocations, 'datathistle': datathistle, 'openfoodnetwork' :openfoodnetwork, 'openreferraluk' : openreferraluk}
