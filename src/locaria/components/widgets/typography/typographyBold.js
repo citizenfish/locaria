@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 
-export default function TypographyBold({children,sx}) {
+export default function TypographyBold({children,sx,id}) {
 
     const localSx={
         fontSize: "0.8rem",
@@ -15,7 +15,7 @@ export default function TypographyBold({children,sx}) {
     let elementSx={...localSx,...sx||{}};
 
     return (
-        <Typography component={"span"} variant={"body2"} sx={elementSx}>
+        <Typography component={"span"} variant={"body2"} sx={elementSx} id={id}>
             {children}
         </Typography>
     )

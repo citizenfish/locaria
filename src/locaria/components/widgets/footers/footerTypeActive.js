@@ -1,15 +1,13 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import {useHistory} from "react-router-dom";
+import Link from "@mui/material/Link";
 const head_sx = {fontFamily: "Montserrat", color: "#FFF", fontWeight:700}
 const divider_sx ={m:2, borderColor: "#FFF"}
-const typ_sx = {fontFamily: "Montserrat", color: "#FFF", fontWeight:300, mt:1}
+const typ_sx = {fontFamily: "Montserrat", color: "#FFF", fontWeight:300, mt:1, display: "block"}
 
 const FooterTypeActive = function () {
-	const history = useHistory();
 
 
 	return (
@@ -33,33 +31,33 @@ const FooterTypeActive = function () {
 					textAlign: "center",
 					padding: "10px"
 				}}>
-					<Typography sx={head_sx}>About Active Prescription</Typography>
+					<Link sx={head_sx} href={"/About/"}>About Active Prescription</Link>
 					<Divider sx = {divider_sx}/>
-					<Typography sx = {typ_sx} >Our aim</Typography>
-					<Typography sx = {typ_sx} >Locaria</Typography>
-					<Typography sx = {typ_sx} >Get in touch</Typography>
-					<Typography sx = {typ_sx} >(c) Nautoguide Ltd.</Typography>
+					<Link sx = {typ_sx} href={"/About/#Aim"}>Our aim</Link>
+					<Link sx = {typ_sx} href={"/About/#Locaria"}>Locaria</Link>
+					<Link sx = {typ_sx} href={"/About/#GetInTouch"}>Get in touch</Link>
+					<Link sx = {typ_sx} href={"/About/#Nautoguide"}>(c) Nautoguide Ltd.</Link>
 				</Grid>
-				<Grid item md={4} onClick={()=>{history.push('/ProviderForm/')}} sx={{
+				<Grid item md={4} sx={{
 					textAlign: "center",
 					padding: "10px",
 					cursor: "pointer"
 				}}>
-					<Typography sx={head_sx}>Submit Your Event</Typography>
+					<Link sx={head_sx} href={"/ProviderForm/"}>Submit Your Event</Link>
 					<Divider sx = {divider_sx}/>
-					<Typography sx = {typ_sx} >Register</Typography>
-					<Typography sx = {typ_sx} >Sign in and submit</Typography>
+					<Link sx = {typ_sx} href={"/ProviderForm/#Register"}>Register</Link>
+					<Link sx = {typ_sx} href={"/ProviderForm/#SignIn"}>Sign in and submit</Link>
 				</Grid>
 					<Grid item md={4} sx={{
 						textAlign: "center",
 						padding: "10px"
 					}}>
-						<Typography sx={head_sx}>Learn More</Typography>
+						<Link sx={head_sx} href={"/Learn/"}>Learn More</Link>
 						<Divider sx = {divider_sx}/>
-						<Typography sx = {typ_sx} >Activities</Typography>
-						<Typography sx = {typ_sx} >Mental Health</Typography>
-						<Typography sx = {typ_sx} >Healthy Eating</Typography>
-						<Typography sx = {typ_sx} >Do it at home</Typography>
+						<Link sx = {typ_sx} href={"/Learn/#Activities"}>Activities</Link>
+						<Link sx = {typ_sx} href={"/Learn/#Mental"}>Mental Health</Link>
+						<Link sx = {typ_sx} href={"/Learn/#Healthy"}>Healthy Eating</Link>
+						<Link sx = {typ_sx} href={"/Learn/#Home"}>Do it at home</Link>
 
 				</Grid>
 
