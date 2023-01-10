@@ -16,6 +16,7 @@ import {
   setFilterItem,
 } from "../../redux/slices/searchDrawerSlice";
 import Button from "@mui/material/Button";
+import {v4} from "uuid";
 
 export default function SearchCheckboxFilter({
   sx,
@@ -59,7 +60,7 @@ export default function SearchCheckboxFilter({
                   overlap="rectangular"
                   anchorOrigin={{vertical: "bottom", horizontal: "right"}}
                   style={{transform: "translate(-20px, 0px)"}}
-                  key={"checkboxes_" + key.current + v}
+                  key={v4()}
               >
                 <Button
                     sx={{
@@ -96,6 +97,7 @@ export default function SearchCheckboxFilter({
                   disabled={count===0}
                   style={{transform: "translate(15px, -20px)"}}
                   size={"small"}
+                  key={v4()}
                   variant={
                     objectPathExists(searchParams.filters, values[v].path)
                         ? "contained"
@@ -130,7 +132,7 @@ export default function SearchCheckboxFilter({
         listItems.push(
           <ListItem
             sx={{ padding: "0px" }}
-            key={"checkboxes_" + key.current + v}
+            key={v4()}
           >
             <ListItemButton
               onClick={() => {
@@ -171,7 +173,7 @@ export default function SearchCheckboxFilter({
   return (
     <List sx={{ width: "100%" }}>
       {title && (
-        <ListItem sx={{ padding: "0px" }} key={"checkboxes_" + key.current}>
+        <ListItem sx={{ padding: "0px" }} key={v4()}>
           <ListItemText primary={title} />
         </ListItem>
       )}
