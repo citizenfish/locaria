@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 
-export default function TypographyParagraph({children, sx, variant='body1'}) {
+export default function TypographyParagraph({children, sx, variant='body1',id}) {
 
     const localSx={
         fontSize: "0.8rem",
@@ -15,7 +15,7 @@ export default function TypographyParagraph({children, sx, variant='body1'}) {
     let elementSx={...localSx,...sx||{}};
 
     return (
-        <Typography variant={variant} sx={elementSx}>
+        <Typography variant={variant} sx={elementSx} id={id}>
             {children}
         </Typography>
     )

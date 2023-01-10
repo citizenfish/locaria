@@ -10,11 +10,9 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {v4} from "uuid";
 import List from "@mui/material/List";
-import Button from "@mui/material/Button";
 import {encodeSearchParams} from "libs/searchParams";
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
-import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 
 import {useHistory} from "react-router-dom";
 export default function SearchQuestionsPopup() {
@@ -140,7 +138,7 @@ export default function SearchQuestionsPopup() {
 					</ListItem>
 					{questions}
 					<ListItem  key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
-						<Button color={"primary"} sx={{"color":"#000"}} varient={"outlined"} onClick={() => handleQuestion2()} endIcon={<TravelExploreIcon/>}>GO!</Button>
+						<ListItemText color={"primary"} sx={{"color":"#000"}} varient={"outlined"} onClick={() => handleQuestion2()}>Find activities based on your selection</ListItemText>
 					</ListItem>
 				</List>
 			</>

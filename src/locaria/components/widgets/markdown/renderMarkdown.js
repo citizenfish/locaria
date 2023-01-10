@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import TypographyLink from "../typography/typographyLink";
 import TypographyBold from "../typography/typographyBold";
 import TypographyItalics from "../typography/typographyItalics";
-import {ListItem, ListItemButton, ListItemIcon, ListItemText, Stack} from "@mui/material";
+import {ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import CircleIcon from '@mui/icons-material/Circle';
 const url = new UrlCoder();
 import ArgsSerialize from "../../../libs/argsSerialize";
@@ -39,7 +39,6 @@ export default function RenderMarkdown({markdown,mode="display",clickFunction}) 
 }
 
 function ProcessMDObject(index,MDObject,mode,clickFunction) {
-	const ARGS=new ArgsSerialize();
 
 	// defaults;
 	let sx = {};
@@ -99,7 +98,7 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 		case 'p':
 			if(mode === 'display') {
 				return (
-					<TypographyParagraph sx={sx} key={`md${newUUID()}`}>
+					<TypographyParagraph sx={sx} key={`md${newUUID()}`} id={MDObject.id}>
 						{MDObject.children.map(n => ProcessMDObjectChild(n,mode))}
 					</TypographyParagraph>);
 			} else {
@@ -122,18 +121,6 @@ function ProcessMDObject(index,MDObject,mode,clickFunction) {
 
 	}
 	return (<></>)
-}
-
-function RenderPluginParams({params}) {
-	let paramsArray=[];
-	for(let p in params) {
-		paramsArray.push(<Chip label={`${p}=${params[p]}`} color="success"/>);
-	}
-	return paramsArray;
-}
-
-function handleDelete(e) {
-	console.log(e);
 }
 
 
@@ -163,7 +150,7 @@ function ProcessMDObjectChild(child,mode) {
 			if(mode==='display') {
 				return (
 					<TypographyBold sx={{display: "inline-block",}}
-									key={`md${newUUID()}`}>{child.text}</TypographyBold>
+									key={`md${newUUID()}`} id={child.id}>{child.text}</TypographyBold>
 				)
 			}else {
 				return (
@@ -173,6 +160,10 @@ function ProcessMDObjectChild(child,mode) {
 		case 'link':
 			return (
 				<TypographyLink key={`md${newUUID()}`} sx={{display: "inline-block"}} link={child.ref}>{child.text}</TypographyLink>
+			)
+		case 'p':
+			return (
+				<TypographyParagraph key={`md${newUUID()}`} sx={{display: "inline-block"}} id={child.id}>{child.text}</TypographyParagraph>
 			)
 		default:
 			return child.text
