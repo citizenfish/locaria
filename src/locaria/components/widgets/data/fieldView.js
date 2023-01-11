@@ -37,6 +37,7 @@ import {v4 as uuidv4} from "uuid";
 import {useDispatch, useSelector} from "react-redux";
 import {setFormMode} from "components/redux/slices/formSlice";
 import DataItemBasket from "widgets/data/dataItemsRead/dataItemBasket";
+import ActiveBasketView from "widgets/results/activeBasketView";
 
 const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) => {
 
@@ -44,28 +45,39 @@ const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) =
 		let channel = window.systemCategories.getChannelProperties(data.properties.category);
 
 		let fieldsObj = channel.fields;
+		if(typeof fieldsObj[fields] === "string") {
 
-		if (fieldsObj) {
+			const fieldPlugins = {
+				"activeBasketView":ActiveBasketView
+			}
+			let Element=fieldPlugins[fieldsObj[fields]];
 			return (
-				<Grid container spacing={2}>
-					<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
-						{fieldsObj[fields] ?
-							<FormatFields fields={fieldsObj[fields]}
-										  data={data}
-										  mode={mode}
-										  moderation={moderation}
-										  category={data.properties.category}/> : null}
-					</LocalizationProvider>
-				</Grid>
+				<Element data={data} category={data.properties.category}/>
 			)
 		} else {
-			return (
-				<Grid container spacing={2}>
-					<Grid item md={12}>
-						<h1>You have not configured data for category {data.category}</h1>
+
+			if (fieldsObj) {
+				return (
+					<Grid container spacing={2}>
+						<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"GB"}>
+							{fieldsObj[fields] ?
+								<FormatFields fields={fieldsObj[fields]}
+											  data={data}
+											  mode={mode}
+											  moderation={moderation}
+											  category={data.properties.category}/> : null}
+						</LocalizationProvider>
 					</Grid>
-				</Grid>
-			)
+				)
+			} else {
+				return (
+					<Grid container spacing={2}>
+						<Grid item md={12}>
+							<h1>You have not configured data for category {data.category}</h1>
+						</Grid>
+					</Grid>
+				)
+			}
 		}
 	} else {
 		return (
