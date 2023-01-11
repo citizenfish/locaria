@@ -1,9 +1,7 @@
 import React from "react";
 import { Button, Stack, Toolbar } from "@mui/material";
 import { useSelector } from "react-redux";
-import { v4 } from "uuid";
-import DataCard from "../featureCards/dataCard";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { newSearch, setFeatures } from "../../redux/slices/searchDrawerSlice";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
@@ -15,6 +13,7 @@ import {useHistory} from "react-router-dom";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import {FieldView} from "widgets/data/fieldView";
 
 export default function BasketDisplay({ field }) {
   const dispatch = useDispatch();
@@ -60,19 +59,7 @@ export default function BasketDisplay({ field }) {
     let featureArray = [];
     features.features.forEach((feature) => {
       featureArray.push(
-        <DataCard
-          key={v4()}
-          clickEnabled={false}
-          feature={feature}
-          field={field}
-          sx={{
-            //TODO move into config
-            borderRadius: "5px",
-            border: "1px solid rgb(228, 230, 230)",
-            margin: "5px",
-            backgroundColor: "rgba(218, 210, 210, 0.03)",
-          }}
-        ></DataCard>
+          <FieldView data={feature} mode={"read"} fields={field} ></FieldView>
       );
     });
     return (
@@ -80,11 +67,14 @@ export default function BasketDisplay({ field }) {
       <>
         <BasketNav />
         {featureArray}
-          <Toolbar>
+          <Typography align={"center"} variant={"h6"} sx={{marginTop:"10px"}}>Brilliant! That’s {features.features.length} activities for next week. Keep it up!</Typography>
+
+          <Toolbar sx={{justifyContent:"center", marginTop:"10px"}}>
               <Button startIcon={<ClearAllIcon />} onClick={() => dispatch(setItems([]))}>Clear</Button>
               <Button startIcon={<PrintIcon />} onClick={() => dispatch(setItems([]))}>Print</Button>
               <Button startIcon={<EmailIcon />} onClick={() => dispatch(setItems([]))}>Email</Button>
           </Toolbar>
+
       </>
     );
   } else {
