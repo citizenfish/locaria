@@ -13,7 +13,7 @@ from locaria_file_utils import get_local_config
 from feedFunctions import loadRPDE
 
 stats = {}
-
+DEBUG = debugs.get(sys.argv[1], DEFAULT_DEBUG) if len(sys.argv) > 1  else DEFAULT_DEBUG
 config = get_local_config('config.json')
 db = openActiveDB(config, DEBUG)
 if not db.connection:

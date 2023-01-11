@@ -9,6 +9,8 @@ from locariaDB import *
 from locaria_file_utils import get_local_config
 from locaria_api_utils import *
 
+DEBUG = debugs.get(sys.argv[1], DEFAULT_DEBUG) if len(sys.argv) > 1  else DEFAULT_DEBUG
+
 
 config = get_local_config('config.json')
 db = locariaDB(config, DEBUG)
