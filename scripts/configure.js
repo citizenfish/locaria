@@ -75,6 +75,7 @@ function commandLoop() {
 				console.log('w - Write the current config');
 				console.log('e - Deploy system');
 				console.log('ld - Load Data (OS Opendata)');
+				console.log('td - test a docker build');
 				console.log('q - Quit');
 				commandLoop();
 				break;
@@ -413,6 +414,9 @@ function deploySystemMain(stage, theme,environment) {
 			case 'usqlnt':
 				upgradeSQL(stage, theme,environment, false);
 				break;
+			case 'testdocker':
+				testDockerBuild(stage, theme,environment);
+				break;
 			case 'docker':
 				deployDocker(stage, theme,environment);
 				break;
@@ -447,6 +451,25 @@ function getThemeOutputs(stage, theme,environment) {
 
 }
 
+function testDockerBuild(stage,theme,environment) {
+	const dockers = JSON.parse(fs.readFileSync('docker/dockers.json', 'utf8'));
+	let docker = Object.keys(dockers)[0];
+	for (let d in dockers) {
+		console.log(`[${d}] - ${dockers[d].description}`);
+	}
+	readline.question(`test docker ? [${docker}]`, (cmd) => {
+		if (cmd) {
+			docker = cmd
+		}
+
+		executeWithCatch(`node scripts/buildDocker.js true ${stage} ${theme} ${environment} ${docker}`, "./", (docker) => {
+			console.log(`${docker} Copy complete`)
+			deploySystemMain(stage, theme,environment);
+		})
+	})
+
+	return
+}
 
 function deployDocker(stage, theme,environment) {
 	const dockers = JSON.parse(fs.readFileSync('docker/dockers.json', 'utf8'));
@@ -458,7 +481,7 @@ function deployDocker(stage, theme,environment) {
 		if (cmd)
 			docker = cmd;
 		console.log('Build');
-		executeWithCatch(`node scripts/buildDocker.js  ${stage} ${theme} ${docker} ${environment}`, "./", () => {
+		executeWithCatch(`node scripts/buildDocker.js  false ${stage} ${theme} ${environment} ${docker} `, "./", () => {
 			console.log('tag');
 			let outputs = getThemeOutputs(stage, theme,environment);
 			executeWithCatch(`docker tag ${docker}:latest ${outputs.ecrRepositoryUri}`, "./", () => {

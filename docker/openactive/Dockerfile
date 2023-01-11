@@ -3,6 +3,8 @@ WORKDIR /app
 
 COPY .. .
 
+RUN pip3 install bs4
+RUN pip3 install psycopg
 RUN pip3 install psycopg-binary
 RUN pip3 install psycopg2-binary
 RUN pip3 install boto3

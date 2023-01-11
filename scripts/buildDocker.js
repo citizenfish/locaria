@@ -10,49 +10,49 @@ const buildDir = './docker/builds';
  */
 const fs = require('fs')
 const fsExtra = require('fs-extra')
-
 const {exec} = require('child_process');
-
-
 const configs = require('../../locaria.json');
 
 let config = {};
 let outputsSite;
 let outputs;
 
-const stage = process.argv[2];
-const theme = process.argv[3]||'main';
-const environment = process.argv[4]||'dev';
-const docker= process.argv[5]||'file_loader';
+const copyOnly = process.argv[2]
+const stage = process.argv[3];
+const theme = process.argv[4]||'main';
+const environment = process.argv[5]||'dev';
+const docker= process.argv[6]||'file_loader';
 
 console.log(`Building docker ${docker} for stage ${stage} theme ${theme}`);
 //console.log(configs);
-if (configs[stage].themes[theme]) {
-    config = configs[stage];
+if (copyOnly === 'true' || configs[stage].themes[theme]) {
+      if(copyOnly !== 'true') {
+          config = configs[stage];
 
-    let outputsFileName=`serverless/outputs/${stage}-outputs.json`;
-    if(!fs.existsSync(outputsFileName)) {
-        console.log(`${outputsFileName} does not exist, have you deployed?`);
-        process.exit(0);
-    }
-    outputs=fs.readFileSync(outputsFileName, 'utf8');
+          let outputsFileName = `serverless/outputs/${stage}-outputs.json`;
+          if (!fs.existsSync(outputsFileName)) {
+              console.log(`${outputsFileName} does not exist, have you deployed?`);
+              process.exit(0);
+          }
+          outputs = fs.readFileSync(outputsFileName, 'utf8');
 
-    let outputsSiteFileName=`serverless/outputs/${stage}-outputs-${theme}-${environment}.json`;
-    if(!fs.existsSync(outputsSiteFileName)) {
-        console.log(`${outputsSiteFileName} does not exist, have you deployed?`);
-        process.exit(0);
-    }
-    outputsSite=JSON.parse(fs.readFileSync(outputsSiteFileName,'utf8'));
-
-    if (fs.existsSync(buildDir)) {
-        console.log(`cleaning build dir ${buildDir}`);
-        fsExtra.remove(buildDir, () => {
+          let outputsSiteFileName = `serverless/outputs/${stage}-outputs-${theme}-${environment}.json`;
+          if (!fs.existsSync(outputsSiteFileName)) {
+              console.log(`${outputsSiteFileName} does not exist, have you deployed?`);
+              process.exit(0);
+          }
+          outputsSite = JSON.parse(fs.readFileSync(outputsSiteFileName, 'utf8'));
+      }
+        if (fs.existsSync(buildDir)) {
+            console.log(`cleaning build dir ${buildDir}`);
+            fsExtra.remove(buildDir, () => {
+                doCopy();
+            });
+        } else {
             doCopy();
-        });
-    } else {
-        doCopy();
-    }
+        }
 } else {
+
     console.log(`No such config ${stage} ${theme} ${environment}`);
 }
 
@@ -83,14 +83,16 @@ function doCopy() {
                     console.log('Modules Copy failed!');
                     console.log(err);
                 } else {
+                    if (copyOnly !== 'true') {
 
-                    const cmdLine = `docker buildx build --platform=linux/amd64 -f Dockerfile -t ${docker}:latest .`;
-                    exec(cmdLine, {cwd:buildDir}, (err, stdout, stderr) => {
-                        console.log(err);
-                        console.log(stdout);
-                        console.log(stderr);
+                        const cmdLine = `docker buildx build --platform=linux/amd64 -f Dockerfile -t ${docker}:latest .`;
+                        exec(cmdLine, {cwd: buildDir}, (err, stdout, stderr) => {
+                            console.log(err);
+                            console.log(stdout);
+                            console.log(stderr);
 
-                    })
+                        })
+                    }
                 }
             })
 
