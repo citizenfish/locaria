@@ -4,5 +4,11 @@
   },
   "file_download": {
     "description": "File Download"
+  },
+  "openactive": {
+    "description": "OpenActive"
+  },
+  "log_analysis": {
+    "description": "Log Analysis"
   }
 }
