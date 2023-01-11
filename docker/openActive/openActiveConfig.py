@@ -1,4 +1,5 @@
 PROCS = 4
-DEBUG = True
+debugs = {'True': True, 'False':False}
+DEFAULT_DEBUG = False
 FEEDS_PARAMETER = 'openActiveFeeds'
 FEEDS_PROCESS_PARAMETER = 'openActiveFeedsToProcess'
