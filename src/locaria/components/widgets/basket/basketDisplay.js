@@ -69,7 +69,7 @@ export default function BasketDisplay({ field }) {
         {featureArray}
           <Typography align={"center"} variant={"h6"} sx={{marginTop:"10px"}}>Brilliant! That’s {features.features.length} activities for next week. Keep it up!</Typography>
 
-          <Toolbar>
+          <Toolbar sx={{justifyContent:"center", marginTop:"10px"}}>
               <Button startIcon={<ClearAllIcon />} onClick={() => dispatch(setItems([]))}>Clear</Button>
               <Button startIcon={<PrintIcon />} onClick={() => dispatch(setItems([]))}>Print</Button>
               <Button startIcon={<EmailIcon />} onClick={() => dispatch(setItems([]))}>Email</Button>
