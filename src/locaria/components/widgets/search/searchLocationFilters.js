@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import Grid from "@mui/material/Grid";
-import DataCard from "../featureCards/dataCard";
 import SearchDistance from "./searchDistance";
 import SearchPagination from "./searchPagination";
 import {Accordion, AccordionDetails, AccordionSummary, LinearProgress, Stack} from "@mui/material";
@@ -16,18 +15,17 @@ import {locationPopup} from "../../redux/slices/searchDrawerSlice";
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 
 import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
-import {v4 as uuidv4} from "uuid";
 import TextSearchSimple from "widgets/search/TextSearchSimple";
 import FooterBackToTop from "widgets/footers/footerBackToTop";
 import ShoppingBasket from "widgets/basket/shoppingBasket";
 import SearchRecommended from "widgets/search/searchRecommended";
 import FilterLayoutDays from "widgets/search/layouts/filterLayoutDays";
+import {FieldView} from "widgets/data/fieldView";
 
 const SearchLocationFilters = ({
 								   category,
 								   sx,
 								   field,
-								   clickEnabled,
 								   page
 							   }) => {
 	const dispatch = useDispatch();
@@ -73,18 +71,10 @@ const SearchLocationFilters = ({
 		} else {
 			if (features && features.features && features.features.length > 0) {
 
-				let mobileHeight = (mobile ? '600px' : '220px');
 				return (
 					features.features.map((result) => {
 							return (
-								<DataCard key={uuidv4()} feature={result} field={field} clickEnabled={clickEnabled} sx={{
-									//TODO move into config
-									borderRadius: "5px",
-									border: "1px solid rgb(228, 230, 230)",
-									margin: "5px",
-									backgroundColor: "rgba(218, 210, 210, 0.03)",
-									maxHeight: mobileHeight
-								}}></DataCard>
+								<FieldView data={result} mode={"read"} fields={field} ></FieldView>
 							)
 						}
 					)
@@ -174,7 +164,7 @@ const SearchLocationFilters = ({
 						</Accordion>
 
 					</Grid>
-					<Grid item md={9} xs={12} sx={{width: "100%", paddingLeft: "7px !important"}}>
+					<Grid item md={9} xs={12} sx={{width: "100%"}} alignItems={"center"} justifyContent={"space-evenly"}>
 						<ResultsInner/>
 					</Grid>
 
