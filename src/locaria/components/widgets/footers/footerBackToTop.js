@@ -34,7 +34,7 @@ export default function FooterBackToTop({timeout=2000}) {
 
 	return (
 		<Fade in={show} timeout={timeout}>
-			<AppBar position="fixed" height={"40px"} color="primary" sx={{top: 'auto', bottom: 0}} onClick={() => {
+			<AppBar position="fixed" height={"40px"} color="primary" sx={{width:"200px",top: 'auto', bottom: 0, borderRadius: "10px 0px 0px 0px"}} onClick={() => {
 				window.scrollTo(0, 0);
 			}}>
 				<Toolbar>

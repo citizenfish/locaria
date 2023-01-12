@@ -38,6 +38,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setFormMode} from "components/redux/slices/formSlice";
 import DataItemBasket from "widgets/data/dataItemsRead/dataItemBasket";
 import ActiveBasketView from "widgets/results/activeBasketView";
+import ActiveMainResults from "widgets/results/activeMainResults";
 
 const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) => {
 
@@ -48,7 +49,8 @@ const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) =
 		if(typeof fieldsObj[fields] === "string") {
 
 			const fieldPlugins = {
-				"activeBasketView":ActiveBasketView
+				"activeBasketView":ActiveBasketView,
+				"activeMainResults":ActiveMainResults
 			}
 			let Element=fieldPlugins[fieldsObj[fields]];
 			return (
