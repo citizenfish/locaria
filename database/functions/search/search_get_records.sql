@@ -25,6 +25,7 @@ DECLARE
     owned_var BOOLEAN;
     live_flag BOOLEAN DEFAULT FALSE;
     fids_var TEXT [] DEFAULT NULL;
+
 BEGIN
 
     SET SEARCH_PATH = 'locaria_core', 'locaria_data', 'public';
@@ -93,6 +94,12 @@ BEGIN
             end_date_var = end_date_var::DATE::TIMESTAMP + INTERVAL '23 hours 59 minutes';
         END IF;
 
+    END IF;
+
+    --exclude expired, we do this by default
+    IF COALESCE(search_parameters->>'expired', '') != 'false' AND concat(search_parameters->>'start_date',search_parameters->>'end_date') = '' THEN
+        start_date_var = NOW();
+        end_date_var = NOW() + INTERVAL '10 years';
     END IF;
 
     --range searches
