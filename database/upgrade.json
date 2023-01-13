@@ -3,9 +3,7 @@
     {
       "stopOnError": true,
       "tables": [
-        "database/functions/search/search_get_records.sql",
-        "database/functions/search/typeahead_search.sql",
-        "database/functions/utility/strip_array_blanks.sql"
+        "database/functions/search/search_get_records.sql"
       ],
       "substitutions": "../tests.json"
     }
