@@ -17,6 +17,13 @@ BEGIN
         END IF;
     END IF;
 
+    IF test_value = 'NULL' THEN
+        IF ret_value IS NOT NULL THEN
+            RAISE EXCEPTION '[%] FAILED VALUE - EXPECTING NULL RECEIVED %',test_name, ret_value;
+        ELSE
+            RETURN format('[%s] PASSED - EXPECTING NULL RECEIVED %s',test_name, test_value, ret_value);
+        END IF;
+    END IF;
 
     IF (ret_var->>'logid') IS NOT NULL THEN
         RAISE EXCEPTION '[%] FAILED - WITH SQL ERROR%',test_name, (SELECT log_message FROM logs WHERE id=(ret_var->>'logid')::BIGINT);

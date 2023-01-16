@@ -27,6 +27,7 @@ BEGIN
                                 'table',        COALESCE(attributes->>'table', table_location),
                                 'ref',          COALESCE(attributes->>'ref', ''),
                                 'ofid',         id,
+	                            'sc',           locaria_core.base36_encode(id),
                                 --stored as array to future proof but we only use single categories at present
                                 'category',     json_build_array(category),
                                 'acl',          attributes->'acl'
@@ -128,4 +129,4 @@ END;
 $$
 LANGUAGE PLPGSQL;
 
-SELECT locaria_core.create_materialised_view();
+--SELECT locaria_core.create_materialised_view();
