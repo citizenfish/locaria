@@ -19,6 +19,7 @@ export const userSlice = createSlice({
 			lastPage:"",
 			basket:[],
 			idToken: undefined,
+			searchText:"Where are you?"
 		},
 		// storage
 		question1:undefined,
@@ -31,6 +32,7 @@ export const userSlice = createSlice({
 		basket:undefined,
 		// secure stuff
 		idToken:undefined,
+		searchText:undefined,
 	},
 	reducers: {
 		reloadProfile(state){
