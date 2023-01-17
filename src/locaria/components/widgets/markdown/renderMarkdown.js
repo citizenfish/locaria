@@ -152,7 +152,7 @@ function ProcessMDObjectChild(child,mode) {
 					<TypographyBold sx={{display: "inline-block",}}
 									key={`md${newUUID()}`} id={child.id}>{child.text}</TypographyBold>
 				)
-			}else {
+			} else {
 				return (
 					<b>{child.text}</b>
 				)

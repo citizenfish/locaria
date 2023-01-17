@@ -9,9 +9,12 @@ DECLARE
     my_items BOOLEAN DEFAULT FALSE;
 BEGIN
 
-    RAISE NOTICE 'DEBUG %',search_parameters;
     IF COALESCE(search_parameters->>'my_items', '') = 'true' THEN
         my_items = TRUE;
+    END IF;
+
+    IF COALESCE(search_parameters->>'shortcode','') != '' THEN
+        search_parameters = search_parameters || jsonb_build_object('filter', jsonb_build_object('sc', UPPER(search_parameters->>'shortcode')));
     END IF;
 
     IF COALESCE(search_parameters->>'typeahead', '') = 'true' THEN
@@ -67,6 +70,9 @@ BEGIN
                                     'feature_count', count(*),
                                     'my_items', my_items
                                     )
+                WHEN COALESCE(search_parameters->>'shortcode','') != '' THEN
+
+                    jsonb_agg(jsonb_build_object('url', COALESCE(_attributes#>>'{data,url}', '')))->0
            ELSE
 
                jsonb_build_object(
@@ -101,7 +107,7 @@ BEGIN
              LIMIT display_limit_var
          ) ALL_RESULTS;
 
-    RETURN results_var;
+    RETURN COALESCE(results_var, jsonb_build_object());
 END;
 $$
 LANGUAGE PLPGSQL;
