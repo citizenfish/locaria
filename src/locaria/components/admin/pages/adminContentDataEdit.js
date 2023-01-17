@@ -3,16 +3,15 @@ import Box from "@mui/material/Box";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import {useHistory, useParams} from "react-router-dom";
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import {useCookies} from "react-cookie";
 import {setFeature, setOverview} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {FieldView} from "../../widgets/data/fieldView";
+import {FieldView} from "widgets/data/fieldView";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import {FormFieldsCheckRequired, FormFieldsToData} from "../../widgets/data/formFieldsToData";
-import {LinearProgress} from "@mui/material";
+import {FormFieldsToData} from "widgets/data/formFieldsToData";
 import {submitForm} from "components/redux/slices/formSlice";
 
 

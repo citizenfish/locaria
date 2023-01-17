@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useHistory} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import TokenCheck from "../components/utils/tokenCheck";
+import React from 'react';
+import TokenCheck from "widgets/utils/tokenCheck";
 import Box from "@mui/material/Box";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
@@ -11,9 +9,6 @@ import Button from "@mui/material/Button";
 import AdminModerationSelector from "../components/selectors/adminModerationSelector";
 
 export default function AdminModerationList() {
-
-    const dispatch = useDispatch()
-    const history = useHistory();
 
     return(
         <Box sx={{display: 'flex'}}>

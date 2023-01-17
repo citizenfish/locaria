@@ -9,7 +9,6 @@ import {configs} from "themeLocaria";
 import {useStyles} from "stylesLocaria";
 
 import SearchDrawerCard from "../drawers/cards/searchDrawerCard";
-import {useCookies} from "react-cookie";
 import {setLocation} from "../../../../../deprecated/layoutSlice";
 import {useDispatch} from "react-redux";
 
@@ -17,9 +16,8 @@ export default function LocationSearchResults(props) {
     const dispatch = useDispatch()
 
     let locationResults = props.locationResults
-    const locationShow = props.locationShow
     const classes = useStyles();
-    const [cookies, setCookies] = useCookies(['location']);
+    //const [cookies, setCookies] = useCookies(['location']);
     const [open, setOpen] = useState(false);
 
 

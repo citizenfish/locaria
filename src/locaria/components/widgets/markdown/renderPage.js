@@ -7,10 +7,12 @@ import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import MenuDrawer from "../drawers/menuDrawer";
 import {setMobile} from "../../redux/slices/mediaSlice";
-import {useCookies} from "react-cookie";
 import {newSearch, setCurrentLocation} from "../../redux/slices/searchDrawerSlice";
 import SearchProxy from "../search/searchProxy";
 import {decodeSearchParams} from "libs/searchParams";
+import {reloadProfile, setSavedAttribute} from "components/redux/slices/userSlice";
+import TokenCheck from "widgets/utils/tokenCheck";
+import {reloadItems} from "components/redux/slices/basketSlice";
 
 export default function RenderPage({searchMode}) {
 
@@ -25,9 +27,9 @@ export default function RenderPage({searchMode}) {
 	const pageData = React.useRef(undefined);
 	const pageActual = React.useRef(undefined);
 	const channel = React.useRef(undefined);
-	const [cookies, setCookies] = useCookies(['currentLocation','last','id_token']);
-	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
-	const items = useSelector((state) => state.basketSlice.items);
+	const currentLocation = useSelector((state) => state.userSlice.currentLocation);
+	const lastPage = useSelector((state) => state.userSlice.lastPage);
+	const idToken = useSelector((state) => state.basketSlice.idToken);
 
 	function handleResize()  {
 		dispatch(setMobile(!useMediaQuery('(min-width:900px)')));
@@ -37,20 +39,23 @@ export default function RenderPage({searchMode}) {
 
 	handleResize();
 
-	// Updates the basket cookies
+	// Updates the basket
 
-	React.useEffect(() => {
+	/*React.useEffect(() => {
 		//compare items and cookies
-		if(items.length > 0 && (cookies.basket === undefined || items.length !== cookies.basket.length)) {
+		if(items.length > 0 && (basket === undefined || items.length !== cookies.basket.length)) {
 			//update cookies
 			setCookies('basket', items, {path: '/', sameSite: true});
 		}
 
 		//console.log(items);
 	},[items]);
-
+*/
 
 	React.useEffect(() => {
+
+		dispatch(reloadProfile());
+		dispatch(reloadItems());
 
 		return () => {
 			pageData.current=undefined;
@@ -71,9 +76,9 @@ export default function RenderPage({searchMode}) {
 				setRender(render+1);
 				document.title = pageData.current.title;
 				
-				if(pageActual.current&&page!==cookies['last']) {
+				if(pageActual.current&&page!==lastPage) {
 					// This will cause re-render so we do it last
-					setCookies('last', page, {path: '/', sameSite: true});
+					dispatch(setSavedAttribute({attribute:"lastPage",value:page}));
 				}
 		
 			}
@@ -87,7 +92,7 @@ export default function RenderPage({searchMode}) {
 		let hash = window.location.hash;
 
 		if (hash&&hash.match(/#preview/)) {
-			pageActual.current=`${page}-${cookies['id_token']}`;
+			pageActual.current=`${page}-${idToken}`;
 		}
 		if(searchMode===true) {
 			let searchParams=decodeSearchParams(search);
@@ -103,8 +108,8 @@ export default function RenderPage({searchMode}) {
 		pageData.current=undefined;
 		getAllData();
 
-		if(cookies['currentLocation']&&currentLocation===undefined) {
-			dispatch(setCurrentLocation(cookies['currentLocation']));
+		if(currentLocation===undefined) {
+			dispatch(setCurrentLocation(currentLocation));
 		}
 
 		
@@ -121,7 +126,7 @@ export default function RenderPage({searchMode}) {
 				"data": {
 					"method": "get_parameters",
 					"parameter_name": pageActual.current,
-					"id_token": cookies['id_token']
+					"id_token": idToken
 				}
 			}
 		);
@@ -186,6 +191,7 @@ export default function RenderPage({searchMode}) {
 					<RenderMarkdown markdown={pageData.current.data} key={'mdTop'}/>
 				</Box>
 				<MenuDrawer></MenuDrawer>
+				<TokenCheck/>
 			</Box>
 		)
 	} else {

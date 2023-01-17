@@ -7,7 +7,7 @@ import {useHistory, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useCookies} from "react-cookie";
 import TabPanel from "../components/tabs/tabPanel";
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import {Select, TextField} from "@mui/material";
 import {useFormik} from "formik";
 import * as yup from "yup";
@@ -17,7 +17,7 @@ import MdSerialize from "../../../libs/mdSerialize";
 import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import {cognitoGroups} from "../../../libs/cognitoGroups";
+import {cognitoGroups} from "libs/cognitoGroups";
 
 
 const validationSchemaEdit = yup.object({

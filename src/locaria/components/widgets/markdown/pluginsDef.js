@@ -26,6 +26,7 @@ import FooterTypeActive from "../footers/footerTypeActive";
 import NavTypeActive from "../navs/navTypeActive";
 import SearchFilters from "widgets/search/searchFilters";
 import BasketDisplay from "widgets/basket/basketDisplay";
+import UserSearchProfile from "components/user/userSearchProfile";
 
 const pluginsDefs = {
 	"SearchProxy": {
@@ -165,6 +166,11 @@ const pluginsDefs = {
 	},
 	"BasketDisplay": {
 		"obj": BasketDisplay,
+		"description": "Display simple input form",
+		"params": [{param: "category", default: "News"}]
+	},
+	"UserSearchProfile": {
+		"obj": UserSearchProfile,
 		"description": "Display simple input form",
 		"params": [{param: "category", default: "News"}]
 	}

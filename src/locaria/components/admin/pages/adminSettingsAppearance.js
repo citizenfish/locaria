@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Box from "@mui/material/Box";
@@ -10,7 +10,7 @@ import {useHistory} from "react-router-dom";
 import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import DialogContentText from "@mui/material/DialogContentText";
 import Typography from "@mui/material/Typography";
-import {setPage, setStyle, updateStyle} from "../redux/slices/adminPagesSlice";
+import { updateStyle} from "../redux/slices/adminPagesSlice";
 import {useCookies} from "react-cookie";
 import * as yup from "yup";
 import {useFormik} from "formik";
