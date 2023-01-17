@@ -3,8 +3,8 @@
 LOCARIA is an open source platform for publishing location data either via a web based interface or api. LOCARIA is designed to be lightweight, easy to customise and extendable. If your use case falls into one of the following then LOCARIA will fit your purpose:-
 
 - you have location data that needs categorizing and centralising
-- you want a simple unified search/api over your location data
-- you want to publish a map based website allowing users to search and interrogate your data
+- you want a simple unified search/API over your location data
+- you want to publish a map based website allowing users to search and interogate your data
 - you want to add, update and delete data including contributions from third parties
 
 LOCARIA will provide all of these features within a single ecosystem with no external dependencies. We have used LOCARIA to operate:-
