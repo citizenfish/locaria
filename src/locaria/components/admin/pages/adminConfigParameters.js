@@ -6,13 +6,9 @@ import Button from "@mui/material/Button";
 import {useHistory, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useCookies} from "react-cookie";
-import TokenCheck from "../components/utils/tokenCheck";
-import {Select, TextField} from "@mui/material";
-import {setConfig, setConfigs, setEditor, setPage, setPages} from "../redux/slices/adminPagesSlice";
-import MenuItem from "@mui/material/MenuItem";
+import TokenCheck from "widgets/utils/tokenCheck";
+import {setConfig, setConfigs} from "../redux/slices/adminPagesSlice";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import {cognitoGroups} from "../../../libs/cognitoGroups";
 import {Editor} from 'material-jsoneditor';
 
 

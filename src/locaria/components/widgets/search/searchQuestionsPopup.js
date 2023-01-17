@@ -1,82 +1,73 @@
-import React, {useState} from "react";
+import React from "react";
 
 import Box from "@mui/material/Box";
 import {Backdrop, Fade, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import {
-	setAskQuestions,
 	setCategoryChosen,
 	setQuestionsOpen
 } from "components/redux/slices/searchDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {v4} from "uuid";
 import List from "@mui/material/List";
-import {encodeSearchParams} from "libs/searchParams";
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 
-import {useHistory} from "react-router-dom";
+import useSearchRouter from "widgets/search/useSearchRouter";
+import {setSavedAttribute} from "components/redux/slices/userSlice";
+
+
+
 export default function SearchQuestionsPopup() {
-	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
+
+
+	let route=useSearchRouter();
 
 	const dispatch = useDispatch();
-	const askQuestions = useSelector((state) => state.searchDraw.askQuestions);
-	const history = useHistory();
 
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
-	const schema = useSelector((state) => state.searchDraw.schema);
 
 	const open = useSelector((state) => state.searchDraw.questionsOpen);
 
-	const [question1, setQuestion1] = useState("");
-	const [question2, setQuestion2] = useState([]);
-	const [gotoCategory, setGotoCategory] = useState("");
+	//const [question1, setQuestion1] = useLocalStorage("question1", "");
+	//const [question2, setQuestion2] = useLocalStorage("question2", []);
+	//const [gotoCategory, setGotoCategory] = useLocalStorage("gotoCategory",undefined);
+	const askQuestions = useSelector((state) => state.userSlice.askQuestions);
+	const gotoCategory = useSelector((state) => state.userSlice.gotoCategory);
+	const question1 = useSelector((state) => state.userSlice.question1);
+	const question2 = useSelector((state) => state.userSlice.question2);
+
+
 
 	function handleClose() {
 		dispatch(setQuestionsOpen(false));
 	}
 
 	function handleQuestion1(newCategory, value) {
-		setGotoCategory(newCategory);
-		setQuestion1(value);
+		dispatch(setSavedAttribute({attribute:"gotoCategory",value:newCategory}));
+		dispatch(setSavedAttribute({attribute:"question1",value:value}));
 		// run after a few seconds to add a visual update
 		setTimeout(() => {
-			dispatch(setAskQuestions(2));
+			dispatch(setSavedAttribute({attribute:"askQuestions",value:2}));
 		},500);
 	}
 
 	function toggleQuestion2(value) {
 		if(question2.indexOf(value)===-1)
-			setQuestion2([...question2,...[value]]);
+			dispatch(setSavedAttribute({attribute:"question2",value:[...question2,...[value]]}));
 		else
-			setQuestion2(question2.filter(q=>q!==value));
+			dispatch(setSavedAttribute({attribute:"question2",value:question2.filter(q=>q!==value)}));
 	}
 	function handleQuestion2() {
-		dispatch(setAskQuestions(0));
+		dispatch(setSavedAttribute({attribute:"askQuestions",value:3}));
+
 		dispatch(setQuestionsOpen(false));
 		dispatch(setCategoryChosen([question1,...question2]))
+		route();
 
+	}
 
-		let encodedParams = encodeSearchParams({
-			location: currentLocation.location,
-			sendRecommended:  true
-		}, schema);
-
-		switch (gotoCategory) {
-			case 'Activities':
-				history.push('/Activities/sp/Activities/' + encodedParams);
-				break;
-			case 'Mental Health':
-				history.push('/MentalHealth/sp/Mental Health/' + encodedParams);
-				break;
-			case 'Healthy Eating':
-				history.push('/HealthyEating/sp/Healthy Eating/' + encodedParams);
-				break;
-			case 'Do It At Home':
-			default:
-				history.push('/DoItAtHome/sp/Do It At Home/' + encodedParams);
-				break;
-		}
-
+	function RenderQuestion3() {
+		return (<></>);
 	}
 
 	function RenderQuestions1() {
@@ -121,14 +112,24 @@ export default function SearchQuestionsPopup() {
 	function RenderQuestions2() {
 		let questions = [];
 		let category = window.systemCategories.getChannelProperties(gotoCategory);
-		for (let q in category.questions['category_chosen']) {
-			questions.push(
-				<ListItem onClick={() => toggleQuestion2(category.questions['category_chosen'][q].value)} key={v4()} sx={{background: '#fff', borderRadius: "10px", margin:"10px",width:`${width}px`,border: "1px solid #0000008f"}}>
-					<ListItemIcon>
-						<RenderStarState state={question2.indexOf(category.questions['category_chosen'][q].value) !== -1}/>
-					</ListItemIcon>
-					<ListItemText primary={category.questions['category_chosen'][q].statement}/></ListItem>
-			)
+		if (category&&category.questions) {
+			for (let q in category.questions['category_chosen']) {
+				questions.push(
+					<ListItem onClick={() => toggleQuestion2(category.questions['category_chosen'][q].value)} key={v4()}
+							  sx={{
+								  background: '#fff',
+								  borderRadius: "10px",
+								  margin: "10px",
+								  width: `${width}px`,
+								  border: "1px solid #0000008f"
+							  }}>
+						<ListItemIcon>
+							<RenderStarState
+								state={question2&&question2.indexOf(category.questions['category_chosen'][q].value) !== -1}/>
+						</ListItemIcon>
+						<ListItemText primary={category.questions['category_chosen'][q].statement}/></ListItem>
+				)
+			}
 		}
 		return (
 			<>
@@ -147,6 +148,8 @@ export default function SearchQuestionsPopup() {
 
 	function Stages() {
 		switch (askQuestions) {
+			case 3:
+				return (<RenderQuestion3/>);
 			case 2:
 				return (<RenderQuestions2/>);
 			case 1:

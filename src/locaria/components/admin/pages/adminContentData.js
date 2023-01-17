@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import {useHistory} from "react-router-dom";
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import {useCookies} from "react-cookie";
 import {setFeature, setOverview} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";

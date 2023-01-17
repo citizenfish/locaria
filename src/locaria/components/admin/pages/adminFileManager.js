@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import TokenCheck from "../components/utils/tokenCheck";
+import React, { useState} from 'react';
+import TokenCheck from "widgets/utils/tokenCheck";
 import Box from "@mui/material/Box"
 import AdminAppBar from "../adminAppBar"
 import LeftNav from "../components/navs/leftNav"

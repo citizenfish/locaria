@@ -9,7 +9,6 @@ import TypographyHeader from "../typography/typographyHeader";
 import ClickAway from "../utils/clickAway";
 import {useSelector} from "react-redux";
 import SlideShow from "../images/slideShow";
-import {useCookies} from "react-cookie";
 
 const SiteMap = function ({mode, images, feature, format="cover",duration = 500,interval=2000}) {
 
@@ -86,9 +85,7 @@ const Panels = () => {
 	function toggleCollapseOpen(id) {
 		let state = collapseOpen;
 		for (let p in window.siteMap) {
-			if (p === id)
-				state[p] = true;
-			else state[p] = false;
+			state[p] = p === id;
 		}
 		setCollapseOpen(state);
 		forceRender(render + 1);

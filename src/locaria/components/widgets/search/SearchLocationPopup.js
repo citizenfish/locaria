@@ -21,9 +21,10 @@ import Divider from "@mui/material/Divider";
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PlaceIcon from '@mui/icons-material/Place';
 import {getLocation} from "libs/geolocation";
-import {useCookies} from "react-cookie";
 import {encodeSearchParams} from "libs/searchParams";
 import {v4} from "uuid";
+import useSearchRouter from "widgets/search/useSearchRouter";
+import {setSavedAttribute} from "components/redux/slices/userSlice";
 
 export default function SearchLocationPopup({defaultPage, maxLocations = 8, display = true}) {
 	const dispatch = useDispatch();
@@ -35,12 +36,14 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 	const geolocation = useSelector((state) => state.searchDraw.geolocation);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
+	const askQuestions = useSelector((state) => state.userSlice.askQuestions);
+	const recentLocations = useSelector((state) => state.userSlice.recentLocations);
 
-	const [cookies, setCookies] = useCookies(['doNotReRender']);
 
 	const [results, setResults] = useState([]);
 	const [visible, setVisible] = useState(display);
 	const [searchText, setSearchText] = useState("");
+	let route=useSearchRouter();
 
 
 	function handleClose() {
@@ -53,7 +56,7 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 		if (store !== false) {
 			// dedupe
 
-			let newRecent = cookies['recentLocations'] || [];
+			let newRecent = recentLocations || [];
 			let dupe = false;
 			for (let l in newRecent) {
 				if (newRecent[l].fid === fid) {
@@ -66,10 +69,10 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 				if (newRecent.length > 5)
 					newRecent.shift();
 				newRecent.push(locationPacket);
-				setCookies('recentLocations', newRecent, {path: '/', sameSite: true});
+				dispatch(setSavedAttribute({attribute:"recentLocations",value:newRecent}));
 			}
 		}
-		setCookies('currentLocation', locationPacket, {path: '/', sameSite: true});
+		dispatch(setSavedAttribute({attribute:"currentLocation",value:locationPacket}));
 
 		// Did we send a default page? If not it may be undefined and we let the site Panels update
 		if (locationPage !== undefined) {
@@ -83,7 +86,13 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 		}
 		dispatch(setCurrentLocation(locationPacket));
 		dispatch(locationPopup({open: false}));
-		dispatch(setQuestionsOpen(true));
+
+		if(askQuestions<3) {
+			dispatch(setQuestionsOpen(true));
+		} else {
+			//navigate the search pages on questions
+			route();
+		}
 	}
 
 
@@ -196,17 +205,17 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 	}
 
 	function RecentItems() {
-		if (cookies && cookies['recentLocations'] && cookies['recentLocations'].length > 0 && (results === null || results === undefined || results.length === 0)) {
+		if (recentLocations && recentLocations.length > 0 && (results === null || results === undefined || results.length === 0)) {
 			let recentItemsArray = [];
-			for (let i in cookies['recentLocations']) {
+			for (let i in recentLocations) {
 				recentItemsArray.push(
 					<ListItem
-						onClick={() => handleListItemClick(cookies['recentLocations'][i].fid, cookies['recentLocations'][i].text, cookies['recentLocations'][i].location)}
+						onClick={() => handleListItemClick(recentLocations[i].fid, recentLocations[i].text, recentLocations[i].location)}
 						key={`ri2Key${i}`}>
 						<ListItemIcon>
 							<PlaceIcon/>
 						</ListItemIcon>
-						<ListItemText primary={cookies['recentLocations'][i].text}/>
+						<ListItemText primary={recentLocations[i].text}/>
 					</ListItem>
 				)
 			}

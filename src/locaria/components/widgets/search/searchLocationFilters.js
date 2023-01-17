@@ -21,6 +21,8 @@ import ShoppingBasket from "widgets/basket/shoppingBasket";
 import SearchRecommended from "widgets/search/searchRecommended";
 import FilterLayoutDays from "widgets/search/layouts/filterLayoutDays";
 import {FieldView} from "widgets/data/fieldView";
+import {v4} from "uuid";
+import Box from "@mui/material/Box";
 
 const SearchLocationFilters = ({
 								   category,
@@ -74,7 +76,7 @@ const SearchLocationFilters = ({
 				return (
 					features.features.map((result) => {
 							return (
-								<FieldView data={result} mode={"read"} fields={field} ></FieldView>
+								<FieldView data={result} mode={"read"} fields={field} key={v4()}></FieldView>
 							)
 						}
 					)
@@ -174,8 +176,8 @@ const SearchLocationFilters = ({
 		);
 	} else {
 		return (
-			<>
-				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
+			<Box key={v4()}>
+				<Grid container spacing={2} key={v4()} sx={actualSx}>
 					<Grid item md={3} sx={{width: "100%"}}>
 						<FiltersInner/>
 					</Grid>
@@ -184,7 +186,7 @@ const SearchLocationFilters = ({
 					</Grid>
 				</Grid>
 				<FooterBackToTop/>
-			</>
+			</Box>
 		);
 	}
 }

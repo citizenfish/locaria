@@ -1,5 +1,5 @@
 import React, {useEffect,useState} from 'react';
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Box from "@mui/material/Box";
@@ -9,7 +9,7 @@ import {DiscreteColorLegend, FlexibleXYPlot, RadialChart, VerticalBarSeries, XAx
 import StripedDataGrid from "../../widgets/data/stripedDataGrid";
 
 
-export default function AdminDataDashBoard(props){
+export default function AdminDataDashBoard(){
 
     const [cookies, setCookies] = useCookies(['location'])
     const [overview,setOverview] = useState({})

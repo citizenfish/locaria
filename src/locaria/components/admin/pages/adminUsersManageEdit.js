@@ -4,7 +4,7 @@ import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Button from "@mui/material/Button";
 import {useHistory, useParams} from "react-router-dom";
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 
 import {useCookies} from "react-cookie";
 import Typography from "@mui/material/Typography";
@@ -12,7 +12,7 @@ import Grid from "@mui/material/Grid"
 import Chip from "@mui/material/Chip";
 
 
-import {cognitoGroups} from "../../../libs/cognitoGroups"
+import {cognitoGroups} from "libs/cognitoGroups"
 
 export default function AdminUsersManageEdit() {
 

@@ -10,7 +10,7 @@ module.exports = {
 	output: {
 		filename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'site/dist'),
-		assetModuleFilename: 'other/[hash][ext][query]'
+		assetModuleFilename: 'other/[hash][ext][query]',
 	},
 	module: {
 		rules: [
@@ -30,8 +30,8 @@ module.exports = {
 			},
 			{
 				test: /\.(js)$/,
-				exclude: /node_modules/,
-				use: ['babel-loader']
+				//exclude: /node_modules/,
+				use: ["source-map-loader",'babel-loader']
 			},
 			{
 				test: /\.css$/i,

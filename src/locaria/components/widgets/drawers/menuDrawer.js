@@ -16,9 +16,9 @@ import { resources} from "themeLocaria";
 import UrlCoder from "../../../libs/urlCoder"
 import List from "@mui/material/List";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
-import {useCookies} from "react-cookie";
 import {locationPopup} from "components/redux/slices/searchDrawerSlice";
 import {encodeSearchParams} from "libs/searchParams";
+import {setSavedAttribute} from "components/redux/slices/userSlice";
 
 
 const MenuDrawer = function () {
@@ -54,7 +54,6 @@ function DrawSiteMap() {
 	const url = new UrlCoder();
 	const history = useHistory();
 	const dispatch = useDispatch();
-	const [cookies, setCookies] = useCookies(['id_token']);
 	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 
 	const userValid = useSelector((state) => state.userSlice.userValid);
@@ -206,7 +205,7 @@ function DrawSiteMap() {
 	} else {
 		topMenuArray.push(
 			<ListItem key={"Logout"} onClick={() => {
-				setCookies('id_token', "null", {path: '/', sameSite: true});
+				dispatch(setSavedAttribute({attribute: 'idToken', value: null}));
 				window.location = `/`;
 			}}>
 				<ListItemIcon>

@@ -23,6 +23,7 @@ export default function ActiveMainResults({data, category}) {
 	let dateDay = date.toLocaleDateString('en-UK', {day: "numeric"});
 	dateDay += nth(dateDay);
 	let dateString = date.toLocaleDateString('en-UK', {
+		month: "long",
 		weekday: "long",
 	});
 	dateString += ' ' + dateDay;

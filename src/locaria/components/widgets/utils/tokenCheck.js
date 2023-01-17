@@ -1,20 +1,19 @@
 import React, {useState} from 'react';
 import {useLocation} from "react-router-dom";
-import {useCookies} from "react-cookie";
 
 import {resources} from "themeLocaria";
-import {useDispatch} from "react-redux";
-import {setToken, setUser} from "../../redux/slices/adminPagesSlice";
+import {useDispatch, useSelector} from "react-redux";
+import { setUser} from "../../admin/redux/slices/adminPagesSlice";
+import {setSavedAttribute, setValidUser} from "components/redux/slices/userSlice";
 
 export default function TokenCheck() {
 
 	const location = useLocation();
 
-	const [cookies, setCookies] = useCookies(['id_token']);
-
 	const dispatch = useDispatch()
 
 	const [haveChecked, setHaveChecked] = useState(false);
+	const idToken = useSelector((state) => state.basketSlice.idToken);
 
 
 	React.useEffect(() => {
@@ -35,8 +34,9 @@ export default function TokenCheck() {
 				dispatch(setUser(true));
 
 				if (hash) {
-					setCookies('id_token', hash, {path: '/', sameSite: true});
-					setCookies('groups', json.packet['cognito:groups'], {path: '/', sameSite: true});
+					dispatch(setSavedAttribute({attribute: 'idToken', value: hash}));
+					dispatch(setValidUser({groups:json.packet['cognito:groups'],id:json.packet['cognito:username']}));
+
 					const start = Date.now();
 					const exp = (parseInt(json.packet.exp) * 1000)
 					const diff = exp - (start + 60000);
@@ -44,25 +44,19 @@ export default function TokenCheck() {
 					setTimeout(function () {
 						window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 					}, diff);
-					dispatch(setToken(hash));
-				} else {
-					dispatch(setToken(cookies['id_token']));
 				}
-
 			} else {
-				setCookies('id_token', null, {path: '/', sameSite: true});
-				setCookies('groups', [], {path: '/', sameSite: true});
+				dispatch(setSavedAttribute({attribute: 'idToken', value: null}));
 				// This is bad token so lets go home
 				dispatch(setUser(false));
-				window.location = `/Admin/`;
+				window.location = `/`;
 
 			}
 		});
 
 		if (haveChecked === false) {
 			if (hash===undefined) {
-				if (cookies['id_token'] === undefined ||
-					cookies['id_token'] === "null") {
+				if (idToken) {
 					window.location = `https://${resources.cognitoURL}/login?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${window.location.protocol}//${window.location.host}/Admin/`;
 				}
 			}
@@ -77,12 +71,12 @@ export default function TokenCheck() {
 					"data": {"id_token": hash}
 				});
 			} else {
-				if (cookies['id_token'] !== 'null') {
+				if (idToken !== undefined) {
 					window.websocket.send({
 						"queue": "tokenCheck",
 						"api": "token",
 						"data": {
-							"id_token": cookies['id_token']
+							"id_token": idToken
 						}
 					});
 				} else {

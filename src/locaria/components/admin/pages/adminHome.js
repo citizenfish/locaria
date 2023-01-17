@@ -2,7 +2,7 @@ import React from 'react';
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Box from "@mui/material/Box";
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import {Typography, Grid, CardContent, Card,CardActionArea} from "@mui/material";
 import {useHistory} from "react-router-dom";
 

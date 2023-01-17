@@ -3,16 +3,11 @@ import Box from "@mui/material/Box";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Button from "@mui/material/Button";
-import PageSelector from "../components/selectors/pageSelector";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import TokenCheck from "../components/utils/tokenCheck";
-import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
-import DialogContentText from "@mui/material/DialogContentText";
-import {useFormik} from "formik";
-import * as yup from 'yup';
+import TokenCheck from "widgets/utils/tokenCheck";
 import {useCookies} from "react-cookie";
-import {setPage, setPages} from "../redux/slices/adminPagesSlice";
+import {setPage} from "../redux/slices/adminPagesSlice";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid"
 import StripedDataGrid from "../../widgets/data/stripedDataGrid";

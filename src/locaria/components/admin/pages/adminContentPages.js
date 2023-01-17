@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import PageSelector from "../components/selectors/pageSelector";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import DialogContentText from "@mui/material/DialogContentText";
 import {useFormik} from "formik";

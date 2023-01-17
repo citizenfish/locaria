@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import TokenCheck from "../components/utils/tokenCheck";
+import TokenCheck from "widgets/utils/tokenCheck";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Box from "@mui/material/Box";
@@ -17,12 +17,10 @@ const sxElements = ["backgroundColor", "fontFamily", "fontWeight", "color", "tex
 
 export default function AdminSettingsAppearanceEdit() {
 	const history = useHistory();
-	const dispatch = useDispatch()
 
 	const style = useSelector((state) => state.adminPages.style);
 	const [sxElement, setSxElement] = useState();
 	const [sxValue, setSxValue] = useState();
-	const [cookies, setCookies] = useCookies(['id_token']);
 	const [styleRows,setStyleRows] = useState([])
 
 

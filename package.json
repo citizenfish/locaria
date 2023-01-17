@@ -94,7 +94,8 @@
 		"@fontsource/roboto": "^4.5.1",
 		"react-intersection-observer": "^8.33.1",
 		"fs-extra": "^10.0.0",
-		"glob-expand": "^0.2.1"
+		"glob-expand": "^0.2.1",
+		"source-map-loader": "*"
 	},
 	"peerDependencies": {},
 	"overrides": {
