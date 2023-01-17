@@ -7,6 +7,7 @@
 		"build:sb:swindonbid:dev": "node scripts/builder.js sb swindonbid dev",
 		"build:sb:swindonbid:live": "node scripts/builder.js sb swindonbid live",
 		"build:multi:activeprescription:dev": "node scripts/builder.js multi activeprescription dev",
+		"build:multi:activeprescription:dev:production": "node scripts/builder.js multi activeprescription dev production",
 		"build:multi:activeprescription:data": "node scripts/builder.js multi activeprescription data",
 		"build:multi:bw:dev": "node scripts/builder.js multi bw dev",
 		"build:multi:unittest:dev": "node scripts/builder.js multi unittest dev",
@@ -19,7 +20,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.24.0",
-		"@babel/core": "^7.14.8",
+		"@babel/core": "^7.20.12",
 		"@babel/preset-env": "^7.14.8",
 		"@babel/preset-react": "^7.14.5",
 		"@mui/x-data-grid": "^5.15.2",

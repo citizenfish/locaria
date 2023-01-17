@@ -8,40 +8,39 @@ export default function UserSearchProfile({ sx }) {
 	const dispatch=useDispatch();
 	const askQuestions = useSelector((state) => state.userSlice.askQuestions);
 
-	let width = 200;
 	let color;
 	switch(askQuestions) {
 		case 3: //filled
-			color="rgba(255,255,255,1)";
+			color="rgb(42,255,0)";
 			break;
 		case 2: //filled
-			color="rgba(255,255,255,0.6)";
+			color="rgb(255,222,0)";
 			break;
 		case 1: //filled
-			color="rgba(255,255,255,0.4)";
+			color="rgb(255,92,0)";
 			break;
 		case 0: //filled
 		default:
-			color="rgba(255,255,255,0.1)";
+			color="rgb(255,0,0)";
 			break;
 
 	}
 
 	function handleReset() {
 		dispatch(setSavedAttribute({attribute:"askQuestions",value:0}));
+		dispatch(setSavedAttribute({attribute:"currentLocation",value: {}}));
+		dispatch(setSavedAttribute({attribute:"searchText",value: ""}));
 	}
 
 	let actualSx={...sx, ...{
-			"height": "200px",
-			"width": "200px",
-			color: color
+			color: color,
+			marginTop: "5px"
 	}};
 
 	let boxSx = {
-		position: "absolute",
-		top: "160px",
-		left: `calc( 50% - ${width / 2}px )`,
-		width: `${width}px`,
+		borderRadius: "20px",
+		marginLeft: "10px",
+		padding: "5px",
 		boxShadow: 3,
 		border: "1px solid white"
 	}

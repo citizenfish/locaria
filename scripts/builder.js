@@ -23,6 +23,7 @@ let outputs;
 const stage = process.argv[2];
 const theme = process.argv[3]||'main';
 const environment = process.argv[4]||'dev';
+const build = process.argv[5]||'debug';
 
 console.log(`Building stage ${stage} theme ${theme}`);
 //console.log(configs);
@@ -76,7 +77,10 @@ function doCopy() {
 				poolClientId: outputsSite.poolClientId
 			}
 			fs.writeFileSync(`${buildDir}/resources.json`, JSON.stringify(resource));
-			const cmdLine = `webpack --config webpack.config.js`;
+			let webpack='webpack.config.js';
+			if(build==='production')
+				webpack='webpack.config.prod.js'
+			const cmdLine = `webpack --config ${webpack}`;
 			console.log("success!");
 			exec(cmdLine, {}, (err, stdout, stderr) => {
 				console.log(err);

@@ -25,6 +25,7 @@ import {encodeSearchParams} from "libs/searchParams";
 import {v4} from "uuid";
 import useSearchRouter from "widgets/search/useSearchRouter";
 import {setSavedAttribute} from "components/redux/slices/userSlice";
+import UserSearchProfile from "components/widgets/user/userSearchProfile";
 
 export default function SearchLocationPopup({defaultPage, maxLocations = 8, display = true}) {
 	const dispatch = useDispatch();
@@ -32,17 +33,17 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 
 	const open = useSelector((state) => state.searchDraw.locationOpen);
 	const locationPage = useSelector((state) => state.searchDraw.locationPage);
-	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
 	const geolocation = useSelector((state) => state.searchDraw.geolocation);
 	const mobile = useSelector((state) => state.mediaSlice.mobile);
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
 	const askQuestions = useSelector((state) => state.userSlice.askQuestions);
 	const recentLocations = useSelector((state) => state.userSlice.recentLocations);
+	const searchText = useSelector((state) => state.userSlice.searchText);
 
 
 	const [results, setResults] = useState([]);
 	const [visible, setVisible] = useState(display);
-	const [searchText, setSearchText] = useState("");
+	//const [searchText, setSearchText] = useState("");
 	let route=useSearchRouter();
 
 
@@ -55,8 +56,7 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 		let locationPacket = {text: name, fid: fid, location: location};
 		if (store !== false) {
 			// dedupe
-
-			let newRecent = recentLocations || [];
+			let newRecent = [...recentLocations];
 			let dupe = false;
 			for (let l in newRecent) {
 				if (newRecent[l].fid === fid) {
@@ -73,6 +73,7 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 			}
 		}
 		dispatch(setSavedAttribute({attribute:"currentLocation",value:locationPacket}));
+		dispatch(setSavedAttribute({attribute:"searchText",value: name}));
 
 		// Did we send a default page? If not it may be undefined and we let the site Panels update
 		if (locationPage !== undefined) {
@@ -86,6 +87,10 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 		}
 		dispatch(setCurrentLocation(locationPacket));
 		dispatch(locationPopup({open: false}));
+
+		if(askQuestions===0){
+			dispatch(setSavedAttribute({attribute:"askQuestions",value:1}));
+		}
 
 		if(askQuestions<3) {
 			dispatch(setQuestionsOpen(true));
@@ -232,7 +237,16 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 
 
 
-
+	function handleFocusInput() {
+		if(askQuestions>0&&askQuestions<3) {
+			dispatch(setQuestionsOpen(true));
+		} else {
+			if (open === false) {
+				dispatch(setSavedAttribute({attribute:"searchText",value: ""}));
+				dispatch(locationPopup({open: true, page: defaultPage}));
+			}
+		}
+	}
 
 
 
@@ -281,16 +295,18 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 			<List sx={{pt: 0, zIndex: 101, background: '#fff', borderRadius: "5px"}}>
 				<ListItem>
 					<TextField autoComplete={"off"}
-							   value={searchText || open ? searchText : (currentLocation ? currentLocation.text : 'Where are you?')}
+							   value={searchText}
 							   sx={textSx} id={"locationSearchText"} onClick={() => {
-						if (open === false) {
-							dispatch(locationPopup({open: true, page: defaultPage}));
-						}
-					}}
+									handleFocusInput();
+								}}
 							   onChange={(e) => {
-								   setSearchText(e.target.value);
+								   //setSearchText(e.target.value);
+								   dispatch(setSavedAttribute({attribute:"searchText",value: e.target.value}));
+
 							   }}
 					></TextField>
+					<UserSearchProfile/>
+
 				</ListItem>
 				<List sx={{pt: 0, display: open ? 'block' : 'none'}}>
 					<>

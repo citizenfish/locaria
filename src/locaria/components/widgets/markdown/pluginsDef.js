@@ -22,157 +22,151 @@ import SiteMapLocation from "../pages/siteMapLocation";
 import SearchLocationFilters from "../search/searchLocationFilters";
 import FeatureManager from "../moderation/featureManager";
 import SearchLocationFiltersMap from "../search/searchLocationFiltersMap";
-import FooterTypeActive from "../footers/footerTypeActive";
-import NavTypeActive from "../navs/navTypeActive";
 import SearchFilters from "widgets/search/searchFilters";
 import BasketDisplay from "widgets/basket/basketDisplay";
-import UserSearchProfile from "components/user/userSearchProfile";
+import UserSearchProfile from "components/widgets/user/userSearchProfile";
+
+import {themePlugins} from "theme/plugins/plugins"
 
 const pluginsDefs = {
-	"SearchProxy": {
-		"obj": SearchProxy,
-		"description": "Search proxy",
-		"params": [{param: "category", default: "News"}]
-	},
-	"TopFeatures": {
-		"obj": TopFeatures,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"PageList": {
-		"obj": PageList,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"ContactFull": {
-		"obj": ContactFull,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"ContactMailchimp": {
-		"obj": ContactMailchimp,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"FooterTypeSimple": {
-		"obj": FooterTypeSimple,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"FooterTypeActive": {
-		"obj": FooterTypeActive,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"NavTypeSimple": {
-		"obj": NavTypeSimple,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"NavTypeFull": {
-		"obj": NavTypeFull,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"NavTypeActive": {
-		"obj": NavTypeActive,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SiteMap": {
-		"obj": SiteMap,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SiteMapLocation": {
-		"obj": SiteMapLocation,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"LogoStrapLine": {
-		"obj": LogoStrapLine,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"ViewFullDetails": {
-		"obj": ViewFullDetails,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"TextSearchWidget": {
-		"obj": TextSearchWidget,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SocialIcons": {
-		"obj": SocialIcons,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SlideShow": {
-		"obj": SlideShow,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"NavButton": {
-		"obj": NavButton,
-		"description": "Show a panel of features",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SimpleMap": {
-		"obj": SimpleMap,
-		"description": "Searchable map",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SubCatMap": {
-		"obj": SubCatMap,
-		"description": "Searchable map with subs",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SearchCategory": {
-		"obj": SearchCategory,
-		"description": "Search Category",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SimpleForm": {
-		"obj": SimpleForm,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SelectedPanel": {
-		"obj": SelectedPanel,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SearchLocationFilters": {
-		"obj": SearchLocationFilters,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SearchFilters": {
-		"obj": SearchFilters,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
-	},
-	"SearchLocationFiltersMap": {
-		"obj": SearchLocationFiltersMap,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
-	},
-	"FeatureManager": {
-		"obj": FeatureManager,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
-	},
-	"BasketDisplay": {
-		"obj": BasketDisplay,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
-	},
-	"UserSearchProfile": {
-		"obj": UserSearchProfile,
-		"description": "Display simple input form",
-		"params": [{param: "category", default: "News"}]
+	...themePlugins, ...{
+		"SearchProxy": {
+			"obj": SearchProxy,
+			"description": "Search proxy",
+			"params": [{param: "category", default: "News"}]
+		},
+		"TopFeatures": {
+			"obj": TopFeatures,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"PageList": {
+			"obj": PageList,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"ContactFull": {
+			"obj": ContactFull,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"ContactMailchimp": {
+			"obj": ContactMailchimp,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"FooterTypeSimple": {
+			"obj": FooterTypeSimple,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+
+		"NavTypeSimple": {
+			"obj": NavTypeSimple,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"NavTypeFull": {
+			"obj": NavTypeFull,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+
+		"SiteMap": {
+			"obj": SiteMap,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SiteMapLocation": {
+			"obj": SiteMapLocation,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"LogoStrapLine": {
+			"obj": LogoStrapLine,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"ViewFullDetails": {
+			"obj": ViewFullDetails,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"TextSearchWidget": {
+			"obj": TextSearchWidget,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SocialIcons": {
+			"obj": SocialIcons,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SlideShow": {
+			"obj": SlideShow,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"NavButton": {
+			"obj": NavButton,
+			"description": "Show a panel of features",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SimpleMap": {
+			"obj": SimpleMap,
+			"description": "Searchable map",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SubCatMap": {
+			"obj": SubCatMap,
+			"description": "Searchable map with subs",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SearchCategory": {
+			"obj": SearchCategory,
+			"description": "Search Category",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SimpleForm": {
+			"obj": SimpleForm,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SelectedPanel": {
+			"obj": SelectedPanel,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SearchLocationFilters": {
+			"obj": SearchLocationFilters,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SearchFilters": {
+			"obj": SearchFilters,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		},
+		"SearchLocationFiltersMap": {
+			"obj": SearchLocationFiltersMap,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		},
+		"FeatureManager": {
+			"obj": FeatureManager,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		},
+		"BasketDisplay": {
+			"obj": BasketDisplay,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		},
+		"UserSearchProfile": {
+			"obj": UserSearchProfile,
+			"description": "Display simple input form",
+			"params": [{param: "category", default: "News"}]
+		}
 	}
 }
 
