@@ -11,7 +11,7 @@ LOCARIA will provide all of these features within a single ecosystem with no ext
 
 - a public portal for local authorities allowing their customers to quickly find and view data linked to their household
 - a heritage map displaying thousands of individuals linked to a famous battle and showing their linkages with towns, memorials and naval infrastructure
-- a youth activities map, highlighting activities by category for young people and allowing them to find things to do i their locality
+- a youth activities map, highlighting activities by category for young people and allowing them to find things to do in their locality
 - a set of simple REST based APIs unifying 15 sets of location data for consumption within desktop GIS packages
 
 LOCARIA is designed to be low maintenance and highly scalable. It will always be open source and available for free for those wishing to publish maps and location data. At present LOCARIA is focused upon deployment within the Amazon AWS web services infrastructure. 
