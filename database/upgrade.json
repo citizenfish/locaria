@@ -5,10 +5,10 @@
       "tables": [
         "database/functions/search/search_get_records.sql",
         "database/functions/utility/base36_encode.sql",
-        "database/functions/view_creation/create_materialised_view.sql",
         "database/functions/search/search.sql",
         "tests/utilities/test_result_processor.sql",
-        "database/functions/utility/catch_divide_by_zero.sql"
+        "database/functions/utility/catch_divide_by_zero.sql",
+        "database/functions/view_creation/create_materialised_view.sql"
       ],
       "substitutions": "../tests.json"
     }
