@@ -97,7 +97,7 @@ BEGIN
     END IF;
 
     --exclude expired, we do this by default
-    IF COALESCE(search_parameters->>'expired', '') != 'false' AND concat(search_parameters->>'start_date',search_parameters->>'end_date') = '' THEN
+    IF COALESCE(search_parameters->>'expired', '') = 'true' AND concat(search_parameters->>'start_date',search_parameters->>'end_date') = '' THEN
         start_date_var = NOW();
         end_date_var = NOW() + INTERVAL '10 years';
     END IF;
