@@ -61,6 +61,7 @@ export const userSlice = createSlice({
 			state.currentLocation=getLocalWithSafeDecode("currentLocation");
 			state.lastPage=getLocalWithSafeDecode("lastPage");
 			state.basket=getLocalWithSafeDecode("basket");
+			state.searchText=getLocalWithSafeDecode("searchText");
 		},
 		setValidUser: (state, action) => {
 			state.userValid = true;

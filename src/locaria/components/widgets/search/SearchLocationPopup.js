@@ -40,10 +40,11 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 	const recentLocations = useSelector((state) => state.userSlice.recentLocations);
 	const searchText = useSelector((state) => state.userSlice.searchText);
 
+	//const currentLocation = useSelector((state) => state.userSlice.currentLocation);
+
 
 	const [results, setResults] = useState([]);
 	const [visible, setVisible] = useState(display);
-	//const [searchText, setSearchText] = useState("");
 	let route=useSearchRouter();
 
 
@@ -125,23 +126,6 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 			setVisible(false);
 		}
 	}, [open]);
-
-	useEffect(() => {
-		if (searchText !== "") {
-			let packetSearch = {
-				"queue": "locationSearch",
-				"api": "api",
-				"data": {
-					"method": "search",
-					"typeahead": "true",
-					"search_text": searchText,
-					"display_limit": maxLocations
-				}
-			};
-			window.websocket.send(packetSearch);
-		}
-
-	}, [searchText]);
 
 	function GeolocationItem() {
 		if (geolocation === false) {
@@ -300,8 +284,20 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 									handleFocusInput();
 								}}
 							   onChange={(e) => {
-								   //setSearchText(e.target.value);
 								   dispatch(setSavedAttribute({attribute:"searchText",value: e.target.value}));
+								   if (searchText !== "") {
+									   let packetSearch = {
+										   "queue": "locationSearch",
+										   "api": "api",
+										   "data": {
+											   "method": "search",
+											   "typeahead": "true",
+											   "search_text": searchText,
+											   "display_limit": maxLocations
+										   }
+									   };
+									   window.websocket.send(packetSearch);
+								   }
 
 							   }}
 					></TextField>
