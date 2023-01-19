@@ -21,11 +21,15 @@ const App = () => {
 							setCookies('after', true, {path: '/', sameSite: true});
 							window.location = `https://${resources.cognitoURL}/signup?response_type=token&client_id=${resources.poolClientId}&redirect_uri=${location.protocol}//${location.host}/`;
 						}}/>
-						<Route path="/:page/fp/:category?/:feature?" component={RenderPage}/>
+						<Route path="/:page/fp/:category?/~:feature?" component={RenderPage}/>
 						<Route path="/:page/sp/:category?/:search(.*)?">
 							<RenderPage searchMode={true}/>
 						</Route>
+						<Route path="/:page/~:feature">
+							<RenderPage searchMode={false}/>
+						</Route>
 						<Route path="/:page/" component={RenderPage}/>
+						<Route path="/~:feature" component={RenderPage}></Route>
 						<Route path="/" component={RenderPage}></Route>
 						<Route exact path="/:id_token?" component={RenderPage}/>
 

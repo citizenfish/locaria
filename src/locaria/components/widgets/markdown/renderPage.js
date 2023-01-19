@@ -39,19 +39,6 @@ export default function RenderPage({searchMode}) {
 
 	handleResize();
 
-	// Updates the basket
-
-	/*React.useEffect(() => {
-		//compare items and cookies
-		if(items.length > 0 && (basket === undefined || items.length !== cookies.basket.length)) {
-			//update cookies
-			setCookies('basket', items, {path: '/', sameSite: true});
-		}
-
-		//console.log(items);
-	},[items]);
-*/
-
 	React.useEffect(() => {
 
 		dispatch(reloadProfile());
@@ -145,7 +132,7 @@ export default function RenderPage({searchMode}) {
 					{
 						"queue": "viewLoader",
 						"api": "api",
-						"data": {"method": "get_item", "fid": feature}
+						"data": {"method": "search", "shortcode": feature}
 					}
 				)
 			}

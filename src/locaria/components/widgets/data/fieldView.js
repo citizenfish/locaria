@@ -39,9 +39,9 @@ import {v4 as uuidv4} from "uuid";
 import {useDispatch, useSelector} from "react-redux";
 import {setFormMode} from "components/redux/slices/formSlice";
 
+import {resultPlugins} from "theme/results/results.js";
 
-import ActiveBasketView from "widgets/results/activeBasketView";
-import ActiveMainResults from "widgets/results/activeMainResults";
+
 
 const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) => {
 
@@ -51,11 +51,7 @@ const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) =
 		let fieldsObj = channel.fields;
 		if(typeof fieldsObj[fields] === "string") {
 
-			const fieldPlugins = {
-				"activeBasketView":ActiveBasketView,
-				"activeMainResults":ActiveMainResults
-			}
-			let Element=fieldPlugins[fieldsObj[fields]];
+			let Element=resultPlugins[fieldsObj[fields]];
 			return (
 				<Element data={data} category={data.properties.category}/>
 			)
