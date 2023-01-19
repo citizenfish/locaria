@@ -32,13 +32,16 @@ import DataItemDistance from "./dataItemsRead/dataItemDistance";
 import DataItemPhoneButton from "./dataItemsRead/dataItemPhoneButton";
 import DataItemMinMedMax from "./dataItemsRead/dataItemMinMedMax";
 import DataItemCost from "./dataItemsRead/dataItemCost";
+import DataItemViewLink from "widgets/data/dataItemsRead/dataItemViewLink";
+import DataItemBasket from "widgets/data/dataItemsRead/dataItemBasket";
 
 import {v4 as uuidv4} from "uuid";
 import {useDispatch, useSelector} from "react-redux";
 import {setFormMode} from "components/redux/slices/formSlice";
-import DataItemBasket from "widgets/data/dataItemsRead/dataItemBasket";
-import ActiveBasketView from "widgets/results/activeBasketView";
-import ActiveMainResults from "widgets/results/activeMainResults";
+
+import {resultPlugins} from "theme/results/results.js";
+
+
 
 const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) => {
 
@@ -48,11 +51,7 @@ const FieldView = ({data, mode = 'read', fields = "main", moderation = false}) =
 		let fieldsObj = channel.fields;
 		if(typeof fieldsObj[fields] === "string") {
 
-			const fieldPlugins = {
-				"activeBasketView":ActiveBasketView,
-				"activeMainResults":ActiveMainResults
-			}
-			let Element=fieldPlugins[fieldsObj[fields]];
+			let Element=resultPlugins[fieldsObj[fields]];
 			return (
 				<Element data={data} category={data.properties.category}/>
 			)
@@ -220,7 +219,8 @@ const FormatField = ({field, data, mode, category, moderation}) => {
 		'minMedMax': {"element": DataItemMinMedMax},
 		'distance': {"element": DataItemDistance},
 		'cost': {"element": DataItemCost},
-		'basket': {"element": DataItemBasket}
+		'basket': {"element": DataItemBasket},
+		'viewLink': {"element": DataItemViewLink}
 	}
 
 	const dataWriteItem = {

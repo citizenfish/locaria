@@ -21,7 +21,7 @@ const SitePanels = ({open,panel='small'}) => {
 	const [collapseOpen, setCollapseOpen] = useState({});
 	const [render, forceRender] = useState(0);
 
-	const currentLocation = useSelector((state) => state.searchDraw.currentLocation);
+	const currentLocation = useSelector((state) => state.userSlice.currentLocation);
 
 
 	useEffect(() => {
