@@ -33,7 +33,6 @@ export default function AdminContentDataEdit() {
 	let {fid} = useParams();
 
 	const history = useHistory();
-	const [point, setPoint] = useState(undefined);
 
 
 	useEffect(() => {
@@ -173,19 +172,19 @@ export default function AdminContentDataEdit() {
 											onClick={(e) => saveFeature()}
 											variant="outlined"
 											sx={{margin: "5px"}}
-											disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
+											>Save</Button>
 
 									<Button color="success"
 											onClick={(e) => saveFeature("saveFeaturePublish")}
 											variant="outlined"
 											sx={{margin: "5px"}}
-											disabled={feature === -1 && point === undefined ? true : false}>Save &
+											>Save &
 										Publish</Button>
 									<Button color="error"
 											onClick={deleteFeature}
 											variant="outlined"
 											sx={{margin: "5px"}}
-											disabled={feature === -1 ? true : false}>Delete</Button>
+											>Delete</Button>
 								</>
 						</Grid>
 
