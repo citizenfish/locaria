@@ -15,7 +15,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { v4 as uuidv4 } from 'uuid';
 
-import cssOL from './components/css/ol.css';
+import mapLibreGl from './components/css/maplibre-gl.css';
 
 
 import Channels from "libs/Channels";
