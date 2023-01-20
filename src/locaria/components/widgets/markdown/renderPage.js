@@ -30,7 +30,7 @@ export default function RenderPage({searchMode}) {
 	const channel = React.useRef(undefined);
 	const currentLocation = useSelector((state) => state.userSlice.currentLocation);
 	const lastPage = useSelector((state) => state.userSlice.lastPage);
-	const idToken = useSelector((state) => state.basketSlice.idToken);
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 	function handleResize()  {
 		dispatch(setMobile(!useMediaQuery('(min-width:900px)')));

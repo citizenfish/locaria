@@ -4,7 +4,6 @@ import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import {useHistory} from "react-router-dom";
 import TokenCheck from "widgets/utils/tokenCheck";
-import {useCookies} from "react-cookie";
 import {setFeature, setOverview} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Typography from "@mui/material/Typography";
@@ -24,8 +23,8 @@ export default function AdminContentData() {
 	const [features, setFeatures] = useState([])
 	const [searchText, setSearchText] = useState('')
 	const category = useSelector((state) => state.categorySelect.currentSelected);
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
-	const [cookies, setCookies] = useCookies(['location'])
 	const overview = useSelector((state) => state.adminPages.overview)
 
 	const [openAdd, setOpenAdd] = useState(false);
@@ -110,7 +109,7 @@ export default function AdminContentData() {
 			data: {
 				method: "search",
 				search_text: searchText,
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				format: "datagrid",
 				offset: offset,
 				limit: limit,
@@ -125,7 +124,7 @@ export default function AdminContentData() {
 			"api": "sapi",
 			"data": {
 				"method": "refresh_search_view",
-				"id_token": cookies['id_token']
+				"id_token": idToken
 			}
 		});
 	}
