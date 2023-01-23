@@ -11,7 +11,7 @@ export default function AdminHome() {
 	const history = useHistory();
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={"Home"}/>
 			<LeftNav/>
 			<Box

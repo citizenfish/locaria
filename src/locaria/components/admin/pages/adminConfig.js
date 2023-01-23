@@ -13,7 +13,7 @@ export default function AdminConfig() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Config - Parameters`}/>
 
 			<LeftNav isOpenConfig={true}/>

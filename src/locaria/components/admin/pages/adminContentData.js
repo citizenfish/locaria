@@ -134,7 +134,7 @@ export default function AdminContentData() {
 	return (
 
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Data Manager`}/>
 			<LeftNav isOpenContent={true}/>
 

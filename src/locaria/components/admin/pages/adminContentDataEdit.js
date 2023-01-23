@@ -116,7 +116,7 @@ export default function AdminContentDataEdit() {
 	function saveFeature(queueName="saveFeature") {
 		setQueueName(queueName);
 		dispatch(submitForm());
-	};
+	}
 
 	useEffect(() => {
 		if(formSubmitted!==undefined) {
@@ -155,7 +155,7 @@ export default function AdminContentDataEdit() {
 
 		return (
 			<Box sx={{display: 'flex'}}>
-				<TokenCheck></TokenCheck>
+				<TokenCheck adminMode={true}/>
 				<AdminAppBar title={`Content - Data`}/>
 				<LeftNav isOpenContent={true}/>
 				<Box

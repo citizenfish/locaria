@@ -3,15 +3,15 @@ import TokenCheck from "widgets/utils/tokenCheck";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Box from "@mui/material/Box";
-import {useCookies} from "react-cookie";
 import {Card, CardContent, Grid, Typography} from "@mui/material";
 import {DiscreteColorLegend, FlexibleXYPlot, RadialChart, VerticalBarSeries, XAxis, YAxis} from "react-vis";
 import StripedDataGrid from "../../widgets/data/stripedDataGrid";
+import {useSelector} from "react-redux";
 
 
 export default function AdminDataDashBoard(){
+    const idToken = useSelector((state) => state.userSlice.idToken);
 
-    const [cookies, setCookies] = useCookies(['location'])
     const [overview,setOverview] = useState({})
     const [barCharts,setbarCharts] = useState({})
     const [pieCharts,setPieCharts] = useState({})
@@ -57,7 +57,7 @@ export default function AdminDataDashBoard(){
             data: {
                 method: "report",
                 report_name: "statistics_dashboard_overview",
-                id_token: cookies['id_token']
+                id_token: idToken
             }
         })
 
@@ -67,7 +67,7 @@ export default function AdminDataDashBoard(){
             data: {
                 method: "report",
                 report_name: "statistics_dashboard_bar_charts",
-                id_token: cookies['id_token']
+                id_token: idToken
 
             }
         })
@@ -78,7 +78,7 @@ export default function AdminDataDashBoard(){
             data: {
                 method: "report",
                 report_name: "statistics_dashboard_pie_charts",
-                id_token: cookies['id_token']
+                id_token: idToken
 
             }
         })
@@ -89,7 +89,7 @@ export default function AdminDataDashBoard(){
             data: {
                 method: "report",
                 report_name: "statistics_dashboard_line_items",
-                id_token: cookies['id_token']
+                id_token: idToken
             }
         })
 
@@ -97,7 +97,7 @@ export default function AdminDataDashBoard(){
     }, []);
 
     return(<Box sx={{display: 'flex'}}>
-        <TokenCheck></TokenCheck>
+        <TokenCheck adminMode={true}/>
         <AdminAppBar title={`Dashboard`}/>
         <LeftNav isOpenReports={true}/>
 

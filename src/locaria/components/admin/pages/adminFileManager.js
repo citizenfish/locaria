@@ -21,7 +21,7 @@ export default function AdminFileManager() {
 
     return(
         <Box sx={{display: 'flex'}}>
-            <TokenCheck></TokenCheck>
+            <TokenCheck adminMode={true}/>
             <AdminAppBar title={`File Manager`}/>
             <LeftNav isOpenImport={true}/>
 

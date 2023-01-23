@@ -178,7 +178,7 @@ export default function AdminContentPagesEdit() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Content - Pages`}/>
 			<LeftNav isOpenContent={true}/>
 			<Box

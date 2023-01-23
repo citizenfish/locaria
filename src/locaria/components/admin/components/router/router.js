@@ -25,7 +25,6 @@ const AdminAppRouter = () => {
 	const dispatch=useDispatch();
 
 	React.useEffect(() => {
-
 		dispatch(reloadProfile());
 
 	},[]);

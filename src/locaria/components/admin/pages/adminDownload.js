@@ -16,7 +16,7 @@ export default function AdminDownload() {
 
     return(
         <Box sx={{display: 'flex'}}>
-            <TokenCheck></TokenCheck>
+            <TokenCheck adminMode={true}/>
             <AdminAppBar title={`Download Data`}/>
             <LeftNav isOpenImport={true}/>
 
