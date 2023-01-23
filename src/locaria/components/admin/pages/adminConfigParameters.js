@@ -5,7 +5,6 @@ import LeftNav from "../components/navs/leftNav";
 import Button from "@mui/material/Button";
 import {useHistory, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {useCookies} from "react-cookie";
 import TokenCheck from "widgets/utils/tokenCheck";
 import {setConfig, setConfigs} from "../redux/slices/adminPagesSlice";
 import Grid from "@mui/material/Grid";
@@ -19,8 +18,8 @@ export default function AdminConfigParameters() {
 	let {selectedConfig} = useParams();
 	const config = useSelector((state) => state.adminPages.config);
 	const [configData, setConfigData] = useState({});
-	const [cookies, setCookies] = useCookies(['id_token']);
 	const dispatch = useDispatch()
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 
 	const getConfigData = () => {
@@ -30,7 +29,7 @@ export default function AdminConfigParameters() {
 			"data": {
 				"method": "get_parameters",
 				"parameter_name": config,
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"send_acl": "true"
 
 			}
@@ -46,7 +45,7 @@ export default function AdminConfigParameters() {
 				"method": "set_parameters",
 				"acl": {"delete": ["Admins"], "update": ["Admins"]},
 				"parameter_name": config,
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"usage": "Config",
 				"parameters": configData
 			}
@@ -81,7 +80,7 @@ export default function AdminConfigParameters() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Configure - Parameters`}/>
 			<LeftNav isOpenConfig={true}/>
 			<Box

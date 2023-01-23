@@ -4,7 +4,6 @@ import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import {useHistory, useParams} from "react-router-dom";
 import TokenCheck from "widgets/utils/tokenCheck";
-import {useCookies} from "react-cookie";
 import {setFeature, setOverview} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {FieldView} from "widgets/data/fieldView";
@@ -19,8 +18,8 @@ import {submitForm} from "components/redux/slices/formSlice";
 export default function AdminModerationDataView() {
 
 	const [queueName, setQueueName] = useState(undefined);
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
-	const [cookies, setCookies] = useCookies(['location']);
 	//TODO feature does not really belong in pages state? move into own state
 	const feature = useSelector((state) => state.adminPages.feature);
 	//const formData = useSelector((state) => state.formSlice.formData);
@@ -55,7 +54,7 @@ export default function AdminModerationDataView() {
 				"api": "sapi",
 				"data": {
 					"method": "refresh_search_view",
-					"id_token": cookies['id_token']
+					"id_token": idToken
 				}
 			});
 			dispatch(setOverview(undefined));
@@ -80,7 +79,7 @@ export default function AdminModerationDataView() {
 						method: "get_item",
 						fid: feature,
 						live: true,
-						id_token: cookies['id_token']
+						id_token: idToken
 					}
 				});
 			}
@@ -120,7 +119,7 @@ export default function AdminModerationDataView() {
 					api: "sapi",
 					data: {
 						attributes: data.properties,
-						id_token: cookies['id_token'],
+						id_token: idToken,
 						category: featureData.properties.category,
 						acl: {view: ['PUBLIC']}
 
@@ -136,7 +135,7 @@ export default function AdminModerationDataView() {
 					queue: "saveFeature",
 					api: "sapi",
 					data: {
-						id_token: cookies['id_token'],
+						id_token: idToken,
 						acl: {view:["PUBLIC"]},
 						status: "REJECTED"
 					}
@@ -160,7 +159,7 @@ export default function AdminModerationDataView() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Content - Data`}/>
 			<LeftNav isOpenContent={true}/>
 			<Box

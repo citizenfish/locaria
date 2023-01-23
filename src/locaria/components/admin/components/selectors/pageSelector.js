@@ -1,9 +1,7 @@
 import {useDispatch, useSelector} from "react-redux"
-import {useCookies} from "react-cookie"
 import React, {useEffect} from "react"
 import {setPage, setPages} from "../../redux/slices/adminPagesSlice"
-//import { DataGrid, GridToolbarQuickFilter, gridClasses } from "@mui/x-data-grid"
-//import { alpha, styled } from '@mui/material/styles';
+
 import StripedDataGrid from "../../../widgets/data/stripedDataGrid";
 import Box from "@mui/material/Box"
 import Link from '@mui/material/Link'
@@ -17,8 +15,8 @@ export default function PageSelector(props) {
 	//const page = useSelector((state) => state.adminPages.page);
 	const pages = useSelector((state) => state.adminPages.pages);
 	const dispatch = useDispatch()
-	const [cookies, setCookies] = useCookies(['location']);
 	const history = useHistory();
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 	//Datagrid
 
@@ -92,11 +90,11 @@ export default function PageSelector(props) {
 			}
 
 		});
-		if(pages === undefined){
+		if(pages === undefined&&idToken!==undefined){
 			getPages();
 		}
 
-	},[pages]);
+	},[pages,idToken]);
 
 	const getPages = () => {
 		window.websocket.send({
@@ -106,7 +104,7 @@ export default function PageSelector(props) {
 				"method": "get_parameters",
 				"usage": "Page",
 				"delete_key":"data",
-				id_token: cookies['id_token'],
+				id_token: idToken,
 
 			}
 		});

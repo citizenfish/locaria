@@ -11,7 +11,6 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui
 import DialogContentText from "@mui/material/DialogContentText";
 import {useFormik} from "formik";
 import * as yup from 'yup';
-import {useCookies} from "react-cookie";
 import {setPage, setPages} from "../redux/slices/adminPagesSlice";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid"
@@ -34,8 +33,8 @@ export default function AdminContentPages() {
 	const page = useSelector((state) => state.adminPages.page);
 	const [openAdd, setOpenAdd] = useState(false);
 	const [openDelete, setOpenDelete] = useState(false);
-	const [cookies, setCookies] = useCookies(['id_token']);
 	const dispatch = useDispatch()
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 	useEffect(() => {
 
@@ -70,7 +69,7 @@ export default function AdminContentPages() {
 				"method": "set_parameters",
 				"acl": {"view": ["PUBLIC"], "delete": ["Admins"], "update": ["Admins"]},
 				"parameter_name": values.url,
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"usage": "Page",
 				"parameters": {
 					"data": "# New Page title",
@@ -89,7 +88,7 @@ export default function AdminContentPages() {
 			"data": {
 				"method": "delete_parameters",
 				"parameter_name": page,
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"usage": "Page"
 			}
 		});
@@ -109,7 +108,7 @@ export default function AdminContentPages() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Content - Pages`}/>
 
 			<LeftNav isOpenContent={true}/>

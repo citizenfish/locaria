@@ -6,19 +6,19 @@ import Button from "@mui/material/Button";
 import {useHistory, useParams} from "react-router-dom";
 import TokenCheck from "widgets/utils/tokenCheck";
 
-import {useCookies} from "react-cookie";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid"
 import Chip from "@mui/material/Chip";
 
 
 import {cognitoGroups} from "libs/cognitoGroups"
+import {useSelector} from "react-redux";
 
 export default function AdminUsersManageEdit() {
 
 	const history = useHistory();
-	const [cookies, setCookies] = useCookies(['id_token']);
 	let {user} = useParams();
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 
 	const [userDetails,setUserDetails] = useState(undefined);
@@ -42,7 +42,7 @@ export default function AdminUsersManageEdit() {
 			"api": "sapi",
 			"data": {
 				"method": "user_details",
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"id":user
 			}
 		});
@@ -55,7 +55,7 @@ export default function AdminUsersManageEdit() {
 			"api": "sapi",
 			"data": {
 				"method": "delete_group",
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"id":user,
 				"group":group
 			}
@@ -68,7 +68,7 @@ export default function AdminUsersManageEdit() {
 			"api": "sapi",
 			"data": {
 				"method": "add_group",
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"id":user,
 				"group":group
 			}
@@ -96,7 +96,7 @@ export default function AdminUsersManageEdit() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`User - Manager`}/>
 
 			<LeftNav isOpenUsers={true}/>

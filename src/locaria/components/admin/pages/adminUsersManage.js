@@ -6,7 +6,6 @@ import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import TokenCheck from "widgets/utils/tokenCheck";
-import {useCookies} from "react-cookie";
 import {setPage} from "../redux/slices/adminPagesSlice";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid"
@@ -16,10 +15,10 @@ import StripedDataGrid from "../../widgets/data/stripedDataGrid";
 
 
 export default function AdminUsersManage() {
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 	const history = useHistory();
 	const page = useSelector((state) => state.adminPages.page);
-	const [cookies, setCookies] = useCookies(['id_token']);
 	const dispatch = useDispatch();
 	const [users,setUsers]= useState(undefined);
 
@@ -39,7 +38,7 @@ export default function AdminUsersManage() {
 			"api": "sapi",
 			"data": {
 				"method": "user_list",
-				id_token: cookies['id_token']
+				id_token: idToken
 			}
 		});
 
@@ -75,7 +74,7 @@ export default function AdminUsersManage() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`User - Manager`}/>
 
 			<LeftNav isOpenUsers={true}/>

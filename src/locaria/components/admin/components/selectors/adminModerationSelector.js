@@ -1,5 +1,4 @@
 import React, {useEffect,useState} from 'react'
-import {useCookies} from "react-cookie";
 import {useDispatch, useSelector} from "react-redux"
 import StripedDataGrid from "../../../widgets/data/stripedDataGrid";
 import {setModerations} from "../../redux/slices/featureSlice";
@@ -7,16 +6,17 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import AdminDialogConfirm from "../../dialogues/adminDialogueConfirm";
-import {objectPathGet} from "../../../../libs/objectTools";
+import {objectPathGet} from "libs/objectTools";
 import {useHistory} from "react-router-dom";
 import {setFeature} from "../../redux/slices/adminPagesSlice";
 
 
-export default function AdminModerationSelector(props){
+export default function AdminModerationSelector(){
 
-    const [cookies, setCookies] = useCookies(['location'])
     const dispatch = useDispatch()
     const moderationItems = useSelector((state) => state.featureState.moderations)
+    const idToken = useSelector((state) => state.userSlice.idToken);
+
     const [dialogProps, setDialogueProps] = useState({open : false});
     const [refresh, setRefresh] = useState(false);
     const history = useHistory();
@@ -28,7 +28,7 @@ export default function AdminModerationSelector(props){
             data: {
                 method: "delete_item",
                 fid : fid,
-                id_token: cookies['id_token']
+                id_token: idToken
             }
         })
     }
@@ -41,7 +41,7 @@ export default function AdminModerationSelector(props){
                 method: "update_item",
                 fid : params.fid,
                 moderation_id: params.id,
-                id_token: cookies['id_token'],
+                id_token: idToken,
                 //An item becomes published by having the acl "PUBLIC" on view
                 acl: {view:['PUBLIC']}
             }
@@ -154,7 +154,7 @@ export default function AdminModerationSelector(props){
                 "api": "sapi",
                 "data": {
                     "method": "view_report",
-                    "id_token": cookies['id_token']
+                    "id_token": idToken
                 }
             });
 
@@ -167,7 +167,7 @@ export default function AdminModerationSelector(props){
                 "api": "sapi",
                 "data": {
                     "method": "refresh_search_view",
-                    "id_token": cookies['id_token']
+                    "id_token": idToken
                 }
             });
         })
@@ -175,15 +175,17 @@ export default function AdminModerationSelector(props){
     },[])
 
     useEffect(() => {
-        window.websocket.send({
-            queue: 'moderationItems',
-            api: "sapi",
-            data: {
-                method: "get_moderation_items",
-                id_token: cookies['id_token']
-            }
-        })
-    },[refresh])
+        if(idToken) {
+            window.websocket.send({
+                queue: 'moderationItems',
+                api: "sapi",
+                data: {
+                    method: "get_moderation_items",
+                    id_token: idToken
+                }
+            })
+        }
+    },[refresh,idToken])
 
     return (
         <div>

@@ -4,9 +4,8 @@ import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import {useDispatch, useSelector} from "react-redux";
+import { useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
-import {useCookies} from "react-cookie";
 import RenderMarkdown from "../../widgets/markdown/renderMarkdown";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -112,13 +111,12 @@ export default function AdminSettingsAppearanceEdit() {
 	const makeStyle = () => {
 		let data={};
 		data[sxElement]=sxValue;
-		let json=JSON.stringify({...window.systemMain.styles[style],...data});
-		return json;
+		return JSON.stringify({...window.systemMain.styles[style],...data});
 	}
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Settings - Styles`}/>
 			<LeftNav isOpenSettings={true}/>
 			<Box

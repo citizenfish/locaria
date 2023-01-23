@@ -11,7 +11,6 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui
 import DialogContentText from "@mui/material/DialogContentText";
 import Typography from "@mui/material/Typography";
 import { updateStyle} from "../redux/slices/adminPagesSlice";
-import {useCookies} from "react-cookie";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import Grid from "@mui/material/Grid";
@@ -30,9 +29,9 @@ export default function AdminSettingsAppearance() {
 	const [openDelete, setOpenDelete] = useState(false)
 	const [openAdd, setOpenAdd] = useState(false)
 	const [openPreview, setOpenPreview] = useState(false)
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 	const dispatch = useDispatch()
-	const [cookies, setCookies] = useCookies(['id_token'])
 
 	const style = useSelector((state) => state.adminPages.style);
 
@@ -41,7 +40,7 @@ export default function AdminSettingsAppearance() {
 	}
 
 	const handleDeletePage = (values) => {
-		dispatch(updateStyle({style: style, purge: style, token: cookies["id_token"]}));
+		dispatch(updateStyle({style: style, purge: style, token: idToken}));
 		setOpenDelete(false);
 
 	}
@@ -51,7 +50,7 @@ export default function AdminSettingsAppearance() {
 	}
 
 	const handleAddPage = (values) => {
-		dispatch(updateStyle({style: values.name, add: true, token: cookies["id_token"]}));
+		dispatch(updateStyle({style: values.name, add: true, token: idToken}));
 		setOpenAdd(false);
 		history.push(`/Admin/Settings/Appearance/Edit`);
 
@@ -73,7 +72,7 @@ export default function AdminSettingsAppearance() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Site Manager`}/>
 			<LeftNav isOpenSettings={true}/>
 			<Box

@@ -1,14 +1,14 @@
 import React, {useEffect, useRef, useState} from "react"
 import Button from "@mui/material/Button";
 import axios from "axios";
-import {useCookies} from "react-cookie";
 import {Card, CardActions, CardContent, ImageList, ImageListItem, InputLabel, Select} from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
-import UrlCoder from "../../../libs/urlCoder";
+import UrlCoder from "libs/urlCoder";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import {arrayToggleElement} from "../../../libs/arrayTools";
+import {arrayToggleElement} from "libs/arrayTools";
+import {useSelector} from "react-redux";
 
 const url = new UrlCoder();
 let files={};
@@ -24,10 +24,10 @@ export default function UploadWidget({uuids,images,usageFilterInitial="Gallery",
     if (idRef.current === null) {
         idRef.current = getUniqueId()
     }
+    const idToken = useSelector((state) => state.userSlice.idToken);
 
     const [fileProgress, setFileProgress] = useState(0)
     const fileInput = useRef(null)
-    const [cookies, setCookies] = useCookies(['location']);
     const [list, setList] = useState([]);
     const [usageFilter, setUsageFilter] = useState(usageFilterInitial);
     let uuidActual;
@@ -115,7 +115,7 @@ export default function UploadWidget({uuids,images,usageFilterInitial="Gallery",
             "data": {
                 "method": "delete_asset",
                 "uuid": uuid,
-                "id_token": cookies['id_token']
+                "id_token": idToken
             }
         })
     }
@@ -139,7 +139,7 @@ export default function UploadWidget({uuids,images,usageFilterInitial="Gallery",
                     "usage": usageFilter
                 },
                 "contentType": contentType,
-                "id_token": cookies['id_token']
+                "id_token": idToken
             }
         })
 

@@ -5,7 +5,6 @@ import LeftNav from "../components/navs/leftNav";
 import Button from "@mui/material/Button";
 import {useHistory, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {useCookies} from "react-cookie";
 import TabPanel from "../components/tabs/tabPanel";
 import TokenCheck from "widgets/utils/tokenCheck";
 import {Select, TextField} from "@mui/material";
@@ -56,7 +55,8 @@ export default function AdminContentPagesEdit() {
 	const [pageData, setPageData] = useState({});
 	const [markdownData, setMarkdownData] = useState(undefined);
 	const [currentTab, setCurrrentTab] = useState(0);
-	const [cookies, setCookies] = useCookies(['id_token']);
+	const idToken = useSelector((state) => state.userSlice.idToken);
+
 	const dispatch = useDispatch()
 
 	const formik = useFormik({
@@ -77,7 +77,7 @@ export default function AdminContentPagesEdit() {
 			"data": {
 				"method": "get_parameters",
 				"parameter_name": page,
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"send_acl" : "true"
 
 			}
@@ -85,7 +85,7 @@ export default function AdminContentPagesEdit() {
 	}
 
 	const savePage = (values) => {
-
+		debugger;
 		let element=document.getElementById("EditorHTML");
 		let obj=MD.parseHTML(element);
 		dispatch(setEditor(undefined));
@@ -98,7 +98,7 @@ export default function AdminContentPagesEdit() {
 				"method": "set_parameters",
 				"acl": {"view": groupNames, "delete": ["Admins"], "update": ["Admins"]},
 				"parameter_name": page,
-				id_token: cookies['id_token'],
+				id_token: idToken,
 				"usage": "Page",
 				"parameters": {
 					"data": obj,
@@ -119,8 +119,8 @@ export default function AdminContentPagesEdit() {
 			"data": {
 				"method": "set_parameters",
 				"acl": {"view": ["Admins"], "delete": ["Admins"], "update": ["Admins"]},
-				"parameter_name": `${page}-${cookies['id_token']}`,
-				id_token: cookies['id_token'],
+				"parameter_name": `${page}-${idToken}`,
+				id_token: idToken,
 				"usage": "Temp",
 				"parameters": {
 					"data": obj,
@@ -178,7 +178,7 @@ export default function AdminContentPagesEdit() {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<TokenCheck></TokenCheck>
+			<TokenCheck adminMode={true}/>
 			<AdminAppBar title={`Content - Pages`}/>
 			<LeftNav isOpenContent={true}/>
 			<Box

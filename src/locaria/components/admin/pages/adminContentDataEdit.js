@@ -1,10 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from "@mui/material/Box";
 import AdminAppBar from "../adminAppBar";
 import LeftNav from "../components/navs/leftNav";
 import {useHistory, useParams} from "react-router-dom";
 import TokenCheck from "widgets/utils/tokenCheck";
-import {useCookies} from "react-cookie";
 import {setFeature, setOverview} from "../redux/slices/adminPagesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {FieldView} from "widgets/data/fieldView";
@@ -18,7 +17,8 @@ import {submitForm} from "components/redux/slices/formSlice";
 export default function AdminContentDataEdit() {
 
 
-	const [cookies, setCookies] = useCookies(['location']);
+	const idToken = useSelector((state) => state.userSlice.idToken);
+
 	//TODO feature does not really belong in pages state? move into own state
 	const feature = useSelector((state) => state.adminPages.feature);
 	//const formData = useSelector((state) => state.formSlice.formData);
@@ -33,7 +33,6 @@ export default function AdminContentDataEdit() {
 	let {fid} = useParams();
 
 	const history = useHistory();
-	const [point, setPoint] = useState(undefined);
 
 
 	useEffect(() => {
@@ -62,7 +61,7 @@ export default function AdminContentDataEdit() {
 				"api": "sapi",
 				"data": {
 					"method": "refresh_search_view",
-					"id_token": cookies['id_token']
+					"id_token": idToken
 				}
 			});
 			dispatch(setOverview(undefined));
@@ -86,7 +85,7 @@ export default function AdminContentDataEdit() {
 						method: "get_item",
 						fid: feature,
 						live: true,
-						id_token: cookies['id_token']
+						id_token: idToken
 					}
 				});
 			}
@@ -103,7 +102,7 @@ export default function AdminContentDataEdit() {
 			data: {
 				method: "delete_item",
 				fid: feature,
-				id_token: cookies['id_token']
+				id_token: idToken
 			}
 		});
 
@@ -117,7 +116,7 @@ export default function AdminContentDataEdit() {
 	function saveFeature(queueName="saveFeature") {
 		setQueueName(queueName);
 		dispatch(submitForm());
-	};
+	}
 
 	useEffect(() => {
 		if(formSubmitted!==undefined) {
@@ -133,7 +132,7 @@ export default function AdminContentDataEdit() {
 				api: "sapi",
 				data: {
 					attributes: data.properties,
-					id_token: cookies['id_token'],
+					id_token: idToken,
 					category: featureData.properties.category,
 				}
 			};
@@ -156,7 +155,7 @@ export default function AdminContentDataEdit() {
 
 		return (
 			<Box sx={{display: 'flex'}}>
-				<TokenCheck></TokenCheck>
+				<TokenCheck adminMode={true}/>
 				<AdminAppBar title={`Content - Data`}/>
 				<LeftNav isOpenContent={true}/>
 				<Box
@@ -173,19 +172,19 @@ export default function AdminContentDataEdit() {
 											onClick={(e) => saveFeature()}
 											variant="outlined"
 											sx={{margin: "5px"}}
-											disabled={feature === -1 && point === undefined ? true : false}>Save</Button>
+											>Save</Button>
 
 									<Button color="success"
 											onClick={(e) => saveFeature("saveFeaturePublish")}
 											variant="outlined"
 											sx={{margin: "5px"}}
-											disabled={feature === -1 && point === undefined ? true : false}>Save &
+											>Save &
 										Publish</Button>
 									<Button color="error"
 											onClick={deleteFeature}
 											variant="outlined"
 											sx={{margin: "5px"}}
-											disabled={feature === -1 ? true : false}>Delete</Button>
+											>Delete</Button>
 								</>
 						</Grid>
 

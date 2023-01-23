@@ -9,7 +9,7 @@ export default function AdminAPISettings() {
 
     return(
         <Box sx={{display: 'flex'}}>
-            <TokenCheck></TokenCheck>
+            <TokenCheck adminMode={true}/>
             <AdminAppBar title={`API Settings`}/>
             <LeftNav isOpenImport={true}/>
 

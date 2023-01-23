@@ -23,13 +23,14 @@ export default function RenderPage({searchMode}) {
 	let {search} = useParams();
 	let {page} = useParams();
 	let {feature} = useParams();
+	let {shortCode} = useParams();
 	const [render, setRender] = React.useState(0);
 	const pageData = React.useRef(undefined);
 	const pageActual = React.useRef(undefined);
 	const channel = React.useRef(undefined);
 	const currentLocation = useSelector((state) => state.userSlice.currentLocation);
 	const lastPage = useSelector((state) => state.userSlice.lastPage);
-	const idToken = useSelector((state) => state.basketSlice.idToken);
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 	function handleResize()  {
 		dispatch(setMobile(!useMediaQuery('(min-width:900px)')));
@@ -132,10 +133,21 @@ export default function RenderPage({searchMode}) {
 					{
 						"queue": "viewLoader",
 						"api": "api",
-						"data": {"method": "search", "shortcode": feature}
+						"data": {"method": "get_item", "fid": feature}
 					}
 				)
 			}
+		}
+
+		if(shortCode) {
+
+			bulkPackage.push(
+				{
+					"queue": "viewLoader",
+					"api": "api",
+					"data": {"method": "search", "shortcode": shortCode}
+				}
+			)
 		}
 
 		if (channel.current && channel.current.report) {

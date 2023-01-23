@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from "react"
 import Button from "@mui/material/Button";
 import axios from "axios";
-import {useCookies} from "react-cookie";
-import {Card, CardActions, CardContent, ImageList, ImageListItem, InputLabel, Select} from "@mui/material";
+import {Card, CardActions, CardContent, ImageList, ImageListItem} from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
-import UrlCoder from "../../../libs/urlCoder";
-import {arrayToggleElement} from "../../../libs/arrayTools";
+import UrlCoder from "libs/urlCoder";
+import {arrayToggleElement} from "libs/arrayTools";
+import {useSelector} from "react-redux";
 
 const url = new UrlCoder();
 let files = {};
@@ -20,10 +20,10 @@ export default function SimpleUploadWidget({images, sx, title, setFunction}) {
 	if (idRef.current === null) {
 		idRef.current = getUniqueId()
 	}
+	const idToken = useSelector((state) => state.userSlice.idToken);
 
 	const [fileProgress, setFileProgress] = useState(0)
 	const fileInput = useRef(null)
-	const [cookies, setCookies] = useCookies(['location']);
 	const [list, setList] = useState([]);
 	const [selected, setSelected] = useState(images ? [...images] : []);
 	const [available, setAvailable] = useState(images ? [...images] : []);
@@ -106,7 +106,7 @@ export default function SimpleUploadWidget({images, sx, title, setFunction}) {
 					"usage": "Features"
 				},
 				"contentType": contentType,
-				"id_token": cookies['id_token']
+				"id_token": idToken
 			}
 		})
 
