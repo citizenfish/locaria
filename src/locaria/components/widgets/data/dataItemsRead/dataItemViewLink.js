@@ -2,8 +2,9 @@ import React, {useRef} from 'react';
 import Button from "@mui/material/Button";
 import CopyAllIcon from '@mui/icons-material/CopyAll';
 import Notification from "widgets/utils/notification";
+import Typography from "@mui/material/Typography";
 
-const DataItemViewLink = ({name, data, sx, size = "small"}) => {
+const DataItemViewLink = ({name, data, sx, size = "small",mode="copy"}) => {
 	let sxActual = {
 		...{
 			color: window.systemMain.fontMain,
@@ -13,7 +14,7 @@ const DataItemViewLink = ({name, data, sx, size = "small"}) => {
 	}
 
 	const ref=useRef();
-
+	if(mode==="copy"){
 	return (
 		<>
 			<Button size={size} variant="text" sx={sxActual} onClick={() => {
@@ -23,6 +24,14 @@ const DataItemViewLink = ({name, data, sx, size = "small"}) => {
 			<Notification notification={`Copied ${location.protocol}//${location.host}/~${data} to clipboard`} ref={ref}/>
 		</>
 	)
+		}
+	else{
+		return (
+			<>
+				<Typography gutterBottom sx={sxActual}>{`${location.protocol}//${location.host}/~${data}`}</Typography>
+			</>
+		)
+	}
 }
 
 export default DataItemViewLink;

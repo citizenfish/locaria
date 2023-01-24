@@ -12,16 +12,14 @@ import {
 	locationPopup,
 	setCurrentLocation,
 	setGeolocation,
-	setLocation, setQuestionsOpen
+	setQuestionsOpen
 
 } from "../../redux/slices/searchDrawerSlice";
-import {useHistory} from "react-router-dom";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PlaceIcon from '@mui/icons-material/Place';
 import {getLocation} from "libs/geolocation";
-import {encodeSearchParams} from "libs/searchParams";
 import {v4} from "uuid";
 import useSearchRouter from "widgets/search/useSearchRouter";
 import {setSavedAttribute} from "components/redux/slices/userSlice";
@@ -29,7 +27,6 @@ import UserSearchProfile from "components/widgets/user/userSearchProfile";
 
 export default function SearchLocationPopup({defaultPage, maxLocations = 8, display = true}) {
 	const dispatch = useDispatch();
-	const history = useHistory();
 
 	const open = useSelector((state) => state.searchDraw.locationOpen);
 	const locationPage = useSelector((state) => state.searchDraw.locationPage);
@@ -269,7 +266,6 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 	if (display === false) {
 		boxSx.top = "50px";
 	}
-
 	return (
 		<Box sx={boxSx}>
 			<Backdrop open={open} sx={{zIndex: 100}} onClick={handleClose}>
