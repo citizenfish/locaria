@@ -77,7 +77,7 @@ export default function SearchQuestionsPopup() {
 			if (categories[category].questions) {
 				for (let q in categories[category].questions['category_choice']) {
 					questions.push(
-						<ListItem key={v4()} sx={{background: '#fff', borderRadius: "10px", margin:"10px",width:`${width}px`,border: "1px solid #0000008f"}} onClick={() => handleQuestion1(categories[category].key, categories[category].questions['category_choice'][q].value)}>
+						<ListItem key={v4()} sx={{"&:hover": {"opacity":"0.8"},background: '#fff', borderRadius: "10px", margin:"10px",width:`${width}px`,border: "1px solid #0000008f"}} onClick={() => handleQuestion1(categories[category].key, categories[category].questions['category_choice'][q].value)}>
 							<ListItemIcon>
 								<RenderStarState state={question1===categories[category].questions['category_choice'][q].value}/>
 							</ListItemIcon>
@@ -91,6 +91,7 @@ export default function SearchQuestionsPopup() {
 			<List>
 				<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
 					<ListItemText primary={"Question 1 of 2: Which best describes your situation"}></ListItemText>
+					<ListItemText onClick={()=>		dispatch(setQuestionsOpen(false))} primary={"[Skip]"}></ListItemText>
 				</ListItem>
 				{questions}
 			</List>
@@ -121,7 +122,8 @@ export default function SearchQuestionsPopup() {
 								  borderRadius: "10px",
 								  margin: "10px",
 								  width: `${width}px`,
-								  border: "1px solid #0000008f"
+								  border: "1px solid #0000008f",
+								  "&:hover": {"opacity":"0.8"}
 							  }}>
 						<ListItemIcon>
 							<RenderStarState
@@ -136,10 +138,12 @@ export default function SearchQuestionsPopup() {
 				<List>
 					<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
 						<ListItemText primary={"Question 2 of 2: Which best describes your situation"}></ListItemText>
+						<ListItemText onClick={()=>		dispatch(setQuestionsOpen(false))} primary={"[Skip]"}></ListItemText>
+
 					</ListItem>
 					{questions}
-					<ListItem  key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
-						<ListItemText color={"primary"} sx={{"color":"#000"}} varient={"outlined"} onClick={() => handleQuestion2()}>Find activities based on your selection</ListItemText>
+					<ListItem onClick={() => handleQuestion2()} key={v4()} sx={{"&:hover": {"opacity":"0.8"},  cursor: "pointer",background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
+						<ListItemText color={"primary"} sx={{"color":"#000"}} varient={"outlined"} >Find activities based on your selection</ListItemText>
 					</ListItem>
 				</List>
 			</>
