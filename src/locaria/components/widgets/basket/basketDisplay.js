@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import {FieldView} from "widgets/data/fieldView";
 import Notification from "widgets/utils/notification";
 
-export default function BasketDisplay({field}) {
+export default function BasketDisplay({field,printPage='/BasketPrint/',printMode=false}) {
 	const dispatch = useDispatch();
 	const features = useSelector((state) => state.searchDraw.features);
 	const items = useSelector((state) => state.basketSlice.items);
@@ -26,8 +26,7 @@ export default function BasketDisplay({field}) {
 	//TODO useful function move to library
 	function get_next_week_start() {
 		let now = new Date();
-		let next_week_start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (8 - now.getDay()));
-		return next_week_start;
+		return new Date(now.getFullYear(), now.getMonth(), now.getDate() + (8 - now.getDay()));
 	}
 
 	//TODO add day ordinals th/st/nd
@@ -47,9 +46,10 @@ export default function BasketDisplay({field}) {
 	}, [items]);
 
 	useEffect(() => {
-		window.websocket.registerQueue("sendEmail", function (json) {
+		window.websocket.registerQueue("sendEmail", function () {
 			ref.current.open();
 		})
+
 	},[]);
 	function sendEmail() {
 		// Build a list of fids
@@ -106,11 +106,18 @@ export default function BasketDisplay({field}) {
 				<Typography align={"center"} variant={"h6"} sx={{marginTop: "10px"}}>Brilliant!
 					That’s {features.features.length} activities for next week. Keep it up!</Typography>
 
-				<Toolbar sx={{justifyContent: "center", marginTop: "10px"}}>
-					<Button startIcon={<ClearAllIcon/>} onClick={() => dispatch(setItems([]))}>Clear</Button>
-					<Button startIcon={<PrintIcon/>} onClick={() => dispatch(setItems([]))}>Print</Button>
-					<Button startIcon={<EmailIcon/>} onClick={() => sendEmail()}>Email</Button>
-				</Toolbar>
+				{!printMode &&
+					<Toolbar sx={{justifyContent: "center", marginTop: "10px"}}>
+						<Button startIcon={<ClearAllIcon/>} onClick={() => dispatch(setItems([]))}>Clear</Button>
+						<Button startIcon={<PrintIcon/>} onClick={() => history.push(printPage)}>Print</Button>
+						<Button startIcon={<EmailIcon/>} onClick={() => sendEmail()}>Email</Button>
+					</Toolbar>
+				}
+				{printMode &&
+					<Toolbar sx={{justifyContent: "center", marginTop: "10px"}}>
+						<Button startIcon={<PrintIcon/>} onClick={() => window.print()}>Print</Button>
+					</Toolbar>
+				}
 
 			</>
 		);
