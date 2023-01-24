@@ -97,20 +97,26 @@ const SearchLocationFilters = ({
 		)
 	}
 
+	function FiltersOuter() {
+		return (
+			<Stack direction="row" spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+				<SearchRecommended/>
+				<ShoppingBasket/>
+			</Stack>
+		)
+	}
+
 	function FiltersInner() {
 		return (
 			<Stack direction="column" spacing={2}>
-				<Stack direction="row" spacing={2}>
-					<SearchRecommended/>
-					<ShoppingBasket/>
-				</Stack>
 				<Accordion expanded={advanced} onChange={handleChangeAdvanced}>
 					<AccordionSummary
 						expandIcon={<ExpandMoreIcon/>}
 						aria-controls="panel1a-content"
 						id="panel1a-header"
 					>
-						<TypographyHeader sx={{"color": "#1976d2","fontSize": "0.9rem"}} element={"h2"}>Advanced</TypographyHeader>
+						<TypographyHeader sx={{"color": "#1976d2", "fontSize": "0.9rem"}}
+										  element={"h2"}>Advanced</TypographyHeader>
 					</AccordionSummary>
 					<AccordionDetails>
 						<Stack direction="row" spacing={2}>
@@ -151,6 +157,7 @@ const SearchLocationFilters = ({
 				<Grid container spacing={2} key={"SearchLocationFilters"} sx={actualSx}>
 
 					<Grid item md={3} sx={{width: "100%"}}>
+						<FiltersOuter/>
 
 						<Accordion expanded={expanded} onChange={handleChange}>
 							<AccordionSummary
@@ -166,7 +173,8 @@ const SearchLocationFilters = ({
 						</Accordion>
 
 					</Grid>
-					<Grid item md={9} xs={12} sx={{width: "100%"}} alignItems={"center"} justifyContent={"space-evenly"}>
+					<Grid item md={9} xs={12} sx={{width: "100%"}} alignItems={"center"}
+						  justifyContent={"space-evenly"}>
 						<ResultsInner/>
 					</Grid>
 
@@ -179,6 +187,7 @@ const SearchLocationFilters = ({
 			<Box key={v4()}>
 				<Grid container spacing={2} key={v4()} sx={actualSx}>
 					<Grid item md={3} sx={{width: "100%"}}>
+						<FiltersOuter/>
 						<FiltersInner/>
 					</Grid>
 					<Grid item md={9} sx={{width: "100%"}}>
