@@ -11,7 +11,7 @@ import TypographyParagraph from "../typography/typographyParagraph";
 import {encodeSearchParams} from "libs/searchParams";
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import Divider from "@mui/material/Divider";
-import {Stack} from "@mui/material";
+import {Fade, Stack} from "@mui/material";
 
 const SitePanels = ({open,panel='small'}) => {
 	const history = useHistory();
@@ -22,6 +22,7 @@ const SitePanels = ({open,panel='small'}) => {
 	const [render, forceRender] = useState(0);
 
 	const currentLocation = useSelector((state) => state.userSlice.currentLocation);
+	const openQuestions = useSelector((state) => state.searchDraw.questionsOpen);
 
 
 	useEffect(() => {
@@ -90,19 +91,13 @@ const SitePanels = ({open,panel='small'}) => {
 			background=window.siteMap[p].backgroundColorHover;
 
 
-		/*let panelSx={...{
-				backgroundColor: background,
-				fontSize: "0.8rem",
-				border: `1px solid ${window.siteMap[p].color}`,
-				width: '100%',
-				cursor: "pointer"
-			},...window.siteMap[p].defaultSX
-		};*/
-
 		let panelSx={
 				backgroundColor: background,
 				fontSize: "0.8rem",
+/*
 				border: `1px solid ${window.siteMap[p].borderColor? window.siteMap[p].borderColor:window.siteMap[p].color}`,
+*/
+				border: "1px dashed black",
 				width: '100%',
 				cursor: "pointer"
 		};
@@ -130,15 +125,16 @@ const SitePanels = ({open,panel='small'}) => {
 
 		panelArray.push(
 			<Grid item md={md} sd={6} xs={6} key={window.siteMap[p].key} >
+				<Fade in={!openQuestions} timeout={2000}>
+
 				<Box sx={{
 					textAlign: 'center',
 				}}>
 
 					<Box sx={panelSx} onClick={() => {
 						toggleCollapseOpen(p);
-
 						//if(window.siteMap[p].needsLocation&&(mode==='full'||mode==='bottom')&&currentLocation===undefined) {
-						if(window.siteMap[p].needsLocation&&currentLocation===undefined) {
+						if(window.siteMap[p].needsLocation&&(currentLocation===undefined||currentLocation.location===undefined)) {
 							dispatch(locationPopup({open:true,page:window.siteMap[p].link}));
 						} else {
 							if (!window.siteMap[p].items || window.siteMap[p].items.length === 0) {
@@ -199,8 +195,9 @@ const SitePanels = ({open,panel='small'}) => {
 						</Box>
 					}
 				</Box>
+			</Fade>
 
-			</Grid>
+	</Grid>
 		)
 	}
 

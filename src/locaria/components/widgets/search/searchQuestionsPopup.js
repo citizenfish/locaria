@@ -91,6 +91,7 @@ export default function SearchQuestionsPopup() {
 			<List>
 				<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
 					<ListItemText primary={"Question 1 of 2: Which best describes your situation"}></ListItemText>
+					<ListItemText onClick={()=>		dispatch(setQuestionsOpen(false))} primary={"[Skip]"}></ListItemText>
 				</ListItem>
 				{questions}
 			</List>
@@ -137,6 +138,8 @@ export default function SearchQuestionsPopup() {
 				<List>
 					<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
 						<ListItemText primary={"Question 2 of 2: Which best describes your situation"}></ListItemText>
+						<ListItemText onClick={()=>		dispatch(setQuestionsOpen(false))} primary={"[Skip]"}></ListItemText>
+
 					</ListItem>
 					{questions}
 					<ListItem onClick={() => handleQuestion2()} key={v4()} sx={{"&:hover": {"opacity":"0.8"},  cursor: "pointer",background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>

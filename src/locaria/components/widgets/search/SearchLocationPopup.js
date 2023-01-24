@@ -53,7 +53,6 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 	}
 
 	function handleListItemClick(fid, name, location, store) {
-
 		let locationPacket = {text: name, fid: fid, location: location};
 		if (store !== false) {
 			// dedupe
@@ -77,7 +76,8 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 		dispatch(setSavedAttribute({attribute:"searchText",value: name}));
 
 		// Did we send a default page? If not it may be undefined and we let the site Panels update
-		if (locationPage !== undefined) {
+		// Commented because I can't remember why I had it, possibly from the old system without questions
+	/*	if (locationPage !== undefined) {
 			let encodedPage = locationPage + encodeSearchParams({
 				location: location
 			})
@@ -85,7 +85,7 @@ export default function SearchLocationPopup({defaultPage, maxLocations = 8, disp
 		} else {
 			if (display === false)
 				dispatch(setLocation(locationPacket.location));
-		}
+		}*/
 		dispatch(setCurrentLocation(locationPacket));
 		dispatch(locationPopup({open: false}));
 
