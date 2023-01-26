@@ -1,7 +1,7 @@
 import React from "react";
 
 import Box from "@mui/material/Box";
-import {Backdrop, Fade, ListItem, ListItemIcon, ListItemText} from "@mui/material";
+import {Backdrop, Button, Fade, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import {
 	setCategoryChosen,
 	setQuestionsOpen
@@ -9,13 +9,30 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {v4} from "uuid";
 import List from "@mui/material/List";
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
-
 import useSearchRouter from "widgets/search/useSearchRouter";
 import {setSavedAttribute} from "components/redux/slices/userSlice";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import Avatar from '@mui/material/Avatar';
+import { teal} from '@mui/material/colors';
 
+//Questions panel
+let panelSX = {
+	zIndex: 202,
+	position:"absolute",
+	border: "1px solid",
+	padding: "50px",
+	borderRadius: "5px",
+	backgroundImage: "linear-gradient(5deg, rgb(141, 203, 204), rgb(102, 204, 153) 87.14%);",
+	borderColor: "rgba(163, 163, 163, 0.3)"
+}
 
+//Question text
+let questionSx = {
+	color: "white"
+}
+
+const divider_sx ={borderColor: "#FFF"}
 
 export default function SearchQuestionsPopup() {
 
@@ -23,14 +40,8 @@ export default function SearchQuestionsPopup() {
 	let route=useSearchRouter();
 
 	const dispatch = useDispatch();
-
 	const innerWidth = useSelector((state) => state.mediaSlice.innerWidth);
-
 	const open = useSelector((state) => state.searchDraw.questionsOpen);
-
-	//const [question1, setQuestion1] = useLocalStorage("question1", "");
-	//const [question2, setQuestion2] = useLocalStorage("question2", []);
-	//const [gotoCategory, setGotoCategory] = useLocalStorage("gotoCategory",undefined);
 	const askQuestions = useSelector((state) => state.userSlice.askQuestions);
 	const gotoCategory = useSelector((state) => state.userSlice.gotoCategory);
 	const question1 = useSelector((state) => state.userSlice.question1);
@@ -70,16 +81,61 @@ export default function SearchQuestionsPopup() {
 		return (<></>);
 	}
 
+	function BottomPanel(props) {
+
+		if(props.type === "go"){
+			return (
+				<>
+					<Divider sx = {divider_sx}></Divider>
+					<Button variant = "outlined"
+							sx = {{marginTop: "10px", backgroundColor: "white", color: "black"}}
+							onClick = {() => handleQuestion2()}>
+						Let's Go!
+					</Button>
+				</>)
+		}
+
+		return (
+			<>
+				<Divider sx = {divider_sx}></Divider>
+				<Button variant = "outlined"
+						sx = {{marginTop: "10px", backgroundColor: "white", color: "black"}}
+						onClick = { () =>	dispatch(setQuestionsOpen(false))}>
+					Skip
+				</Button>
+			</>)
+	}
+
+	function TopPanel(props) {
+
+		return(
+			<Box>
+				<Typography variant={"h6"} sx = {questionSx}>{props.hq}</Typography>
+				<Typography variant={"body1"} sx={{...questionSx, paddingBottom:"10px", fontWeight: "bold"}}>{props.sq}</Typography>
+				<Divider sx = {divider_sx}></Divider>
+			</Box>
+		)
+	}
+
 	function RenderQuestions1() {
 		let questions = [];
 		let categories = window.systemCategories.getChannels();
 		for (let category in categories) {
 			if (categories[category].questions) {
 				for (let q in categories[category].questions['category_choice']) {
+					let state = question1 === categories[category].questions['category_choice'][q].value
+					let bgc = (state === true ? '#e0f2f1' : '#FFF')
 					questions.push(
-						<ListItem key={v4()} sx={{"&:hover": {"opacity":"0.8"},background: '#fff', borderRadius: "10px", margin:"10px",width:`${width}px`,border: "1px solid #0000008f"}} onClick={() => handleQuestion1(categories[category].key, categories[category].questions['category_choice'][q].value)}>
+						<ListItem key={v4()} sx={{
+									"&:hover": {"opacity":"0.8"},
+									background: `${bgc}`,
+									borderRadius: "10px",
+									margin:"10px",
+									width:`${width}px`,
+									border: "1px solid #0000008f"}}
+								  onClick={() => handleQuestion1(categories[category].key, categories[category].questions['category_choice'][q].value)}>
 							<ListItemIcon>
-								<RenderStarState state={question1===categories[category].questions['category_choice'][q].value}/>
+								<RenderQState state = {state} letter = {questions.length}/>
 							</ListItemIcon>
 							<ListItemText primary={categories[category].questions['category_choice'][q].statement}/>
 						</ListItem>
@@ -88,26 +144,29 @@ export default function SearchQuestionsPopup() {
 			}
 		}
 		return (
-			<List>
-				<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
-					<ListItemText primary={"Question 1 of 2: Which best describes your situation"}></ListItemText>
-					<ListItemText onClick={()=>		dispatch(setQuestionsOpen(false))} primary={"[Skip]"}></ListItemText>
-				</ListItem>
-				{questions}
-			</List>
+			<>
+				{/*TODO make text configurable*/}
+				<TopPanel hq={"Question 1 of 2"} sq = {"Which of the following best describes your situation?"} />
+				<List>
+					{questions}
+				</List>
+				<BottomPanel/>
+			</>
+
 		)
 	}
 
-	function RenderStarState({state}) {
-		if(state) {
-			return (
-				<Fade in={true} timeout={500}><StarIcon/></Fade>
-			)
-		} else {
-			return (
-				<StarBorderIcon />
-			)
+	function RenderQState(props) {
+
+		let letters = ['A','B','C','D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+		let asx = {}
+		if(props.state) {
+			asx = {bgcolor: teal[200]}
 		}
+
+		return (
+			<Avatar sx = {asx}>{letters[props.letter]}</Avatar>
+		)
 	}
 
 	function RenderQuestions2() {
@@ -115,10 +174,12 @@ export default function SearchQuestionsPopup() {
 		let category = window.systemCategories.getChannelProperties(gotoCategory);
 		if (category&&category.questions) {
 			for (let q in category.questions['category_chosen']) {
+				let state = question2&&question2.indexOf(category.questions['category_chosen'][q].value) !== -1
+				let bgc = (state === true ? '#e0f2f1' : '#FFF')
 				questions.push(
 					<ListItem onClick={() => toggleQuestion2(category.questions['category_chosen'][q].value)} key={v4()}
 							  sx={{
-								  background: '#fff',
+								  background: `${bgc}`,
 								  borderRadius: "10px",
 								  margin: "10px",
 								  width: `${width}px`,
@@ -126,8 +187,10 @@ export default function SearchQuestionsPopup() {
 								  "&:hover": {"opacity":"0.8"}
 							  }}>
 						<ListItemIcon>
-							<RenderStarState
-								state={question2&&question2.indexOf(category.questions['category_chosen'][q].value) !== -1}/>
+							<RenderQState
+								state={state}
+								letter = {questions.length}
+							/>
 						</ListItemIcon>
 						<ListItemText primary={category.questions['category_chosen'][q].statement}/></ListItem>
 				)
@@ -135,17 +198,12 @@ export default function SearchQuestionsPopup() {
 		}
 		return (
 			<>
+				{/*TODO make text configurable*/}
+				<TopPanel hq={"Question 2 of 2"} sq = {"Tell us one further thing?"} />
 				<List>
-					<ListItem key={v4()} sx={{background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
-						<ListItemText primary={"Question 2 of 2: Which best describes your situation"}></ListItemText>
-						<ListItemText onClick={()=>		dispatch(setQuestionsOpen(false))} primary={"[Skip]"}></ListItemText>
-
-					</ListItem>
 					{questions}
-					<ListItem onClick={() => handleQuestion2()} key={v4()} sx={{"&:hover": {"opacity":"0.8"},  cursor: "pointer",background: '#cedae5', borderRadius: "10px", margin:"10px",width:`${width}px`,height:"100px",textAlign: "center",border: "1px solid #0000008f"}}>
-						<ListItemText color={"primary"} sx={{"color":"#000"}} varient={"outlined"} >Find activities based on your selection</ListItemText>
-					</ListItem>
 				</List>
+				<BottomPanel type = "go"/>
 			</>
 		)
 	}
@@ -161,8 +219,6 @@ export default function SearchQuestionsPopup() {
 				return (<RenderQuestions1/>);
 
 		}
-
-
 	}
 
 	let width = innerWidth;
@@ -173,11 +229,13 @@ export default function SearchQuestionsPopup() {
 	let boxSx = {
 		position: "absolute",
 		top: "30px",
-		left: `calc( 50% - ${width / 2}px )`,
+		left: `calc( 50% - ${(width / 2) + 50 }px )`,
 		boxShadow: 3,
 		width:`${width}px`,
 		zIndex:200
 	}
+
+
 
 	if(open) {
 		boxSx.display='block'
@@ -186,10 +244,10 @@ export default function SearchQuestionsPopup() {
 	}
 
 	return (
-		<Box sx={boxSx}>
+		<Box sx={boxSx} >
 			<Backdrop open={open} sx={{pt: 0,zIndex: 201}} onClick={handleClose}>
 			</Backdrop>
-			<Box sx={{zIndex: 202,position:"absolute"}}>
+			<Box sx={panelSX}>
 				<Stages/>
 			</Box>
 		</Box>
