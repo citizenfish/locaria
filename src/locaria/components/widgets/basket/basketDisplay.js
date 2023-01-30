@@ -23,14 +23,11 @@ export default function BasketDisplay({field,printPage='/BasketPrint/',printMode
 	const history = useHistory();
 	const ref=useRef();
 
-	//TODO useful function move to library
-	function get_next_week_start() {
-		let now = new Date();
-		return new Date(now.getFullYear(), now.getMonth(), now.getDate() + (8 - now.getDay()));
-	}
-
-	//TODO add day ordinals th/st/nd
-	let dt = get_next_week_start().toLocaleDateString('en-uk', {
+	const date = new Date();
+	const dayOfWeek = date.getDay();
+	const daysUntilMonday = (dayOfWeek + 6) % 7;
+	const beginningOfWeek = new Date(date.getTime() - daysUntilMonday * 24 * 60 * 60 * 1000);
+	const dt=beginningOfWeek.toLocaleDateString('en-uk', {
 		weekday: 'long',
 		year: 'numeric',
 		month: 'long',
@@ -84,6 +81,8 @@ export default function BasketDisplay({field,printPage='/BasketPrint/',printMode
 			>
 				<Divider sx={{mb: 2}}/>
 				<Typography align={"center"} variant={"h6"}>Week Beginning: {dt}</Typography>
+				<Divider sx={{mt: 2}}/>
+				<Typography sx={{marginTop:"10px"}} align={"center"} variant={"h6"}>Use the short codes by typing  <b>mytl.link</b> into your browser</Typography>
 				<Divider sx={{mt: 2}}/>
 
 			</Box>
