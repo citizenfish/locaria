@@ -23,7 +23,7 @@ export default function RenderPage({searchMode}) {
 	let {search} = useParams();
 	let {page} = useParams();
 	let {feature} = useParams();
-	let {shortCode} = useParams();
+	let {shortcode} = useParams();
 	const [render, setRender] = React.useState(0);
 	const pageData = React.useRef(undefined);
 	const pageActual = React.useRef(undefined);
@@ -32,7 +32,7 @@ export default function RenderPage({searchMode}) {
 	const lastPage = useSelector((state) => state.userSlice.lastPage);
 	const idToken = useSelector((state) => state.userSlice.idToken);
 
-	function handleResize()  {
+	function handleResize() {
 		dispatch(setMobile(!useMediaQuery('(min-width:900px)')));
 	}
 
@@ -46,66 +46,76 @@ export default function RenderPage({searchMode}) {
 		dispatch(reloadItems());
 
 		return () => {
-			pageData.current=undefined;
+			pageData.current = undefined;
 		}
-	},[]);
+	}, []);
 
 	React.useEffect(() => {
 
-		pageActual.current=page||'Home';
+		pageActual.current = page || 'Home';
+
+		window.websocket.registerQueue('shortLoader', (json) => {
+			debugger;
+			window.location=json.packet.url;
+		});
 
 		window.websocket.registerQueue('pageBulkLoader', (json) => {
-			if(json.getPageData.packet.error) {
+			if (json.getPageData.packet.error) {
 				history.push("/");
 			} else {
-				pageData.current=json.getPageData.packet.parameters[pageActual.current].data;
+				pageData.current = json.getPageData.packet.parameters[pageActual.current].data;
 				//setPageData(json.getPageData.packet.parameters[pageActual].data);
 				dispatch(setReport(json));
-				setRender(render+1);
+				setRender(render + 1);
 				document.title = pageData.current.title;
-				
-				if(pageActual.current&&page!==lastPage) {
+
+				if (pageActual.current && page !== lastPage) {
 					// This will cause re-render so we do it last
-					dispatch(setSavedAttribute({attribute:"lastPage",value:page}));
+					dispatch(setSavedAttribute({attribute: "lastPage", value: page}));
 				}
-		
+
 			}
 		});
 
-		pageData.current=undefined;
+		pageData.current = undefined;
 		if (category)
 			channel.current = window.systemCategories.getChannelProperties(category);
 
 
 		let hash = window.location.hash;
 
-		if (hash&&hash.match(/#preview/)) {
-			pageActual.current=`${page}-${idToken}`;
+		if (hash && hash.match(/#preview/)) {
+			pageActual.current = `${page}-${idToken}`;
 		}
-		if(searchMode===true) {
-			let searchParams=decodeSearchParams(search);
-			searchParams.categories=category;
-			searchParams.rewrite=true;
+		if (searchMode === true) {
+			let searchParams = decodeSearchParams(search);
+			searchParams.categories = category;
+			searchParams.rewrite = true;
 			dispatch(newSearch(searchParams));
 		}
 
-		
-		
 
-
-		pageData.current=undefined;
+		pageData.current = undefined;
 		getAllData();
 
-		if(currentLocation===undefined) {
+		if (currentLocation === undefined) {
 			dispatch(setCurrentLocation(currentLocation));
 		}
 
-		
-	},[page]);
 
-	
+	}, [page]);
+
 
 	const getAllData = () => {
+		if (shortcode) {
+			websocket.send({
+				"queue": "shortLoader",
+				"api": "api",
+				"data": {"method": "search", "shortcode": shortcode}
+			});
+			return;
+		}
+
 		let bulkPackage = [];
 		bulkPackage.push(
 			{
@@ -120,12 +130,12 @@ export default function RenderPage({searchMode}) {
 		);
 
 		if (feature) {
-			if(feature.match(/^@/)) {
+			if (feature.match(/^@/)) {
 				bulkPackage.push(
 					{
 						"queue": "viewLoader",
 						"api": "api",
-						"data": {"method": "get_item", "_identifier": feature.replace(/@/,'')}
+						"data": {"method": "get_item", "_identifier": feature.replace(/@/, '')}
 					}
 				)
 			} else {
@@ -139,16 +149,7 @@ export default function RenderPage({searchMode}) {
 			}
 		}
 
-		if(shortCode) {
 
-			bulkPackage.push(
-				{
-					"queue": "viewLoader",
-					"api": "api",
-					"data": {"method": "search", "shortcode": shortCode}
-				}
-			)
-		}
 
 		if (channel.current && channel.current.report) {
 			bulkPackage.push(
@@ -168,15 +169,16 @@ export default function RenderPage({searchMode}) {
 	}
 
 	// Setup the default sx object
-	const sx = {...{
+	const sx = {
+		...{
 			display: "flex",
 			alignItems: "center",
 			width: "100%"
-		},...window.systemMain['defaultSX']
+		}, ...window.systemMain['defaultSX']
 
 	}
 
-	if(pageData.current&&pageData.current.data) {
+	if (pageData.current && pageData.current.data) {
 		return (
 			<Box sx={sx}>
 				<Box sx={{
