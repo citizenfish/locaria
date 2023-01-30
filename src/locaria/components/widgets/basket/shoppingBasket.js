@@ -2,6 +2,8 @@ import React from 'react';
 import {useSelector} from "react-redux";
 import {Badge} from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import FeaturedPlayListTwoToneIcon from '@mui/icons-material/FeaturedPlayListTwoTone';
+
 import Button from "@mui/material/Button";
 import {useHistory} from "react-router-dom";
 
@@ -17,7 +19,7 @@ export default function ShoppingBasket({url='/Basket/'}) {
 			history.push(url);
 		}}>
 			<Badge badgeContent={items.length} color="secondary">
-				<ShoppingCartIcon/>
+				<FeaturedPlayListTwoToneIcon/>
 			</Badge>
 		</Button>
 	)
