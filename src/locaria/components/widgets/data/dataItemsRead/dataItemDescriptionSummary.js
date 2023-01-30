@@ -29,7 +29,12 @@ const DataItemDescriptionSummary = ({data,sx,allData,length=100}) => {
         },...sx}
 
     let textLength = length;
-    let summaryText = data.length > textLength ? `${data.substring(0, textLength)}...` : data
+
+    let summaryText='';
+
+    if(typeof data === 'string') {
+        summaryText = data.length > textLength ? `${data.substring(0, textLength)}...` : data
+    }
 
     let geojson={
         type: 'FeatureCollection',
