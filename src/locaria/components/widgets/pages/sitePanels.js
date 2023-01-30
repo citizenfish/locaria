@@ -94,10 +94,9 @@ const SitePanels = ({open,panel='small'}) => {
 		let panelSx={
 				backgroundColor: background,
 				fontSize: "0.8rem",
-/*
-				border: `1px solid ${window.siteMap[p].borderColor? window.siteMap[p].borderColor:window.siteMap[p].color}`,
-*/
-				border: "1px dashed black",
+			    border: `1px solid ${window.siteMap[p].borderColor? window.siteMap[p].borderColor:window.siteMap[p].color}`,
+
+				// border: "1px dashed black",
 				width: '100%',
 				cursor: "pointer"
 		};

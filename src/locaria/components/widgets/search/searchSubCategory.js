@@ -6,7 +6,8 @@ import List from "@mui/material/List";
 import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {objectPathExists} from "libs/objectTools";
 import {v4} from "uuid";
-
+import Avatar from "@mui/material/Avatar";
+import { deepOrange, grey } from '@mui/material/colors';
 
 export default function SearchSubCategory({category,noCountDisplay=false}) {
 	const dispatch = useDispatch()
@@ -60,16 +61,13 @@ export default function SearchSubCategory({category,noCountDisplay=false}) {
 							handleCheck(sub, mergedData[a].name)
 						}} dense>
 							<ListItemIcon>
-								<Checkbox
-									edge="start"
-									checked={objectPathExists(searchParams.filters ,`data.${sub}['${mergedData[a].name}']`)}
-									tabIndex={-1}
-									disableRipple
-								/>
+								<Avatar
+								sx = {{bgcolor: objectPathExists(searchParams.filters ,`data.${sub}['${mergedData[a].name}']`) ? deepOrange[500] : grey[300] }}
+								>{`${mergedData[a].name.slice(0,2)}`}</Avatar>
 							</ListItemIcon>
 							<ListItemText primary={`${mergedData[a].name}`}/>
 							<ListItemIcon edge={"end"}>
-								<ListItemText primary={`${mergedData[a].count}`} />
+								<ListItemText primary={`(${mergedData[a].count})`} />
 							</ListItemIcon>
 						</ListItemButton>
 					</ListItem>

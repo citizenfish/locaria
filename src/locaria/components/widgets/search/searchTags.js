@@ -7,6 +7,8 @@ import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@m
 import {arrayToggleElement} from "../../../libs/arrayTools";
 import {objectPathExists} from "../../../libs/objectTools";
 import {v4 as uuidv4} from 'uuid';
+import {deepOrange, grey} from "@mui/material/colors";
+import Avatar from "@mui/material/Avatar";
 
 export default function SearchTags({sx, category, noCountDisplay = false}) {
 	const dispatch = useDispatch()
@@ -38,12 +40,9 @@ export default function SearchTags({sx, category, noCountDisplay = false}) {
 							handleCheck(tags.tags.items[i])
 						}} dense>
 							<ListItemIcon>
-								<Checkbox
-									edge="start"
-									checked={searchParams.tags.indexOf(tags.tags.items[i]) !== -1}
-									tabIndex={-1}
-									disableRipple
-								/>
+								<Avatar
+									sx = {{bgcolor: searchParams.tags.indexOf(tags.tags.items[i]) !== -1 ? deepOrange[500] : grey[300] }}
+								>{`${tags.tags.items[i].slice(0,2)}`}</Avatar>
 							</ListItemIcon>
 							<ListItemText primary={`${tags.tags.items[i]}`}/>
 							<ListItemIcon edge={"end"}>
