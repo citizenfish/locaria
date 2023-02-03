@@ -82,7 +82,7 @@ export default function BasketDisplay({field,printPage='/BasketPrint/',printMode
 				<Divider sx={{mb: 2}}/>
 				<Typography align={"center"} variant={"h6"}>Week Beginning: {dt}</Typography>
 				<Divider sx={{mt: 2}}/>
-				<Typography sx={{marginTop:"10px"}} align={"center"} variant={"h6"}>Use the short codes by typing  <b>mytl.link</b> into your browser</Typography>
+				<Typography sx={{marginTop:"10px"}} align={"center"} variant={"h6"}>Use the short codes by typing  <a target="_blank" href={"http://mytl.link"}>mytl.link</a> into your browser</Typography>
 				<Divider sx={{mt: 2}}/>
 
 			</Box>

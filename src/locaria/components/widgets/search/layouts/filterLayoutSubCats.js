@@ -2,8 +2,8 @@ import React from 'react';
 
 import SearchSubCategory from "widgets/search/searchSubCategory";
 import SearchTags from "widgets/search/searchTags";
-import SearchCheckboxFilter from "widgets/search/searchCheckboxFilter";
-
+import SearchToggleBox from "widgets/search/searchToggleBox";
+import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 
 export default function FilterLayoutSubCats({category}) {
 	return (
@@ -11,12 +11,7 @@ export default function FilterLayoutSubCats({category}) {
 
 
 
-			<SearchCheckboxFilter values={[{
-				filter: true,
-				path: "data.free",
-				name: "Free",
-				counts: "free"
-			}]}/>
+			<SearchToggleBox path={"data.free"} name={"Free"} Icon={CurrencyPoundIcon}/>
 
 			<SearchSubCategory category={category}/>
 			<SearchTags category={category}/>

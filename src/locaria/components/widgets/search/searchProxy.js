@@ -23,7 +23,9 @@ export default function SearchProxy() {
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const refreshCounts = useSelector((state) => state.searchDraw.refreshCounts);
 	const rewrite = useSelector((state) => state.searchDraw.rewrite);
-	const categoryChosen = useSelector((state) => state.searchDraw.categoryChosen);
+	//const categoryChosen = useSelector((state) => state.searchDraw.categoryChosen);
+	const question1 = useSelector((state) => state.userSlice.question1);
+	const question2 = useSelector((state) => state.userSlice.question2);
 
 	let {page} = useParams();
 
@@ -73,6 +75,8 @@ export default function SearchProxy() {
 			"queue": "searchFeatures",
 			"api": "api",
 			"data": {
+				"method":"report",
+				"report_name":"search_counts",
 				"category": searchParams.categories,
 				"search_text": searchParams.search,
 				"bbox_srid":"4326"
@@ -82,7 +86,7 @@ export default function SearchProxy() {
 		let category=window.systemCategories.getChannelProperties(searchParams.categories);
 
 
-		if (refreshCounts === true&&category&&category.useCounts===true) {
+	/*	if (refreshCounts === true&&category&&category.useCounts===true) {
 			packetSearch.data.method = "report";
 			packetSearch.data.report_name = "search_counts";
 			dispatch(setRefreshCounts(false));
@@ -90,7 +94,7 @@ export default function SearchProxy() {
 			packetSearch.data.method = "search";
 
 		}
-
+*/
 		let jsonPath = undefined;
 
 		// implement schema
@@ -159,8 +163,10 @@ export default function SearchProxy() {
 		if (searchParams.tags && searchParams.tags.length > 0)
 			packetSearch.data.tags = searchParams.tags;
 
-		if(categoryChosen&&searchParams.sendRecommended===true) {
-			packetSearch.data['category_chosen'] = categoryChosen;
+		if(searchParams.sendRecommended===true) {
+			// TODO commented for demo as data currently doesn't work
+
+			//packetSearch.data['category_chosen'] = [question1,...question2];
 		}
 
 		packetSearch.data.display_limit = searchParams.displayLimit || 20;

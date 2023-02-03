@@ -13,7 +13,7 @@ import {useHistory} from "react-router-dom";
 import SearchLocationFiltersNoResults from "./searchLocationFiltersNoResults";
 import {locationPopup} from "../../redux/slices/searchDrawerSlice";
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-
+import SettingsIcon from '@mui/icons-material/Settings';
 import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
 import TextSearchSimple from "widgets/search/TextSearchSimple";
 import FooterBackToTop from "widgets/footers/footerBackToTop";
@@ -23,6 +23,7 @@ import FilterLayoutDays from "widgets/search/layouts/filterLayoutDays";
 import {FieldView} from "widgets/data/fieldView";
 import {v4} from "uuid";
 import Box from "@mui/material/Box";
+import FilterAccordion from "widgets/utils/FilterAccordion";
 
 const SearchLocationFilters = ({
 								   category,
@@ -99,26 +100,25 @@ const SearchLocationFilters = ({
 
 	function FiltersOuter() {
 		return (
-			<Stack direction="row" spacing={2} justifyContent={"space-between"} alignItems={"center"}>
-				<SearchRecommended/>
-				<ShoppingBasket/>
-			</Stack>
+			<>
+				<Button sx={{}} onClick={() => {
+					toggleMap();
+					handleChange();
+				}} startIcon={<MapIcon/>}>Map view</Button>
+				<Stack direction="row" spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+					<SearchRecommended/>
+					<ShoppingBasket/>
+				</Stack>
+			</>
 		)
 	}
 
 	function FiltersInner() {
 		return (
 			<Stack direction="column" spacing={2}>
-				<Accordion expanded={advanced} onChange={handleChangeAdvanced}>
-					<AccordionSummary
-						expandIcon={<ExpandMoreIcon/>}
-						aria-controls="panel1a-content"
-						id="panel1a-header"
-					>
-						<TypographyHeader sx={{"color": "#1976d2", "fontSize": "0.9rem"}}
-										  element={"h2"}>Advanced</TypographyHeader>
-					</AccordionSummary>
-					<AccordionDetails>
+				<FilterLayoutSubCats category={category}/>
+
+				<FilterAccordion title={"Advanced"} Icon={SettingsIcon} id={"adv"}>
 						<Stack direction="row" spacing={2}>
 							<Button variant={"outlined"} sx={{
 								width: "100%"
@@ -126,20 +126,13 @@ const SearchLocationFilters = ({
 								dispatch(locationPopup({open: true}));
 							}} startIcon={
 								<EditLocationAltIcon/>}>{currentLocation ? currentLocation.text.substring(0, 10) + (currentLocation.text.length > 10 ? '...' : '') : 'No location'}</Button>
-							{page &&
-								<Button variant={"outlined"} sx={{width: "80px"}} onClick={() => {
-									toggleMap();
-									handleChange();
-								}} startIcon={<MapIcon sx={{marginLeft: "12px"}}/>}></Button>
-							}
 
 						</Stack>
+
 						<SearchDistance category={category}></SearchDistance>
 						<TextSearchSimple/>
 						<FilterLayoutDays/>
-					</AccordionDetails>
-				</Accordion>
-				<FilterLayoutSubCats category={category}/>
+				</FilterAccordion>
 			</Stack>
 		)
 	}
