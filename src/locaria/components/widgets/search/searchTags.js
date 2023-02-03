@@ -1,14 +1,16 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import Box from "@mui/material/Box";
 import {useDispatch, useSelector} from "react-redux";
 import {setTags} from "../../redux/slices/searchDrawerSlice";
-import List from "@mui/material/List";
-import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import { ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {arrayToggleElement} from "../../../libs/arrayTools";
 import {objectPathExists} from "../../../libs/objectTools";
 import {v4 as uuidv4} from 'uuid';
 import {deepOrange, grey} from "@mui/material/colors";
 import Avatar from "@mui/material/Avatar";
+import FilterAccordion from "widgets/utils/FilterAccordion";
+import StarIcon from '@mui/icons-material/Star';
+import {setSavedAttribute, setToggleActiveTop} from "components/redux/slices/userSlice";
 
 export default function SearchTags({sx, category, noCountDisplay = false}) {
 	const dispatch = useDispatch()
@@ -21,7 +23,7 @@ export default function SearchTags({sx, category, noCountDisplay = false}) {
 		let tagCopy = JSON.parse(JSON.stringify(searchParams.tags));
 		tagCopy = arrayToggleElement(tagCopy, id);
 		dispatch(setTags(tagCopy));
-
+		dispatch(setToggleActiveTop({id:"tags",value:tagCopy.length>0}))
 	}
 
 
@@ -71,13 +73,9 @@ export default function SearchTags({sx, category, noCountDisplay = false}) {
 
 		if (listArray.length > 0) {
 			return (
-				<List sx={{width: '100%'}} dense={true}>
-					<ListItem sx={{padding: "0px"}}>
-						<ListItemText primary={tags.tags.title} key={uuidv4()}/>
-					</ListItem>
+				<FilterAccordion title={tags.tags.title} Icon={StarIcon} id={"tags"}>
 					{listArray}
-
-				</List>
+				</FilterAccordion>
 			)
 		}
 		return (<></>);

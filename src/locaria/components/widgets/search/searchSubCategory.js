@@ -1,18 +1,26 @@
 import React, {useEffect, useRef} from 'react';
 import {clearFilterItem, setFilterItem} from "../../redux/slices/searchDrawerSlice";
 import {useDispatch, useSelector} from "react-redux";
-import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import {Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {
+	ListItem,
+	ListItemButton,
+	ListItemIcon,
+	ListItemText
+} from "@mui/material";
 import {objectPathExists} from "libs/objectTools";
 import {v4} from "uuid";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange, grey } from '@mui/material/colors';
-
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import FilterAccordion from "widgets/utils/FilterAccordion";
+import {setSavedAttribute, setToggleActiveTop} from "components/redux/slices/userSlice";
 export default function SearchSubCategory({category,noCountDisplay=false}) {
 	const dispatch = useDispatch()
 	const searchParams = useSelector((state) => state.searchDraw.searchParams);
 	const counts = useSelector((state) => state.searchDraw.counts);
+
 
 
 	// Add unique key using a ref
@@ -26,16 +34,19 @@ export default function SearchSubCategory({category,noCountDisplay=false}) {
 		let path=`data.${sub}['${id}']`;
 		if(objectPathExists(searchParams.filters,path)) {
 			dispatch(clearFilterItem({path: path}));
+			dispatch(setToggleActiveTop({id:sub,value:Object.keys(searchParams.filters&&searchParams.filters.data&&searchParams.filters.data[sub]?searchParams.filters.data[sub]:{}).length>1}))
 		} else {
 			dispatch(setFilterItem({path: path, value: "true"}));
-
+			dispatch(setToggleActiveTop({id:sub,value:Object.keys(searchParams.filters&&searchParams.filters.data&&searchParams.filters.data[sub]?searchParams.filters.data[sub]:{}).length>=0}))
 		}
-
 	}
 
-	function DisplaySubCategorySubs({sub,subArray,categorySubs}) {
+	function DisplaySubCategorySubs({sub,subArray,categorySubs,Icon}) {
+
+
 		let renderArray=[];
 		let mergedData=[];
+
 		//  Merge the count data
 		for(let a in subArray) {
 			if (objectPathExists(counts, `${sub}['${subArray[a]}']`)) {
@@ -53,12 +64,13 @@ export default function SearchSubCategory({category,noCountDisplay=false}) {
 		});
 
 
+
 		for(let a in mergedData) {
 			if(mergedData[a].count > 0) {
 				renderArray.push(
 					<ListItem sx={{padding: "0px"}} key={v4()}>
-						<ListItemButton role={undefined} onClick={() => {
-							handleCheck(sub, mergedData[a].name)
+						<ListItemButton role={undefined} onClick={(e) => {
+							handleCheck(sub, mergedData[a].name);
 						}} dense>
 							<ListItemIcon>
 								<Avatar
@@ -86,18 +98,17 @@ export default function SearchSubCategory({category,noCountDisplay=false}) {
 		}
 		if(renderArray.length>0) {
 			return (
-				<List sx={{ width: '100%' }} >
-					<ListItem sx={{padding:"0px"}} key={v4()}>
-						<ListItemText primary={categorySubs[sub].title} />
-					</ListItem>
-					{renderArray}
-				</List>
+				<FilterAccordion title={categorySubs[sub].title} Icon={Icon} id={sub}>
+					<List sx={{ width: '100%' }} >
+						{renderArray}
+					</List>
+				</FilterAccordion>
 			)
 		}
 		return (<></>);
 	}
 
-	function DisplaySubCategory({sub}) {
+	function DisplaySubCategory({sub,Icon}) {
 		let categorySubs=window.systemCategories.getChannelProperties(category);
 		let subs=categorySubs[sub].items;
 		for(let i in subs) {
@@ -110,16 +121,16 @@ export default function SearchSubCategory({category,noCountDisplay=false}) {
 		}
 
 		return (
-				<DisplaySubCategorySubs sub={sub} subArray={categorySubs[sub].items} categorySubs={categorySubs}></DisplaySubCategorySubs>
+				<DisplaySubCategorySubs sub={sub} subArray={categorySubs[sub].items} categorySubs={categorySubs} Icon={Icon}></DisplaySubCategorySubs>
 		)
 
 	}
 
 	return (
-		<Box>
-			<DisplaySubCategory sub={"subCategory1"}/>
-			<DisplaySubCategory sub={"subCategory2"}/>
-		</Box>
+		<>
+			<DisplaySubCategory sub={"subCategory1"} Icon={EmojiPeopleIcon}/>
+			<DisplaySubCategory sub={"subCategory2"} Icon={DirectionsRunIcon}/>
+		</>
 
 	)
 

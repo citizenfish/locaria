@@ -19,7 +19,8 @@ export const userSlice = createSlice({
 			lastPage:"",
 			basket:[],
 			idToken: undefined,
-			searchText:"Where are you?"
+			searchText:"Where are you?",
+			toggles:{}
 		},
 		// storage
 		question1:undefined,
@@ -33,6 +34,7 @@ export const userSlice = createSlice({
 		// secure stuff
 		idToken:undefined,
 		searchText:undefined,
+		toggles:undefined
 	},
 	reducers: {
 		reloadProfile(state){
@@ -53,6 +55,16 @@ export const userSlice = createSlice({
 				return decodedReturn;
 			}
 
+			// loop localDefs and load
+			// wtf does this not work? proxy issue
+			/*for(let i in Object.keys(state.localDefs)) {
+				console.log(i);
+				state[i]=getLocalWithSafeDecode(i);
+			}
+
+			console.log(state);
+*/
+
 			state.question1=getLocalWithSafeDecode("question1");
 			state.question2=getLocalWithSafeDecode("question2");
 			state.gotoCategory=getLocalWithSafeDecode("gotoCategory");
@@ -63,6 +75,7 @@ export const userSlice = createSlice({
 			state.basket=getLocalWithSafeDecode("basket");
 			state.searchText=getLocalWithSafeDecode("searchText");
 			state.idToken=getLocalWithSafeDecode("idToken");
+			state.toggles=getLocalWithSafeDecode("toggles");
 		},
 		setValidUser: (state, action) => {
 			state.userValid = true;
@@ -80,6 +93,13 @@ export const userSlice = createSlice({
 			localStorage.setItem(action.payload.attribute, JSON.stringify(action.payload.value));
 		},
 
+		setToggleActiveTop: (state,action) => {
+			if(state.toggles[action.payload.id])
+				state.toggles[action.payload.id]={open:state.toggles[action.payload.id].open,active:action.payload.value};
+			else
+				state.toggles[action.payload.id]={open:true,active:action.payload.value};
+		}
+
 
 
 	}
@@ -88,6 +108,7 @@ export const userSlice = createSlice({
 export const {
 	setValidUser,
 	setValidPublic,
+	setToggleActiveTop,
 	setSavedAttribute,
 	reloadProfile
 } = userSlice.actions

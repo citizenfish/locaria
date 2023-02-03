@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
-import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
+import {Accordion, AccordionDetails, AccordionSummary, Stack} from "@mui/material";
 import Button from "@mui/material/Button";
 import {setBbox} from "../../redux/slices/searchDrawerSlice";
 import TypographyHeader from "../typography/typographyHeader";
@@ -13,6 +13,9 @@ import {useHistory} from "react-router-dom";
 import {encodeSearchParams} from "libs/searchParams";
 import MaplibreGL from "../maps/maplibreGL";
 import FilterLayoutSubCats from "widgets/search/layouts/filterLayoutSubCats";
+import MapIcon from "@mui/icons-material/Map";
+import SearchRecommended from "widgets/search/searchRecommended";
+import ShoppingBasket from "widgets/basket/shoppingBasket";
 
 const SearchLocationFiltersMap = ({
 								   category,
@@ -63,16 +66,26 @@ const SearchLocationFiltersMap = ({
 	}
 
 
-	function FiltersInner() {
+	function FiltersOuter() {
 		return (
 			<>
-				<Box textAlign='center'>
-					{page&&
-						<Button variant={"outlined"} onClick={()=>{toggleMap();handleChange();}} startIcon={<FormatAlignJustifyIcon/>}>Close Map</Button>
-					}
-				</Box>
-				<FilterLayoutSubCats category={category}/>
+				<Button sx={{}} onClick={() => {
+					toggleMap();
+					handleChange();
+				}} startIcon={<MapIcon/>}>Close Map</Button>
+				<Stack direction="row" spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+					<SearchRecommended/>
+					<ShoppingBasket/>
+				</Stack>
 			</>
+		)
+	}
+
+	function FiltersInner() {
+		return (
+			<Stack direction="column" spacing={2}>
+				<FilterLayoutSubCats category={category}/>
+			</Stack>
 		)
 	}
 
@@ -90,6 +103,7 @@ const SearchLocationFiltersMap = ({
 						flexGrow: 1
 					}}>
 						<Grid item md={3} sx={{width: "100%"}}>
+							<FiltersOuter/>
 
 							<Accordion expanded={expanded} onChange={handleChange}>
 								<AccordionSummary
@@ -121,6 +135,8 @@ const SearchLocationFiltersMap = ({
 						flexGrow: 1
 					}}>
 						<Grid item md={3} sx={{width: "100%"}}>
+							<FiltersOuter/>
+
 							<FiltersInner/>
 						</Grid>
 						<Grid item md={9} sx={{width: "100%"}}>
@@ -128,7 +144,7 @@ const SearchLocationFiltersMap = ({
 						</Grid>
 					</Grid>
 				</Box>
-			);
+			);w96jhdEGZ5eu*R9MC&iM
 		}
 
 }
