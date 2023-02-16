@@ -111,7 +111,8 @@ export const searchDrawerSlice = createSlice({
 		},
 		setCounts:(state,action) => {
 			state.counts=action.payload;
-			if(state.searchParams.tags) {
+			// WTF is this for??
+			/*if(state.searchParams.tags) {
 				if(state.counts&&state.counts.tags&&typeof state.counts.tags === 'object') {
 					for (let t in state.searchParams.tags) {
 						if (!objectPathExists(state.counts.tags,state.searchParams.tags[t])) {
@@ -135,7 +136,7 @@ export const searchDrawerSlice = createSlice({
 						state.searchParams.subCategories[subs[s]] = [];
 					}
 				}
-			}
+			}*/
 		},
 
 		setFeatures: (state,action) => {
@@ -293,6 +294,8 @@ export const searchDrawerSlice = createSlice({
 			state.totalPages=0;
 		},
 		setLocation: (state,action) => {
+			state.refreshCounts=true;
+
 			state.searchParams.location = action.payload;
 			state.searchParams.page=1;
 			state.totalPages=0;

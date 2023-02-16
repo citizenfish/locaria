@@ -25,14 +25,11 @@ const App = () => {
 						<Route path="/:page/sp/:category?/:search(.*)?">
 							<RenderPage searchMode={true}/>
 						</Route>
-						<Route path="/:page/~:shortCode">
-							<RenderPage searchMode={false}/>
-						</Route>
 						<Route path="/:page/:feature">
 							<RenderPage searchMode={false}/>
 						</Route>
+						<Route path="/~:shortcode" component={RenderPage}></Route>
 						<Route path="/:page/" component={RenderPage}/>
-						<Route path="/~:shortCode" component={RenderPage}></Route>
 						<Route path="/" component={RenderPage}></Route>
 						<Route exact path="/:id_token?" component={RenderPage}/>
 
