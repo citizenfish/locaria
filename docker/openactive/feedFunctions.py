@@ -40,6 +40,7 @@ def loadRPDE(id, feedsToProcess, feeds, config, debug=False):
             if url != "" : urls[urlID] = url
 
             if debug: print(f"Getting data from {url}")
+
             rpde_data = getJson(url)
             items = rpde_data.get('items',[])
 

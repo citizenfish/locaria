@@ -21,13 +21,12 @@ BEGIN
         RETURN locaria_core.typeahead_search(search_parameters);
     END IF;
 
+    IF COALESCE(search_parameters->>'freetext', '') = 'true' THEN
+        RETURN locaria_core.freetext_search(search_parameters);
+    END IF;
+
     precision_var = COALESCE((search_parameters->>'precision')::FLOAT, precision_var);
     display_limit_var = COALESCE((search_parameters->>'display_limit')::INTEGER, limit_var);
-
---     IF COALESCE(search_parameters->>'my_items','') = 'true' THEN
---         search_parameters = search_parameters ||
---                             jsonb_build_object('filter', jsonb_build_object('acl', jsonb_build_object('owner', COALESCE(search_parameters->>'_userID', 'THIS WILL FAIL'))));
---     END IF;
 
     WITH CLUSTER_RESULTS AS (
 

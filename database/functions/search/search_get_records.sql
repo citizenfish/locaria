@@ -117,7 +117,13 @@ BEGIN
         search_ts_query = '_IGNORE';
 
     ELSE
-        search_ts_query = plainto_tsquery('English', search_parameters->>'search_text');
+        IF search_parameters->>'keyword_or' = 'true' THEN
+            search_ts_query = prepare_ts_query(search_parameters->>'search_text', 'English');
+        ELSE
+            search_ts_query = plainto_tsquery('English', search_parameters->>'search_text');
+        END IF;
+
+        RAISE NOTICE 'DEBUG %',search_ts_query;
     END IF;
 
     --Switch off metadata if require
