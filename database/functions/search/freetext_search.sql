@@ -37,9 +37,12 @@ BEGIN
                                                 'search_text', loc_search_var,
                                                 'limit', limit_var,
                                                 'keyword_or', 'true',
+                                                --DO NOT Remove or the same search called again ;-)
+                                                'freetext', 'false',
                                                 'location', loc_var->0->>'ewkt'));
 
     END IF;
+
 
     RETURN search_var || jsonb_build_object('loc_candidates', loc_var);
 
