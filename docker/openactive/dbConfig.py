@@ -13,6 +13,8 @@ LOG_QUERY = f"INSERT INTO {INSERT_SCHEMA}.openActiveLogs(session, type, log) VAL
 
 PROCESS_QUERY = "SELECT locaria_core.openActivePostLoadProcess()"
 
+TRUNCATE_QUERY = f"TRUNCATE {INSERT_SCHEMA}.**TABLE**"
+
 
 
 
