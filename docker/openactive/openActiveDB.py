@@ -70,9 +70,10 @@ class openActiveDB(locariaDB):
         res = self.query(URLS_QUERY, ( str(session), ) )[0] # note , to keep as tuple not string
         return res[0]
 
+
     def deleteOldRecords(self, table):
-        if self.debug: print(f"Deleting from {table}")
         query = DELETE_QUERY.replace('**TABLE**', table)
+        if self.debug: print(f"Deleting from {table}")
         res = self.query(query)
         return res
 
@@ -81,3 +82,9 @@ class openActiveDB(locariaDB):
         if self.debug: print(f"Counting {table}")
         res = self.query(query)
         return res[0]
+
+    def truncateTable(self,table):
+        query = TRUNCATE_QUERY.replace('**TABLE**', table)
+        if self.debug: print(f"Truncating {table}")
+        res = self.query(query)
+        return res

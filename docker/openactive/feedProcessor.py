@@ -13,7 +13,9 @@ from locaria_file_utils import get_local_config
 from feedFunctions import loadRPDE
 
 stats = {}
-DEBUG = debugs.get(sys.argv[1], DEFAULT_DEBUG) if len(sys.argv) > 1  else DEFAULT_DEBUG
+DEBUG = logics.get(sys.argv[1], DEFAULT_DEBUG) if len(sys.argv) > 1  else DEFAULT_DEBUG
+DELETE = logics.get(sys.argv[2], DEFAULT_DELETE) if len(sys.argv) > 2  else DEFAULT_DELETE
+
 config = get_local_config('config.json')
 db = openActiveDB(config, DEBUG)
 if not db.connection:
@@ -24,6 +26,16 @@ if DEBUG: print(db.internalGateway('version', {}))
 
 # Get a list of feeds that we are going to retrieve data from
 feedsToProcess = db.getParameter(FEEDS_PROCESS_PARAMETER)
+
+# Truncate tables prior to import
+if DELETE:
+    feedTypes = db.getParameter(FEEDS_PARAMETER).get('feedTypes')
+    if feedTypes == None:
+        print('FeedTypes not configured')
+        exit()
+    for f in feedTypes:
+        db.truncateTable(f)
+
 if not feedsToProcess.get('urls'): feedsToProcess['urls'] = {}
 
 # We create a sessionID for this load so that we can retrieve data at end of process (we run a multi-process load so cannot keep track)
