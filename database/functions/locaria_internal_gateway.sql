@@ -40,7 +40,7 @@ BEGIN
             ret_var = update_history(jsonb_build_object('refresh_view', true));
             --PERFORM locaria_core.views_union();
 
-            REFRESH MATERIALIZED VIEW CONCURRENTLY global_search_view WITH data;
+            REFRESH MATERIALIZED VIEW CONCURRENTLY locaria_data.global_search_view WITH data;
             RETURN jsonb_build_object('message', 'view refreshed', 'refresh', ret_var);
 
         WHEN parameters ->> 'method' IN ('get_files') THEN
