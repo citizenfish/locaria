@@ -88,3 +88,9 @@ class openActiveDB(locariaDB):
         if self.debug: print(f"Truncating {table}")
         res = self.query(query)
         return res
+
+    def resetUrls(self):
+        query = RESET_URLS_QUERY
+        if self.debug: print(f"Resetting URLS")
+        res = self.query(query)
+        return res
