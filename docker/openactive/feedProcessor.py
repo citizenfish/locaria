@@ -10,7 +10,8 @@ from openActiveDB import *
 from locaria_file_utils import get_local_config
 from feedFunctions import loadRPDE
 
-stats = {}
+stats = {'pre_load' : {}, 'post_load': {}, 'post_delete' :{}}
+
 DEBUG = logics.get(sys.argv[1], DEFAULT_DEBUG) if len(sys.argv) > 1 else DEFAULT_DEBUG
 DELETE = logics.get(sys.argv[2], DEFAULT_DELETE) if len(sys.argv) > 2 else DEFAULT_DELETE
 
@@ -50,6 +51,9 @@ errorCount = 0
 urlCount = 0
 jobs = []
 
+for f in feeds['feedTypes']:
+    c = db.countRecords(f)
+    stats['pre_load'][f] = c
 
 for id in feedsToProcess['feeds']:
     if DEBUG: print(f"Loading {id}")
@@ -62,32 +66,39 @@ if __name__ == '__main__':  # Important as multiprocess respawns
             urlCount += result[0]
             errorCount += result[1]
 
-    print(f"Completed processing with {urlCount} urls and {errorCount} errors")
-
-    # Here we update the url list processed by retrieving them from logs table
-    urls = db.getURLs(feedsToProcess['session'])
-    print(f"{feedsToProcess['session']} {urls}")
-
-    feedsToProcess['urls'] = urls
-
-    end = time.perf_counter()
-    feedsToProcess['processTime'] = round(end - start, 0)
-
     # Remove deleted records and calculate table stats
     for f in feeds['feedTypes']:
-        db.deleteOldRecords(f)
         c = db.countRecords(f)
-        stats[f] = c
+        stats['post_load'][f] = c
+        d = db.deleteOldRecords(f)
+        stats['post_delete'][f] = d['deletes']
 
-    feedsToProcess['stats'] = stats
-
-    # Update our urls and stats
-    db.setParameter(FEEDS_PROCESS_PARAMETER, feedsToProcess)
+    loaded = {key: stats['post_load'][key] - value for key, value in stats['pre_load'].items()}
+    final = {key: value + (stats['post_load'][key] - value) - stats['post_delete'][key] for key, value in stats['pre_load'].items()}
 
     # Tidy up after load
+    print('Post Processing Data')
     p_res = db.query(PROCESS_QUERY)
-    print(p_res)
+    for key, value in p_res[0][0].items():
+        if key in final:
+            final[key] -= value
+
+    # Here we update the url list processed by retrieving them from logs table
+    feedsToProcess['urls'] = db.getURLs(feedsToProcess['session'])
+    feedsToProcess['processTime'] = round(time.perf_counter() - start, 0)
+
+    # create and store stats
+    total_items = 0
+    loaded_items = 0
+    for key in loaded:
+        total_items += final[key]
+        loaded_items += loaded[key]
+
+    feedsToProcess['stats'] = {'loaded' : loaded, 'final' : final, 'summary' : f"Completed load using {urlCount} urls and {errorCount} errors in {feedsToProcess['processTime']} seconds, loaded {loaded_items} final total {total_items}"}
+
+    # Update our urls and stats from this load
+    db.setParameter(FEEDS_PROCESS_PARAMETER, feedsToProcess)
+    db.insertLog(feedsToProcess['session'], 'load_summary', feedsToProcess['stats'])
 
     db.close()
-
-    print(f"Completed in {feedsToProcess['processTime']} seconds {stats}")
+    print(feedsToProcess['stats']['summary'])

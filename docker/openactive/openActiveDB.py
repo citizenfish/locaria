@@ -43,9 +43,6 @@ class openActiveDB(locariaDB):
                 if kind == 'errors':
                     i['org'] = org
                     ret['errors'].append({"missing_kind" : kind, "data" : i})
-                #else:
-                    #print(f"ignored {kind}")
-                    #ret['errors'].append({"unconfigured_kind" : kind})
 
         for table in items:
 
@@ -75,13 +72,13 @@ class openActiveDB(locariaDB):
         query = DELETE_QUERY.replace('**TABLE**', table)
         if self.debug: print(f"Deleting from {table}")
         res = self.query(query)
-        return res
+        return {'result' : res, 'deletes' : self.rowCount}
 
     def countRecords(self,table):
         query =  COUNT_QUERY.replace('**TABLE**', table)
         if self.debug: print(f"Counting {table}")
         res = self.query(query)
-        return res[0]
+        return res[0][0]
 
     def truncateTable(self,table):
         query = TRUNCATE_QUERY.replace('**TABLE**', table)

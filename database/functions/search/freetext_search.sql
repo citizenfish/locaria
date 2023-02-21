@@ -41,6 +41,7 @@ BEGIN
                                                       'display_limit', limit_var,
                                                       'limit', limit_var,
                                                       'keyword_or', 'true',
+                                                      'location_distance', 2000,
                                                       'location', loc_var->0->>'ewkt');
 
         SELECT  locaria_core.search(parameters) INTO search_var;
