@@ -15,6 +15,7 @@ class locariaDB:
         self.debug = debug
         self.config = config
         self.lastError = []
+        self.rowCount = 0
 
         try:
             if debug: print(f"Establishing database connection using {env_var}")
@@ -58,6 +59,7 @@ class locariaDB:
                 ret = [{"query" : query, "result" : "success"}]
 
             self.conn.commit()
+            self.rowCount = cursor.rowcount
             cursor.close()
             return ret
 
