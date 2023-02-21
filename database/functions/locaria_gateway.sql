@@ -9,7 +9,7 @@ DECLARE
     --added to shared methods with internal gateway to flag this has come via public path
     internal JSONB DEFAULT jsonb_build_object('internal', false);
     logged_in_var BOOLEAN DEFAULT FALSE;
-
+    log_id_var JSONB;
 BEGIN
 
     --This keeps us within our search schema when running code
@@ -25,7 +25,12 @@ BEGIN
 
     --From the incoming JSON select the method and run it
     CASE WHEN parameters->>'method' IN ('search','bboxsearch', 'refsearch', 'pointsearch', 'datesearch', 'filtersearch') THEN
-            ret_var = search(parameters);
+
+            IF COALESCE(parameters->>'freetext', '') = 'true' THEN
+                ret_var = freetext_search(parameters);
+            ELSE
+                ret_var = search(parameters);
+            END IF;
 
          WHEN parameters->>'method' IN ('get_item') THEN
             ret_var = get_item(parameters);
@@ -99,21 +104,21 @@ BEGIN
     -- Searches can be logged to the logs table. This is set on by default but can be switched off with a parameter
     log_var = COALESCE((SELECT (parameter->>'log_searches')::BOOLEAN FROM locaria_core.parameters WHERE parameter_name = 'log_configuration'), log_var);
 
-    --TODO use log function
     IF log_var THEN
-        INSERT INTO logs(log_type, log_message)
-        SELECT parameters->>'method',
-               jsonb_build_object('response_code',COALESCE(ret_var->>'response_code', '200'),
-                                  'parameters',   parameters ,
-                                  'logpath',     'external',
-                                  'acl',          acl,
-                                  'response',     CASE WHEN COALESCE(ret_var->>'error', '') = '' THEN 'ok' ELSE ret_var->>'error' END,
-                                  'search_stats', COALESCE(ret_var->'options', jsonb_build_object())
-               );
+        SELECT locaria_core.log(jsonb_build_object(
+                                                   'method', parameters->>'method',
+                                                   'response_code',COALESCE(ret_var->>'response_code', '200'),
+                                                   'parameters',   parameters ,
+                                                   'logpath',     'external',
+                                                   'acl',          acl,
+                                                   'response',     CASE WHEN COALESCE(ret_var->>'error', '') = '' THEN 'ok' ELSE ret_var->>'error' END,
+                                                   'search_stats', COALESCE(ret_var->'options', jsonb_build_object())
+                                    ),'OK')
+        INTO log_id_var;
     END IF;
 
 
-    RETURN jsonb_build_object('response_code', 200) || ret_var;
+    RETURN jsonb_build_object('response_code', 200) || log_id_var || ret_var;
 
 --This block will trap any errors and write a log entry. The log entry id is returned to the user and can be used for debugging if necessary
 
