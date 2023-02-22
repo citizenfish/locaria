@@ -34,7 +34,6 @@ def loadRPDE(id, feedsToProcess, feeds, config, debug=False):
 
         url = feedsToProcess['urls'].get(urlID, rpde.get('contentUrl'))
 
-
         while True and url:
             # Store the last url so we don't iterate the entire list again
             if url != "" : urls[urlID] = url
