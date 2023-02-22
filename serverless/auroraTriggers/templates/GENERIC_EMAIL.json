@@ -1,8 +1,0 @@
-{
-  "Template": {
-    "TemplateName": "GENERIC_EMAIL",
-    "SubjectPart": "{{subject}}",
-    "HtmlPart": "<b>{{title}}</b><br><p><pre>{{text}}</pre>",
-    "TextPart": "{{title}}\n{{text}}"
-  }
-}

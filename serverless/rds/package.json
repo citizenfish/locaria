@@ -1,9 +1,0 @@
-{
-	"name": "locaria-aurora",
-	"version": "1.0.0",
-	"description": "Locaria aurora",
-	"devDependencies": {
-		"serverless-stack-output": "^0.2.3",
-		"serverless": "^2.66.1"
-	}
-}

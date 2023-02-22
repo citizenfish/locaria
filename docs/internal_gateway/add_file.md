@@ -13,7 +13,7 @@ The add_file method registers a file with locaria and returns an id. The followi
 Default: {}
 Type: A JSON structure of file attributes. 
 
-More details are available in the [file_loader](../../docker/file_loader/file_loader.md) documentation
+More details are available in the [file_loader](../../../locaria_private/docker/file_loader/file_loader.md) documentation
 
 ## Returns
 

@@ -7,15 +7,6 @@ LOCARIA is an open source platform for publishing location data either via a web
 - you want to publish a map based website allowing users to search and interogate your data
 - you want to add, update and delete data including contributions from third parties
 
-LOCARIA will provide all of these features within a single ecosystem with no external dependencies. We have used LOCARIA to operate:-
+# Current refactoring
 
-- a public portal for local authorities allowing their customers to quickly find and view data linked to their household
-- a heritage map displaying thousands of individuals linked to a famous battle and showing their linkages with towns, memorials and naval infrastructure
-- a youth activities map, highlighting activities by category for young people and allowing them to find things to do in their locality
-- a set of simple REST based APIs unifying 15 sets of location data for consumption within desktop GIS packages
-
-LOCARIA is designed to be low maintenance and highly scalable. It will always be open source and available for free for those wishing to publish maps and location data. At present LOCARIA is focused upon deployment within the Amazon AWS web services infrastructure. 
-
-
-Nautoguide Ltd.
-8th December 2021
+Please note we are refactoring the entire codebase at present to create a better separation of concerns. As a result this repository only contains legacy docs, tests and webclient code. Once finished we'll link required repositories.
